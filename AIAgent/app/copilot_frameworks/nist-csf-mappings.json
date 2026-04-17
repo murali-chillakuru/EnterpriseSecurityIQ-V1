@@ -1,0 +1,293 @@
+{
+  "unable_to_assess": [
+    "ID.RA-1"
+  ],
+  "broad_site_membership": [
+    "PR.AA-5"
+  ],
+  "everyone_permissions": [
+    "PR.AA-5"
+  ],
+  "anonymous_link_exposure": [
+    "PR.DS-2"
+  ],
+  "external_sharing_posture": [
+    "PR.DS-2"
+  ],
+  "no_sharepoint_advanced_management": [
+    "DE.CM-3"
+  ],
+  "no_sam_restricted_access_control": [
+    "PR.AA-5"
+  ],
+  "no_sam_site_lifecycle_policy": [
+    "PR.DS-3"
+  ],
+  "no_sam_dag_reports": [
+    "DE.CM-3"
+  ],
+  "high_permission_blast_radius": [
+    "PR.AA-5"
+  ],
+  "external_sharing_risk_score": [
+    "PR.DS-2"
+  ],
+  "label_api_inaccessible": [
+    "ID.RA-1"
+  ],
+  "no_labels_defined": [
+    "PR.DS-1"
+  ],
+  "insufficient_labels": [
+    "PR.DS-1"
+  ],
+  "no_mandatory_labeling": [
+    "PR.DS-1"
+  ],
+  "no_auto_labeling": [
+    "DE.CM-1"
+  ],
+  "low_site_label_coverage": [
+    "PR.DS-1"
+  ],
+  "no_default_label": [
+    "PR.DS-1"
+  ],
+  "mandatory_labeling_incomplete_scope": [
+    "PR.DS-1"
+  ],
+  "labels_without_encryption": [
+    "PR.DS-1"
+  ],
+  "labels_without_site_group_settings": [
+    "PR.DS-1"
+  ],
+  "no_dlp_policies": [
+    "PR.DS-2"
+  ],
+  "no_label_based_dlp": [
+    "PR.DS-2"
+  ],
+  "incomplete_workload_coverage": [
+    "PR.DS-2"
+  ],
+  "no_endpoint_dlp": [
+    "PR.DS-2"
+  ],
+  "rss_not_configured": [
+    "PR.AA-5"
+  ],
+  "rcd_not_configured": [
+    "PR.AA-5"
+  ],
+  "ca_unable_to_assess": [
+    "ID.RA-1"
+  ],
+  "no_copilot_ca_policy": [
+    "PR.AA-1"
+  ],
+  "copilot_deployment_scope_denied": [
+    "ID.RA-1"
+  ],
+  "copilot_deployment_unknown": [
+    "ID.AM-2"
+  ],
+  "no_copilot_license": [
+    "ID.AM-1"
+  ],
+  "copilot_licenses_unassigned": [
+    "ID.AM-1"
+  ],
+  "low_copilot_license_utilization": [
+    "ID.AM-1"
+  ],
+  "no_access_reviews": [
+    "PR.AA-5"
+  ],
+  "no_information_barriers": [
+    "PR.AA-5"
+  ],
+  "no_mfa_enforcement": [
+    "PR.AA-1"
+  ],
+  "no_pim_configured": [
+    "PR.AA-5"
+  ],
+  "no_named_locations": [
+    "PR.AA-1"
+  ],
+  "no_signin_risk_policy": [
+    "DE.CM-1"
+  ],
+  "no_device_compliance": [
+    "PR.AA-1"
+  ],
+  "stale_accounts_detected": [
+    "PR.AA-5"
+  ],
+  "excessive_global_admins": [
+    "PR.AA-5"
+  ],
+  "shared_accounts_detected": [
+    "PR.AA-1"
+  ],
+  "no_group_based_licensing": [
+    "PR.AA-5"
+  ],
+  "no_session_signin_frequency": [
+    "PR.AA-1"
+  ],
+  "no_persistent_browser_control": [
+    "PR.AA-1"
+  ],
+  "mailbox_delegation_fullaccess": [
+    "PR.AA-5"
+  ],
+  "shared_mailbox_over_delegated": [
+    "PR.AA-5"
+  ],
+  "ib_segments_not_assigned": [
+    "PR.AA-5"
+  ],
+  "disabled_users_with_copilot_license": [
+    "PR.AA-5"
+  ],
+  "no_app_protection_policies": [
+    "PR.DS-2"
+  ],
+  "app_protection_platform_gaps": [
+    "PR.DS-2"
+  ],
+  "hybrid_accounts_stale_sync": [
+    "PR.AA-1"
+  ],
+  "no_copilot_license_segmentation": [
+    "PR.AA-5"
+  ],
+  "no_legal_hold_configured": [
+    "PR.DS-3"
+  ],
+  "stale_content_exposure": [
+    "PR.DS-3"
+  ],
+  "retention_assessment_needed": [
+    "PR.DS-3"
+  ],
+  "no_m365_backup": [
+    "PR.IR-4"
+  ],
+  "audit_logging_unknown": [
+    "DE.CM-3"
+  ],
+  "copilot_interaction_audit": [
+    "DE.CM-3"
+  ],
+  "no_alert_policies": [
+    "DE.AE-2"
+  ],
+  "no_defender_cloud_apps": [
+    "DE.CM-1"
+  ],
+  "no_copilot_usage_analytics": [
+    "DE.AE-3"
+  ],
+  "copilot_audit_events_not_analyzed": [
+    "DE.AE-2"
+  ],
+  "no_prompt_pattern_monitoring": [
+    "DE.CM-1"
+  ],
+  "copilot_security_incidents_detected": [
+    "RS.AN-3"
+  ],
+  "copilot_plugins_unrestricted": [
+    "PR.PS-1"
+  ],
+  "data_residency_unverified": [
+    "GV.OC-3"
+  ],
+  "no_ediscovery_configured": [
+    "RS.AN-3"
+  ],
+  "no_insider_risk_policies": [
+    "DE.CM-3"
+  ],
+  "no_communication_compliance": [
+    "DE.CM-1"
+  ],
+  "no_dspm_for_ai": [
+    "ID.RA-1"
+  ],
+  "dspm_oversharing_not_reviewed": [
+    "ID.RA-1"
+  ],
+  "unmanaged_copilot_agents": [
+    "GV.SC-4"
+  ],
+  "agent_over_permissioned": [
+    "PR.AA-5"
+  ],
+  "no_regulatory_framework_mapping": [
+    "GV.OC-2"
+  ],
+  "multi_geo_copilot_residency": [
+    "GV.OC-3"
+  ],
+  "no_rai_policy": [
+    "GV.RM-1"
+  ],
+  "cross_tenant_access_not_assessed": [
+    "GV.SC-4"
+  ],
+  "cross_tenant_access_permissive": [
+    "PR.AA-5"
+  ],
+  "no_agent_approval_workflow": [
+    "PR.PS-1"
+  ],
+  "ungoverned_external_connectors": [
+    "GV.SC-4"
+  ],
+  "external_connector_review_needed": [
+    "GV.SC-4"
+  ],
+  "no_prompt_guardrails": [
+    "DE.CM-1"
+  ],
+  "no_continuous_access_evaluation": [
+    "PR.AA-1"
+  ],
+  "no_token_protection": [
+    "PR.AA-1"
+  ],
+  "no_phishing_resistant_mfa": [
+    "PR.AA-1"
+  ],
+  "no_authentication_context": [
+    "PR.AA-1"
+  ],
+  "workload_identity_unprotected": [
+    "PR.AA-1"
+  ],
+  "no_compliant_network_check": [
+    "PR.AA-1"
+  ],
+  "unauthorized_ai_apps_detected": [
+    "GV.SC-4"
+  ],
+  "ai_consent_grants_detected": [
+    "PR.AA-5"
+  ],
+  "shadow_copilot_agents_detected": [
+    "GV.SC-4"
+  ],
+  "no_ai_app_governance": [
+    "DE.CM-1"
+  ],
+  "ai_apps_overpermissioned": [
+    "PR.AA-5"
+  ],
+  "no_ai_dlp_web_restrictions": [
+    "PR.DS-2"
+  ]
+}

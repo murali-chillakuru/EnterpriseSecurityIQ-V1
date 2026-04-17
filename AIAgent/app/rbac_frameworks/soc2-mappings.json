@@ -1,0 +1,29 @@
+{
+  "standing_owner_high_scope": [
+    "CC6.1",
+    "CC6.3"
+  ],
+  "contributor_mg_scope": [
+    "CC6.1",
+    "CC6.3"
+  ],
+  "sp_with_owner": [
+    "CC6.1",
+    "CC6.3",
+    "CC6.5"
+  ],
+  "large_privileged_group": [
+    "CC6.1",
+    "CC6.2",
+    "CC6.3"
+  ],
+  "custom_role_high_scope": [
+    "CC6.1",
+    "CC6.3"
+  ],
+  "sp_contributor_broad_scope": [
+    "CC6.1",
+    "CC6.3",
+    "CC6.5"
+  ]
+}

@@ -1,0 +1,123 @@
+[
+  {
+    "EvidenceId": "a1b2c3d4-0001-4000-8000-000000000001",
+    "Source": "Azure",
+    "Collector": "AzureResources",
+    "CollectedAt": "2026-01-15T10:30:00Z",
+    "EvidenceType": "azure-resource",
+    "Description": "Azure resource: stproddata01",
+    "ResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-prod/providers/Microsoft.Storage/storageAccounts/stproddata01",
+    "ResourceType": "Microsoft.Storage/storageAccounts",
+    "Data": {
+      "ResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-prod/providers/Microsoft.Storage/storageAccounts/stproddata01",
+      "ResourceName": "stproddata01",
+      "ResourceType": "Microsoft.Storage/storageAccounts",
+      "ResourceGroup": "rg-prod",
+      "Location": "eastus",
+      "SubscriptionId": "00000000-0000-0000-0000-000000000000",
+      "Tags": { "Environment": "Production", "CostCenter": "IT-001" }
+    }
+  },
+  {
+    "EvidenceId": "a1b2c3d4-0002-4000-8000-000000000002",
+    "Source": "Azure",
+    "Collector": "AzurePolicy",
+    "CollectedAt": "2026-01-15T10:31:00Z",
+    "EvidenceType": "azure-policy-assignment",
+    "Description": "Policy assignment: Microsoft Defender for Cloud",
+    "ResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/policyAssignments/SecurityCenter",
+    "ResourceType": "PolicyAssignment",
+    "Data": {
+      "PolicyAssignmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/policyAssignments/SecurityCenter",
+      "DisplayName": "Microsoft Defender for Cloud",
+      "PolicyDefinitionId": "/providers/Microsoft.Authorization/policySetDefinitions/1f3afdf9-d0c9-4c3d-847f-89da613e70a8",
+      "Scope": "/subscriptions/00000000-0000-0000-0000-000000000000",
+      "EnforcementMode": "Default",
+      "IsInitiative": true
+    }
+  },
+  {
+    "EvidenceId": "a1b2c3d4-0003-4000-8000-000000000003",
+    "Source": "Azure",
+    "Collector": "AzureRBAC",
+    "CollectedAt": "2026-01-15T10:32:00Z",
+    "EvidenceType": "azure-rbac-assignment",
+    "Description": "RBAC assignment: Owner on subscription",
+    "ResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/ra-001",
+    "ResourceType": "RoleAssignment",
+    "Data": {
+      "RoleAssignmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/ra-001",
+      "RoleDefinitionName": "Owner",
+      "RoleDefinitionId": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
+      "PrincipalId": "user-001",
+      "PrincipalType": "User",
+      "Scope": "/subscriptions/00000000-0000-0000-0000-000000000000",
+      "ScopeLevel": "Subscription",
+      "IsPrivileged": true
+    }
+  },
+  {
+    "EvidenceId": "a1b2c3d4-0004-4000-8000-000000000004",
+    "Source": "Entra",
+    "Collector": "EntraConditionalAccess",
+    "CollectedAt": "2026-01-15T10:33:00Z",
+    "EvidenceType": "entra-conditional-access-policy",
+    "Description": "CA policy: Require MFA for All Users",
+    "ResourceId": "ca-001",
+    "ResourceType": "ConditionalAccessPolicy",
+    "Data": {
+      "PolicyId": "ca-001",
+      "DisplayName": "Require MFA for All Users",
+      "State": "enabled",
+      "TargetsAllUsers": true,
+      "RequiresMFA": true,
+      "TargetsAllApps": true,
+      "ExcludedUsers": [],
+      "ExcludedGroups": [],
+      "Conditions": {
+        "Users": { "IncludeUsers": ["All"] },
+        "Applications": { "IncludeApplications": ["All"] }
+      },
+      "GrantControls": {
+        "BuiltInControls": ["mfa"]
+      }
+    }
+  },
+  {
+    "EvidenceId": "a1b2c3d4-0005-4000-8000-000000000005",
+    "Source": "Entra",
+    "Collector": "EntraRoles",
+    "CollectedAt": "2026-01-15T10:34:00Z",
+    "EvidenceType": "entra-directory-role",
+    "Description": "Directory role: Global Administrator",
+    "ResourceId": "role-ga-001",
+    "ResourceType": "DirectoryRole",
+    "Data": {
+      "RoleId": "role-ga-001",
+      "DisplayName": "Global Administrator",
+      "MemberCount": 3,
+      "IsPrivileged": true
+    }
+  },
+  {
+    "EvidenceId": "a1b2c3d4-0006-4000-8000-000000000006",
+    "Source": "Azure",
+    "Collector": "AzureAIServices",
+    "CollectedAt": "2026-01-15T10:35:00Z",
+    "EvidenceType": "azure-cognitive-account",
+    "Description": "Cognitive Services: openai-prod",
+    "ResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-ai/providers/Microsoft.CognitiveServices/accounts/openai-prod",
+    "ResourceType": "CognitiveServicesAccount",
+    "Data": {
+      "AccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-ai/providers/Microsoft.CognitiveServices/accounts/openai-prod",
+      "Name": "openai-prod",
+      "Kind": "OpenAI",
+      "SkuName": "S0",
+      "Location": "eastus",
+      "PublicNetworkAccess": "Disabled",
+      "ManagedIdentityType": "SystemAssigned",
+      "DisableLocalAuth": true,
+      "PrivateEndpoints": 1
+    }
+  }
+]

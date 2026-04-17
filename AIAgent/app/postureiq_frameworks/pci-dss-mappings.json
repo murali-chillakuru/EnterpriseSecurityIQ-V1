@@ -1,0 +1,676 @@
+{
+  "framework": "PCI-DSS",
+  "frameworkName": "PCI Data Security Standard",
+  "version": "4.0.1",
+  "description": "Mappings from PostureIQ evidence types to PCI DSS requirements",
+  "controls": [
+    {
+      "control_id": "PCI-1.2",
+      "title": "Network security controls are configured and maintained",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-app-service-network",
+        "azure-api-management",
+        "azure-resource"
+      ],
+      "evaluation_logic": "check_network_segmentation",
+      "rationale": "Network segmentation isolates the cardholder data environment from other networks.",
+      "recommendation": "Implement NSGs and firewall rules to segment networks appropriately.",
+      "compensating_evidence": [
+        "azure-waf-policy",
+        "azure-firewall"
+      ]
+    },
+    {
+      "control_id": "PCI-2.2",
+      "title": "System components are configured and managed securely",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "azure-resource"
+      ],
+      "evaluation_logic": "check_baseline_configuration",
+      "rationale": "Secure configurations reduce the attack surface of system components.",
+      "recommendation": "Use Azure Policy to enforce secure configuration baselines."
+    },
+    {
+      "control_id": "PCI-3.5",
+      "title": "Primary account number is secured wherever stored",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-resource",
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_data_at_rest_encryption",
+      "rationale": "Encryption of stored cardholder data prevents unauthorized access. v4.0.1 clarified issuer applicability and added a Customized Approach Objective for keyed cryptographic hashes.",
+      "recommendation": "Ensure all data stores use encryption at rest with proper key management. Per v4.0.1, keyed cryptographic hashes are permitted with a Customized Approach Objective."
+    },
+    {
+      "control_id": "PCI-4.2",
+      "title": "PAN is protected with strong cryptography during transmission",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-resource",
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_data_in_transit_encryption",
+      "rationale": "Strong cryptography during transmission prevents interception of cardholder data.",
+      "recommendation": "Enforce TLS 1.2+ for all data transmissions."
+    },
+    {
+      "control_id": "PCI-7.2",
+      "title": "Access to system components and data is appropriately defined and assigned",
+      "domain": "access",
+      "severity": "high",
+      "evidence_types": [
+        "azure-role-assignment",
+        "entra-role-assignment"
+      ],
+      "evaluation_logic": "check_least_privilege",
+      "rationale": "Appropriate access controls limit who can interact with cardholder data.",
+      "recommendation": "Implement least privilege access with regular access reviews."
+    },
+    {
+      "control_id": "PCI-8.3",
+      "title": "Strong authentication for users and administrators is established and managed",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-security-defaults",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_mfa_all_users",
+      "rationale": "MFA prevents unauthorized access even if credentials are compromised. v4.0.1 added an exemption: phishing-resistant authentication mechanisms satisfy the MFA requirement without a separate MFA factor.",
+      "recommendation": "Enforce MFA for all users accessing the cardholder data environment. Per v4.0.1, phishing-resistant authentication (e.g., FIDO2) satisfies this requirement.",
+      "compensating_evidence": [
+        "entra-security-defaults"
+      ]
+    },
+    {
+      "control_id": "PCI-8.6",
+      "title": "Use of application and system accounts is strictly managed",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-application"
+      ],
+      "evaluation_logic": "check_app_identity_security",
+      "rationale": "Service accounts must be managed to prevent unauthorized use.",
+      "recommendation": "Use managed identities and rotate service account credentials regularly."
+    },
+    {
+      "control_id": "PCI-10.2",
+      "title": "Audit logs are implemented to support detection of anomalies",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_logging_enabled",
+      "rationale": "Audit logs enable detection of unauthorized activity.",
+      "recommendation": "Enable diagnostic logging for all components in the CDE."
+    },
+    {
+      "control_id": "PCI-10.4",
+      "title": "Audit logs are reviewed to identify anomalies or suspicious activity",
+      "domain": "logging",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-diagnostic-setting",
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_audit_review",
+      "rationale": "Regular log review enables timely detection of security incidents.",
+      "recommendation": "Configure automated alerts and regular log review procedures."
+    },
+    {
+      "control_id": "PCI-12.3",
+      "title": "Risks to the cardholder data environment are formally identified, evaluated, and managed",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_vulnerability_scanning",
+      "rationale": "Risk management ensures threats are identified and addressed proactively.",
+      "recommendation": "Enable Microsoft Defender for Cloud for continuous risk assessment."
+    },
+    {
+      "control_id": "PCI-8.4",
+      "title": "MFA for all access to cardholder data environment",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-mfa-registration",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_mfa_registration_coverage",
+      "rationale": "MFA must be enforced for all users accessing cardholder data.",
+      "recommendation": "Enforce MFA registration. Target 90%+ registration rate."
+    },
+    {
+      "control_id": "PCI-10.6",
+      "title": "Anomalies and suspicious activity are detected and addressed",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-risky-user",
+        "entra-risk-detection"
+      ],
+      "evaluation_logic": "check_risky_users",
+      "rationale": "Risky users must be detected and remediated promptly.",
+      "recommendation": "Enable Identity Protection. Remediate high-risk users."
+    },
+    {
+      "control_id": "PCI-12.8",
+      "title": "Risk to information assets from third-party relationships",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-cross-tenant-policy"
+      ],
+      "evaluation_logic": "check_cross_tenant_access",
+      "rationale": "Third-party access must be controlled and monitored. v4.0.1 clarified the distinction between customer and TPSP (Third-Party Service Provider) responsibilities.",
+      "recommendation": "Configure cross-tenant MFA trust. Restrict B2B collaboration. Per v4.0.1, formally document TPSP relationship responsibilities."
+    },
+    {
+      "control_id": "PCI-12.4",
+      "title": "PCI DSS compliance is managed - Policy Compliance",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-compliance",
+        "azure-policy-definition"
+      ],
+      "evaluation_logic": "check_policy_compliance_state",
+      "rationale": "Policy compliance must be continuously monitored.",
+      "recommendation": "Remediate non-compliant resources. Target 80%+ compliance."
+    },
+    {
+      "control_id": "PCI-6.3",
+      "title": "Security vulnerabilities are identified and addressed - Defender Plans",
+      "domain": "governance",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-auto-provisioning",
+        "azure-sql-advanced-threat",
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_defender_plans",
+      "rationale": "Security monitoring must cover all critical workloads. v4.0.1 reverted 30-day patching scope to 'critical vulnerabilities' only (was 'critical and high' in v4.0).",
+      "recommendation": "Enable all Defender plans. Configure auto-provisioning. Per v4.0.1, patch critical vulnerabilities within 30 days."
+    },
+    {
+      "control_id": "PCI-7.2b",
+      "title": "Access to system components is appropriately defined - PIM",
+      "domain": "governance",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-pim-eligible-assignment"
+      ],
+      "evaluation_logic": "check_pim_configuration",
+      "rationale": "Privileged access must be time-limited with strong authentication.",
+      "recommendation": "Require MFA and justification for PIM. Limit to 8 hours."
+    },
+    {
+      "control_id": "PCI-7.3",
+      "title": "Access to system components is formally managed - Access Reviews",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "entra-access-review",
+        "entra-role-assignment"
+      ],
+      "evaluation_logic": "check_access_reviews",
+      "rationale": "Access must be reviewed periodically.",
+      "recommendation": "Configure recurring access reviews for privileged roles."
+    },
+    {
+      "control_id": "PCI-6.4",
+      "title": "Public-facing web applications are protected - VM Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-registry",
+        "azure-aks-cluster",
+        "azure-vm-config"
+      ],
+      "evaluation_logic": "check_vm_security",
+      "rationale": "VMs must be hardened with encryption and security agents.",
+      "recommendation": "Enable disk encryption, managed identity, and MDE."
+    },
+    {
+      "control_id": "PCI-6.5",
+      "title": "Changes to all system components are managed securely - Web App Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-webapp-auth",
+        "azure-webapp-tls",
+        "azure-webapp-diagnostic",
+        "azure-webapp-config"
+      ],
+      "evaluation_logic": "check_webapp_security",
+      "rationale": "Web apps must enforce secure configurations.",
+      "recommendation": "Enable HTTPS, TLS 1.2+, disable FTP and remote debugging."
+    },
+    {
+      "control_id": "PCI-6.6",
+      "title": "Bespoke and custom software is developed securely - SQL Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-sql-server",
+        "azure-sql-tde",
+        "azure-sql-database",
+        "azure-sql-firewall",
+        "azure-sql-auditing",
+        "azure-sql-vulnerability",
+        "azure-sql-advanced-threat"
+      ],
+      "evaluation_logic": "check_sql_security",
+      "rationale": "Databases must use strong auth, encryption, and auditing.",
+      "recommendation": "Configure AD admin, auditing, TDE, restrict public access.",
+      "compensating_evidence": [
+        "azure-sql-advanced-threat"
+      ]
+    },
+    {
+      "control_id": "PCI-6.7",
+      "title": "System components are protected - AKS Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-acr-repository",
+        "azure-aks-cluster"
+      ],
+      "evaluation_logic": "check_aks_security",
+      "rationale": "Container platforms must enforce access control and security.",
+      "recommendation": "Enable RBAC, AAD, network policy, Defender for Containers."
+    },
+    {
+      "control_id": "PCI-1.3",
+      "title": "Network access to CDE is restricted - Firewall",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-firewall"
+      ],
+      "evaluation_logic": "check_firewall_protection",
+      "rationale": "Firewalls must restrict access with threat intelligence.",
+      "recommendation": "Enable threat intelligence. Configure rule collections."
+    },
+    {
+      "control_id": "PCI-1.4",
+      "title": "Network connections between trusted and untrusted networks - Route Security",
+      "domain": "network",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-route-table",
+        "azure-nsg-flow-log"
+      ],
+      "evaluation_logic": "check_route_table_security",
+      "rationale": "Network routing must be controlled and monitored.",
+      "recommendation": "Configure controlled routing. Enable NSG flow logs."
+    },
+    {
+      "control_id": "PCI-10.7",
+      "title": "Failures of critical security control systems are detected - Monitoring",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-log-analytics",
+        "azure-alert-rule",
+        "azure-action-group"
+      ],
+      "evaluation_logic": "check_monitoring_coverage",
+      "rationale": "Monitoring infrastructure must detect security control failures.",
+      "recommendation": "Configure Log Analytics, alert rules, and action groups."
+    },
+    {
+      "control_id": "PCI-6.4.2",
+      "title": "AI Services Secure Configuration",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-cognitive-account"
+      ],
+      "evaluation_logic": "check_ai_services_security",
+      "rationale": "AI accounts in CDE must enforce network isolation and disable local auth.",
+      "recommendation": "Disable public access, disable local auth, enable CMK on AI accounts."
+    },
+    {
+      "control_id": "PCI-1.3.4",
+      "title": "ML Workspace Network Segmentation",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-ml-workspace"
+      ],
+      "evaluation_logic": "check_ml_network_security",
+      "rationale": "ML workspaces in CDE must use private endpoints.",
+      "recommendation": "Disable public network access. Configure private endpoints."
+    },
+    {
+      "control_id": "PCI-2.2.1",
+      "title": "Managed Identity Hygiene",
+      "domain": "access",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-managed-identity",
+        "azure-role-assignment"
+      ],
+      "evaluation_logic": "check_managed_identity_hygiene",
+      "rationale": "Orphaned identities create unnecessary access risk in the CDE.",
+      "recommendation": "Review and remove orphaned user-assigned managed identities."
+    },
+    {
+      "control_id": "PCI-6.5.1",
+      "title": "AI Deployment Governance",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-ai-deployment"
+      ],
+      "evaluation_logic": "check_ai_governance",
+      "rationale": "AI deployments must have content filtering and rate limits.",
+      "recommendation": "Configure content filter policies and rate limits on all AI deployments."
+    },
+    {
+      "control_id": "PCI-3.4.1",
+      "title": "Storage Account Cardholder Data Protection",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-storage-account"
+      ],
+      "evaluation_logic": "check_storage_account_security",
+      "rationale": "Storage accounts in CDE must enforce encryption, TLS 1.2, and network isolation.",
+      "recommendation": "Enable HTTPS-only, TLS 1.2, soft delete, and configure firewall."
+    },
+    {
+      "control_id": "PCI-6.3.3",
+      "title": "Container Registry Image Integrity",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-registry"
+      ],
+      "evaluation_logic": "check_container_registry_security",
+      "rationale": "Container registries in CDE must disable admin access and enable content trust.",
+      "recommendation": "Disable admin user. Enable content trust. Use private endpoints."
+    },
+    {
+      "control_id": "PCI-1.3.5",
+      "title": "Container App Network Segmentation",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-app"
+      ],
+      "evaluation_logic": "check_container_app_network",
+      "rationale": "Container Apps in CDE must enforce HTTPS and managed identity.",
+      "recommendation": "Disable insecure ingress. Enable managed identity."
+    },
+    {
+      "control_id": "PCI-3.5.1",
+      "title": "Cosmos DB Cardholder Data Encryption",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-cosmosdb-account"
+      ],
+      "evaluation_logic": "check_cosmosdb_security",
+      "rationale": "Cosmos DB storing cardholder data must use CMK encryption and disable local auth.",
+      "recommendation": "Disable local auth. Enable CMK encryption. Use private endpoints."
+    },
+    {
+      "control_id": "PCI-3.5.2",
+      "title": "Database Server CDE Protection",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-database-server"
+      ],
+      "evaluation_logic": "check_database_server_security",
+      "rationale": "Database servers in CDE must disable public access and enable HA.",
+      "recommendation": "Disable public access. Enable HA. Enable geo-redundant backup."
+    },
+    {
+      "control_id": "PCI-6.6.1",
+      "title": "Web Application Firewall",
+      "domain": "network",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-app-gateway",
+        "azure-waf-policy"
+      ],
+      "evaluation_logic": "check_app_gateway_security",
+      "rationale": "Web-facing applications in CDE must have WAF in Prevention mode.",
+      "recommendation": "Enable WAF in Prevention mode. Set minimum TLS to 1.2."
+    },
+    {
+      "control_id": "PCI-4.2.2",
+      "title": "API Management Secure Transmission",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-apim-instance"
+      ],
+      "evaluation_logic": "check_apim_network_security",
+      "rationale": "APIM in CDE must disable legacy TLS and use VNet integration.",
+      "recommendation": "Disable TLS 1.0/1.1. Configure VNet. Enable managed identity."
+    },
+    {
+      "control_id": "PCI-3.4.2",
+      "title": "Storage Container Cardholder Data Isolation",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-storage-container"
+      ],
+      "evaluation_logic": "check_storage_container_security",
+      "rationale": "Storage containers in CDE must not allow anonymous access.",
+      "recommendation": "Set all containers to Private. Configure immutability and lifecycle policies."
+    },
+    {
+      "control_id": "PCI-10.5.1",
+      "title": "SQL Server CDE Audit Trail Integrity",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-sql-detailed"
+      ],
+      "evaluation_logic": "check_sql_detailed_security",
+      "rationale": "SQL Servers in CDE must have ATP, per-database auditing, and TDE.",
+      "recommendation": "Enable ATP. Configure vulnerability assessment. Ensure per-database auditing and TDE."
+    },
+    {
+      "control_id": "PCI-6.5.10",
+      "title": "Web App Broken Authentication Prevention",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-webapp-detailed"
+      ],
+      "evaluation_logic": "check_webapp_detailed_security",
+      "rationale": "Web Apps in CDE must enable authentication, restrict CORS, and configure IP restrictions.",
+      "recommendation": "Enable App Service Auth. Restrict CORS. Configure IP restrictions."
+    },
+    {
+      "control_id": "PCI-10.2.1",
+      "title": "Database Server CDE Audit Logging",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-database-config"
+      ],
+      "evaluation_logic": "check_database_config_security",
+      "rationale": "Database servers in CDE must enforce secure transport and audit logging.",
+      "recommendation": "Enable require_secure_transport. Enable log_checkpoints and audit logging."
+    },
+    {
+      "control_id": "PCI-6.3.4",
+      "title": "Container Registry Image Integrity in CDE",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-acr-repository"
+      ],
+      "evaluation_logic": "check_acr_repository_security",
+      "rationale": "ACR repositories in CDE must enforce tag immutability.",
+      "recommendation": "Enable tag immutability. Clean up stale repositories."
+    },
+    {
+      "control_id": "PCI-12.10.1",
+      "title": "Incident Detection in CDE",
+      "domain": "incident_response",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-alert-rule",
+        "entra-risk-summary"
+      ],
+      "evaluation_logic": "check_incident_detection",
+      "rationale": "PCI DSS requires automated detection of unauthorized access to cardholder data.",
+      "recommendation": "Enable Defender plans and configure alert rules for CDE."
+    },
+    {
+      "control_id": "PCI-12.10.2",
+      "title": "Incident Response Alerting",
+      "domain": "incident_response",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-action-group",
+        "azure-alert-rule",
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_incident_alerting",
+      "rationale": "PCI DSS requires 24/7 incident response alerting capability.",
+      "recommendation": "Configure action groups with multiple notification channels."
+    },
+    {
+      "control_id": "PCI-12.10.3",
+      "title": "Security Contact Configuration",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_security_contact_config",
+      "rationale": "Designated security contacts must be defined for breach notification.",
+      "recommendation": "Configure security contacts with alert notifications enabled."
+    },
+    {
+      "control_id": "PCI-6.4.1",
+      "title": "Change Control Procedures",
+      "domain": "change_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "azure-policy-definition"
+      ],
+      "evaluation_logic": "check_change_control_policies",
+      "rationale": "PCI DSS requires formal change control procedures for CDE systems.",
+      "recommendation": "Assign Azure policies with deny effects for unauthorized changes."
+    },
+    {
+      "control_id": "PCI-6.4.2b",
+      "title": "Resource Lock Protection",
+      "domain": "change_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource-lock",
+        "azure-resource-group"
+      ],
+      "evaluation_logic": "check_resource_lock_governance",
+      "rationale": "CDE resources must be protected from unauthorized modification.",
+      "recommendation": "Apply CanNotDelete and ReadOnly locks on CDE resources."
+    },
+    {
+      "control_id": "PCI-6.4.3",
+      "title": "Policy Enforcement for CDE",
+      "domain": "change_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-compliance"
+      ],
+      "evaluation_logic": "check_policy_enforcement",
+      "rationale": "Policy compliance must be enforced in the cardholder data environment.",
+      "recommendation": "Maintain policy compliance rate above 80% for CDE resources."
+    },
+    {
+      "control_id": "PCI-12.10.4",
+      "title": "Backup and Recovery for CHD",
+      "domain": "business_continuity",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-recovery-vault",
+        "azure-vm-config",
+        "azure-sql-server"
+      ],
+      "evaluation_logic": "check_backup_configuration",
+      "rationale": "Cardholder data must be backed up and recoverable.",
+      "recommendation": "Deploy Recovery Services vaults with soft delete for CDE."
+    },
+    {
+      "control_id": "PCI-12.10.5",
+      "title": "Database Resilience for CHD",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-sql-server",
+        "azure-sql-detailed",
+        "azure-database-server"
+      ],
+      "evaluation_logic": "check_database_resilience",
+      "rationale": "Databases storing cardholder data must have high availability.",
+      "recommendation": "Enable HA and geo-replication for CDE databases."
+    },
+    {
+      "control_id": "PCI-2.4",
+      "title": "System Component Inventory",
+      "domain": "asset_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource",
+        "azure-resource-group",
+        "azure-managed-identity"
+      ],
+      "evaluation_logic": "check_asset_inventory",
+      "rationale": "PCI DSS requires maintaining an inventory of all system components in CDE.",
+      "recommendation": "Maintain comprehensive asset inventory for all CDE components."
+    },
+    {
+      "control_id": "PCI-8.6.1",
+      "title": "Service Account Hygiene",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-service-principal",
+        "entra-risky-service-principal",
+        "entra-application"
+      ],
+      "evaluation_logic": "check_service_principal_hygiene",
+      "rationale": "PCI DSS requires management and monitoring of service accounts.",
+      "recommendation": "Rotate expired credentials and audit risky service principals."
+    },
+    {
+      "control_id": "PCI-8.6.2",
+      "title": "Session Management Controls",
+      "domain": "access",
+      "severity": "high",
+      "evidence_types": [
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_session_management",
+      "rationale": "PCI DSS requires idle session timeout and re-authentication.",
+      "recommendation": "Configure CA policies with session controls for CDE access."
+    }
+  ]
+}

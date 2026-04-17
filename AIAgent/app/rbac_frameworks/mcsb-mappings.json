@@ -1,0 +1,24 @@
+{
+  "standing_owner_high_scope": [
+    "PA-1",
+    "PA-2"
+  ],
+  "contributor_mg_scope": [
+    "PA-7"
+  ],
+  "sp_with_owner": [
+    "PA-1",
+    "IM-3"
+  ],
+  "large_privileged_group": [
+    "PA-7",
+    "GS-6"
+  ],
+  "custom_role_high_scope": [
+    "PA-7"
+  ],
+  "sp_contributor_broad_scope": [
+    "PA-7",
+    "IM-3"
+  ]
+}

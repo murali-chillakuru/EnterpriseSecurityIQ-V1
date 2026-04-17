@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EnterpriseSecurityIQ — Infrastructure Security Report</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0D1117;--bg2:#161B22;--bg3:#1C2128;--bg4:#252D38;--tx:#E6EDF3;--tx2:#8B949E;--bd:#30363D;--blue:#58A6FF;--green:#3FB950;--orange:#D29922;--red:#F85149;--cyan:#39D2C0;--purple:#A371F7;--r:10px;--font:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;--mono:'Cascadia Code','Fira Code',Consolas,monospace}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--tx);line-height:1.6;padding:2rem;max-width:1200px;margin:0 auto}
+h1{font-size:1.8rem;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.5rem}
+h2{font-size:1.3rem;color:var(--blue);margin:2rem 0 1rem;border-bottom:1px solid var(--bd);padding-bottom:.4rem}
+h3{font-size:1.05rem;color:var(--tx);margin:1.2rem 0 .6rem}
+.meta{color:var(--tx2);font-size:.85rem;margin-bottom:2rem}
+.score-banner{display:flex;gap:1.5rem;padding:1.5rem;background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);margin:1.5rem 0;flex-wrap:wrap}
+.score-card{text-align:center;flex:1;min-width:140px}
+.score-card .val{font-size:2.2rem;font-weight:700}
+.score-card .lbl{font-size:.78rem;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em}
+.good .val{color:var(--green)} .warn .val{color:var(--orange)} .crit .val{color:var(--red)} .info .val{color:var(--blue)}
+table{width:100%;border-collapse:collapse;margin:.8rem 0 1.5rem;font-size:.88rem}
+th{text-align:left;padding:.55rem .8rem;background:var(--bg2);border:1px solid var(--bd);color:var(--tx2);font-weight:600;font-size:.78rem;text-transform:uppercase}
+td{padding:.55rem .8rem;border:1px solid var(--bd);vertical-align:top}
+tr:hover td{background:var(--bg3)}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.75rem;font-weight:600}
+.badge-pass{background:rgba(63,185,80,.15);color:var(--green)} .badge-warn{background:rgba(210,153,34,.15);color:var(--orange)} .badge-fail{background:rgba(248,81,73,.15);color:var(--red)} .badge-info{background:rgba(88,166,255,.15);color:var(--blue)}
+.finding{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:1rem 1.2rem;margin:.6rem 0}
+.finding-title{font-weight:600;margin-bottom:.3rem;display:flex;align-items:center;gap:.5rem}
+.finding-desc{color:var(--tx2);font-size:.88rem;line-height:1.5}
+.finding-remediation{margin-top:.5rem;padding:.6rem .8rem;background:var(--bg3);border-radius:6px;font-size:.84rem;color:var(--cyan)}
+.finding-remediation code{background:var(--bg4);padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:.82rem}
+.sev-critical{border-left:3px solid var(--red)} .sev-high{border-left:3px solid var(--orange)} .sev-medium{border-left:3px solid #D29922} .sev-low{border-left:3px solid var(--blue)} .sev-pass{border-left:3px solid var(--green)}
+.arch-diagram{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:1.5rem;margin:1rem 0;text-align:center;font-family:var(--mono);font-size:.82rem;line-height:2;color:var(--tx2)}
+.arch-box{display:inline-block;padding:6px 14px;border:1px solid var(--bd);border-radius:6px;background:var(--bg3);color:var(--tx);margin:4px}
+.arch-arrow{color:var(--blue);margin:0 6px}
+ul{margin:.5rem 0 1rem 1.5rem} li{margin:.3rem 0}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:1rem;margin:1rem 0}
+.summary-cell{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:1rem 1.2rem}
+.summary-cell h3{margin-top:0}
+.footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--bd);color:var(--tx2);font-size:.78rem;text-align:center}
+</style>
+</head>
+<body>
+
+<h1>🛡️ Infrastructure Security Report</h1>
+<p class="meta">EnterpriseSecurityIQ — Azure Deployment (ESIQNew-RG) &nbsp;|&nbsp; Generated: April 14, 2026 &nbsp;|&nbsp; Author: Copilot Agent</p>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2>Executive Summary</h2>
+
+<div class="score-banner">
+  <div class="score-card good"><div class="val">82/100</div><div class="lbl">Overall Score</div></div>
+  <div class="score-card good"><div class="val">11</div><div class="lbl">Resources</div></div>
+  <div class="score-card good"><div class="val">0</div><div class="lbl">Critical</div></div>
+  <div class="score-card warn"><div class="val">3</div><div class="lbl">High</div></div>
+  <div class="score-card warn"><div class="val">5</div><div class="lbl">Medium</div></div>
+  <div class="score-card info"><div class="val">3</div><div class="lbl">Low / Info</div></div>
+</div>
+
+<p>The EnterpriseSecurityIQ infrastructure follows <strong>strong security fundamentals</strong>: managed identity with least-privilege RBAC, HTTPS-only with TLS 1.2, shared key access disabled on storage, Key Vault with RBAC authorization and public access disabled, local auth disabled on AI Services, and comprehensive Defender for Cloud coverage (15 plans enabled). The main gaps are <strong>network exposure</strong> — several resources use public endpoints without IP restrictions — and <strong>missing resilience controls</strong> (no zone redundancy, no purge protection on Key Vault).</p>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2>Architecture Overview</h2>
+
+<div class="arch-diagram">
+  <div style="margin-bottom:12px">
+    <span class="arch-box">👤 User (Browser)</span>
+    <span class="arch-arrow">→ HTTPS →</span>
+    <span class="arch-box">🌐 Container App<br>esiqnew-agent</span>
+    <span class="arch-arrow">→ RBAC →</span>
+    <span class="arch-box">🧠 Azure OpenAI<br>ESIQNew-AI (gpt-5.1)</span>
+  </div>
+  <div style="margin-bottom:8px">
+    <span class="arch-box">🔑 Entra ID<br>MSAL SPA + OBO</span>
+    <span class="arch-arrow">→</span>
+    <span class="arch-box">🆔 Managed Identity<br>ESIQNew-identity</span>
+    <span class="arch-arrow">→</span>
+    <span class="arch-box">📦 ACR<br>esiqnewacr</span>
+  </div>
+  <div>
+    <span class="arch-box">📊 App Insights<br>ESIQNew-appinsights</span>
+    <span class="arch-arrow">→</span>
+    <span class="arch-box">📋 Log Analytics<br>ESIQNew-law</span>
+    &nbsp;&nbsp;&nbsp;
+    <span class="arch-box">🔐 Key Vault<br>ESIQNew-kv</span>
+    &nbsp;&nbsp;&nbsp;
+    <span class="arch-box">💾 Storage<br>esiqnewstorage</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2>Resource Inventory &amp; Security Posture</h2>
+
+<table>
+<thead>
+<tr><th>Resource</th><th>Type</th><th>Location</th><th>Status</th><th>Key Config</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>esiqnew-agent</strong></td><td>Container App</td><td>North Europe</td>
+  <td><span class="badge badge-warn">3 findings</span></td>
+  <td>External ingress, HTTPS-only, User-assigned MI, 1 vCPU / 2 GiB, Consumption plan</td>
+</tr>
+<tr>
+  <td><strong>ESIQNew-env</strong></td><td>Container Apps Environment</td><td>North Europe</td>
+  <td><span class="badge badge-warn">2 findings</span></td>
+  <td>Consumption workload profile, logs → Log Analytics, no VNet, no zone redundancy</td>
+</tr>
+<tr>
+  <td><strong>ESIQNew-AI</strong></td><td>Cognitive Services (AI Hub)</td><td>Sweden Central</td>
+  <td><span class="badge badge-warn">1 finding</span></td>
+  <td>S0 SKU, local auth disabled ✅, public network enabled</td>
+</tr>
+<tr>
+  <td><strong>ESIQNew-AI/ESIQNew-project</strong></td><td>AI Foundry Project</td><td>Sweden Central</td>
+  <td><span class="badge badge-pass">Inherits hub</span></td>
+  <td>Inherits hub network config, gpt-5.1 + gpt-4.1 deployed</td>
+</tr>
+<tr>
+  <td><strong>esiqnewstorage</strong></td><td>Storage Account</td><td>Sweden Central</td>
+  <td><span class="badge badge-warn">1 finding</span></td>
+  <td>HTTPS-only ✅, TLS 1.2 ✅, blob public access disabled ✅, shared key disabled ✅, default action: Allow</td>
+</tr>
+<tr>
+  <td><strong>ESIQNew-kv</strong></td><td>Key Vault</td><td>Sweden Central</td>
+  <td><span class="badge badge-warn">1 finding</span></td>
+  <td>RBAC auth ✅, soft delete ✅, public network disabled ✅, purge protection: OFF</td>
+</tr>
+<tr>
+  <td><strong>esiqnewacr</strong></td><td>Container Registry</td><td>Sweden Central</td>
+  <td><span class="badge badge-warn">2 findings</span></td>
+  <td>Basic SKU, admin disabled ✅, public network enabled, no content trust, no CMK encryption</td>
+</tr>
+<tr>
+  <td><strong>ESIQNew-identity</strong></td><td>Managed Identity</td><td>Sweden Central</td>
+  <td><span class="badge badge-pass">Pass</span></td>
+  <td>6 role assignments, all least-privilege scoped</td>
+</tr>
+<tr>
+  <td><strong>ESIQNew-law</strong></td><td>Log Analytics Workspace</td><td>Sweden Central</td>
+  <td><span class="badge badge-info">1 finding</span></td>
+  <td>PerGB2018, 30-day retention, public ingestion/query enabled</td>
+</tr>
+<tr>
+  <td><strong>ESIQNew-appinsights</strong></td><td>Application Insights</td><td>Sweden Central</td>
+  <td><span class="badge badge-info">1 finding</span></td>
+  <td>90-day retention, public ingestion, local auth not disabled</td>
+</tr>
+<tr>
+  <td><strong>EventGrid SystemTopic</strong></td><td>Event Grid</td><td>Sweden Central</td>
+  <td><span class="badge badge-pass">Pass</span></td>
+  <td>Storage lifecycle events</td>
+</tr>
+</tbody>
+</table>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2>Identity &amp; Access Management</h2>
+
+<h3>Managed Identity: ESIQNew-identity</h3>
+<table>
+<thead>
+<tr><th>Role</th><th>Scope</th><th>Assessment</th></tr>
+</thead>
+<tbody>
+<tr><td>Reader</td><td>Subscription</td><td><span class="badge badge-pass">Least privilege — read-only</span></td></tr>
+<tr><td>Security Reader</td><td>Subscription</td><td><span class="badge badge-pass">Required for Defender data</span></td></tr>
+<tr><td>AcrPull</td><td>esiqnewacr</td><td><span class="badge badge-pass">Pull-only, resource-scoped</span></td></tr>
+<tr><td>Cognitive Services OpenAI User</td><td>ESIQNew-AI</td><td><span class="badge badge-pass">Invoke-only, resource-scoped</span></td></tr>
+<tr><td>Azure AI Developer</td><td>ESIQNew-AI</td><td><span class="badge badge-pass">Foundry project access</span></td></tr>
+<tr><td>Storage Blob Data Contributor</td><td>esiqnewstorage</td><td><span class="badge badge-pass">Report upload, resource-scoped</span></td></tr>
+</tbody>
+</table>
+<p><span class="badge badge-pass">✅ PASS</span> All role assignments follow <strong>least-privilege principle</strong>. No Contributor/Owner roles. No subscription-wide write access. Registry uses AcrPull (not AcrPush). AI uses User (not Contributor).</p>
+
+<h3>Authentication Model</h3>
+<ul>
+  <li><strong>Web users:</strong> MSAL.js SPA → Entra ID → user-delegated Graph + ARM tokens sent to /chat endpoint</li>
+  <li><strong>API enforcement:</strong> /chat requires valid user tokens — rejects requests without them (HTTP 401)</li>
+  <li><strong>Managed identity fallback:</strong> Disabled for web users — MI used only for infra tasks (ACR pull, storage, AI Foundry)</li>
+  <li><strong>No shared secrets:</strong> ACR uses MI (not admin credentials), storage shared key is disabled, Key Vault uses RBAC (not access policies)</li>
+</ul>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2>Defender for Cloud Coverage</h2>
+
+<table>
+<thead><tr><th>Plan</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Virtual Machines</td><td><span class="badge badge-pass">Standard</span></td></tr>
+<tr><td>SQL Servers</td><td><span class="badge badge-pass">Standard</span></td></tr>
+<tr><td>App Services</td><td><span class="badge badge-pass">Standard</span></td></tr>
+<tr><td>Storage Accounts</td><td><span class="badge badge-pass">Standard</span></td></tr>
+<tr><td>Key Vaults</td><td><span class="badge badge-pass">Standard</span></td></tr>
+<tr><td>ARM</td><td><span class="badge badge-pass">Standard</span></td></tr>
+<tr><td>Containers</td><td><span class="badge badge-pass">Standard</span></td></tr>
+<tr><td>Cosmos DB</td><td><span class="badge badge-pass">Standard</span></td></tr>
+<tr><td>Cloud Posture (CSPM)</td><td><span class="badge badge-pass">Standard</span></td></tr>
+<tr><td>API Security</td><td><span class="badge badge-pass">Standard</span></td></tr>
+<tr><td>AI Services</td><td><span class="badge badge-pass">Standard</span></td></tr>
+<tr><td>Discovery</td><td><span class="badge badge-pass">Standard</span></td></tr>
+<tr><td>OSS Databases</td><td><span class="badge badge-pass">Standard</span></td></tr>
+<tr><td>SQL VMs</td><td><span class="badge badge-pass">Standard</span></td></tr>
+<tr><td>Foundational CSPM</td><td><span class="badge badge-pass">Standard</span></td></tr>
+</tbody>
+</table>
+<p><span class="badge badge-pass">✅ PASS</span> All 15 Defender plans are enabled at Standard tier. Full coverage across compute, data, identity, and AI workloads.</p>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2>Findings — Detailed</h2>
+
+<!-- HIGH -->
+<div class="finding sev-high">
+  <div class="finding-title"><span class="badge badge-fail">HIGH</span> H-1: Container App publicly exposed without IP restrictions</div>
+  <div class="finding-desc">The Container App has <code>external: true</code> ingress with no <code>ipSecurityRestrictions</code>. Anyone on the internet can reach the /chat and / endpoints. While the app requires Entra ID authentication, the attack surface is unnecessarily large.</div>
+  <div class="finding-remediation"><strong>Remediation:</strong> Add IP security restrictions to allow only your corporate egress IPs, or deploy behind Azure Front Door with WAF. For VNet isolation, deploy the Container Apps Environment into a VNet with internal-only ingress.<br>
+  <code>az containerapp ingress access-restriction set -n esiqnew-agent -g ESIQNew-RG --rule-name corp-only --ip-address &lt;CIDR&gt; --action Allow</code></div>
+</div>
+
+<div class="finding sev-high">
+  <div class="finding-title"><span class="badge badge-fail">HIGH</span> H-2: Container Apps Environment has no VNet integration</div>
+  <div class="finding-desc">The environment is deployed without a VNet (<code>vnetConfiguration: null</code>). All inter-service traffic traverses public endpoints. This means the Container App → Azure OpenAI, Storage, and other calls go over the public internet, even though they use managed identity RBAC.</div>
+  <div class="finding-remediation"><strong>Remediation:</strong> Create a VNet-integrated Container Apps Environment with private endpoints for dependent services. This requires rebuilding the environment (cannot retrofit). Use <code>az containerapp env create --infrastructure-subnet-resource-id</code>. Add private endpoints for Storage, Key Vault, AI Services, and ACR.</div>
+</div>
+
+<div class="finding sev-high">
+  <div class="finding-title"><span class="badge badge-fail">HIGH</span> H-3: Storage account allows traffic from all networks</div>
+  <div class="finding-desc">Storage account <code>esiqnewstorage</code> has <code>networkRuleSet.defaultAction: Allow</code>, meaning any Azure service or internet client with valid credentials can access blobs. While blob public access is disabled and shared key is off (enforcing Entra ID auth), network-layer restriction adds defense in depth.</div>
+  <div class="finding-remediation"><strong>Remediation:</strong> Set default action to Deny and add exceptions for the Container Apps subnet (requires VNet integration).<br>
+  <code>az storage account update -n esiqnewstorage -g ESIQNew-RG --default-action Deny</code><br>
+  Then add VNet rules or private endpoint.</div>
+</div>
+
+<!-- MEDIUM -->
+<div class="finding sev-medium">
+  <div class="finding-title"><span class="badge badge-warn">MEDIUM</span> M-1: Azure OpenAI / AI Services has public network access enabled</div>
+  <div class="finding-desc"><code>ESIQNew-AI</code> has <code>publicNetworkAccess: Enabled</code>. Although local auth is disabled (requiring Entra ID tokens), the endpoint is reachable from the public internet.</div>
+  <div class="finding-remediation"><strong>Remediation:</strong> Disable public access and configure a private endpoint. Requires VNet-integrated Container Apps Environment.<br>
+  <code>az cognitiveservices account update -n ESIQNew-AI -g ESIQNew-RG --public-network-access Disabled</code></div>
+</div>
+
+<div class="finding sev-medium">
+  <div class="finding-title"><span class="badge badge-warn">MEDIUM</span> M-2: ACR has public network access and Basic SKU</div>
+  <div class="finding-desc"><code>esiqnewacr</code> is Basic SKU with public access enabled. Basic SKU does not support private endpoints, content trust, or customer-managed encryption. Admin user is correctly disabled.</div>
+  <div class="finding-remediation"><strong>Remediation:</strong> Upgrade to Standard or Premium SKU to enable private endpoints and content trust.<br>
+  <code>az acr update -n esiqnewacr -g ESIQNew-RG --sku Premium --public-network-enabled false</code></div>
+</div>
+
+<div class="finding sev-medium">
+  <div class="finding-title"><span class="badge badge-warn">MEDIUM</span> M-3: Key Vault lacks purge protection</div>
+  <div class="finding-desc"><code>ESIQNew-kv</code> has soft delete enabled but purge protection is not enabled. A privileged user could permanently delete secrets/keys during the soft-delete retention window.</div>
+  <div class="finding-remediation"><strong>Remediation:</strong> Enable purge protection (irreversible — cannot be disabled once set).<br>
+  <code>az keyvault update -n ESIQNew-kv -g ESIQNew-RG --enable-purge-protection true</code></div>
+</div>
+
+<div class="finding sev-medium">
+  <div class="finding-title"><span class="badge badge-warn">MEDIUM</span> M-4: No zone redundancy on Container Apps Environment</div>
+  <div class="finding-desc">Environment has <code>zoneRedundant: false</code>. A single availability zone failure would take down the agent.</div>
+  <div class="finding-remediation"><strong>Remediation:</strong> Recreate the environment with <code>--zone-redundant</code> flag. Cannot be changed after creation — requires redeployment.</div>
+</div>
+
+<div class="finding sev-medium">
+  <div class="finding-title"><span class="badge badge-warn">MEDIUM</span> M-5: No CORS policy on Container App ingress</div>
+  <div class="finding-desc">The Container App has no CORS policy configured (<code>corsPolicy: null</code>). If the SPA is served from the same origin this is acceptable, but if ever served from a different domain, the lack of CORS restrictions could be exploited.</div>
+  <div class="finding-remediation"><strong>Remediation:</strong> Set explicit CORS allowed origins matching your SPA domain.<br>
+  <code>az containerapp ingress cors update -n esiqnew-agent -g ESIQNew-RG --allowed-origins "https://esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io"</code></div>
+</div>
+
+<!-- LOW / INFO -->
+<div class="finding sev-low">
+  <div class="finding-title"><span class="badge badge-info">LOW</span> L-1: Log Analytics has short retention (30 days)</div>
+  <div class="finding-desc"><code>ESIQNew-law</code> retains logs for only 30 days. For security incident investigation and compliance, 90+ day retention is recommended.</div>
+  <div class="finding-remediation"><strong>Remediation:</strong> Increase retention or configure archiving.<br>
+  <code>az monitor log-analytics workspace update -n ESIQNew-law -g ESIQNew-RG --retention-time 90</code></div>
+</div>
+
+<div class="finding sev-low">
+  <div class="finding-title"><span class="badge badge-info">LOW</span> L-2: Application Insights local auth not explicitly disabled</div>
+  <div class="finding-desc"><code>ESIQNew-appinsights</code> has <code>disableLocalAuth: null</code> (default allows API key auth). Best practice is to disable local auth and use Entra ID only.</div>
+  <div class="finding-remediation"><strong>Remediation:</strong> Disable local authentication.<br>
+  <code>az monitor app-insights component update --app ESIQNew-appinsights -g ESIQNew-RG --set properties.disableLocalAuth=true</code></div>
+</div>
+
+<div class="finding sev-low">
+  <div class="finding-title"><span class="badge badge-info">LOW</span> L-3: Log Analytics and App Insights allow public ingestion</div>
+  <div class="finding-desc">Both monitoring resources have public network access enabled for ingestion and query. In a locked-down environment, telemetry should flow via Azure Monitor Private Link Scope (AMPLS).</div>
+  <div class="finding-remediation"><strong>Remediation:</strong> Configure Azure Monitor Private Link Scope (AMPLS) and set public access to disabled on both resources. Requires VNet integration.</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2>Security Controls Summary</h2>
+
+<div class="summary-grid">
+
+<div class="summary-cell">
+<h3>✅ What's Done Well</h3>
+<ul>
+  <li><strong>Managed Identity:</strong> User-assigned MI with 6 least-privilege role assignments — no shared secrets anywhere</li>
+  <li><strong>Entra ID authentication:</strong> User-delegated tokens required for all web requests, MI fallback disabled for web users</li>
+  <li><strong>Storage hardening:</strong> Shared key disabled, blob public access off, HTTPS-only, TLS 1.2</li>
+  <li><strong>Key Vault:</strong> RBAC authorization, soft delete, public access disabled</li>
+  <li><strong>ACR:</strong> Admin user disabled, MI-based image pull</li>
+  <li><strong>AI Services:</strong> Local auth disabled, token-based access only</li>
+  <li><strong>Defender for Cloud:</strong> All 15 plans at Standard tier — full coverage</li>
+  <li><strong>Logging:</strong> Container Apps → Log Analytics, App Insights telemetry enabled</li>
+  <li><strong>Container App:</strong> HTTPS-only, no insecure HTTP allowed, no secrets in env vars</li>
+</ul>
+</div>
+
+<div class="summary-cell">
+<h3>⚠️ What Needs Improvement</h3>
+<ul>
+  <li><strong>Network isolation:</strong> No VNet, no private endpoints — all service-to-service calls over public internet</li>
+  <li><strong>Container App exposure:</strong> External ingress with no IP restrictions or WAF</li>
+  <li><strong>Storage network rules:</strong> Default action Allow (should be Deny + exceptions)</li>
+  <li><strong>Purge protection:</strong> Not enabled on Key Vault</li>
+  <li><strong>Zone redundancy:</strong> Not enabled on Container Apps Environment or ACR</li>
+  <li><strong>ACR SKU:</strong> Basic — no private endpoints, no content trust</li>
+  <li><strong>Log retention:</strong> 30 days on Log Analytics (recommend 90+)</li>
+  <li><strong>Monitoring auth:</strong> App Insights local auth not disabled</li>
+</ul>
+</div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2>Remediation Roadmap</h2>
+
+<table>
+<thead>
+<tr><th>Priority</th><th>Action</th><th>Effort</th><th>Impact</th></tr>
+</thead>
+<tbody>
+<tr><td><span class="badge badge-fail">P1</span></td><td>Add IP restrictions to Container App ingress or deploy WAF</td><td>Low (CLI command)</td><td>Reduces attack surface immediately</td></tr>
+<tr><td><span class="badge badge-fail">P1</span></td><td>Set Storage default network rule to Deny</td><td>Low (CLI command)</td><td>Defense-in-depth for data at rest</td></tr>
+<tr><td><span class="badge badge-fail">P1</span></td><td>Enable purge protection on Key Vault</td><td>Low (CLI command)</td><td>Prevents permanent secret deletion</td></tr>
+<tr><td><span class="badge badge-warn">P2</span></td><td>VNet integration + private endpoints (Storage, AI, ACR, KV)</td><td>High (rebuild environment)</td><td>Full network isolation, eliminates public exposure</td></tr>
+<tr><td><span class="badge badge-warn">P2</span></td><td>Upgrade ACR to Premium, enable content trust + private endpoint</td><td>Medium</td><td>Image integrity, network isolation</td></tr>
+<tr><td><span class="badge badge-warn">P2</span></td><td>Enable zone redundancy (requires env rebuild)</td><td>High</td><td>Availability guarantee</td></tr>
+<tr><td><span class="badge badge-info">P3</span></td><td>Increase Log Analytics retention to 90 days</td><td>Low</td><td>Better forensic capability</td></tr>
+<tr><td><span class="badge badge-info">P3</span></td><td>Disable App Insights local auth</td><td>Low</td><td>Eliminates API key attack vector</td></tr>
+<tr><td><span class="badge badge-info">P3</span></td><td>Configure AMPLS for private monitoring ingestion</td><td>Medium</td><td>Telemetry stays on private network</td></tr>
+</tbody>
+</table>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2>Compliance Mapping</h2>
+
+<table>
+<thead><tr><th>Finding</th><th>CIS Benchmark</th><th>NIST 800-53</th><th>PCI-DSS</th></tr></thead>
+<tbody>
+<tr><td>H-1, H-2: Public network exposure</td><td>CIS 6.1, 6.4</td><td>SC-7 (Boundary Protection)</td><td>1.3 (Firewall rules)</td></tr>
+<tr><td>H-3: Storage network rules</td><td>CIS 3.7</td><td>SC-7, AC-4</td><td>1.3.4</td></tr>
+<tr><td>M-3: Purge protection</td><td>CIS 8.4</td><td>SC-28 (Data at Rest)</td><td>3.4</td></tr>
+<tr><td>M-4: Zone redundancy</td><td>—</td><td>CP-10 (Recovery)</td><td>—</td></tr>
+<tr><td>L-1: Log retention</td><td>CIS 5.1.2</td><td>AU-11 (Audit Retention)</td><td>10.7 (Retain 1yr)</td></tr>
+</tbody>
+</table>
+
+<div class="footer">
+  EnterpriseSecurityIQ Infrastructure Security Report &nbsp;|&nbsp; Generated by Copilot Agent &nbsp;|&nbsp; April 14, 2026
+</div>
+
+</body>
+</html>

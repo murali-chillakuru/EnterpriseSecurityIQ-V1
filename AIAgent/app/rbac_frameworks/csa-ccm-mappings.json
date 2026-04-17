@@ -1,0 +1,29 @@
+{
+  "standing_owner_high_scope": [
+    "IAM-04",
+    "IAM-05",
+    "IAM-09"
+  ],
+  "contributor_mg_scope": [
+    "IAM-04",
+    "IAM-05"
+  ],
+  "sp_with_owner": [
+    "IAM-04",
+    "IAM-05",
+    "IAM-09"
+  ],
+  "large_privileged_group": [
+    "IAM-04",
+    "IAM-06"
+  ],
+  "custom_role_high_scope": [
+    "IAM-04",
+    "IAM-10"
+  ],
+  "sp_contributor_broad_scope": [
+    "IAM-04",
+    "IAM-05",
+    "IAM-09"
+  ]
+}

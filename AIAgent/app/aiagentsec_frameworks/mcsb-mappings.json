@@ -1,0 +1,587 @@
+{
+  "framework": "Microsoft Cloud Security Benchmark",
+  "version": "1.0",
+  "mappings": {
+    "no_auth_required": [
+      "IM-1",
+      "IM-3"
+    ],
+    "non_aad_auth": [
+      "IM-1"
+    ],
+    "stale_auth_config": [
+      "IM-3"
+    ],
+    "cs_auth_no_sign_in_required": [
+      "IM-1",
+      "IM-3"
+    ],
+    "cs_auth_generic_oauth": [
+      "IM-1"
+    ],
+    "unauthenticated_web_channel": [
+      "IM-1",
+      "IM-3"
+    ],
+    "teams_channel_no_sso": [
+      "IM-1"
+    ],
+    "no_pp_dlp_policies": [
+      "DP-2",
+      "DP-3"
+    ],
+    "cs_dlp_no_auth_connector_allowed": [
+      "DP-2",
+      "DP-3"
+    ],
+    "cs_dlp_knowledge_source_unrestricted": [
+      "DP-2",
+      "DP-3"
+    ],
+    "cs_dlp_channel_unrestricted": [
+      "DP-2",
+      "DP-3"
+    ],
+    "cs_dlp_skills_unrestricted": [
+      "DP-2",
+      "DP-3"
+    ],
+    "cs_dlp_default_group_not_blocked": [
+      "DP-2",
+      "DP-3"
+    ],
+    "cs_dlp_no_tenant_policy": [
+      "DP-2",
+      "DP-3"
+    ],
+    "cs_dlp_http_unrestricted": [
+      "NS-1",
+      "NS-2"
+    ],
+    "cs_auth_dlp_not_enforcing": [
+      "DP-2",
+      "DP-3"
+    ],
+    "connector_no_dlp_coverage": [
+      "DP-2",
+      "DP-3"
+    ],
+    "unmanaged_environments": [
+      "GS-1",
+      "GS-2"
+    ],
+    "no_security_group": [
+      "PA-1",
+      "PA-7"
+    ],
+    "cs_env_bots_in_default": [
+      "GS-1",
+      "GS-2"
+    ],
+    "cs_env_bots_in_dev_env": [
+      "GS-1",
+      "GS-2"
+    ],
+    "cs_env_sandbox_for_production": [
+      "GS-1",
+      "GS-2"
+    ],
+    "cs_env_no_tenant_isolation": [
+      "NS-1",
+      "NS-2"
+    ],
+    "cs_env_gen_ai_unrestricted": [
+      "DP-7"
+    ],
+    "no_conversation_logging": [
+      "LT-1",
+      "LT-3"
+    ],
+    "environment_audit_disabled": [
+      "LT-1",
+      "LT-3"
+    ],
+    "cs_audit_no_purview_integration": [
+      "LT-1",
+      "LT-3"
+    ],
+    "cs_audit_no_dspm_for_ai": [
+      "LT-1",
+      "LT-3"
+    ],
+    "cs_agent_shared_to_everyone": [
+      "PA-1",
+      "PA-7"
+    ],
+    "cs_agent_event_triggers_ungoverned": [
+      "GS-1",
+      "GS-2"
+    ],
+    "cs_agent_http_unrestricted": [
+      "NS-1",
+      "NS-2"
+    ],
+    "cs_compliance_cross_geo_data_movement": [
+      "DP-9"
+    ],
+    "cs_compliance_env_region_mismatch": [
+      "DP-9"
+    ],
+    "cs_dv_env_maker_in_prod": [
+      "PA-1",
+      "PA-7"
+    ],
+    "cs_dv_no_lockbox": [
+      "DP-4"
+    ],
+    "cs_dv_no_cmk": [
+      "DP-4"
+    ],
+    "pp_env_governance_for_readiness": [
+      "GS-1",
+      "GS-2"
+    ],
+    "pp_dlp_coverage_for_copilot": [
+      "DP-2",
+      "DP-3"
+    ],
+    "pp_cross_tenant_for_readiness": [
+      "DP-9"
+    ],
+    "overshared_knowledge_source": [
+      "DP-2",
+      "DP-3"
+    ],
+    "external_knowledge_source": [
+      "DP-6"
+    ],
+    "public_website_source": [
+      "NS-1",
+      "NS-2"
+    ],
+    "generative_answers_no_guardrails": [
+      "DP-7"
+    ],
+    "generative_orchestration_unrestricted": [
+      "PA-7"
+    ],
+    "unpublished_bot_with_secrets": [
+      "IM-3"
+    ],
+    "bot_not_solution_aware": [
+      "GS-1",
+      "GS-2"
+    ],
+    "draft_bot_stale": [
+      "GS-1",
+      "GS-2"
+    ],
+    "custom_connector_no_auth": [
+      "IM-1",
+      "IM-3"
+    ],
+    "premium_connector_uncontrolled": [
+      "GS-1",
+      "GS-2"
+    ],
+    "public_access_enabled": [
+      "NS-1",
+      "NS-2"
+    ],
+    "no_private_endpoints": [
+      "NS-1",
+      "NS-2"
+    ],
+    "workspace_no_isolation": [
+      "NS-1",
+      "NS-2"
+    ],
+    "workspace_no_managed_network": [
+      "NS-1",
+      "NS-2"
+    ],
+    "managed_network_no_outbound_rules": [
+      "NS-1",
+      "NS-2"
+    ],
+    "outbound_fqdn_unrestricted": [
+      "NS-1",
+      "NS-2"
+    ],
+    "local_auth_enabled": [
+      "IM-1",
+      "IM-3"
+    ],
+    "workspace_no_managed_identity": [
+      "IM-1"
+    ],
+    "project_no_managed_identity": [
+      "IM-1"
+    ],
+    "shared_project_identity": [
+      "PA-1",
+      "PA-7"
+    ],
+    "agent_permission_drift": [
+      "PA-1",
+      "PA-7"
+    ],
+    "no_content_filter": [
+      "DP-7"
+    ],
+    "weak_content_filters": [
+      "DP-7"
+    ],
+    "content_filter_gaps": [
+      "DP-7"
+    ],
+    "no_prompt_shield": [
+      "DP-7"
+    ],
+    "jailbreak_filter_disabled": [
+      "DP-7"
+    ],
+    "blocklist_not_configured": [
+      "DP-7"
+    ],
+    "no_prompt_injection_mitigation": [
+      "DP-7"
+    ],
+    "no_groundedness_detection": [
+      "DP-7"
+    ],
+    "no_pii_filter": [
+      "DP-2",
+      "DP-3"
+    ],
+    "agent_no_custom_guardrail": [
+      "DP-7"
+    ],
+    "agent_account_no_content_safety": [
+      "DP-7"
+    ],
+    "permissive_content_filters": [
+      "DP-7"
+    ],
+    "serverless_no_content_safety": [
+      "DP-7"
+    ],
+    "deployment_no_rai_policy": [
+      "DP-7"
+    ],
+    "high_capacity_allocation": [
+      "GS-1",
+      "GS-2"
+    ],
+    "deployment_deprecated_model": [
+      "DP-6"
+    ],
+    "unapproved_model_deployed": [
+      "DP-6"
+    ],
+    "model_version_outdated": [
+      "DP-6"
+    ],
+    "outdated_model_version": [
+      "DP-6"
+    ],
+    "no_token_rate_limit": [
+      "NS-6"
+    ],
+    "excessive_rate_limit": [
+      "NS-6"
+    ],
+    "no_hub_structure": [
+      "GS-1",
+      "GS-2"
+    ],
+    "workspace_no_cmk": [
+      "DP-4"
+    ],
+    "hub_no_project_isolation": [
+      "NS-1",
+      "NS-2"
+    ],
+    "compute_public_ip": [
+      "NS-1",
+      "NS-2"
+    ],
+    "compute_ssh_enabled": [
+      "NS-1",
+      "NS-2"
+    ],
+    "compute_idle_no_shutdown": [
+      "GS-1",
+      "GS-2"
+    ],
+    "compute_no_managed_identity": [
+      "IM-1"
+    ],
+    "datastore_credential_in_config": [
+      "IM-3"
+    ],
+    "datastore_no_encryption": [
+      "DP-4"
+    ],
+    "online_endpoint_public": [
+      "NS-1",
+      "NS-2"
+    ],
+    "endpoint_no_auth": [
+      "IM-1",
+      "IM-3"
+    ],
+    "endpoint_key_auth_only": [
+      "IM-1"
+    ],
+    "endpoint_no_logging": [
+      "LT-1",
+      "LT-3"
+    ],
+    "public_endpoint_exposure": [
+      "NS-1",
+      "NS-2"
+    ],
+    "no_auth_policy": [
+      "IM-1",
+      "IM-3"
+    ],
+    "deployment_unhealthy": [
+      "GS-1",
+      "GS-2"
+    ],
+    "registry_public_access": [
+      "NS-1",
+      "NS-2"
+    ],
+    "registry_no_rbac": [
+      "PA-1",
+      "PA-7"
+    ],
+    "connection_static_credentials": [
+      "IM-3"
+    ],
+    "connection_shared_to_all": [
+      "PA-1",
+      "PA-7"
+    ],
+    "connection_expired_credentials": [
+      "IM-3"
+    ],
+    "connection_no_expiry": [
+      "IM-3"
+    ],
+    "serverless_key_auth": [
+      "IM-1"
+    ],
+    "serverless_key_not_rotated": [
+      "IM-3"
+    ],
+    "ws_no_diagnostic_settings": [
+      "LT-1",
+      "LT-3"
+    ],
+    "ws_no_log_analytics": [
+      "LT-1",
+      "LT-3"
+    ],
+    "mcp_no_secure_auth": [
+      "IM-1",
+      "IM-3"
+    ],
+    "mcp_public_endpoint": [
+      "NS-1",
+      "NS-2"
+    ],
+    "mcp_shared_to_all": [
+      "PA-1",
+      "PA-7"
+    ],
+    "a2a_no_identity_auth": [
+      "IM-1",
+      "IM-3"
+    ],
+    "non_microsoft_tool_connection": [
+      "DP-6"
+    ],
+    "tool_credential_based_auth": [
+      "IM-3"
+    ],
+    "hosted_no_vnet": [
+      "NS-1",
+      "NS-2"
+    ],
+    "hosted_no_acr": [
+      "GS-1",
+      "GS-2"
+    ],
+    "hosted_unhealthy": [
+      "GS-1",
+      "GS-2"
+    ],
+    "data_connection_no_managed_identity": [
+      "IM-1"
+    ],
+    "no_customer_managed_key": [
+      "DP-4"
+    ],
+    "data_connection_shared_to_all": [
+      "PA-1",
+      "PA-7"
+    ],
+    "workspace_no_diagnostics": [
+      "LT-1",
+      "LT-3"
+    ],
+    "project_no_tracing": [
+      "LT-1",
+      "LT-3"
+    ],
+    "workspace_limited_log_coverage": [
+      "LT-1",
+      "LT-3"
+    ],
+    "shadow_agents_unpublished": [
+      "GS-1",
+      "GS-2"
+    ],
+    "excess_unpublished_agents": [
+      "GS-1",
+      "GS-2"
+    ],
+    "agent_no_rbac": [
+      "PA-1",
+      "PA-7"
+    ],
+    "sp_excessive_permissions": [
+      "PA-1",
+      "PA-7"
+    ],
+    "sp_credential_expiry": [
+      "IM-3"
+    ],
+    "sp_no_credential_rotation": [
+      "IM-3"
+    ],
+    "sp_multi_tenant_exposure": [
+      "DP-9"
+    ],
+    "sp_no_managed_identity": [
+      "IM-1"
+    ],
+    "sp_ai_api_over_scoped": [
+      "PA-1",
+      "PA-7"
+    ],
+    "sp_risky_identity_protection": [
+      "PA-1",
+      "PA-7"
+    ],
+    "sp_privileged_directory_roles": [
+      "PA-1",
+      "PA-2"
+    ],
+    "sp_owner_governance_weak": [
+      "PA-1",
+      "PA-7"
+    ],
+    "sp_stale_disabled": [
+      "GS-1",
+      "GS-2"
+    ],
+    "no_ca_for_ai_apps": [
+      "IM-7"
+    ],
+    "no_token_lifetime_restriction": [
+      "IM-7"
+    ],
+    "ca_weak_policy_quality": [
+      "IM-7"
+    ],
+    "ca_no_session_controls": [
+      "IM-7"
+    ],
+    "broad_user_consent_to_ai_apps": [
+      "PA-1",
+      "PA-7"
+    ],
+    "admin_consent_ai_high_privilege": [
+      "PA-1",
+      "PA-7"
+    ],
+    "ai_specific_consent_scopes": [
+      "PA-1",
+      "PA-7"
+    ],
+    "wif_missing_federation": [
+      "IM-1"
+    ],
+    "cross_tenant_ai_exposure": [
+      "DP-9"
+    ],
+    "pim_missing_for_ai_roles": [
+      "PA-1",
+      "PA-2"
+    ],
+    "no_defender_for_ai": [
+      "LT-1"
+    ],
+    "defender_ai_alerts_suppressed": [
+      "LT-1",
+      "LT-3"
+    ],
+    "no_ai_azure_policies": [
+      "GS-1",
+      "GS-2"
+    ],
+    "ai_policy_non_compliant": [
+      "GS-1",
+      "GS-2"
+    ],
+    "agent_no_auth_between_agents": [
+      "IM-1",
+      "IM-3"
+    ],
+    "agent_unrestricted_tool_access": [
+      "PA-7"
+    ],
+    "agent_memory_no_encryption": [
+      "DP-4"
+    ],
+    "no_agent_inventory": [
+      "GS-1",
+      "GS-2"
+    ],
+    "agent_no_human_in_loop": [
+      "PA-7"
+    ],
+    "shadow_ai_agents": [
+      "GS-1",
+      "GS-2"
+    ],
+    "no_diagnostic_settings": [
+      "LT-1",
+      "LT-3"
+    ],
+    "no_audit_logging": [
+      "LT-1",
+      "LT-3"
+    ],
+    "training_data_no_classification": [
+      "DP-1"
+    ],
+    "output_data_no_retention_policy": [
+      "DP-8"
+    ],
+    "key_without_network_restriction": [
+      "NS-1",
+      "NS-2"
+    ],
+    "multi_region_sprawl": [
+      "DP-9"
+    ],
+    "no_cmk_encryption": [
+      "DP-4"
+    ]
+  }
+}

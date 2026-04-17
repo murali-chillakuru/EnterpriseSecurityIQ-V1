@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Resource Inventory — ESIQNew</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-hover:#252D38;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --border-primary:#30363D;--border-accent:#1F6FEB33;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.5);
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',Consolas,monospace;
+  --transition-fast:.18s ease;--transition-med:.3s ease;
+  color-scheme:dark;--max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-hover:#F0F3F6;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;
+  --border-primary:#D0D7DE;--border-accent:#0969DA22;
+  --accent-blue:#0969DA;--accent-purple:#8250DF;--accent-green:#1A7F37;
+  --accent-orange:#BF8700;--accent-cyan:#1B7C83;--accent-red:#CF222E;
+  --shadow-sm:0 1px 3px rgba(31,35,40,.08);--shadow-md:0 4px 12px rgba(31,35,40,.1);
+  --shadow-lg:0 8px 24px rgba(31,35,40,.12);
+  color-scheme:light
+}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none;transition:color var(--transition-fast)}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--bg-secondary);padding:2px 6px;border-radius:4px}
+pre{background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.7rem .9rem;border:1px solid var(--border-primary);text-align:left;font-size:.88rem}
+th{background:var(--bg-secondary);color:var(--text-primary);font-weight:600;white-space:nowrap}
+tr:nth-child(even){background:var(--bg-secondary)}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-cyan),var(--accent-blue),var(--accent-purple));z-index:10001;transition:width .1s linear;width:0}
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:500px;height:500px;background:radial-gradient(circle,var(--accent-cyan),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-blue),transparent 70%);bottom:-150px;left:-80px}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{color:var(--text-secondary);font-size:1.05rem;max-width:680px;margin:0 auto .8rem}
+.hero .author{color:var(--text-muted);font-size:.85rem}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;max-width:960px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);position:relative;z-index:10}
+.stat{text-align:center}.stat .num{font-size:1.6rem;font-weight:700;display:block}.stat .lbl{color:var(--text-secondary);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.nav-wrap{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);backdrop-filter:blur(12px)}
+.nav-inner{display:flex;align-items:center;gap:.5rem;max-width:1200px;margin:0 auto;padding:.6rem 1rem;overflow-x:auto;scrollbar-width:thin}
+.nav-pill{padding:.35rem .75rem;border-radius:20px;font-size:.78rem;font-weight:500;color:var(--text-secondary);white-space:nowrap;transition:all var(--transition-fast);border:1px solid transparent;cursor:pointer;text-decoration:none}
+.nav-pill:hover{color:var(--text-primary);background:var(--bg-hover);text-decoration:none}
+.nav-pill.active{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:20px;padding:.35rem .75rem;font-size:.78rem;cursor:pointer;color:var(--text-secondary);transition:all var(--transition-fast);white-space:nowrap}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--text-primary)}
+.content{max-width:var(--max-width);margin:0 auto;padding:2rem 1.5rem 4rem}
+.section{margin-bottom:3.5rem;scroll-margin-top:80px}
+.section h2{font-size:1.5rem;font-weight:700;margin-bottom:.3rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent-cyan);display:inline-block}
+.section h3{font-size:1.15rem;font-weight:600;margin:1.8rem 0 .8rem;color:var(--accent-blue)}
+.section p,.section li{color:var(--text-secondary);font-size:.92rem}
+.res-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;margin:1rem 0}
+.res-card h3{margin:0 0 .8rem;color:var(--accent-cyan);font-size:1.1rem}
+.accent-blue .num{color:var(--accent-blue)}.accent-purple .num{color:var(--accent-purple)}.accent-green .num{color:var(--accent-green)}.accent-orange .num{color:var(--accent-orange)}.accent-cyan .num{color:var(--accent-cyan)}.accent-red .num{color:var(--accent-red)}
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.8rem;border-top:1px solid var(--border-primary)}
+.back-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;border-radius:50%;background:var(--accent-cyan);color:#fff;border:none;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all var(--transition-med);box-shadow:var(--shadow-md);z-index:999}
+.back-top.show{opacity:1;pointer-events:auto}.back-top:hover{transform:scale(1.1)}
+@media print{.nav-wrap,.theme-toggle,.back-top,.progress-bar{display:none!important}.hero{padding:2rem 1rem}.content{max-width:100%}}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+
+<header class="hero">
+  <h1>Resource Inventory</h1>
+  <p class="subtitle">Complete inventory of all Azure resources in the ESIQNew deployment with resource IDs and configuration details.</p>
+  <p class="author">Author: Murali Chillakuru — April 12, 2026</p>
+</header>
+
+<div class="stats-bar">
+  <div class="stat accent-cyan"><span class="num" data-target="15">0</span><span class="lbl">Resources</span></div>
+  <div class="stat accent-blue"><span class="num" data-target="2">0</span><span class="lbl">Regions</span></div>
+  <div class="stat accent-purple"><span class="num" data-target="2">0</span><span class="lbl">AI Models</span></div>
+  <div class="stat accent-green"><span class="num" data-target="1">0</span><span class="lbl">Resource Group</span></div>
+</div>
+
+<nav class="nav-wrap">
+  <div class="nav-inner">
+    <a class="nav-pill" href="#ai">AI Services</a>
+    <a class="nav-pill" href="#supporting">Supporting</a>
+    <a class="nav-pill" href="#foundry">Foundry</a>
+    <a class="nav-pill" href="#identity">Identity</a>
+    <a class="nav-pill" href="#container">Container</a>
+    <a class="nav-pill" href="#agent">Foundry Agent</a>
+    <a class="nav-pill" href="#appreg">App Registration</a>
+    <a class="nav-pill" href="#envvars">Env Vars</a>
+    <button class="theme-toggle" id="themeToggle">☀️ Light</button>
+  </div>
+</nav>
+
+<main class="content">
+
+<section class="section" id="ai">
+  <h2>AI Services</h2>
+  <div class="res-card">
+    <h3>🧠 ESIQNew-AI</h3>
+    <table>
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Type</td><td><code>Microsoft.CognitiveServices/accounts</code></td></tr>
+      <tr><td>Kind</td><td>AIServices</td></tr>
+      <tr><td>SKU</td><td>S0</td></tr>
+      <tr><td>Location</td><td>swedencentral</td></tr>
+      <tr><td>Custom Domain</td><td><code>esiqnew-ai</code></td></tr>
+      <tr><td>allowProjectManagement</td><td><code>true</code></td></tr>
+      <tr><td>Endpoint</td><td><code>https://esiqnew-ai.cognitiveservices.azure.com/</code></td></tr>
+      <tr><td>Resource ID</td><td style="font-family:var(--font-mono);font-size:.78rem;word-break:break-all"><code>/subscriptions/d33fc1a7-56aa-4c30-a4a0-98b1e04fafd0/resourceGroups/ESIQNew-RG/providers/Microsoft.CognitiveServices/accounts/ESIQNew-AI</code></td></tr>
+    </table>
+    <h3 style="margin-top:1.5rem">Model Deployments</h3>
+    <table>
+      <tr><th>Model</th><th>Version</th><th>SKU</th><th>Capacity</th></tr>
+      <tr><td>gpt-4.1</td><td>2025-04-14</td><td>Standard</td><td>30K TPM</td></tr>
+      <tr><td>gpt-5.1</td><td>2025-11-13</td><td>Standard</td><td>30K TPM</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="supporting">
+  <h2>Supporting Resources</h2>
+  <div class="res-card">
+    <h3>🗂️ esiqnewstorage</h3>
+    <table>
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Type</td><td><code>Microsoft.Storage/storageAccounts</code></td></tr>
+      <tr><td>Kind</td><td>StorageV2</td></tr>
+      <tr><td>SKU</td><td>Standard_LRS</td></tr>
+      <tr><td>TLS</td><td>1.2</td></tr>
+    </table>
+  </div>
+  <div class="res-card">
+    <h3>🔑 ESIQNew-kv</h3>
+    <table>
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Type</td><td><code>Microsoft.KeyVault/vaults</code></td></tr>
+      <tr><td>Auth Model</td><td>RBAC</td></tr>
+      <tr><td>Vault URI</td><td><code>https://esiqnew-kv.vault.azure.net/</code></td></tr>
+    </table>
+  </div>
+  <div class="res-card">
+    <h3>📊 ESIQNew-law</h3>
+    <table>
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Type</td><td><code>Microsoft.OperationalInsights/workspaces</code></td></tr>
+      <tr><td>Location</td><td>swedencentral</td></tr>
+    </table>
+  </div>
+  <div class="res-card">
+    <h3>📈 ESIQNew-appinsights</h3>
+    <table>
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Type</td><td><code>Microsoft.Insights/components</code></td></tr>
+      <tr><td>App ID</td><td><code>202d6802-fce9-448f-9226-3fb451400908</code></td></tr>
+      <tr><td>Workspace</td><td>ESIQNew-law</td></tr>
+    </table>
+  </div>
+  <div class="res-card">
+    <h3>📦 esiqnewacr</h3>
+    <table>
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Type</td><td><code>Microsoft.ContainerRegistry/registries</code></td></tr>
+      <tr><td>SKU</td><td>Basic</td></tr>
+      <tr><td>Login Server</td><td><code>esiqnewacr.azurecr.io</code></td></tr>
+      <tr><td>Admin Enabled</td><td>No</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="foundry">
+  <h2>AI Foundry</h2>
+  <div class="res-card">
+    <h3>� ESIQNew-AI/ESIQNew-project</h3>
+    <table>
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Type</td><td><code>Microsoft.CognitiveServices/accounts/projects</code></td></tr>
+      <tr><td>Parent</td><td>ESIQNew-AI</td></tr>
+      <tr><td>Location</td><td>swedencentral</td></tr>
+      <tr><td>Project Endpoint</td><td><code>https://esiqnew-ai.services.ai.azure.com/api/projects/ESIQNew-project</code></td></tr>
+      <tr><td>Resource ID</td><td style="font-family:var(--font-mono);font-size:.78rem;word-break:break-all"><code>/subscriptions/d33fc1a7-56aa-4c30-a4a0-98b1e04fafd0/resourceGroups/ESIQNew-RG/providers/Microsoft.CognitiveServices/accounts/ESIQNew-AI/projects/ESIQNew-project</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="identity">
+  <h2>Managed Identity</h2>
+  <div class="res-card">
+    <h3>🔐 ESIQNew-identity</h3>
+    <table>
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Type</td><td><code>Microsoft.ManagedIdentity/userAssignedIdentities</code></td></tr>
+      <tr><td>Principal ID</td><td><code>d742617c-6f14-4215-be65-e1f7b68866de</code></td></tr>
+      <tr><td>Client ID</td><td><code>d5d10273-4a8b-4251-9b9d-00fe035df97a</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="container">
+  <h2>Container Deployment</h2>
+  <div class="res-card">
+    <h3>🌐 ESIQNew-env</h3>
+    <table>
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Type</td><td><code>Microsoft.App/managedEnvironments</code></td></tr>
+      <tr><td>Location</td><td>northeurope (AKS capacity fallback)</td></tr>
+      <tr><td>Log Analytics</td><td>ESIQNew-law</td></tr>
+    </table>
+  </div>
+  <div class="res-card">
+    <h3>🐳 esiqnew-agent</h3>
+    <table>
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Type</td><td><code>Microsoft.App/containerApps</code></td></tr>
+      <tr><td>Image</td><td><code>esiqnewacr.azurecr.io/esiqnew-agent:v1</code></td></tr>
+      <tr><td>FQDN</td><td><code>esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io</code></td></tr>
+      <tr><td>Port</td><td>8088</td></tr>
+      <tr><td>Ingress</td><td>External</td></tr>
+      <tr><td>CPU / Memory</td><td>1.0 vCPU / 2.0 GiB</td></tr>
+      <tr><td>Replicas</td><td>0–3</td></tr>
+      <tr><td>Identity</td><td>ESIQNew-identity (user-assigned)</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="agent">
+  <h2>Foundry Agent (Assistants API)</h2>
+  <div class="res-card">
+    <h3>🤖 EnterpriseSecurityIQ</h3>
+    <table>
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Name</td><td><code>EnterpriseSecurityIQ</code></td></tr>
+      <tr><td>Agent ID</td><td><code>asst_N4hpInCl30eZHaim3vtJTZiT</code></td></tr>
+      <tr><td>Model</td><td>gpt-4.1</td></tr>
+      <tr><td>Tools</td><td>12 function-calling tools</td></tr>
+      <tr><td>Registration</td><td>Via Assistants API on container startup</td></tr>
+      <tr><td>Portal</td><td>Visible in ai.azure.com under ESIQNew-project</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="appreg">
+  <h2>Entra App Registration</h2>
+  <div class="res-card">
+    <h3>🔑 ESIQNew-Dashboard</h3>
+    <table>
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Name</td><td><code>ESIQNew-Dashboard</code></td></tr>
+      <tr><td>Status</td><td><strong style="color:var(--accent-orange)">PENDING</strong> (requires Directory admin)</td></tr>
+      <tr><td>Type</td><td>SPA (Single Page Application)</td></tr>
+      <tr><td>Redirect URIs</td><td><code>http://localhost:8080</code>, <code>https://esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="envvars">
+  <h2>Environment Variables</h2>
+  <table>
+    <tr><th>Variable</th><th>Value</th></tr>
+    <tr><td><code>AZURE_OPENAI_ENDPOINT</code></td><td><code>https://esiqnew-ai.cognitiveservices.azure.com/</code></td></tr>
+    <tr><td><code>AZURE_OPENAI_API_VERSION</code></td><td><code>2025-04-01-preview</code></td></tr>
+    <tr><td><code>PRIMARY_MODEL</code></td><td><code>gpt-4.1</code></td></tr>
+    <tr><td><code>FALLBACK_MODEL</code></td><td><code>gpt-5.1</code></td></tr>
+    <tr><td><code>AZURE_CLIENT_ID</code></td><td><code>d5d10273-4a8b-4251-9b9d-00fe035df97a</code></td></tr>
+    <tr><td><code>AZURE_TENANT_ID</code></td><td><code>4a3eb5f4-1ec6-4a73-bb03-1ca63cb52d67</code></td></tr>
+  </table>
+</section>
+
+</main>
+
+<footer>
+  <p>EnterpriseSecurityIQ — Resource Inventory · 15 Resources · Author: Murali Chillakuru · April 12, 2026</p>
+</footer>
+
+<button class="back-top" id="backTop">↑</button>
+
+<script>
+const toggle=document.getElementById('themeToggle'),root=document.documentElement;
+function setTheme(t){root.dataset.theme=t;toggle.textContent=t==='dark'?'☀️ Light':'🌙 Dark';localStorage.setItem('esiq-theme',t)}
+toggle.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark'));
+setTheme(localStorage.getItem('esiq-theme')||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const el=e.target,t=+el.dataset.target;let c=0;const d=Math.max(1,Math.floor(30/(t||1)));const iv=setInterval(()=>{c+=d;if(c>=t){el.textContent=t;clearInterval(iv)}else{el.textContent=c}},16);io.unobserve(el)}})},{threshold:.5});
+document.querySelectorAll('.num[data-target]').forEach(el=>io.observe(el));
+const pills=document.querySelectorAll('.nav-pill[href]'),sections=[];
+pills.forEach(p=>{const id=p.getAttribute('href')?.slice(1);if(id){const s=document.getElementById(id);if(s)sections.push({el:s,pill:p})}});
+const spy=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const m=sections.find(s=>s.el===e.target);if(m)m.pill.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px',threshold:0});
+sections.forEach(s=>spy.observe(s.el));
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('progressBar').style.width=(window.scrollY/h*100)+'%'});
+const btn=document.getElementById('backTop');
+window.addEventListener('scroll',()=>{btn.classList.toggle('show',window.scrollY>400)});
+btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>

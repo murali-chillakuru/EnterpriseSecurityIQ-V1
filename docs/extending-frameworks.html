@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostureIQ — Extending Frameworks</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-code:#0D1117;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#484F58;
+  --border-primary:#30363D;--border-subtle:#21262D;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --shadow-lg:0 8px 32px rgba(0,0,0,.4);--shadow-md:0 4px 16px rgba(0,0,0,.3);
+  --radius-lg:16px;--radius-md:12px;--radius-sm:8px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',monospace;
+  --max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-code:#F6F8FA;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8B949E;
+  --border-primary:#D0D7DE;--border-subtle:#E8EBEF;
+  --shadow-lg:0 8px 32px rgba(0,0,0,.08);--shadow-md:0 4px 16px rgba(0,0,0,.06);
+}
+.skip-nav{position:absolute;top:-100%;left:1rem;padding:.5rem 1rem;background:var(--accent-blue);color:#fff;border-radius:var(--radius-sm);z-index:9999;font-weight:600}.skip-nav:focus{top:1rem}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--bg-code);padding:2px 6px;border-radius:4px;border:1px solid var(--border-subtle)}
+.reading-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-green),var(--accent-cyan),var(--accent-purple));z-index:10001;transition:width .15s}
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,#0D1117 0%,#161B22 50%,#1C2128 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+[data-theme="light"] .hero{background:linear-gradient(135deg,#f0fdf4 0%,#ecfdf5 50%,#e8f5e9 100%)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:600px;height:600px;background:radial-gradient(circle,var(--accent-green),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-cyan),transparent 70%);bottom:-150px;left:-50px}
+.hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-green),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{font-size:1.15rem;color:var(--text-secondary);max-width:800px;margin:0 auto 1rem}
+.author-tag{display:inline-block;padding:6px 16px;border-radius:20px;font-size:.85rem;font-weight:600;border:1px solid var(--accent-purple);color:var(--accent-purple);margin-top:1rem}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;max-width:1200px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);position:relative;z-index:10}
+.stat{text-align:center}.stat-value{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent-green),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.stat-label{font-size:.75rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}
+.container{max-width:var(--max-width);margin:0 auto;padding:2rem}
+.sticky-nav{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);padding:.6rem 1rem;backdrop-filter:blur(12px)}
+.nav-inner{display:flex;gap:.5rem;max-width:1200px;margin:0 auto;overflow-x:auto;scrollbar-width:none;align-items:center}.nav-inner::-webkit-scrollbar{display:none}
+.nav-pill{padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:600;white-space:nowrap;border:1px solid var(--border-primary);background:transparent;color:var(--text-secondary);cursor:pointer;transition:all .2s}
+.nav-pill:hover,.nav-pill.active{background:var(--accent-green);color:#fff;border-color:var(--accent-green);text-decoration:none}
+.theme-toggle{margin-left:auto;background:transparent;border:1px solid var(--border-primary);color:var(--text-secondary);padding:6px 12px;border-radius:20px;cursor:pointer;font-size:.85rem;white-space:nowrap;transition:all .2s}.theme-toggle:hover{color:var(--accent-orange);border-color:var(--accent-orange)}
+section{margin-bottom:3rem;scroll-margin-top:80px}
+section h2{font-size:1.8rem;font-weight:700;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--border-primary);display:flex;align-items:center;gap:.5rem}
+section h2 .icon{font-size:1.4rem}
+section h3{font-size:1.2rem;font-weight:600;margin:1.5rem 0 .75rem;color:var(--accent-cyan)}
+.info-box{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.25rem 1.5rem;margin:1rem 0}
+.info-box.tip{border-left:4px solid var(--accent-green)}.info-box.warn{border-left:4px solid var(--accent-orange)}.info-box.info{border-left:4px solid var(--accent-blue)}
+.info-box strong{display:block;margin-bottom:.4rem}
+pre{background:var(--bg-code);border:1px solid var(--border-primary);border-radius:var(--radius-sm);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.6;margin:1rem 0}
+.table-wrap{overflow-x:auto;margin:1rem 0;border-radius:var(--radius-md);border:1px solid var(--border-primary)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{background:var(--bg-secondary);padding:.7rem 1rem;text-align:left;font-weight:600;color:var(--text-primary);border-bottom:2px solid var(--border-primary);position:sticky;top:0}
+td{padding:.6rem 1rem;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary)}
+tr:hover td{background:rgba(31,111,235,.04)}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1rem 0}
+.card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.25rem;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.card-icon{font-size:1.6rem;margin-bottom:.5rem}.card h4{font-size:1rem;font-weight:700;margin-bottom:.5rem;color:var(--text-primary)}.card p{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:600}
+.badge-green{background:rgba(63,185,80,.15);color:var(--accent-green)}.badge-blue{background:rgba(31,111,235,.15);color:var(--accent-blue)}.badge-purple{background:rgba(163,113,247,.15);color:var(--accent-purple)}.badge-cyan{background:rgba(57,210,192,.15);color:var(--accent-cyan)}.badge-orange{background:rgba(210,153,34,.15);color:var(--accent-orange)}
+details{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-sm);margin:.75rem 0}
+details>summary{padding:.8rem 1rem;cursor:pointer;font-weight:600;color:var(--text-primary);list-style:none;display:flex;align-items:center;gap:.5rem}
+details>summary::before{content:'▸';font-size:.85rem;color:var(--accent-green);transition:transform .2s}
+details[open]>summary::before{transform:rotate(90deg)}
+details>summary::-webkit-details-marker{display:none}
+details>.detail-body{padding:0 1rem 1rem}
+.diagram-container{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.5rem;margin:1.5rem 0;overflow-x:auto}
+.diagram-container h4{margin-bottom:1rem;color:var(--accent-purple)}
+.diagram-explanation{background:var(--bg-secondary);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:1rem 1.25rem;margin-top:1rem;font-size:.88rem;color:var(--text-secondary);line-height:1.7}
+.diagram-explanation ol{padding-left:1.25rem}.diagram-explanation li{margin:.4rem 0}
+.step-number{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent-green);color:#fff;font-weight:700;font-size:.85rem;margin-right:.5rem;flex-shrink:0}
+.back-top{position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--accent-green);color:#fff;border:none;font-size:1.2rem;cursor:pointer;opacity:0;transition:opacity .3s,transform .3s;transform:translateY(20px);z-index:999;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md)}.back-top.visible{opacity:1;transform:translateY(0)}.back-top:hover{background:var(--accent-cyan)}
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.82rem;border-top:1px solid var(--border-primary);margin-top:3rem}
+@media print{.sticky-nav,.back-top,.theme-toggle,.reading-progress{display:none!important}body{background:#fff;color:#000}.hero{background:#f5f5f5!important;padding:2rem}.card,.info-box,details,.diagram-container{break-inside:avoid}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(forced-colors:active){.nav-pill,.badge,.card{border:1px solid CanvasText}}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-nav">Skip to main content</a>
+<div class="reading-progress" id="readingProgress"></div>
+
+<header class="hero">
+  <h1>Extending Frameworks</h1>
+  <p class="subtitle">Developer guide for adding custom compliance frameworks, collectors, evaluators, and plugins — the full extension surface verified against source code.</p>
+  <div class="author-tag">Author: Murali Chillakuru</div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-value" data-target="4">0</div><div class="stat-label">Extension Points</div></div>
+  <div class="stat"><div class="stat-value" data-target="10">0</div><div class="stat-label">Domains</div></div>
+  <div class="stat"><div class="stat-value" data-target="218">0</div><div class="stat-label">Evidence Types</div></div>
+  <div class="stat"><div class="stat-value" data-target="28">0</div><div class="stat-label">Fallback Routes</div></div>
+  <div class="stat"><div class="stat-value" data-target="11">0</div><div class="stat-label">Built-In Frameworks</div></div>
+</div>
+
+<nav class="sticky-nav" aria-label="Section navigation">
+  <div class="nav-inner">
+    <a href="#architecture" class="nav-pill">Architecture</a>
+    <a href="#framework" class="nav-pill">Framework</a>
+    <a href="#json-ref" class="nav-pill">JSON Ref</a>
+    <a href="#evidence" class="nav-pill">Evidence</a>
+    <a href="#collector" class="nav-pill">Collector</a>
+    <a href="#evaluator" class="nav-pill">Evaluator</a>
+    <a href="#dispatch" class="nav-pill">Dispatch</a>
+    <a href="#plugins" class="nav-pill">Plugins</a>
+    <a href="#domains" class="nav-pill">Domains</a>
+    <a href="#schema" class="nav-pill">Schema</a>
+    <a href="#testing" class="nav-pill">Testing</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">☀ / ☾</button>
+  </div>
+</nav>
+
+<main id="main" class="container">
+
+<!-- EXEC SUMMARY -->
+<div style="background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.25);border-radius:8px;padding:16px 20px;margin:0 0 24px;font-size:.9rem;color:var(--text-secondary)">
+<strong>📋 Executive Summary</strong> — Developer guide for extending PostureIQ: add custom frameworks, collectors, evaluator functions, and plugins. Includes the formal JSON schema, 218 evidence types inventory, and testing recipes.
+<div style="margin-top:8px;font-size:.82rem"><strong>Audience:</strong> Developers extending the platform · <strong>Prerequisites:</strong> <a href="architecture.html">Architecture</a> · <a href="evaluation-rules.html">Evaluation Rules</a> · <strong>Related:</strong> <a href="FILE-REFERENCE.html">File Reference</a></div>
+</div>
+
+<!-- ══════ Architecture ══════ -->
+<section id="architecture">
+  <h2><span class="icon">🏗️</span> Extension Architecture</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">📋</div>
+      <h4>Framework Mapping <span class="badge badge-green">JSON</span></h4>
+      <p><code>app/frameworks/&lt;name&gt;-mappings.json</code></p>
+      <p>Add to <code>AVAILABLE_FRAMEWORKS</code> in engine.py</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📡</div>
+      <h4>Collector <span class="badge badge-blue">Python</span></h4>
+      <p><code>app/collectors/azure/</code> or <code>entra/</code></p>
+      <p><code>@register_collector</code> auto-discovered</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚙️</div>
+      <h4>Evaluator Function <span class="badge badge-purple">Python</span></h4>
+      <p><code>app/evaluators/&lt;domain&gt;.py</code></p>
+      <p>Add to domain dispatch dict</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔌</div>
+      <h4>Plugin <span class="badge badge-cyan">Python</span></h4>
+      <p><code>plugins/&lt;name&gt;.py</code></p>
+      <p><code>load_plugins()</code> auto-discovers</p>
+    </div>
+  </div>
+
+  <div class="diagram-container">
+    <h4>Extension Pipeline</h4>
+    <div class="mermaid" data-seq-details='[{"overview":"The framework JSON file is loaded into the engine. This file contains the complete set of security controls that need to be evaluated, each with domain, evidence_types, and evaluation_logic fields.","dataFlow":"Framework JSON file sends an array of control definitions to the Engine","keyPoints":["Each control specifies which domain it belongs to","Controls include required evidence types and evaluation logic","The framework file is the single source of truth for what gets assessed"],"whyItMatters":"Without loading the controls array, the engine has no knowledge of what security requirements to evaluate against","output":"An in-memory array of control objects ready for processing"},{"overview":"The engine calls discover_collectors() to find all available data collectors. This auto-discovery mechanism scans for collector modules that can gather evidence from Azure and other sources.","dataFlow":"Engine requests the Collector Registry to enumerate all registered collectors","keyPoints":["Collectors are auto-discovered via naming conventions","Each collector targets a specific Azure service or data source","68 collectors are available out of the box"],"whyItMatters":"Auto-discovery means new collectors are automatically included without modifying engine code, making the system extensible","output":"A registry of collector instances ready to gather evidence"},{"overview":"Each collector produces evidence records and writes them into the Evidence Index. Evidence is organized by EvidenceType, which acts as a logical key linking controls to the data they need.","dataFlow":"Collectors send structured evidence records to the Evidence Index, keyed by EvidenceType enum values","keyPoints":["Evidence is keyed by EvidenceType for fast lookup","Each record contains resource-level data from Azure APIs","Collectors run independently and can produce multiple evidence types"],"whyItMatters":"Standardized evidence keying enables evaluators to find the exact data they need without knowing which collector produced it","output":"Raw evidence records stored in the Evidence Index, organized by type"},{"overview":"The engine calls _index_evidence() to build a fast-lookup dictionary from the raw evidence. This transforms the evidence into a dict mapping EvidenceType strings to lists of evidence records.","dataFlow":"Engine reads raw evidence from the Evidence Index and builds an optimized dictionary structure","keyPoints":["Creates a dict[str, list] for O(1) evidence lookup by type","Evidence is now ready for evaluators to consume","This indexing step runs once before the evaluation loop begins"],"whyItMatters":"Pre-indexing evidence avoids repeated scanning during evaluation, significantly improving performance when processing hundreds of controls","output":"A dictionary mapping evidence type strings to lists of evidence records"},{"overview":"For each control, the engine dispatches to the appropriate domain evaluator based on the control domain field. The DOMAIN_EVALUATORS dictionary maps domain names to evaluator functions.","dataFlow":"Engine sends the control definition and indexed evidence to the domain-specific evaluator module","keyPoints":["Dispatch uses the control domain field (e.g., governance, access, data)","DOMAIN_EVALUATORS dict maps domains to handler functions","Each evaluator receives the control and the full evidence index"],"whyItMatters":"Domain-based dispatch ensures each control is evaluated by the module with the most relevant expertise for that security domain","output":"Evaluation findings from the primary domain handler, or a not_assessed status if evidence is insufficient"},{"overview":"When a primary evaluator returns not_assessed, the engine consults _CROSS_DOMAIN_MAP to find an alternative domain that might have the required evidence. 28 fallback routes are defined.","dataFlow":"Engine queries the cross-domain fallback map and redirects the control to an alternative domain evaluator","keyPoints":["Triggered only when primary evaluation returns not_assessed","_CROSS_DOMAIN_MAP defines 28 alternative routing paths","Fallback uses the evaluation_logic field to find the right alternative"],"whyItMatters":"Cross-domain fallback prevents controls from being left unassessed when evidence exists in a different domain than expected","output":"Evaluation findings from the fallback domain, or missing_evidence if no domain can assess the control"},{"overview":"Controls with a custom_evaluator field bypass the domain dispatch entirely and are routed to a plugin evaluator. Plugins are Python modules that implement custom evaluation logic.","dataFlow":"Engine sends the control and evidence index to the plugin module specified in the custom_evaluator field","keyPoints":["Only triggered for controls with a custom_evaluator field","Plugins bypass both primary and fallback domain dispatch","Plugin modules implement a standard evaluate() interface"],"whyItMatters":"Plugins allow organizations to add custom evaluation logic without modifying the core engine or domain evaluators","output":"A tuple of (status, findings) from the plugin evaluation function"},{"overview":"Domain evaluators return their results to the engine as findings and an overall status. Each finding represents a specific resource-level compliance determination.","dataFlow":"Domain evaluators send a list of finding records and a summary status back to the engine","keyPoints":["Status values include compliant, non_compliant, not_assessed, and missing_evidence","Each finding includes ControlId, Status, ResourceId, and Description","Findings are aggregated across all controls for the final report"],"whyItMatters":"Standardized finding records enable consistent reporting regardless of which evaluator produced the result","output":"A list of structured finding records with per-resource compliance status"},{"overview":"Plugin evaluators return results in the same format as domain evaluators. This ensures plugin findings integrate seamlessly into the overall assessment report.","dataFlow":"Plugin evaluators send findings and status back to the engine using the same interface as domain evaluators","keyPoints":["Plugin output format matches domain evaluator output exactly","Findings from plugins are included in the same final report","Plugins can return any valid status including compliant and missing_evidence"],"whyItMatters":"Format consistency means the reporting layer does not need to distinguish between plugin and domain evaluator results","output":"A list of structured finding records from the plugin, merged with all other findings"}]'>
+sequenceDiagram
+    participant FM as Framework JSON
+    participant E as Engine
+    participant C as Collectors (68)
+    participant EI as Evidence Index
+    participant EV as Domain Evaluators
+    participant P as Plugins
+
+    FM->>E: Load controls array
+    E->>C: discover_collectors()
+    C->>EI: Produce evidence (keyed by EvidenceType)
+    E->>EI: _index_evidence() → dict[str, list]
+    loop For each control
+        E->>EV: Primary dispatch by domain
+        alt Handler returns not_assessed
+            E->>EV: Cross-domain fallback (28 routes)
+        end
+        alt control has custom_evaluator
+            E->>P: Plugin handles evaluation
+        end
+    end
+    EV-->>E: Findings + status
+    P-->>E: Findings + status
+    </div>
+    <div class="diagram-explanation">
+      <strong>How extensions plug in:</strong>
+      <ol>
+        <li><strong>Framework JSON</strong> defines controls with <code>domain</code>, <code>evidence_types</code>, and <code>evaluation_logic</code> fields.</li>
+        <li><strong>Collectors</strong> produce evidence records keyed by <code>EvidenceType</code>. The engine builds an index for fast lookup.</li>
+        <li><strong>Evaluators</strong> dispatch to domain-specific handler functions. If the primary handler returns <code>not_assessed</code>, cross-domain fallback (28 routes) redirects to an alternative domain.</li>
+        <li><strong>Plugins</strong> handle controls with a <code>custom_evaluator</code> field, bypassing the domain dispatch entirely.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ Adding a Framework ══════ -->
+<section id="framework">
+  <h2><span class="icon">📋</span> Adding a New Framework</h2>
+
+  <h3><span class="step-number">1</span> Create the Mapping File</h3>
+  <p>Create <code>AIAgent/app/frameworks/my-framework-mappings.json</code>:</p>
+  <pre>{
+  "framework": "MY-FRAMEWORK",
+  "frameworkName": "My Custom Framework",
+  "version": "1.0",
+  "description": "Custom compliance framework for internal use",
+  "controls": [
+    {
+      "control_id": "MF-1.1",
+      "title": "Access Control Policy",
+      "domain": "access",
+      "severity": "high",
+      "evidence_types": ["azure-role-assignment", "entra-directory-role"],
+      "evaluation_logic": "check_privileged_access_separation",
+      "rationale": "Organization shall establish access control policies",
+      "recommendation": "Review and restrict privileged role assignments"
+    },
+    {
+      "control_id": "MF-2.1",
+      "title": "Encryption at Rest",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": ["azure-keyvault", "azure-storage-security"],
+      "evaluation_logic": "check_encryption_at_rest",
+      "compensating_evidence": ["azure-disk-encryption-set"]
+    }
+  ]
+}</pre>
+
+  <h3><span class="step-number">2</span> Register the Framework</h3>
+  <p>Add to <code>AVAILABLE_FRAMEWORKS</code> in <code>AIAgent/app/evaluators/engine.py</code>:</p>
+  <pre>AVAILABLE_FRAMEWORKS = {
+    "FedRAMP":       "fedramp-mappings.json",
+    # ... existing ...
+    "MY-FRAMEWORK":  "my-framework-mappings.json",
+}</pre>
+
+  <h3><span class="step-number">3</span> Use It</h3>
+  <pre>python run_assessment.py --tenant "..." --framework MY-FRAMEWORK</pre>
+</section>
+
+<!-- ══════ JSON Reference ══════ -->
+<section id="json-ref">
+  <h2><span class="icon">📖</span> Framework JSON Reference</h2>
+
+  <h3>Top-Level Fields</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Required</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>framework</code></td><td>Yes</td><td>string</td><td>Short identifier key</td></tr>
+        <tr><td><code>frameworkName</code></td><td>Yes*</td><td>string</td><td>Human-readable name (falls back to <code>framework</code>)</td></tr>
+        <tr><td><code>version</code></td><td>No</td><td>string</td><td>Semantic version</td></tr>
+        <tr><td><code>description</code></td><td>No</td><td>string</td><td>Framework description</td></tr>
+        <tr><td><code>controls</code></td><td>Yes</td><td>array</td><td>Array of control objects</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Control Fields</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Required</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>control_id</code></td><td>Yes</td><td>string</td><td>Unique control ID</td></tr>
+        <tr><td><code>title</code></td><td>Yes</td><td>string</td><td>Human-readable title</td></tr>
+        <tr><td><code>domain</code></td><td>Yes</td><td>string</td><td>One of 10 evaluator domains</td></tr>
+        <tr><td><code>severity</code></td><td>Yes</td><td>string</td><td>critical, high, medium, low, informational</td></tr>
+        <tr><td><code>evidence_types</code></td><td>Yes</td><td>string[]</td><td>Evidence type keys for lookup</td></tr>
+        <tr><td><code>evaluation_logic</code></td><td>Yes</td><td>string</td><td>Handler function name in dispatch dict</td></tr>
+        <tr><td><code>rationale</code></td><td>No</td><td>string</td><td>Why this control matters</td></tr>
+        <tr><td><code>recommendation</code></td><td>No</td><td>string</td><td>Remediation guidance</td></tr>
+        <tr><td><code>compensating_evidence</code></td><td>No</td><td>string[]</td><td>Fallback evidence types</td></tr>
+        <tr><td><code>custom_evaluator</code></td><td>No</td><td>string</td><td>Plugin name for custom evaluation</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Supported Domains (10)</h3>
+  <div class="card-grid">
+    <div class="card"><h4>access</h4><p>8 handlers — RBAC, privilege, CA enforcement</p></div>
+    <div class="card"><h4>identity</h4><p>22 handlers — MFA, stale accounts, SP hygiene</p></div>
+    <div class="card"><h4>data_protection</h4><p>22 handlers — Encryption, CMK, Redis, CosmosDB</p></div>
+    <div class="card"><h4>network</h4><p>16 handlers — NSG, DNS, AKS, APIM, Front Door</p></div>
+    <div class="card"><h4>logging</h4><p>13 handlers — Diagnostics, retention</p></div>
+    <div class="card"><h4>governance</h4><p>21 handlers — Policy, Defender, AI content safety</p></div>
+    <div class="card"><h4>incident_response</h4><p>6 handlers — Sentinel, alert coverage</p></div>
+    <div class="card"><h4>change_management</h4><p>4 handlers — Change tracking</p></div>
+    <div class="card"><h4>business_continuity</h4><p>4 handlers — Backup, DR</p></div>
+    <div class="card"><h4>asset_management</h4><p>4 handlers — Asset inventory</p></div>
+  </div>
+
+  <h3>Severity Weights</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Severity</th><th>Weight</th><th>Score Impact</th></tr></thead>
+      <tbody>
+        <tr><td><code>critical</code></td><td>4</td><td>Highest deduction</td></tr>
+        <tr><td><code>high</code></td><td>3</td><td></td></tr>
+        <tr><td><code>medium</code></td><td>2</td><td></td></tr>
+        <tr><td><code>low</code></td><td>1</td><td></td></tr>
+        <tr><td><code>informational</code></td><td>0</td><td>No score impact</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════ Evidence Types ══════ -->
+<section id="evidence">
+  <h2><span class="icon">📦</span> Evidence Types</h2>
+  <p>The engine matches controls to evidence using an index built from collector output. Each evidence record has an <code>EvidenceType</code> field. The engine's <code>_index_evidence()</code> builds a <code>dict[str, list]</code> keyed by this field.</p>
+
+  <div class="info-box info">
+    <strong>📊 Evidence Matching</strong>
+    <ol style="padding-left:1.25rem;margin-top:.5rem">
+      <li><strong>Primary</strong>: <code>evidence_types</code> keys are searched in the index</li>
+      <li><strong>Fallback</strong>: If primary yields nothing, <code>compensating_evidence</code> keys are checked</li>
+    </ol>
+  </div>
+
+  <details>
+    <summary>Azure Evidence Types (93)</summary>
+    <div class="detail-body">
+      <p style="font-size:.82rem;color:var(--text-secondary);line-height:2;word-break:break-word">
+        <code>azure-acr-repository</code>, <code>azure-action-group</code>, <code>azure-activity-event</code>, <code>azure-activity-log</code>, <code>azure-ai-deployment</code>, <code>azure-ai-deployment-safety</code>, <code>azure-ai-governance</code>, <code>azure-aks-addon</code>, <code>azure-aks-cluster</code>, <code>azure-aks-cluster-config</code>, <code>azure-aks-node-pool</code>, <code>azure-alert-rule</code>, <code>azure-api-management</code>, <code>azure-apim-api</code>, <code>azure-apim-certificate</code>, <code>azure-apim-instance</code>, <code>azure-apim-named-value</code>, <code>azure-apim-service</code>, <code>azure-app-gateway</code>, <code>azure-app-service-network</code>, <code>azure-auto-provisioning</code>, <code>azure-cdn-endpoint</code>, <code>azure-cdn-profile</code>, <code>azure-cognitive-account</code>, <code>azure-container-app</code>, <code>azure-container-registry</code>, <code>azure-content-safety-blocklist</code>, <code>azure-cosmosdb-account</code>, <code>azure-cosmosdb-container</code>, <code>azure-cosmosdb-database</code>, <code>azure-cosmosdb-role-assignment</code>, <code>azure-data-factory</code>, <code>azure-database-config</code>, <code>azure-database-server</code>, <code>azure-databricks-workspace</code>, <code>azure-defender-pricing</code>, <code>azure-diagnostic-setting</code>, <code>azure-disk-encryption-set</code>, <code>azure-dns-zone</code>, <code>azure-eventhub-namespace</code>, <code>azure-firewall</code>, <code>azure-front-door</code>, <code>azure-function-app</code>, <code>azure-function-detail</code>, <code>azure-jit-policy</code>, <code>azure-keyvault</code>, <code>azure-log-analytics</code>, <code>azure-managed-identity</code>, <code>azure-ml-workspace</code>, <code>azure-nsg-flow-log</code>, <code>azure-nsg-rule</code>, <code>azure-policy-assignment</code>, <code>azure-policy-compliance</code>, <code>azure-policy-definition</code>, <code>azure-private-dns-zone</code>, <code>azure-private-endpoint</code>, <code>azure-purview-account</code>, <code>azure-recovery-vault</code>, <code>azure-redis-cache</code>, <code>azure-regulatory-compliance</code>, <code>azure-resource</code>, <code>azure-resource-group</code>, <code>azure-resource-lock</code>, <code>azure-role-assignment</code>, <code>azure-route-table</code>, <code>azure-secure-score</code>, <code>azure-security-alert</code>, <code>azure-security-assessment</code>, <code>azure-security-contact</code>, <code>azure-sentinel-automation</code>, <code>azure-sentinel-connector</code>, <code>azure-sentinel-incident</code>, <code>azure-sentinel-rule</code>, <code>azure-sentinel-workspace</code>, <code>azure-servicebus-namespace</code>, <code>azure-sql-advanced-threat</code>, <code>azure-sql-auditing</code>, <code>azure-sql-database</code>, <code>azure-sql-detailed</code>, <code>azure-sql-firewall</code>, <code>azure-sql-server</code>, <code>azure-sql-tde</code>, <code>azure-sql-vulnerability</code>, <code>azure-storage-account</code>, <code>azure-storage-container</code>, <code>azure-storage-queue</code>, <code>azure-storage-security</code>, <code>azure-synapse-workspace</code>, <code>azure-traffic-manager</code>, <code>azure-virtual-network</code>, <code>azure-vm-config</code>, <code>azure-waf-policy</code>, <code>azure-webapp-auth</code>, <code>azure-webapp-config</code>, <code>azure-webapp-detailed</code>, <code>azure-webapp-diagnostic</code>, <code>azure-webapp-tls</code>
+      </p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Entra Evidence Types (28)</summary>
+    <div class="detail-body">
+      <p style="font-size:.82rem;color:var(--text-secondary);line-height:2;word-break:break-word">
+        <code>entra-access-review</code>, <code>entra-application</code>, <code>entra-auth-methods-policy</code>, <code>entra-auth-strength-policy</code>, <code>entra-conditional-access-policy</code>, <code>entra-cross-tenant-partner</code>, <code>entra-cross-tenant-policy</code>, <code>entra-directory-audit-summary</code>, <code>entra-federated-credential</code>, <code>entra-managed-identity-sp</code>, <code>entra-mfa-registration</code>, <code>entra-mfa-summary</code>, <code>entra-oauth2-grant</code>, <code>entra-pim-eligible-assignment</code>, <code>entra-pim-policy-rule</code>, <code>entra-risk-detection</code>, <code>entra-risk-summary</code>, <code>entra-risky-service-principal</code>, <code>entra-risky-user</code>, <code>entra-role-assignment</code>, <code>entra-security-defaults</code>, <code>entra-service-principal</code>, <code>entra-signin-summary</code>, <code>entra-tenant-info</code>, <code>entra-terms-of-use</code>, <code>entra-user-detail</code>, <code>entra-user-lifecycle-summary</code>, <code>entra-workload-credential-review</code>
+      </p>
+    </div>
+  </details>
+</section>
+
+<!-- ══════ Collector ══════ -->
+<section id="collector">
+  <h2><span class="icon">📡</span> Adding a New Collector</h2>
+
+  <h3><span class="step-number">1</span> Create the File</h3>
+  <pre>
+# AIAgent/app/collectors/azure/my_source.py
+from app.collectors.registry import register_collector
+
+@register_collector(
+    name="my_source",
+    plane="control",      # "control" = ARM, "data" = data-plane
+    source="azure",       # "azure" or "entra"
+    priority=150          # lower = runs earlier
+)
+async def collect_azure_my_source(creds, subscriptions):
+    evidence = []
+    for sub in subscriptions:
+        evidence.append({
+            "EvidenceType": "azure-my-source",
+            "SubscriptionId": sub["subscriptionId"],
+            "ResourceId": "/subscriptions/.../my-resource",
+            "Data": { "propertyA": "value" }
+        })
+    return evidence</pre>
+
+  <div class="info-box tip">
+    <strong>✅ Auto-Discovered</strong>
+    No manual import or registration needed. The <code>@register_collector</code> decorator registers the function. <code>discover_collectors()</code> uses <code>pkgutil.iter_modules()</code> to find and import all collector modules at startup.
+  </div>
+
+  <h3>Decorator Parameters</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>name</code></td><td>str</td><td>(required)</td><td>Human-readable name for logging/checkpoints</td></tr>
+        <tr><td><code>plane</code></td><td>"control"/"data"</td><td>"control"</td><td>ARM management vs data plane</td></tr>
+        <tr><td><code>source</code></td><td>"azure"/"entra"</td><td>"azure"</td><td>Evidence source system</td></tr>
+        <tr><td><code>priority</code></td><td>int</td><td>100</td><td>Execution order (lower = earlier)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Priority Ranges</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Range</th><th>Plane</th><th>Examples</th></tr></thead>
+      <tbody>
+        <tr><td>P10–P190</td><td>Control (Azure)</td><td>rbac(10), networking(30), policy(50), storage(140)</td></tr>
+        <tr><td>P200–P240</td><td>Data (Azure)</td><td>sql_detailed(200), webapp_detailed(220)</td></tr>
+        <tr><td>P10–P170</td><td>Control (Entra)</td><td>users(10), mfa(20), applications(50)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════ Evaluator ══════ -->
+<section id="evaluator">
+  <h2><span class="icon">⚙️</span> Adding a New Evaluator Function</h2>
+
+  <h3><span class="step-number">1</span> Add the Handler</h3>
+  <pre>
+# In evaluators/access.py (or appropriate domain file)
+def _check_my_custom_logic(control_id, control, evidence, evidence_index, thresholds):
+    findings = []
+    relevant = evidence_index.get("azure-my-source", [])
+    for record in relevant:
+        data = record.get("Data", {})
+        if data.get("propertyA") != "expected":
+            findings.append({
+                "ControlId": control_id,
+                "Status": "non_compliant",
+                "Severity": control.get("severity", "medium"),
+                "ResourceId": record.get("ResourceId", "N/A"),
+                "Description": f"Property A is incorrect on {record.get('ResourceId')}",
+                "Recommendation": control.get("recommendation", "Fix property A"),
+            })
+    if not relevant:
+        findings.append({
+            "ControlId": control_id,
+            "Status": "missing_evidence",
+            "Severity": control.get("severity", "medium"),
+            "Description": "No azure-my-source evidence collected",
+        })
+    return findings</pre>
+
+  <h3><span class="step-number">2</span> Register in Dispatch Dict</h3>
+  <pre>
+dispatch = {
+    "check_privileged_access_separation": _check_privileged_access_separation,
+    # ... existing handlers ...
+    "check_my_custom_logic": _check_my_custom_logic,  # ← add
+}</pre>
+
+  <h3><span class="step-number">3</span> Reference in Framework JSON</h3>
+  <pre>{
+  "control_id": "MF-3.1",
+  "title": "My Custom Control",
+  "domain": "access",
+  "severity": "high",
+  "evidence_types": ["azure-my-source"],
+  "evaluation_logic": "check_my_custom_logic"
+}</pre>
+
+  <h3>Handler Signature</h3>
+  <pre>def _check_xxx(
+    control_id: str,
+    control: dict,
+    evidence: list[dict],
+    evidence_index: dict[str, list],
+    thresholds: ThresholdConfig
+) -> list[dict]:</pre>
+</section>
+
+<!-- ══════ Dispatch ══════ -->
+<section id="dispatch">
+  <h2><span class="icon">🔀</span> Evaluation Dispatch & Fallback</h2>
+
+  <div class="diagram-container">
+    <h4>Two-Stage Dispatch with Cross-Domain Fallback</h4>
+    <div class="mermaid" data-seq-details='[{"overview":"The engine reads the domain field from the current control object to determine which evaluator should handle it. In this example, the domain is governance.","dataFlow":"The engine reads the domain property from the control dictionary internally","keyPoints":["The domain field is set in the framework JSON mapping","Common domains include governance, access, data, identity, and network","This field drives the entire dispatch decision"],"whyItMatters":"Correct domain classification ensures controls are routed to evaluators with the right expertise and evidence access","output":"A domain string (e.g., governance) used to look up the primary evaluator"},{"overview":"The engine dispatches the control to the primary domain evaluator. Here, the governance evaluator receives the control and attempts to assess it using available governance evidence.","dataFlow":"Engine passes the control object and evidence index to the governance module evaluate_governance function","keyPoints":["The evaluator function name follows the pattern evaluate_{domain}","The evaluator searches the evidence index for matching evidence types","Multiple evidence types may be checked for a single control"],"whyItMatters":"Primary dispatch is the first attempt to evaluate the control using the most logically appropriate domain module","output":"Either a list of findings with compliance status, or a not_assessed result if evidence is insufficient"},{"overview":"The primary evaluator successfully found relevant evidence and produced compliance findings. This is the happy path where the control is fully assessed on the first attempt.","dataFlow":"The governance evaluator returns a list of finding records and a compliant or non_compliant status to the engine","keyPoints":["Each finding includes ControlId, Status, ResourceId, and Description","The status represents the aggregate result across all findings","No fallback is needed when the primary evaluator succeeds"],"whyItMatters":"When primary evaluation succeeds, the control assessment is complete and no additional processing is required","output":"Structured finding records ready for inclusion in the assessment report"},{"overview":"The primary evaluator could not assess the control, typically because the required evidence was not available in its domain. This triggers the cross-domain fallback mechanism.","dataFlow":"The governance evaluator returns a not_assessed status signal to the engine","keyPoints":["not_assessed means the evaluator ran but lacked sufficient evidence","This is different from missing_evidence, which means no evidence existed at all","The engine interprets not_assessed as a trigger for fallback"],"whyItMatters":"Detecting not_assessed early allows the engine to try alternative evaluation paths rather than leaving the control unassessed","output":"A not_assessed status that triggers the fallback lookup in the next step"},{"overview":"The engine consults _CROSS_DOMAIN_MAP using the control evaluation_logic field to find an alternative domain. This map defines 28 cross-domain routing paths.","dataFlow":"Engine sends the evaluation_logic value to the cross-domain map and receives an alternative domain name","keyPoints":["_CROSS_DOMAIN_MAP is a dictionary with 28 fallback routes","The lookup key is the evaluation_logic field from the control","Routes are predefined based on known evidence overlaps between domains"],"whyItMatters":"The fallback map encodes domain knowledge about which alternative evaluators can handle specific types of controls","output":"An alternative domain name (e.g., access) or no match if no fallback route exists"},{"overview":"The cross-domain map returns the alternative domain that should handle this control. In this example, a governance control falls back to the access domain evaluator.","dataFlow":"The fallback map returns the string access as the alternative domain to the engine","keyPoints":["The alternative domain is selected based on evaluation_logic, not the original domain","This enables controls to be assessed using evidence from a related domain","If no alternative is found, the control remains not_assessed"],"whyItMatters":"Cross-domain routing prevents assessment gaps when evidence exists under a different domain than the primary classification","output":"The alternative domain string used to dispatch the second evaluation attempt"},{"overview":"The engine dispatches the control to the alternative domain evaluator identified by the fallback map. The access evaluator now attempts to assess the governance control using access-related evidence.","dataFlow":"Engine passes the same control object and evidence index to the access module evaluate_access function","keyPoints":["The alternative evaluator receives the same control and evidence index","It searches for evidence types relevant to the access domain","The evaluation follows the same logic as any primary dispatch"],"whyItMatters":"Fallback evaluation often succeeds because many security controls span multiple domains and their evidence may be collected under a different category","output":"Findings from the access evaluator, or missing_evidence if this domain also lacks relevant data"},{"overview":"The alternative evaluator returns its results. If it found relevant evidence, it produces compliance findings. If not, the control is marked as missing_evidence since both primary and fallback paths have been exhausted.","dataFlow":"The access evaluator returns findings and status to the engine, completing the two-stage dispatch","keyPoints":["Success means the fallback found evidence the primary evaluator could not","missing_evidence at this stage means no evaluator could assess the control","The engine records whichever result the fallback produces as final"],"whyItMatters":"This is the last chance to evaluate the control — the result here determines whether the control appears as assessed or unassessed in the report","output":"Final finding records for the control, or a missing_evidence status if assessment was not possible"}]'>
+sequenceDiagram
+    participant E as Engine
+    participant PM as Primary Domain
+    participant FM as _CROSS_DOMAIN_MAP
+    participant AM as Alternative Domain
+
+    E->>E: Read control.domain → "governance"
+    E->>PM: governance.evaluate_governance(control)
+    alt Handler returns findings
+        PM-->>E: Findings ✅
+    else All findings are not_assessed
+        PM-->>E: not_assessed
+        E->>FM: Lookup evaluation_logic in _CROSS_DOMAIN_MAP
+        FM-->>E: Alternative domain = "access"
+        E->>AM: access.evaluate_access(control)
+        AM-->>E: Findings ✅ (or missing_evidence)
+    end
+    </div>
+    <div class="diagram-explanation">
+      <strong>Two-stage dispatch:</strong>
+      <ol>
+        <li><strong>Primary</strong> — The control's <code>domain</code> field selects the domain evaluator via <code>DOMAIN_EVALUATORS</code> dict in engine.py.</li>
+        <li><strong>Fallback</strong> — If the primary evaluator returns <code>not_assessed</code> for all findings, the engine looks up <code>evaluation_logic</code> in <code>_CROSS_DOMAIN_MAP</code> (28 routes) and dispatches to an alternative domain.</li>
+      </ol>
+      <p>This ensures controls get evaluated even when the primary domain lacks the evidence — e.g., a governance control that requires access data falls back to the access evaluator.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ Plugins ══════ -->
+<section id="plugins">
+  <h2><span class="icon">🔌</span> Plugin System</h2>
+
+  <h3>Creating a Plugin</h3>
+  <pre>
+# plugins/my_custom_check.py
+def evaluate(control: dict, evidence_index: dict[str, list]) -> tuple[str, list[dict]]:
+    relevant = evidence_index.get("azure-my-source", [])
+    if not relevant:
+        return "missing_evidence", [{
+            "ControlId": control["control_id"],
+            "Status": "missing_evidence",
+            "Description": "No evidence found",
+        }]
+    findings = []
+    for record in relevant:
+        findings.append({
+            "ControlId": control["control_id"],
+            "Status": "compliant",
+            "ResourceId": record.get("ResourceId", "N/A"),
+        })
+    return "compliant", findings</pre>
+
+  <h3>Reference in Framework JSON</h3>
+  <pre>{
+  "control_id": "MF-4.1",
+  "domain": "governance",
+  "severity": "high",
+  "evidence_types": ["azure-my-source"],
+  "evaluation_logic": "check_fallback",
+  "custom_evaluator": "my_custom_check"
+}</pre>
+
+  <div class="info-box info">
+    <strong>📦 Plugin Discovery</strong>
+    <code>load_plugins(plugin_dir="plugins")</code> scans for <code>.py</code> files (skips <code>_</code>-prefixed), dynamically imports each, and looks for a callable <code>evaluate</code> attribute. <code>run_plugins()</code> invokes matching plugins for controls with <code>custom_evaluator</code> fields.
+  </div>
+</section>
+
+<!-- ══════ Domains ══════ -->
+<section id="domains">
+  <h2><span class="icon">📂</span> Available Domains & Handlers</h2>
+
+  <details open>
+    <summary>access — 8 functions</summary>
+    <div class="detail-body">
+      <div class="table-wrap"><table><thead><tr><th>Handler</th><th>Description</th></tr></thead><tbody>
+        <tr><td><code>check_privileged_access_separation</code></td><td>RBAC role distribution</td></tr>
+        <tr><td><code>check_least_privilege</code></td><td>Owner/contributor counts</td></tr>
+        <tr><td><code>check_access_enforcement</code></td><td>Conditional access enforcement</td></tr>
+        <tr><td><code>check_account_management</code></td><td>Account lifecycle management</td></tr>
+        <tr><td><code>check_custom_owner_roles</code></td><td>Custom owner role definitions</td></tr>
+        <tr><td><code>check_rbac_review</code></td><td>RBAC assignment review</td></tr>
+        <tr><td><code>check_service_account_access</code></td><td>Service account access</td></tr>
+        <tr><td><code>check_access_provisioning</code></td><td>Provisioning workflows</td></tr>
+      </tbody></table></div>
+    </div>
+  </details>
+
+  <details>
+    <summary>identity — 22 functions</summary>
+    <div class="detail-body">
+      <div class="table-wrap"><table><thead><tr><th>Handler</th><th>Description</th></tr></thead><tbody>
+        <tr><td><code>check_authenticator_management</code></td><td>MFA enrollment/registration</td></tr>
+        <tr><td><code>check_mfa_enforcement</code></td><td>MFA percentage thresholds</td></tr>
+        <tr><td><code>check_stale_accounts</code></td><td>Stale/inactive users</td></tr>
+        <tr><td><code>check_guest_access</code></td><td>Guest user governance</td></tr>
+        <tr><td><code>check_service_principal_hygiene</code></td><td>OAuth grants, app credentials</td></tr>
+        <tr><td><code>check_workload_identity_security</code></td><td>Federated credentials, managed identity</td></tr>
+        <tr><td><code>check_auth_methods_security</code></td><td>Auth methods, strength policies</td></tr>
+        <tr><td><code>check_managed_identity_hygiene</code></td><td>Managed identity adoption/cleanup</td></tr>
+      </tbody></table></div>
+      <p style="font-size:.82rem;color:var(--text-muted)">(+ 14 additional specialized identity handlers)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>data_protection — 22 functions</summary>
+    <div class="detail-body">
+      <div class="table-wrap"><table><thead><tr><th>Handler</th><th>Description</th></tr></thead><tbody>
+        <tr><td><code>check_encryption_at_rest</code></td><td>Storage and disk encryption</td></tr>
+        <tr><td><code>check_encryption_in_transit</code></td><td>TLS enforcement</td></tr>
+        <tr><td><code>check_key_management</code></td><td>Key Vault usage, CMK</td></tr>
+        <tr><td><code>check_function_app_security</code></td><td>HTTPS, TLS, managed identity</td></tr>
+        <tr><td><code>check_messaging_security</code></td><td>Service Bus / Event Hubs</td></tr>
+        <tr><td><code>check_redis_security</code></td><td>SSL, TLS version</td></tr>
+        <tr><td><code>check_cosmosdb_advanced_security</code></td><td>Local auth, VNet, RBAC</td></tr>
+        <tr><td><code>check_data_analytics_security</code></td><td>Synapse / ADF / Databricks</td></tr>
+        <tr><td><code>check_purview_classification</code></td><td>Purview, sensitivity labels</td></tr>
+      </tbody></table></div>
+      <p style="font-size:.82rem;color:var(--text-muted)">(+ 13 additional data protection handlers)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>network — 16, logging — 13, governance — 21, + 4 more domains</summary>
+    <div class="detail-body">
+      <div class="table-wrap"><table><thead><tr><th>Domain</th><th>Functions</th><th>Key Handlers</th></tr></thead><tbody>
+        <tr><td>network</td><td>16</td><td>NSG, DNS, AKS, APIM, Front Door</td></tr>
+        <tr><td>logging</td><td>13</td><td>Diagnostics coverage, retention</td></tr>
+        <tr><td>governance</td><td>21</td><td>Policy, Defender, AI safety, regulatory</td></tr>
+        <tr><td>incident_response</td><td>6</td><td>Sentinel, alert coverage</td></tr>
+        <tr><td>change_management</td><td>4</td><td>Change tracking</td></tr>
+        <tr><td>business_continuity</td><td>4</td><td>Backup, DR</td></tr>
+        <tr><td>asset_management</td><td>4</td><td>Asset inventory</td></tr>
+      </tbody></table></div>
+    </div>
+  </details>
+</section>
+
+<!-- ══════ Schema ══════ -->
+<section id="schema">
+  <h2><span class="icon">📐</span> The Formal JSON Schema</h2>
+  <p>Defined in <code>schemas/compliance-control.schema.json</code>:</p>
+  <pre>{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EnterpriseSecurityIQ Compliance Control Mapping",
+  "required": ["framework", "frameworkName", "controls"],
+  "properties": {
+    "framework":    { "type": "string" },
+    "frameworkName": { "type": "string" },
+    "version":      { "type": "string" },
+    "controls": {
+      "type": "array",
+      "items": {
+        "required": ["control_id", "title", "domain",
+                     "severity", "evidence_types", "evaluation_logic"],
+        "properties": {
+          "control_id":       { "type": "string" },
+          "title":            { "type": "string" },
+          "domain":           { "type": "string" },
+          "severity":         { "enum": ["critical","high","medium","low","informational"] },
+          "evidence_types":   { "type": "array", "items": { "type": "string" } },
+          "evaluation_logic": { "type": "string" }
+        }
+      }
+    }
+  }
+}</pre>
+  <div class="info-box warn">
+    <strong>⚠️ Schema vs. Practice</strong>
+    The schema's <code>domain</code> enum lists only 6 values. The engine supports all 10. The schema also omits <code>compensating_evidence</code> and <code>custom_evaluator</code>. Use the control fields table above as the authoritative reference.
+  </div>
+</section>
+
+<!-- ══════ Testing ══════ -->
+<section id="testing">
+  <h2><span class="icon">🧪</span> Testing</h2>
+  <pre>cd AIAgent
+python -m pytest tests/ -x -q</pre>
+  <h3>Quick Spot Check</h3>
+  <pre>
+import json
+from pathlib import Path
+mapping = json.loads(Path("app/frameworks/my-framework-mappings.json").read_text())
+print(f"Framework: {mapping['framework']}")
+print(f"Controls: {len(mapping['controls'])}")
+domains = set(c["domain"] for c in mapping["controls"])
+print(f"Domains: {sorted(domains)}")
+logics = set(c["evaluation_logic"] for c in mapping["controls"])
+print(f"Unique handlers: {len(logics)}")</pre>
+</section>
+
+</main>
+
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0})" aria-label="Back to top">↑</button>
+<footer>
+  <p>PostureIQ — Extending Frameworks — Author: Murali Chillakuru</p>
+  <p style="margin-top:.25rem">4 Extension Points · 10 Domains · 121 Evidence Types · 28 Fallback Routes · 11 Built-In Frameworks</p>
+</footer>
+
+<script>
+function toggleTheme(){const t=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';if(t==='light')document.documentElement.setAttribute('data-theme','light');else document.documentElement.removeAttribute('data-theme');localStorage.setItem('esiq-theme',t)}
+(function(){if(localStorage.getItem('esiq-theme')==='light')document.documentElement.setAttribute('data-theme','light')})();
+mermaid.initialize({startOnLoad:true,theme:document.documentElement.getAttribute('data-theme')==='light'?'default':'dark',securityLevel:'loose',sequence:{mirrorActors:false,actorMargin:50}});
+document.querySelectorAll('.stat-value[data-target]').forEach(el=>{const t=+el.dataset.target;let c=0;const s=Math.max(1,Math.ceil(t/40));const i=setInterval(()=>{c+=s;if(c>=t){c=t;clearInterval(i)}el.textContent=c},30)});
+const pills=document.querySelectorAll('.nav-pill[href^="#"]');const secs=document.querySelectorAll('section[id]');
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const a=document.querySelector('.nav-pill[href="#'+e.target.id+'"]');if(a)a.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px'});
+secs.forEach(s=>obs.observe(s));
+window.addEventListener('scroll',()=>{document.getElementById('backTop').classList.toggle('visible',window.scrollY>400);const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('readingProgress').style.width=(window.scrollY/h*100)+'%'});
+</script>
+<script src="seq-engine.js"></script>
+</body>
+</html>

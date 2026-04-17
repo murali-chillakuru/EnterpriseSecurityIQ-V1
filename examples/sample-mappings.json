@@ -1,0 +1,44 @@
+{
+  "framework": "sample",
+  "version": "1.0",
+  "description": "Sample framework mapping demonstrating control structure",
+  "controls": [
+    {
+      "control_id": "SAMPLE-1.1",
+      "title": "Enforce Multi-Factor Authentication",
+      "domain": "Identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_mfa_all_users",
+      "rationale": "MFA significantly reduces the risk of credential-based attacks.",
+      "recommendation": "Enable MFA for all users through Conditional Access policies."
+    },
+    {
+      "control_id": "SAMPLE-2.1",
+      "title": "Enable Diagnostic Logging",
+      "domain": "Logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_logging_enabled",
+      "rationale": "Logging enables detection, investigation, and response to security events.",
+      "recommendation": "Enable diagnostic settings for all critical resources and send to Log Analytics."
+    },
+    {
+      "control_id": "SAMPLE-3.1",
+      "title": "Implement Network Segmentation",
+      "domain": "Network",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource",
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_network_segmentation",
+      "rationale": "Network segmentation limits lateral movement in case of a breach.",
+      "recommendation": "Deploy NSGs and use VNet segmentation to isolate workloads."
+    }
+  ]
+}

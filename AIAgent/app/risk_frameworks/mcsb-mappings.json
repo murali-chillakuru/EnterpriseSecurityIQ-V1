@@ -1,0 +1,29 @@
+{
+  "framework": "Microsoft Cloud Security Benchmark",
+  "version": "1.0",
+  "mappings": {
+    "dormant_accounts": ["PA-4", "IM-1"],
+    "overpermissioned_service_principals": ["PA-7", "PA-1"],
+    "expired_credentials": ["IM-3", "IM-1"],
+    "expiring_credentials": ["IM-3", "IM-1"],
+    "mfa_gaps": ["IM-4", "IM-1"],
+    "admin_proliferation": ["PA-1", "PA-7"],
+    "guest_user_risk": ["PA-4", "IM-7"],
+    "missing_guest_review": ["PA-4", "GS-6"],
+    "high_risk_users": ["LT-1", "IM-4"],
+    "medium_risk_users": ["LT-1", "IM-4"],
+    "open_management_ports": ["NS-1", "NS-3"],
+    "public_storage": ["DP-9", "NS-1"],
+    "webapp_transport_security": ["DP-3", "NS-1"],
+    "sql_firewall_exposure": ["NS-1", "NS-2"],
+    "disabled_plans": ["LT-1", "PV-5"],
+    "security_recommendations": ["PV-5", "GS-3"],
+    "low_secure_score": ["GS-3", "PV-5"],
+    "missing_diagnostics": ["LT-3", "LT-4"],
+    "policy_noncompliance": ["GS-3", "PV-6"],
+    "missing_tags": ["AM-1", "AM-2"],
+    "irm_not_assessed": ["LT-1", "GS-3"],
+    "no_irm_policies": ["LT-1", "GS-3"],
+    "active_irm_alerts": ["LT-1", "IR-1"]
+  }
+}

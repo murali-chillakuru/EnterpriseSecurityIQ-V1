@@ -1,0 +1,434 @@
+{
+  "blob_public_access": [
+    "Art.25(1)",
+    "Art.32(1)"
+  ],
+  "storage_https": [
+    "Art.32(1)",
+    "Art.5(1f)"
+  ],
+  "storage_network_rules": [
+    "Art.32(1)",
+    "Art.25(2)"
+  ],
+  "soft_delete_disabled": [
+    "Art.32(1)",
+    "Art.5(1d)"
+  ],
+  "min_tls_weak": [
+    "Art.32(1)",
+    "Art.5(1f)"
+  ],
+  "shared_key_enabled": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "no_blob_logging": [
+    "Art.30(1)",
+    "Art.5(2)"
+  ],
+  "blob_versioning_disabled": [
+    "Art.32(1)",
+    "Art.5(1d)"
+  ],
+  "sql_tde_disabled": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "sql_auditing_disabled": [
+    "Art.30(1)",
+    "Art.5(2)"
+  ],
+  "sql_atp_disabled": [
+    "Art.32(1)",
+    "Art.33(1)"
+  ],
+  "sql_no_ddm": [
+    "Art.25(2)",
+    "Art.5(1c)"
+  ],
+  "sql_no_rls": [
+    "Art.25(2)",
+    "Art.5(1f)"
+  ],
+  "cosmosdb_public_access": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "eventual_consistency": [
+    "Art.5(1d)",
+    "Art.32(1)"
+  ],
+  "access_policy_model": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "purge_protection_off": [
+    "Art.32(1)",
+    "Art.5(1d)"
+  ],
+  "no_expiry_set": [
+    "Art.32(1)",
+    "Art.5(1f)"
+  ],
+  "cert_no_auto_renewal": [
+    "Art.32(1)",
+    "Art.5(1f)"
+  ],
+  "keys_not_hsm_backed": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "disk_encryption_missing": [
+    "Art.32(1)",
+    "Art.34(3a)"
+  ],
+  "overprivileged_access": [
+    "Art.25(2)",
+    "Art.5(1f)"
+  ],
+  "defender_coverage_gaps": [
+    "Art.32(1)",
+    "Art.33(1)"
+  ],
+  "audit_log_short_retention": [
+    "Art.30(1)",
+    "Art.5(2)"
+  ],
+  "nsg_data_ports_open": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "no_dlp_policies": [
+    "Art.32(1)",
+    "Art.5(1f)"
+  ],
+  "dlp_no_sensitive_info_types": [
+    "Art.25(2)",
+    "Art.5(1c)"
+  ],
+  "sql_local_auth_enabled": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "pg_mysql_no_aad_auth": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "no_managed_identity": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "no_resource_lock": [
+    "Art.32(1)",
+    "Art.5(1d)"
+  ],
+  "adf_no_managed_vnet": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "synapse_no_exfiltration_protection": [
+    "Art.32(1)",
+    "Art.5(1f)"
+  ],
+  "ai_services_public_access": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "log_analytics_no_cmk": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "no_immutable_audit_logs": [
+    "Art.30(1)",
+    "Art.5(2)"
+  ],
+  "redis_non_ssl_port": [
+    "Art.32(1)",
+    "Art.5(1f)"
+  ],
+  "redis_weak_tls": [
+    "Art.32(1)",
+    "Art.5(1f)"
+  ],
+  "redis_no_firewall": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "eventhub_public_access": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "servicebus_public_access": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "messaging_weak_tls": [
+    "Art.32(1)",
+    "Art.5(1f)"
+  ],
+  "purge_protection_disabled": [
+    "Art.32(1)",
+    "Art.5(1d)"
+  ],
+  "legacy_access_policy_model": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "no_network_restrictions": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "purview_public_access": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "purview_no_private_endpoint": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "purview_scan_coverage_gap": [
+    "Art.35(1)",
+    "Art.30(1)"
+  ],
+  "purview_scan_issues": [
+    "Art.35(1)",
+    "Art.30(1)"
+  ],
+  "managed_disk_no_cmk": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "no_diagnostic_settings": [
+    "Art.30(1)",
+    "Art.5(2)"
+  ],
+  "no_private_endpoint": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "no_ddos_protection": [
+    "Art.32(1)",
+    "Art.5(1f)"
+  ],
+  "no_sas_expiration_policy": [
+    "Art.32(1)",
+    "Art.5(1f)"
+  ],
+  "no_immutability_policy": [
+    "Art.30(1)",
+    "Art.5(2)"
+  ],
+  "change_feed_disabled": [
+    "Art.30(1)",
+    "Art.5(2)"
+  ],
+  "unencrypted_disks": [
+    "Art.32(1)",
+    "Art.34(3a)"
+  ],
+  "no_encryption_at_host": [
+    "Art.32(1)",
+    "Art.34(3a)"
+  ],
+  "no_security_action_groups": [
+    "Art.33(1)",
+    "Art.34(1)"
+  ],
+  "ai_key_auth_enabled": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "ai_no_managed_identity": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "ai_no_cmk": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "adf_public_access": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "adf_no_managed_identity": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "adf_no_git_integration": [
+    "Art.32(1)",
+    "Art.5(2)"
+  ],
+  "synapse_public_access": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "synapse_sql_auth_enabled": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "eventhub_local_auth": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "servicebus_local_auth": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "eventhub_no_capture": [
+    "Art.30(1)",
+    "Art.5(2)"
+  ],
+  "redis_no_patch_schedule": [
+    "Art.32(1)",
+    "Art.32(1d)"
+  ],
+  "redis_public_access": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "data_services_no_managed_identity": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "sqlmi_no_atp": [
+    "Art.32(1)",
+    "Art.33(1)"
+  ],
+  "sqlmi_public_endpoint": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "sqlmi_no_aad_only": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "appconfig_public_access": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "appconfig_no_private_endpoint": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "appconfig_no_soft_delete": [
+    "Art.32(1)",
+    "Art.5(1d)"
+  ],
+  "cert_expiring_soon": [
+    "Art.32(1)",
+    "Art.5(1f)"
+  ],
+  "cert_no_auto_renew": [
+    "Art.32(1)",
+    "Art.5(1f)"
+  ],
+  "cert_weak_key": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "databricks_no_vnet": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "databricks_no_cmk": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "databricks_public_access": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "apim_no_vnet": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "apim_no_managed_identity": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "frontdoor_no_waf": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "frontdoor_old_tls": [
+    "Art.32(1)",
+    "Art.5(1f)"
+  ],
+  "secret_in_app_settings": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "no_keyvault_references": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "firewall_no_threat_intel": [
+    "Art.32(1)",
+    "Art.33(1)"
+  ],
+  "firewall_no_idps": [
+    "Art.32(1)",
+    "Art.33(1)"
+  ],
+  "appgw_no_waf": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "no_bastion_open_rdp": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "bastion_shareable_links": [
+    "Art.32(1)",
+    "Art.25(2)"
+  ],
+  "data_policy_noncompliant": [
+    "Art.5(2)",
+    "Art.24(1)"
+  ],
+  "defender_data_recs_unhealthy": [
+    "Art.32(1)",
+    "Art.32(1d)"
+  ],
+  "stale_data_role_assignment": [
+    "Art.25(2)",
+    "Art.5(1f)"
+  ],
+  "storage_unusual_bypass": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "cross_sub_private_endpoint": [
+    "Art.32(1)",
+    "Art.25(2)"
+  ],
+  "nsg_unrestricted_outbound": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "no_mfa_ca_policy": [
+    "Art.32(1)",
+    "Art.25(1)"
+  ],
+  "pim_permanent_assignments": [
+    "Art.25(2)",
+    "Art.5(1f)"
+  ],
+  "drift_detected": [
+    "Art.32(1d)",
+    "Art.5(2)"
+  ],
+  "aks_no_acr_integration": [
+    "Art.28(1)",
+    "Art.32(1)"
+  ],
+  "acr_admin_enabled": [
+    "Art.32(1)",
+    "Art.25(2)"
+  ],
+  "func_external_package": [
+    "Art.28(1)",
+    "Art.32(1)"
+  ]
+}

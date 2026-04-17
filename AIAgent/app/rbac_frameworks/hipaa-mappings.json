@@ -1,0 +1,24 @@
+{
+  "standing_owner_high_scope": [
+    "164.312(a)(1)",
+    "164.308(a)(4)(ii)(C)"
+  ],
+  "contributor_mg_scope": [
+    "164.312(a)(1)"
+  ],
+  "sp_with_owner": [
+    "164.312(a)(1)",
+    "164.312(d)"
+  ],
+  "large_privileged_group": [
+    "164.312(a)(1)",
+    "164.308(a)(3)(ii)(A)"
+  ],
+  "custom_role_high_scope": [
+    "164.312(a)(1)"
+  ],
+  "sp_contributor_broad_scope": [
+    "164.312(a)(1)",
+    "164.312(d)"
+  ]
+}

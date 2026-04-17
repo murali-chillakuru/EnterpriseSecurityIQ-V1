@@ -1,0 +1,29 @@
+{
+  "standing_owner_high_scope": [
+    "A.5.15",
+    "A.5.18",
+    "A.8.2"
+  ],
+  "contributor_mg_scope": [
+    "A.5.15",
+    "A.5.18"
+  ],
+  "sp_with_owner": [
+    "A.5.15",
+    "A.5.18",
+    "A.8.2"
+  ],
+  "large_privileged_group": [
+    "A.5.15",
+    "A.5.18",
+    "A.8.2"
+  ],
+  "custom_role_high_scope": [
+    "A.5.15",
+    "A.8.2"
+  ],
+  "sp_contributor_broad_scope": [
+    "A.5.15",
+    "A.5.18"
+  ]
+}

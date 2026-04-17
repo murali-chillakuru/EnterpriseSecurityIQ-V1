@@ -1,0 +1,170 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PostureIQ Configuration",
+  "description": "Schema for enterprisesecurityiq.config.json consumed by the Python AI-Agent assessment pipeline (config.py → AssessmentConfig.from_file).",
+  "type": "object",
+  "required": ["frameworks"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable assessment name",
+      "default": "PostureIQ Assessment"
+    },
+    "frameworks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["MCSB", "NIST-800-53", "CIS", "ISO-27001", "PCI-DSS", "FedRAMP", "SOC2", "HIPAA", "GDPR", "NIST-CSF", "CSA-CCM"]
+      },
+      "minItems": 1,
+      "description": "Compliance frameworks to evaluate"
+    },
+    "logLevel": {
+      "type": "string",
+      "enum": ["DEBUG", "INFO", "WARNING", "ERROR"],
+      "default": "INFO"
+    },
+    "outputFormats": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["json", "html", "md", "oscal"] },
+      "default": ["json", "html"]
+    },
+    "outputDir": {
+      "type": "string",
+      "default": "output"
+    },
+    "checkpointEnabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Save collection progress to resume on failure"
+    },
+    "additionalTenants": {
+      "type": "array",
+      "items": { "type": "string", "format": "uuid" },
+      "description": "Extra tenant IDs for multi-tenant assessments"
+    },
+    "auth": {
+      "type": "object",
+      "properties": {
+        "tenantId": { "type": "string", "description": "Azure / Entra tenant ID" },
+        "authMode": {
+          "type": "string",
+          "enum": ["auto", "serviceprincipal", "azurecli"],
+          "default": "auto",
+          "description": "auto = DefaultAzureCredential for both ARM + Graph; serviceprincipal = AZURE_CLIENT_ID/SECRET env vars; azurecli = AzureCliCredential only"
+        },
+        "subscriptionFilter": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Limit Azure collection to these subscription IDs (empty = all)"
+        }
+      }
+    },
+    "collectors": {
+      "type": "object",
+      "properties": {
+        "azureEnabled": { "type": "boolean", "default": true, "description": "Enable Azure ARM collectors" },
+        "entraEnabled": { "type": "boolean", "default": true, "description": "Enable Entra / MS-Graph collectors" },
+        "subscriptionFilter": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Alt location for subscription filter (merged with auth.subscriptionFilter)"
+        },
+        "azureBatchSize": {
+          "type": "integer", "minimum": 1, "default": 4,
+          "description": "Max concurrent Azure collector coroutines"
+        },
+        "entraBatchSize": {
+          "type": "integer", "minimum": 1, "default": 3,
+          "description": "Max concurrent Entra collector coroutines"
+        },
+        "collectorTimeout": {
+          "type": "integer", "minimum": 0, "default": 600,
+          "description": "Per-collector timeout in seconds (0 = no timeout)"
+        },
+        "userSampleLimit": {
+          "type": "integer", "minimum": 0, "default": 0,
+          "description": "Max users for detail collection. 0 = collect all. Useful for large tenants."
+        }
+      }
+    },
+    "continuousMonitoring": {
+      "type": "object",
+      "description": "Configuration for the continuous monitoring engine",
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "intervalMinutes": { "type": "integer", "minimum": 5, "default": 1440 },
+        "collectors": {
+          "type": "array", "items": { "type": "string" },
+          "description": "Subset of collectors to run (empty = all)"
+        },
+        "frameworks": {
+          "type": "array", "items": { "type": "string" },
+          "description": "Subset of frameworks to evaluate (empty = all from top-level)"
+        },
+        "alertOnRegression": { "type": "boolean", "default": true },
+        "minScoreThreshold": { "type": "number", "minimum": 0, "maximum": 100, "default": 0 }
+      }
+    },
+    "remediation": {
+      "type": "object",
+      "description": "Configuration for the remediation engine",
+      "properties": {
+        "enabled": { "type": "boolean", "default": false, "description": "Generate remediation plans for non-compliant findings" },
+        "includeAzCli": { "type": "boolean", "default": true },
+        "includePowerShell": { "type": "boolean", "default": false },
+        "includeArmSnippets": { "type": "boolean", "default": false }
+      }
+    },
+    "siemIntegration": {
+      "type": "object",
+      "description": "SIEM/SOAR export configuration",
+      "properties": {
+        "sentinel": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "endpointUrl": { "type": "string", "format": "uri" },
+            "workspaceId": { "type": "string" },
+            "dcrImmutableId": { "type": "string" },
+            "dcrStreamName": { "type": "string" },
+            "batchSize": { "type": "integer", "minimum": 1, "default": 100 }
+          }
+        },
+        "splunk": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "endpointUrl": { "type": "string", "format": "uri" },
+            "batchSize": { "type": "integer", "minimum": 1, "default": 100 }
+          }
+        },
+        "generic": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "endpointUrl": { "type": "string", "format": "uri" },
+            "batchSize": { "type": "integer", "minimum": 1, "default": 100 }
+          }
+        }
+      }
+    },
+    "dataResidency": {
+      "type": "object",
+      "description": "Data residency validation settings",
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "allowedRegions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Allowed Azure regions (e.g. ['eastus', 'westus2'])"
+        },
+        "allowedRegionGroups": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["US", "Europe", "AsiaPacific", "Canada", "UK", "Australia", "Brazil", "India", "Japan", "Korea", "SouthAfrica", "UAE", "Switzerland", "Germany", "France", "Norway", "Sweden"] },
+          "description": "Allowed region groups"
+        }
+      }
+    }
+  }
+}

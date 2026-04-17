@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Tenant Assessment — Deep Dive | PostureIQ</title>
+<meta name="description" content="Full compliance-assessment orchestration coordinating 64 collectors, 10 domain evaluators, and 28 report generators across 11 compliance frameworks with 525 controls.">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+:root{--bg-primary:#0D1117;--bg-secondary:#161B22;--bg-tertiary:#1C2128;--bg-card:#21262D;--bg-card-hover:#282E36;--bg-inset:#0D1117;--border-primary:#30363D;--border-secondary:#21262D;--border-accent:#1F6FEB;--text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;--text-link:#58A6FF;--accent-blue:#1F6FEB;--accent-blue-light:#388BFD;--accent-green:#3FB950;--accent-green-bg:rgba(63,185,80,.12);--accent-orange:#D29922;--accent-orange-bg:rgba(210,153,34,.12);--accent-red:#F85149;--accent-red-bg:rgba(248,81,73,.12);--accent-purple:#A371F7;--accent-purple-bg:rgba(163,113,247,.12);--accent-cyan:#39D2C0;--accent-cyan-bg:rgba(57,210,192,.12);--shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);--shadow-lg:0 8px 24px rgba(0,0,0,.5);--radius:8px;--radius-lg:12px;--font-sans:'Segoe UI Variable','Segoe UI',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;--font-mono:'Cascadia Code','Fira Code','Consolas','Monaco',monospace;--max-width:1100px}
+[data-theme="light"]{--bg-primary:#F6F8FA;--bg-secondary:#FFFFFF;--bg-tertiary:#F0F2F5;--bg-card:#FFFFFF;--bg-card-hover:#F6F8FA;--bg-inset:#F0F2F5;--border-primary:#D0D7DE;--border-secondary:#E1E4E8;--border-accent:#0078D4;--text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;--text-link:#0969DA;--accent-blue:#0969DA;--accent-blue-light:#0078D4;--accent-green:#1A7F37;--accent-green-bg:rgba(26,127,55,.08);--accent-orange:#9A6700;--accent-orange-bg:rgba(154,103,0,.08);--accent-red:#CF222E;--accent-red-bg:rgba(207,34,46,.08);--accent-purple:#8250DF;--accent-purple-bg:rgba(130,80,223,.08);--accent-cyan:#0E8A8A;--accent-cyan-bg:rgba(14,138,138,.08);--shadow-sm:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.1);--shadow-lg:0 8px 24px rgba(0,0,0,.12)}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+::selection{background:var(--accent-blue);color:#fff}
+a{color:var(--text-link);text-decoration:none;transition:color .2s}
+a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--bg-tertiary);padding:2px 7px;border-radius:4px;border:1px solid var(--border-secondary)}
+pre{background:var(--bg-inset);border:1px solid var(--border-primary);border-radius:var(--radius);padding:18px;overflow-x:auto;margin:16px 0}
+pre code{background:none;border:none;padding:0;font-size:.85em;line-height:1.7}
+
+.skip-nav{position:absolute;top:-100%;left:16px;background:var(--accent-blue);color:#fff;padding:8px 18px;border-radius:var(--radius);z-index:9999;font-weight:600}
+.skip-nav:focus{top:16px}
+:focus-visible{outline:2px solid var(--accent-blue);outline-offset:2px}
+
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple),var(--accent-cyan));z-index:10001;transition:width .15s;width:0}
+
+.hero{position:relative;background:linear-gradient(135deg,var(--bg-secondary),var(--bg-tertiary));border-bottom:1px solid var(--border-primary);padding:80px 24px 60px;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(31,111,235,.08),transparent 70%);pointer-events:none}
+[data-theme="light"] .hero{background:linear-gradient(135deg,#EBF0F6,#FFFFFF)}
+.hero-inner{max-width:var(--max-width);margin:0 auto;position:relative;z-index:1}
+.hero-label{display:inline-flex;align-items:center;gap:8px;background:var(--bg-card);border:1px solid var(--border-primary);padding:6px 16px;border-radius:20px;font-size:.82rem;color:var(--text-secondary);margin-bottom:20px}
+.hero h1{font-size:2.8rem;font-weight:750;letter-spacing:-.03em;line-height:1.15;margin-bottom:16px;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p.subtitle{font-size:1.12rem;color:var(--text-secondary);max-width:820px;line-height:1.7;margin-bottom:20px}
+.hero-meta{font-size:.82rem;color:var(--text-muted)}
+
+.stats-bar{background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);padding:28px 24px}
+.stats-grid{max-width:var(--max-width);margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.stat-item{text-align:center}
+.stat-number{font-size:1.65rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.stat-number.blue{color:var(--accent-blue)}
+.stat-number.green{color:var(--accent-green)}
+.stat-number.purple{color:var(--accent-purple)}
+.stat-number.orange{color:var(--accent-orange)}
+.stat-number.cyan{color:var(--accent-cyan)}
+.stat-number.red{color:var(--accent-red)}
+.stat-label{font-size:.76rem;color:var(--text-muted);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+
+.sticky-nav{position:sticky;top:0;z-index:1000;background:rgba(22,27,34,.85);border-bottom:1px solid var(--border-primary);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:background .3s}
+[data-theme="light"] .sticky-nav{background:rgba(255,255,255,.88)}
+.sticky-nav-inner{max-width:var(--max-width);margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.sticky-nav-inner::-webkit-scrollbar{display:none}
+.nav-pill{padding:10px 14px;font-size:.78rem;color:var(--text-secondary);white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;text-decoration:none;font-weight:500}
+.nav-pill:hover{color:var(--text-primary);text-decoration:none}
+.nav-pill.active{color:var(--accent-blue);border-bottom-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;padding:6px 14px;font-size:.78rem;background:var(--bg-card);color:var(--text-secondary);border:1px solid var(--border-primary);border-radius:20px;cursor:pointer;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--text-primary)}
+
+.container{max-width:var(--max-width);margin:0 auto;padding:0 24px}
+.section{padding:56px 0;scroll-margin-top:60px}
+.section+.section{border-top:1px solid var(--border-secondary)}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.section-icon{width:42px;height:42px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+.section-icon.blue{background:rgba(31,111,235,.12);color:var(--accent-blue)}
+.section-icon.green{background:var(--accent-green-bg);color:var(--accent-green)}
+.section-icon.purple{background:var(--accent-purple-bg);color:var(--accent-purple)}
+.section-icon.orange{background:var(--accent-orange-bg);color:var(--accent-orange)}
+.section-icon.cyan{background:var(--accent-cyan-bg);color:var(--accent-cyan)}
+.section-icon.red{background:var(--accent-red-bg);color:var(--accent-red)}
+.section-header h2{font-size:1.55rem;font-weight:700;letter-spacing:-.02em}
+.section-desc{color:var(--text-secondary);margin-bottom:28px;line-height:1.75;max-width:820px}
+
+.table-wrap{overflow-x:auto;margin:20px 0;border:1px solid var(--border-primary);border-radius:var(--radius)}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.data-table thead th{background:var(--bg-tertiary);padding:11px 16px;text-align:left;font-weight:600;color:var(--text-primary);border-bottom:2px solid var(--border-primary);white-space:nowrap}
+.data-table tbody td{padding:10px 16px;border-bottom:1px solid var(--border-secondary);color:var(--text-secondary);vertical-align:top}
+.data-table tbody tr:hover{background:var(--bg-card-hover)}
+.data-table tbody tr:last-child td{border-bottom:none}
+
+.diagram-container{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:28px;margin:24px 0;overflow-x:auto}
+.diagram-title{font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.diagram-explanation{margin-top:20px;padding:16px 20px;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border-secondary)}
+.diagram-explanation ol{margin-left:18px;color:var(--text-secondary)}
+.diagram-explanation ol li{margin-bottom:6px;line-height:1.6}
+
+.info-box{padding:18px 22px;border-radius:var(--radius);margin:20px 0;font-size:.88rem;line-height:1.7;border-left:4px solid}
+.info-box.blue{background:rgba(31,111,235,.08);border-color:var(--accent-blue);color:var(--text-secondary)}
+.info-box.green{background:var(--accent-green-bg);border-color:var(--accent-green);color:var(--text-secondary)}
+.info-box.orange{background:var(--accent-orange-bg);border-color:var(--accent-orange);color:var(--text-secondary)}
+
+.phase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:24px 0}
+.phase-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);padding:22px;transition:all .2s}
+.phase-card:hover{border-color:var(--accent-blue);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.phase-num{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent-blue);margin-bottom:8px}
+.phase-card h4{font-size:1rem;font-weight:650;margin-bottom:8px}
+.phase-card p{font-size:.84rem;color:var(--text-secondary);line-height:1.65}
+
+.domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:24px 0}
+.domain-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);padding:18px;transition:all .2s}
+.domain-card:hover{border-color:var(--accent-orange);box-shadow:var(--shadow-sm);transform:translateY(-1px)}
+.domain-icon{font-size:1.5rem;margin-bottom:8px}
+.domain-card h4{font-size:.92rem;font-weight:650;margin-bottom:4px}
+.domain-checks{font-size:.78rem;color:var(--text-muted)}
+
+.framework-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:24px 0}
+.framework-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);padding:16px;text-align:center;transition:all .2s}
+.framework-card:hover{border-color:var(--accent-cyan);box-shadow:var(--shadow-sm);transform:translateY(-1px)}
+.framework-count{font-size:1.6rem;font-weight:700;color:var(--accent-cyan)}
+.framework-name{font-size:.8rem;color:var(--text-secondary);margin-top:4px}
+
+.severity-badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.severity-badge.critical{background:var(--accent-red-bg);color:var(--accent-red)}
+.severity-badge.high{background:var(--accent-orange-bg);color:var(--accent-orange)}
+.severity-badge.medium{background:rgba(31,111,235,.12);color:var(--accent-blue)}
+.severity-badge.low{background:var(--accent-green-bg);color:var(--accent-green)}
+.severity-badge.info{background:var(--accent-purple-bg);color:var(--accent-purple)}
+
+.safety-banner{background:var(--accent-green-bg);border:1px solid var(--accent-green);border-radius:var(--radius);padding:22px 26px;margin:28px 0;display:flex;gap:16px;align-items:flex-start}
+.safety-icon{font-size:1.6rem;flex-shrink:0}
+.safety-list{list-style:none;padding:0;margin:8px 0 0;color:var(--text-secondary);font-size:.88rem}
+.safety-list li{padding:3px 0 3px 22px;position:relative}
+.safety-list li::before{content:'✓';position:absolute;left:0;color:var(--accent-green);font-weight:700}
+
+.back-to-top{position:fixed;bottom:32px;right:32px;width:42px;height:42px;border-radius:50%;background:var(--accent-blue);color:#fff;border:none;font-size:1.1rem;cursor:pointer;box-shadow:var(--shadow-md);opacity:0;visibility:hidden;transition:all .3s;display:flex;align-items:center;justify-content:center;z-index:999}
+.back-to-top.visible{opacity:1;visibility:visible}
+.back-to-top:hover{transform:scale(1.1)}
+
+.footer{border-top:1px solid var(--border-primary);padding:32px 24px;text-align:center;color:var(--text-muted);font-size:.82rem;margin-top:40px}
+
+@media(max-width:768px){
+  .hero h1{font-size:1.8rem}
+  .stats-grid{grid-template-columns:repeat(3,1fr)}
+  .phase-grid,.domain-grid{grid-template-columns:1fr}
+  .framework-grid{grid-template-columns:repeat(2,1fr)}
+  .section{padding:36px 0}
+  .sticky-nav-inner{padding:0 12px}
+}
+@media print{
+  .sticky-nav,.progress-bar,.back-to-top,.theme-toggle,.skip-nav{display:none!important}
+  body{background:#fff;color:#000}
+  .hero{background:#f5f5f5!important;padding:40px 24px 30px}
+  .section{break-inside:avoid}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:0s!important;transition-duration:0s!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<a class="skip-nav" href="#overview">Skip to content</a>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">🏢 Tenant Assessment</div>
+    <h1>Tenant Assessment — Deep Dive</h1>
+    <p class="subtitle">Full compliance-assessment orchestration coordinating 64 collectors, 10 domain evaluators, and 28 report generators across 11 compliance frameworks with 525 controls. 3-phase pipeline with checkpoint/resume, delta detection, and multi-tenant support.</p>
+    <div class="hero-meta">Murali Chillakuru · April 2026</div>
+  </div>
+</section>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+  <div class="stats-grid">
+    <div class="stat-item"><div class="stat-number blue" data-target="64">0</div><div class="stat-label">Collectors</div></div>
+    <div class="stat-item"><div class="stat-number green" data-target="525">0</div><div class="stat-label">Controls</div></div>
+    <div class="stat-item"><div class="stat-number purple" data-target="33000">0</div><div class="stat-label">Lines</div></div>
+    <div class="stat-item"><div class="stat-number orange" data-target="11">0</div><div class="stat-label">Frameworks</div></div>
+    <div class="stat-item"><div class="stat-number cyan" data-target="28">0</div><div class="stat-label">Report Generators</div></div>
+    <div class="stat-item"><div class="stat-number red" data-target="10">0</div><div class="stat-label">Eval Domains</div></div>
+  </div>
+</div>
+
+<!-- Sticky Nav -->
+<nav class="sticky-nav">
+  <div class="sticky-nav-inner">
+    <a class="nav-pill" href="#overview">Overview</a>
+    <a class="nav-pill" href="#pipeline">Pipeline</a>
+    <a class="nav-pill" href="#collection">Collection</a>
+    <a class="nav-pill" href="#evaluation">Evaluation</a>
+    <a class="nav-pill" href="#frameworks">Frameworks</a>
+    <a class="nav-pill" href="#scoring">Scoring</a>
+    <a class="nav-pill" href="#reports">Reports</a>
+    <a class="nav-pill" href="#config">Config</a>
+    <a class="nav-pill" href="#auth">Auth</a>
+    <a class="nav-pill" href="#models">Models</a>
+    <a class="nav-pill" href="#cli">CLI</a>
+    <a class="nav-pill" href="#source">Source</a>
+    <button class="theme-toggle" id="themeToggle">🌙 Dark</button>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- EXEC SUMMARY -->
+<div style="background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.25);border-radius:8px;padding:16px 20px;margin:0 0 24px;font-size:.9rem;color:var(--text-secondary)">
+<strong>📋 Executive Summary</strong> — The most comprehensive pipeline deep-dive: full tenant assessment from authentication through report generation. Covers 64 collectors, 10 domains, 113 check functions, 11 frameworks (525 controls), 28 report generators, checkpoint/resume, and delta tracking.
+<div style="margin-top:8px;font-size:.82rem"><strong>Audience:</strong> Architects, senior engineers, auditors · <strong>Prerequisites:</strong> <a href="architecture.html">Architecture</a> · <strong>Related:</strong> <a href="evaluation-rules.html">Evaluation Rules</a> · <a href="configuration-guide.html">Configuration Guide</a> · <a href="agent-capabilities.html">Agent Capabilities</a></div>
+</div>
+
+  <!-- 1. Overview -->
+  <section class="section" id="overview">
+    <div class="section-header">
+      <div class="section-icon blue">🏢</div>
+      <h2>Overview</h2>
+    </div>
+    <p class="section-desc">
+      The Tenant Assessment engine is the primary orchestration system in EnterpriseSecurityIQ. It coordinates a complete 3-phase pipeline — <strong>Collect</strong> (64 collectors) → <strong>Evaluate</strong> (10 domains, 525 controls) → <strong>Report</strong> (28 generators) — to produce full compliance assessments for Microsoft 365 and Azure tenants.
+    </p>
+    <p class="section-desc">
+      Key capabilities include checkpoint/resume for long-running assessments, delta and drift detection between successive runs, multi-tenant support for consolidated reporting, and deterministic UUID5 IDs for reproducible findings. The entire codebase spans approximately 33,000 lines across 119 files.
+    </p>
+    <div class="phase-grid">
+      <div class="phase-card">
+        <div class="phase-num">Phase 1</div>
+        <h4>Collect Evidence</h4>
+        <p>64 auto-discovered collectors (49 Azure + 13 Entra + 2 standalone) gather configuration, policy, and telemetry evidence using read-only Microsoft Graph and ARM API calls with concurrent batching.</p>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Phase 2</div>
+        <h4>Evaluate Compliance</h4>
+        <p>10 domain evaluators apply 525 controls from 11 compliance frameworks. Each control produces a deterministic ComplianceControlResult with status, severity, and evidence linkage.</p>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Phase 3</div>
+        <h4>Generate Reports</h4>
+        <p>28 report generators produce output in 10+ formats: HTML, Markdown, Excel, JSON, SARIF, OSCAL, PDF, executive dashboards, delta reports, remediation guides, and more.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Pipeline -->
+  <section class="section" id="pipeline">
+    <div class="section-header">
+      <div class="section-icon green">⚡</div>
+      <h2>Pipeline</h2>
+    </div>
+    <p class="section-desc">
+      The full 3-phase assessment pipeline orchestrated by <code>orchestrator.py</code>, invoked from <code>run_assessment.py</code>. Evidence is collected concurrently, evaluated against all selected frameworks, then rendered into multiple report formats.
+    </p>
+
+    <div class="diagram-container">
+      <div class="diagram-title">📊 Full Assessment Sequence</div>
+      <div class="mermaid">
+sequenceDiagram
+    participant U as User / CI Pipeline
+    participant R as run_assessment.py
+    participant A as ComplianceCredentials
+    participant O as orchestrator.py
+    participant AC as Azure Collectors (49)
+    participant EC as Entra Collectors (13)
+    participant EV as Evaluator Engine
+    participant FW as Framework Controls
+    participant RP as Report Generators (27)
+    U->>R: python run_assessment.py --tenant T --framework all
+    R->>A: preflight_check()
+    A-->>R: ok, user, roles, graph_ok
+    R->>O: run_full_assessment(creds, config)
+    Note over O: Phase 1 — Collect Evidence
+    O->>O: Load checkpoint (if exists)
+    par Azure (batch 8)
+        O->>AC: 49 Azure collectors
+        AC-->>O: Azure evidence
+    and Entra (batch 6)
+        O->>EC: 13 Entra collectors
+        EC-->>O: Entra evidence
+    end
+    O->>O: Save checkpoint → clear
+    Note over O: Phase 2 — Evaluate
+    O->>EV: evaluate_all(evidence, frameworks)
+    EV->>FW: Load 525 controls
+    EV-->>O: control_results, findings, summary
+    Note over O: Phase 2.5 — Delta
+    O->>O: compute_delta(results, previous)
+    Note over O: Phase 3 — Report
+    O->>RP: 28 report generators
+    RP-->>O: report_paths
+    O-->>R: ComplianceScore, findings, reports
+    R-->>U: Score + report paths
+      </div>
+    </div>
+
+    <div class="phase-grid">
+      <div class="phase-card">
+        <div class="phase-num">Phase 1 — Collect</div>
+        <h4>Collect Evidence</h4>
+        <p>64 collectors run concurrently in batches (Azure: 8, Entra: 6). Checkpoint saved after completion. Timeout recovery captures partial evidence automatically.</p>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Phase 2 — Evaluate</div>
+        <h4>Evaluate Compliance</h4>
+        <p>10 domain evaluators apply 525 controls from the selected frameworks. Each control maps evidence to a deterministic pass/fail/partial result with weighted severity scoring.</p>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Phase 3 — Report</div>
+        <h4>Generate Reports</h4>
+        <p>28 report generators produce output in 10+ formats including HTML dashboards, Excel worksheets, SARIF for CI/CD, OSCAL for compliance exchange, and executive summaries.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Collection -->
+  <section class="section" id="collection">
+    <div class="section-header">
+      <div class="section-icon purple">📦</div>
+      <h2>Collection</h2>
+    </div>
+    <p class="section-desc">
+      Evidence collection uses 62 auto-discovered collectors split between Azure Resource Manager and Microsoft Entra / Graph APIs. Collectors run concurrently in configurable batches with timeout recovery.
+    </p>
+
+    <div class="info-box blue">
+      <strong>Auto-discovery:</strong> All collectors are registered via the <code>@register_collector</code> decorator. The orchestrator discovers and invokes them automatically — no manual wiring required. New collectors are picked up as soon as the module is imported.
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Source</th><th>Files</th><th>Lines</th><th>Batch Size</th><th>Timeout</th></tr></thead>
+        <tbody>
+          <tr><td>Azure (ARM / Resource)</td><td>49</td><td>~8,333</td><td>8</td><td>600 s</td></tr>
+          <tr><td>Entra (Graph / Identity)</td><td>13</td><td>~1,787</td><td>6</td><td>600 s</td></tr>
+          <tr><td style="font-weight:600">Total</td><td style="font-weight:600">62</td><td style="font-weight:600">~10,120</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Largest Azure Collectors</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Collector</th><th>Lines</th></tr></thead>
+        <tbody>
+          <tr><td><code>foundry_config</code></td><td>1,081</td></tr>
+          <tr><td><code>rbac_collector</code></td><td>983</td></tr>
+          <tr><td><code>copilot_studio</code></td><td>370</td></tr>
+          <tr><td><code>sharepoint_onedrive</code></td><td>366</td></tr>
+          <tr><td><code>m365_compliance</code></td><td>321</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Largest Entra Collectors</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Collector</th><th>Lines</th></tr></thead>
+        <tbody>
+          <tr><td><code>ai_identity</code></td><td>419</td></tr>
+          <tr><td><code>user_details</code></td><td>241</td></tr>
+          <tr><td><code>governance</code></td><td>136</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box green">
+      <strong>Checkpoint / Resume:</strong> After Phase 1 completes, a checkpoint is saved. On re-run, previously collected evidence is restored, skipping completed collectors. If a collector times out (600 s default), any partial evidence is captured via <code>_partial_evidence</code> markers and included in the assessment with a reduced confidence flag.
+    </div>
+  </section>
+
+  <!-- 4. Evaluation -->
+  <section class="section" id="evaluation">
+    <div class="section-header">
+      <div class="section-icon orange">📋</div>
+      <h2>Evaluation</h2>
+    </div>
+    <p class="section-desc">
+      10 domain evaluators apply compliance controls against collected evidence. Each evaluator specializes in a security domain and processes controls mapped to that domain from any active framework.
+    </p>
+
+    <div class="domain-grid">
+      <div class="domain-card">
+        <div class="domain-icon">🔐</div>
+        <h4>Access</h4>
+        <div class="domain-checks">311 lines · MFA, Conditional Access, PIM</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">🪪</div>
+        <h4>Identity</h4>
+        <div class="domain-checks">518 lines · Entra roles, password policy, SSO</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">🛡️</div>
+        <h4>Data Protection</h4>
+        <div class="domain-checks">814 lines · DLP, encryption, sensitivity labels</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">📊</div>
+        <h4>Logging</h4>
+        <div class="domain-checks">281 lines · Audit log, diagnostic settings</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">🌐</div>
+        <h4>Network</h4>
+        <div class="domain-checks">577 lines · NSG, firewall, private endpoints</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">⚖️</div>
+        <h4>Governance</h4>
+        <div class="domain-checks">466 lines · Policy, tagging, blueprints</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">🚨</div>
+        <h4>Incident Response</h4>
+        <div class="domain-checks">250 lines · Alerts, runbooks, SIEM</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">🔄</div>
+        <h4>Change Management</h4>
+        <div class="domain-checks">152 lines · Approvals, deployment gates</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">💾</div>
+        <h4>Business Continuity</h4>
+        <div class="domain-checks">175 lines · Backup, DR, availability</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">📦</div>
+        <h4>Asset Management</h4>
+        <div class="domain-checks">145 lines · Inventory, lifecycle, ownership</div>
+      </div>
+    </div>
+
+    <div class="info-box orange">
+      <strong>Cross-domain fallbacks:</strong> 24 fallback evaluator mappings ensure that controls referencing evidence outside a domain's primary scope can still be evaluated. For example, a Governance control that requires network evidence triggers a cross-domain lookup to the Network evaluator.
+    </div>
+  </section>
+
+  <!-- 5. Frameworks -->
+  <section class="section" id="frameworks">
+    <div class="section-header">
+      <div class="section-icon cyan">🏛️</div>
+      <h2>Frameworks</h2>
+    </div>
+    <p class="section-desc">
+      11 compliance frameworks provide the 525 controls evaluated during assessment. Frameworks are defined as JSON files in <code>app/frameworks/</code> and loaded dynamically based on the <code>--framework</code> argument.
+    </p>
+
+    <div class="framework-grid">
+      <div class="framework-card"><div class="framework-count">83</div><div class="framework-name">NIST 800-53</div></div>
+      <div class="framework-card"><div class="framework-count">69</div><div class="framework-name">FedRAMP</div></div>
+      <div class="framework-card"><div class="framework-count">53</div><div class="framework-name">CIS Azure</div></div>
+      <div class="framework-card"><div class="framework-count">53</div><div class="framework-name">MCSB</div></div>
+      <div class="framework-card"><div class="framework-count">51</div><div class="framework-name">ISO 27001</div></div>
+      <div class="framework-card"><div class="framework-count">51</div><div class="framework-name">PCI-DSS</div></div>
+      <div class="framework-card"><div class="framework-count">47</div><div class="framework-name">SOC 2</div></div>
+      <div class="framework-card"><div class="framework-count">43</div><div class="framework-name">HIPAA</div></div>
+      <div class="framework-card"><div class="framework-count">29</div><div class="framework-name">NIST CSF</div></div>
+      <div class="framework-card"><div class="framework-count">24</div><div class="framework-name">CSA CCM</div></div>
+      <div class="framework-card"><div class="framework-count">22</div><div class="framework-name">GDPR</div></div>
+    </div>
+
+    <p class="section-desc" style="margin-top:20px">
+      Each control defines: <code>control_id</code>, <code>domain</code>, <code>severity</code>, <code>title</code>, <code>evidence_types</code>, <code>evaluation_logic</code>, and <code>recommendation</code>. Controls are deduplicated across overlapping frameworks and mapped to their respective domain evaluator.
+    </p>
+  </section>
+
+  <!-- 6. Scoring -->
+  <section class="section" id="scoring">
+    <div class="section-header">
+      <div class="section-icon red">📈</div>
+      <h2>Scoring</h2>
+    </div>
+    <p class="section-desc">
+      Compliance scores are computed using severity-weighted averages. Each control's outcome is scored based on its severity weight and compliance status, producing per-domain and overall tenant scores.
+    </p>
+
+    <h3 style="margin:24px 0 12px;font-size:1.05rem">Severity Weights</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Severity</th><th>Weight</th><th>Badge</th></tr></thead>
+        <tbody>
+          <tr><td>Critical</td><td>4</td><td><span class="severity-badge critical">Critical</span></td></tr>
+          <tr><td>High</td><td>3</td><td><span class="severity-badge high">High</span></td></tr>
+          <tr><td>Medium</td><td>2</td><td><span class="severity-badge medium">Medium</span></td></tr>
+          <tr><td>Low</td><td>1</td><td><span class="severity-badge low">Low</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Scoring Formula</h3>
+    <p class="section-desc">
+      <strong>Compliant</strong> controls earn the full severity weight. <strong>Partial</strong> controls earn 50% of the weight. <strong>Non-Compliant</strong> controls earn 0. Controls with <strong>Missing Evidence</strong> are excluded from both numerator and denominator — they do not penalize the score.
+    </p>
+    <pre><code>score = Σ(weight × status_factor) / Σ(weight of evaluated controls) × 100
+
+where status_factor:
+  COMPLIANT      = 1.0
+  PARTIAL        = 0.5
+  NON_COMPLIANT  = 0.0</code></pre>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Control Statuses</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Status</th><th>Description</th><th>Score Factor</th></tr></thead>
+        <tbody>
+          <tr><td><span class="severity-badge low">COMPLIANT</span></td><td>Control fully satisfied</td><td>1.0</td></tr>
+          <tr><td><span class="severity-badge high">NON_COMPLIANT</span></td><td>Control requirements not met</td><td>0.0</td></tr>
+          <tr><td><span class="severity-badge medium">PARTIAL</span></td><td>Some requirements met, others missing</td><td>0.5</td></tr>
+          <tr><td><span class="severity-badge info">NOT_ASSESSED</span></td><td>Control not applicable or skipped</td><td>Excluded</td></tr>
+          <tr><td><span class="severity-badge critical">MISSING_EVIDENCE</span></td><td>Required evidence not collected</td><td>Excluded</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="section-desc" style="margin-top:16px">
+      <strong>Per-domain score:</strong> Compliant / Total evaluated × 100 (missing evidence excluded). Domain scores roll up to the overall tenant score using a weighted average based on control count per domain.
+    </p>
+
+    <div class="info-box green">
+      <strong>Missing evidence does not penalize the score</strong> — only evaluated controls count toward the numerator and denominator. This ensures that transient API failures or permission gaps do not artificially deflate compliance scores.
+    </div>
+  </section>
+
+  <!-- 7. Reports -->
+  <section class="section" id="reports">
+    <div class="section-header">
+      <div class="section-icon blue">📄</div>
+      <h2>Reports</h2>
+    </div>
+    <p class="section-desc">
+      28 report generators produce compliance output in multiple formats. Each generator is auto-discovered via the <code>@register_report</code> decorator and invoked during Phase 3 based on the configured output formats.
+    </p>
+
+    <h3 style="margin:24px 0 12px;font-size:1.05rem">Core Compliance</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Generator</th><th>Lines</th><th>Format</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>compliance_report_html</code></td><td>1,680</td><td>HTML</td><td>Primary interactive compliance dashboard with charts and drill-down</td></tr>
+          <tr><td><code>compliance_report_md</code></td><td>356</td><td>Markdown</td><td>Portable compliance report for Git repos and wikis</td></tr>
+          <tr><td><code>html_report</code></td><td>465</td><td>HTML</td><td>Summary HTML report with framework breakdown</td></tr>
+          <tr><td><code>markdown_report</code></td><td>135</td><td>Markdown</td><td>Lightweight markdown summary for CI pipelines</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Export Formats</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Generator</th><th>Lines</th><th>Format</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>excel_export</code></td><td>236</td><td>XLSX</td><td>Multi-sheet Excel workbook with findings, controls, and summary</td></tr>
+          <tr><td><code>json_report</code></td><td>39</td><td>JSON</td><td>Machine-readable raw assessment data</td></tr>
+          <tr><td><code>sarif_export</code></td><td>119</td><td>SARIF</td><td>Static analysis results for GitHub Advanced Security / CI integration</td></tr>
+          <tr><td><code>oscal_export</code></td><td>102</td><td>OSCAL</td><td>NIST OSCAL format for compliance exchange</td></tr>
+          <tr><td><code>pdf_export</code></td><td>85</td><td>PDF</td><td>Printable compliance report for stakeholders</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Executive</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Generator</th><th>Lines</th><th>Format</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>executive_dashboard</code></td><td>222</td><td>HTML</td><td>C-suite dashboard with KPIs, trends, and risk heatmap</td></tr>
+          <tr><td><code>executive_summary</code></td><td>326</td><td>HTML</td><td>One-page executive summary with key findings</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Analysis</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Generator</th><th>Lines</th><th>Format</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>master_report</code></td><td>594</td><td>HTML</td><td>Comprehensive master report aggregating all findings</td></tr>
+          <tr><td><code>gaps_report</code></td><td>473</td><td>HTML</td><td>Gap analysis identifying compliance shortfalls</td></tr>
+          <tr><td><code>methodology_report</code></td><td>420</td><td>HTML</td><td>Assessment methodology documentation for auditors</td></tr>
+          <tr><td><code>evidence_catalog</code></td><td>321</td><td>HTML</td><td>Evidence inventory with provenance and linkage</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Operational</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Generator</th><th>Lines</th><th>Format</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>remediation</code></td><td>547</td><td>HTML</td><td>Prioritized remediation plan with effort estimates</td></tr>
+          <tr><td><code>delta_report</code></td><td>125</td><td>HTML</td><td>Changes between successive assessment runs</td></tr>
+          <tr><td><code>drift_report_html</code></td><td>119</td><td>HTML</td><td>Configuration drift detection since last baseline</td></tr>
+          <tr><td><code>trending</code></td><td>47</td><td>HTML</td><td>Compliance score trends over time</td></tr>
+          <tr><td><code>notifications</code></td><td>70</td><td>JSON</td><td>Alert payloads for email / Teams / webhook</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Standalone Tools</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Generator</th><th>Lines</th><th>Format</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>copilot_readiness_report</code></td><td>3,409</td><td>HTML</td><td>Microsoft 365 Copilot readiness assessment</td></tr>
+          <tr><td><code>data_security_report</code></td><td>3,348</td><td>HTML</td><td>Data security posture analysis</td></tr>
+          <tr><td><code>rbac_report</code></td><td>1,913</td><td>HTML</td><td>RBAC and privileged access review</td></tr>
+          <tr><td><code>ai_agent_security_report</code></td><td>1,518</td><td>HTML</td><td>AI agent and Copilot Studio security audit</td></tr>
+          <tr><td><code>risk_report</code></td><td>917</td><td>HTML</td><td>Quantitative risk analysis with heatmaps</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Shared</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Generator</th><th>Lines</th><th>Format</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>shared_theme</code></td><td>294</td><td>CSS/JS</td><td>Shared HTML theme, styles, and interactive components</td></tr>
+          <tr><td><code>inventory</code></td><td>167</td><td>HTML</td><td>Resource and configuration inventory</td></tr>
+          <tr><td><code>data_exports</code></td><td>59</td><td>CSV/JSON</td><td>Bulk data exports for external tools</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 8. Config -->
+  <section class="section" id="config">
+    <div class="section-header">
+      <div class="section-icon green">⚙️</div>
+      <h2>Config</h2>
+    </div>
+    <p class="section-desc">
+      Assessment configuration is loaded from environment variables, JSON config files, and CLI arguments (in order of precedence). The <code>AssessmentConfig</code>, <code>CollectorConfig</code>, and <code>ThresholdConfig</code> dataclasses define all tunable parameters.
+    </p>
+
+    <h3 style="margin:24px 0 12px;font-size:1.05rem">AssessmentConfig</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>name</code></td><td>str</td><td><code>"EnterpriseSecurityIQ"</code></td><td>Assessment name for report headers</td></tr>
+          <tr><td><code>frameworks</code></td><td>list[str]</td><td><code>["all"]</code></td><td>Frameworks to evaluate (or "all" for all 11)</td></tr>
+          <tr><td><code>log_level</code></td><td>str</td><td><code>"INFO"</code></td><td>Logging verbosity</td></tr>
+          <tr><td><code>output_formats</code></td><td>list[str]</td><td><code>["html","json","md"]</code></td><td>Report formats to produce</td></tr>
+          <tr><td><code>output_dir</code></td><td>str</td><td><code>"output/"</code></td><td>Output directory for reports</td></tr>
+          <tr><td><code>checkpoint_enabled</code></td><td>bool</td><td><code>true</code></td><td>Enable checkpoint/resume for collectors</td></tr>
+          <tr><td><code>additional_tenants</code></td><td>list[str]</td><td><code>[]</code></td><td>Extra tenant IDs for multi-tenant assessments</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">CollectorConfig</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>azure_enabled</code></td><td>bool</td><td><code>true</code></td><td>Enable Azure ARM collectors</td></tr>
+          <tr><td><code>entra_enabled</code></td><td>bool</td><td><code>true</code></td><td>Enable Entra / Graph collectors</td></tr>
+          <tr><td><code>azure_batch_size</code></td><td>int</td><td><code>8</code></td><td>Concurrent Azure collector batch size</td></tr>
+          <tr><td><code>entra_batch_size</code></td><td>int</td><td><code>6</code></td><td>Concurrent Entra collector batch size</td></tr>
+          <tr><td><code>collector_timeout</code></td><td>int</td><td><code>600</code></td><td>Per-collector timeout in seconds</td></tr>
+          <tr><td><code>user_sample_limit</code></td><td>int</td><td><code>0</code></td><td>Max users to sample (0 = all)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">ThresholdConfig</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Parameter</th><th>Domain</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>mfa_coverage_pct</code></td><td>Access</td><td>95</td><td>Min % of users with MFA enforced</td></tr>
+          <tr><td><code>ca_policy_min</code></td><td>Access</td><td>3</td><td>Min Conditional Access policies enabled</td></tr>
+          <tr><td><code>pim_activation_max_hrs</code></td><td>Access</td><td>8</td><td>Max PIM activation duration (hours)</td></tr>
+          <tr><td><code>legacy_auth_block</code></td><td>Access</td><td>true</td><td>Require legacy auth blocked</td></tr>
+          <tr><td><code>stale_user_days</code></td><td>Identity</td><td>90</td><td>Days before user is considered stale</td></tr>
+          <tr><td><code>guest_review_days</code></td><td>Identity</td><td>30</td><td>Max days between guest access reviews</td></tr>
+          <tr><td><code>password_min_length</code></td><td>Identity</td><td>14</td><td>Min password length</td></tr>
+          <tr><td><code>sspr_enabled</code></td><td>Identity</td><td>true</td><td>Require self-service password reset</td></tr>
+          <tr><td><code>audit_log_retention_days</code></td><td>Logging</td><td>90</td><td>Min audit log retention (days)</td></tr>
+          <tr><td><code>sign_in_log_retention</code></td><td>Logging</td><td>30</td><td>Min sign-in log retention (days)</td></tr>
+          <tr><td><code>diagnostic_settings_min</code></td><td>Logging</td><td>1</td><td>Min diagnostic settings per critical resource</td></tr>
+          <tr><td><code>alert_rules_min</code></td><td>Logging</td><td>5</td><td>Min alert rules configured</td></tr>
+          <tr><td><code>policy_assignment_min</code></td><td>Governance</td><td>3</td><td>Min Azure Policy assignments</td></tr>
+          <tr><td><code>tag_enforcement</code></td><td>Governance</td><td>true</td><td>Require tag enforcement policy</td></tr>
+          <tr><td><code>resource_lock_critical</code></td><td>Governance</td><td>true</td><td>Require locks on critical resources</td></tr>
+          <tr><td><code>mgmt_group_depth_max</code></td><td>Governance</td><td>4</td><td>Max management group hierarchy depth</td></tr>
+          <tr><td><code>budget_alerts_enabled</code></td><td>Governance</td><td>true</td><td>Require budget alerts configured</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box blue">
+      <strong>Config loading order:</strong> Environment variables (prefixed <code>ENTERPRISESECURITYIQ_</code>) → JSON config file (<code>--config</code> or <code>ENTERPRISESECURITYIQ_CONFIG</code> env var) → CLI arguments. Later sources override earlier ones.
+    </div>
+  </section>
+
+  <!-- 9. Auth -->
+  <section class="section" id="auth">
+    <div class="section-header">
+      <div class="section-icon orange">🔑</div>
+      <h2>Auth</h2>
+    </div>
+    <p class="section-desc">
+      Authentication is handled by <code>ComplianceCredentials</code>, which supports 4 modes and performs comprehensive pre-flight validation before any data collection begins.
+    </p>
+
+    <h3 style="margin:24px 0 12px;font-size:1.05rem">Authentication Modes</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Mode</th><th>Mechanism</th><th>Use Case</th></tr></thead>
+        <tbody>
+          <tr><td><code>auto</code></td><td>DefaultAzureCredential (chained)</td><td>Development, managed identity, AKS workload identity</td></tr>
+          <tr><td><code>azurecli</code></td><td>AzureCliCredential</td><td>Local development with <code>az login</code></td></tr>
+          <tr><td><code>serviceprincipal</code></td><td>ClientSecretCredential</td><td>CI/CD pipelines, automation</td></tr>
+          <tr><td><code>appregistration</code></td><td>ClientSecretCredential (app-only)</td><td>Headless app integrations</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Pre-flight Validation (4 Steps)</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Step</th><th>Check</th><th>Failure Action</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>ARM connectivity — list subscriptions</td><td>Fail with auth error</td></tr>
+          <tr><td>2</td><td>Graph <code>/me</code> — validate identity</td><td>Fail with Graph permission error</td></tr>
+          <tr><td>3</td><td>Entra role check — verify sufficient roles</td><td>Warn if missing recommended roles</td></tr>
+          <tr><td>4</td><td>Graph endpoint probes — test key API paths</td><td>Warn per inaccessible endpoint</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Sufficient Roles</h3>
+    <p class="section-desc">Any one of the following Entra roles provides sufficient permissions for a full assessment:</p>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Role</th><th>Access Level</th></tr></thead>
+        <tbody>
+          <tr><td>Global Administrator</td><td>Full read access to all tenant resources</td></tr>
+          <tr><td>Global Reader</td><td>Read-only access to all tenant configuration</td></tr>
+          <tr><td>Security Administrator</td><td>Security configuration and policy read access</td></tr>
+          <tr><td>Security Reader</td><td>Security configuration read-only access</td></tr>
+          <tr><td>Compliance Administrator</td><td>Compliance and data governance read access</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 10. Models -->
+  <section class="section" id="models">
+    <div class="section-header">
+      <div class="section-icon purple">📊</div>
+      <h2>Models</h2>
+    </div>
+    <p class="section-desc">
+      The assessment pipeline uses strongly-typed dataclass models for all data interchange. Deterministic UUID5 IDs ensure that identical inputs produce identical record identifiers across runs.
+    </p>
+
+    <h3 style="margin:24px 0 12px;font-size:1.05rem">Dataclasses (8)</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Model</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>ResourceContext</code></td><td>Tenant / subscription / resource group context for scoping</td></tr>
+          <tr><td><code>EvidenceRecord</code></td><td>Raw evidence collected by a collector with provenance metadata</td></tr>
+          <tr><td><code>FindingRecord</code></td><td>A specific compliance finding with severity, status, and remediation</td></tr>
+          <tr><td><code>ComplianceControlResult</code></td><td>Evaluation result for a single control — status, evidence refs, score</td></tr>
+          <tr><td><code>MissingEvidenceRecord</code></td><td>Tracks evidence that could not be collected with failure reason</td></tr>
+          <tr><td><code>CollectorResult</code></td><td>Wrapper around a collector's output including timing and error info</td></tr>
+          <tr><td><code>AssessmentSummary</code></td><td>Aggregated assessment result with scores, counts, and metadata</td></tr>
+          <tr><td><code>CheckpointState</code></td><td>Serializable checkpoint for resuming interrupted assessments</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Enumerations (3)</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Enum</th><th>Values</th></tr></thead>
+        <tbody>
+          <tr><td><code>Source</code></td><td><code>AZURE</code>, <code>ENTRA</code></td></tr>
+          <tr><td><code>Status</code></td><td><code>COMPLIANT</code>, <code>NON_COMPLIANT</code>, <code>PARTIAL</code>, <code>NOT_ASSESSED</code>, <code>MISSING_EVIDENCE</code></td></tr>
+          <tr><td><code>Severity</code></td><td><code>CRITICAL</code>, <code>HIGH</code>, <code>MEDIUM</code>, <code>LOW</code>, <code>INFO</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">UUID5 Determinism</h3>
+    <pre><code>NAMESPACE = uuid.UUID("f47ac10b-58cc-4372-a567-0e02b2c3d479")
+
+# Finding ID = UUID5(namespace, f"{control_id}:{resource_id}:{tenant_id}")
+finding_id = uuid.uuid5(NAMESPACE, f"NIST-AC-2:{resource_id}:{tenant_id}")
+
+# Evidence ID = UUID5(namespace, f"{collector}:{resource}:{timestamp}")
+evidence_id = uuid.uuid5(NAMESPACE, f"rbac_collector:{resource}:{ts}")</code></pre>
+
+    <div class="safety-banner">
+      <div class="safety-icon">🛡️</div>
+      <div>
+        <strong style="color:var(--text-primary)">Read-Only Safety Guarantee</strong>
+        <ul class="safety-list">
+          <li>All operations are strictly read-only — no PUT, POST, PATCH, or DELETE calls</li>
+          <li>Deterministic UUID5 IDs ensure findings are reproducible across runs</li>
+          <li>No tenant configuration is modified during assessment</li>
+          <li>Credentials are scoped to the minimum required read permissions</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. CLI -->
+  <section class="section" id="cli">
+    <div class="section-header">
+      <div class="section-icon cyan">💻</div>
+      <h2>CLI</h2>
+    </div>
+    <p class="section-desc">
+      The assessment is invoked via <code>run_assessment.py</code> with configurable arguments for tenant, frameworks, output formats, and config file.
+    </p>
+
+    <h3 style="margin:24px 0 12px;font-size:1.05rem">Usage Examples</h3>
+    <pre><code># Full assessment — all 11 frameworks
+python run_assessment.py --tenant &lt;tenant-id&gt; --framework all
+
+# Specific frameworks only
+python run_assessment.py --tenant &lt;tenant-id&gt; --framework FedRAMP ISO-27001
+
+# Interactive mode (prompts for tenant and frameworks)
+python run_assessment.py --tenant &lt;tenant-id&gt;
+
+# Config file via environment variable
+ENTERPRISESECURITYIQ_CONFIG=config.json python run_assessment.py</code></pre>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Arguments</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Argument</th><th>Required</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>--tenant</code></td><td>Yes</td><td>—</td><td>Azure AD tenant ID</td></tr>
+          <tr><td><code>--framework</code></td><td>No</td><td>Interactive</td><td>Framework(s): <code>all</code> or space-separated names</td></tr>
+          <tr><td><code>--config</code></td><td>No</td><td>—</td><td>Path to JSON config file</td></tr>
+          <tr><td><code>--output-dir</code></td><td>No</td><td><code>output/</code></td><td>Output directory for reports</td></tr>
+          <tr><td><code>--output-formats</code></td><td>No</td><td><code>html json md</code></td><td>Report formats to generate</td></tr>
+          <tr><td><code>--log-level</code></td><td>No</td><td><code>INFO</code></td><td>Logging verbosity</td></tr>
+          <tr><td><code>--no-checkpoint</code></td><td>No</td><td><code>false</code></td><td>Disable checkpoint/resume</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:28px 0 12px;font-size:1.05rem">Output Directory Structure</h3>
+    <pre><code>output/
+└── 20260411_143022_PM/
+    ├── compliance-report.html        # Primary interactive dashboard
+    ├── compliance-report.md          # Markdown compliance report
+    ├── assessment-data.json          # Machine-readable results
+    ├── executive-summary.html        # C-suite summary
+    ├── executive-dashboard.html      # KPI dashboard
+    ├── gaps-report.html              # Gap analysis
+    ├── remediation-plan.html         # Prioritized remediation
+    ├── methodology-report.html       # Auditor documentation
+    ├── evidence-catalog.html         # Evidence inventory
+    ├── master-report.html            # Comprehensive master report
+    ├── delta-report.html             # Changes since last run
+    ├── findings.sarif                # SARIF for CI/CD
+    ├── findings.oscal.json           # OSCAL compliance exchange
+    ├── compliance-data.xlsx          # Excel workbook
+    ├── compliance-report.pdf         # Printable PDF
+    ├── inventory.html                # Resource inventory
+    └── assessment.log                # Run log</code></pre>
+  </section>
+
+  <!-- 12. Source -->
+  <section class="section" id="source">
+    <div class="section-header">
+      <div class="section-icon red">📁</div>
+      <h2>Source</h2>
+    </div>
+    <p class="section-desc">
+      The Tenant Assessment system spans 119 files and approximately 33,000 lines of Python. Below is a breakdown by component area.
+    </p>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Component</th><th>Files</th><th>Lines</th><th>Key Modules</th></tr></thead>
+        <tbody>
+          <tr><td>Orchestration</td><td>5</td><td>~1,339</td><td><code>orchestrator.py</code>, <code>run_assessment.py</code>, <code>config.py</code>, <code>auth.py</code>, <code>models.py</code></td></tr>
+          <tr><td>Evaluators</td><td>14</td><td>4,339</td><td><code>evaluator_engine.py</code> + 10 domain evaluators + 3 shared utilities</td></tr>
+          <tr><td>Azure Collectors</td><td>49</td><td>~8,333</td><td>ARM / resource collectors in <code>app/collectors/azure/</code></td></tr>
+          <tr><td>Entra Collectors</td><td>13</td><td>~1,787</td><td>Graph / identity collectors in <code>app/collectors/entra/</code></td></tr>
+          <tr><td>Report Generators</td><td>27</td><td>17,156</td><td>All generators in <code>app/reports/</code></td></tr>
+          <tr><td>Frameworks</td><td>11</td><td>525 controls</td><td>JSON framework definitions in <code>app/frameworks/</code></td></tr>
+          <tr><td style="font-weight:700">Total</td><td style="font-weight:700">119</td><td style="font-weight:700">~33,000</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  PostureIQ — Tenant Assessment Deep Dive<br>
+  Murali Chillakuru · April 2026
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+<script>
+(function(){var s=localStorage.getItem('enterprisesecurityiq-theme');var t=s||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');document.documentElement.setAttribute('data-theme',t);var b=document.getElementById('themeToggle');if(b)b.textContent=t==='dark'?'🌙 Dark':'☀️ Light'})();
+document.getElementById('themeToggle').addEventListener('click',function(){var h=document.documentElement;var c=h.getAttribute('data-theme')||'dark';var n=c==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('enterprisesecurityiq-theme',n);this.textContent=n==='dark'?'🌙 Dark':'☀️ Light';if(typeof mermaid!=='undefined'){mermaid.initialize({startOnLoad:false,theme:n==='dark'?'dark':'default'});document.querySelectorAll('.mermaid[data-processed]').forEach(function(e){e.removeAttribute('data-processed')});mermaid.run()}});
+window.addEventListener('scroll',function(){var h=document.documentElement;document.getElementById('progressBar').style.width=((h.scrollTop/(h.scrollHeight-h.clientHeight))*100)+'%'});
+document.querySelectorAll('.stat-number[data-target]').forEach(function(el){var t=parseInt(el.getAttribute('data-target'));var d=1200;var s=null;function a(ts){if(!s)s=ts;var p=Math.min((ts-s)/d,1);el.textContent=Math.round((1-Math.pow(1-p,3))*t).toLocaleString();if(p<1)requestAnimationFrame(a);else el.textContent=t>=200?t.toLocaleString()+'+':t.toLocaleString()}requestAnimationFrame(a)});
+(function(){var ss=document.querySelectorAll('section[id]');var pp=document.querySelectorAll('.nav-pill[href]');ss.forEach(function(s){new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){pp.forEach(function(p){p.classList.toggle('active',p.getAttribute('href')==='#'+e.target.id)})}})},{rootMargin:'-20% 0px -70% 0px'}).observe(s)})})();
+(function(){var b=document.getElementById('backToTop');window.addEventListener('scroll',function(){b.classList.toggle('visible',window.scrollY>300)});b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})})})();
+document.addEventListener('DOMContentLoaded',function(){var t=document.documentElement.getAttribute('data-theme')||'dark';mermaid.initialize({startOnLoad:true,theme:t==='dark'?'dark':'default'})});
+</script>
+<script src="seq-engine.js"></script>
+</body>
+</html>

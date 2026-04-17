@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Deployment Guide — PostureIQ</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-hover:#252D38;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --border-primary:#30363D;--border-accent:#1F6FEB33;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --accent-pink:#DB61A2;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.5);
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',Consolas,monospace;
+  --transition-fast:.18s ease;--transition-med:.3s ease;
+  color-scheme:dark;
+  --max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-hover:#F0F3F6;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;
+  --border-primary:#D0D7DE;--border-accent:#0969DA22;
+  --accent-blue:#0969DA;--accent-purple:#8250DF;--accent-green:#1A7F37;
+  --accent-orange:#BF8700;--accent-cyan:#1B7C83;--accent-red:#CF222E;
+  --accent-pink:#BF3989;
+  --shadow-sm:0 1px 3px rgba(31,35,40,.08);--shadow-md:0 4px 12px rgba(31,35,40,.1);
+  --shadow-lg:0 8px 24px rgba(31,35,40,.12);
+  color-scheme:light
+}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none;transition:color var(--transition-fast)}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--bg-secondary);padding:2px 6px;border-radius:4px}
+pre{background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.7rem .9rem;border:1px solid var(--border-primary);text-align:left;font-size:.88rem}
+th{background:var(--bg-secondary);color:var(--text-primary);font-weight:600;white-space:nowrap}
+tr:nth-child(even){background:var(--bg-secondary)}
+.skip-nav{position:absolute;top:-100%;left:1rem;background:var(--accent-blue);color:#fff;padding:.5rem 1rem;border-radius:var(--radius-sm);z-index:9999;font-weight:600}.skip-nav:focus{top:1rem}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple),var(--accent-cyan));z-index:10001;transition:width .1s linear;width:0}
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:500px;height:500px;background:radial-gradient(circle,var(--accent-blue),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-purple),transparent 70%);bottom:-150px;left:-80px}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{color:var(--text-secondary);font-size:1.05rem;max-width:680px;margin:0 auto .8rem}
+.hero .author{color:var(--text-muted);font-size:.85rem}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;max-width:960px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);position:relative;z-index:10}
+.stat{text-align:center}.stat .num{font-size:1.6rem;font-weight:700;display:block}.stat .lbl{color:var(--text-secondary);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.nav-wrap{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);backdrop-filter:blur(12px)}
+.nav-inner{display:flex;align-items:center;gap:.5rem;max-width:1200px;margin:0 auto;padding:.6rem 1rem;overflow-x:auto;scrollbar-width:thin}
+.nav-pill{padding:.35rem .75rem;border-radius:20px;font-size:.78rem;font-weight:500;color:var(--text-secondary);white-space:nowrap;transition:all var(--transition-fast);border:1px solid transparent;cursor:pointer;text-decoration:none}
+.nav-pill:hover{color:var(--text-primary);background:var(--bg-hover);text-decoration:none}
+.nav-pill.active{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:20px;padding:.35rem .75rem;font-size:.78rem;cursor:pointer;color:var(--text-secondary);transition:all var(--transition-fast);white-space:nowrap}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--text-primary)}
+.content{max-width:var(--max-width);margin:0 auto;padding:2rem 1.5rem 4rem}
+.section{margin-bottom:3.5rem;scroll-margin-top:80px}
+.section h2{font-size:1.5rem;font-weight:700;margin-bottom:.3rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent-blue);display:inline-block}
+.section h3{font-size:1.15rem;font-weight:600;margin:1.8rem 0 .8rem;color:var(--accent-purple)}
+.section h4{font-size:1rem;font-weight:600;margin:1.2rem 0 .6rem;color:var(--accent-cyan)}
+.section p,.section li{color:var(--text-secondary);font-size:.92rem}
+.section ul,.section ol{padding-left:1.4rem;margin:.6rem 0}.section li{margin-bottom:.3rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin:1rem 0}
+.card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;transition:all var(--transition-fast)}
+.card:hover{border-color:var(--accent-blue);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.card .card-title{font-weight:600;font-size:.95rem;margin-bottom:.3rem}
+.card .card-count{font-size:1.3rem;font-weight:700;color:var(--accent-blue)}
+.card .card-desc{color:var(--text-secondary);font-size:.82rem;margin-top:.3rem}
+.accent-blue .card-count,.accent-blue .num{color:var(--accent-blue)}
+.accent-purple .card-count,.accent-purple .num{color:var(--accent-purple)}
+.accent-green .card-count,.accent-green .num{color:var(--accent-green)}
+.accent-orange .card-count,.accent-orange .num{color:var(--accent-orange)}
+.accent-cyan .card-count,.accent-cyan .num{color:var(--accent-cyan)}
+.accent-red .card-count,.accent-red .num{color:var(--accent-red)}
+.accent-pink .card-count,.accent-pink .num{color:var(--accent-pink)}
+details{margin:1rem 0;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);overflow:hidden}
+details>summary{padding:.8rem 1rem;font-weight:600;cursor:pointer;color:var(--text-primary);transition:background var(--transition-fast);font-size:.92rem}
+details>summary:hover{background:var(--bg-hover)}
+details[open]>summary{border-bottom:1px solid var(--border-primary)}
+details .detail-body{padding:1rem}
+.config-block{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;margin:1rem 0}
+.config-block h4{font-size:.95rem;margin-bottom:.8rem;color:var(--accent-cyan)}
+.config-block pre{background:var(--bg-secondary);margin-bottom:.8rem}
+.priority-box{display:flex;align-items:center;gap:.8rem;padding:1rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);margin:.8rem 0}
+.priority-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0}
+.priority-1{background:rgba(248,81,73,.15);color:var(--accent-red)}
+.priority-2{background:rgba(210,153,34,.15);color:var(--accent-orange)}
+.priority-3{background:rgba(139,148,158,.15);color:var(--text-secondary)}
+.safety-banner{background:linear-gradient(135deg,rgba(31,111,235,.08),rgba(163,113,247,.08));border:1px solid var(--border-accent);border-radius:var(--radius-lg);padding:1.5rem;margin:2rem 0}
+.safety-banner h3{color:var(--accent-blue);margin-bottom:.8rem}
+.step-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.8rem;margin:1rem 0}
+.step-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1rem;text-align:center;transition:all var(--transition-fast)}
+.step-card:hover{border-color:var(--accent-blue);transform:translateY(-2px)}
+.step-card .step-num{font-size:1.8rem;font-weight:700;display:block;margin-bottom:.3rem}
+.step-card .step-title{font-weight:600;font-size:.9rem;margin-bottom:.2rem}
+.step-card .step-desc{font-size:.78rem;color:var(--text-secondary)}
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.8rem;border-top:1px solid var(--border-primary)}
+.back-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;border-radius:50%;background:var(--accent-blue);color:#fff;border:none;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all var(--transition-med);box-shadow:var(--shadow-md);z-index:999}
+.back-top.show{opacity:1;pointer-events:auto}.back-top:hover{transform:scale(1.1)}
+@media print{.nav-wrap,.theme-toggle,.back-top,.progress-bar{display:none!important}.hero{padding:2rem 1rem}.content{max-width:100%}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:0s!important;animation-duration:0s!important}}
+@media(forced-colors:active){.nav-pill.active{border:2px solid ButtonText}.card{border:1px solid ButtonText}}
+</style>
+</head>
+<body>
+<a class="skip-nav" href="#main">Skip to content</a>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ════════ HERO ════════ -->
+<header class="hero">
+  <h1>Deployment Guide</h1>
+  <p class="subtitle">Step-by-step guide to deploying PostureIQ on Microsoft Azure — Foundry hosted agent, Container Apps, and App Service paths with Bicep infrastructure-as-code</p>
+  <p class="author">Author: Murali Chillakuru — PostureIQ</p>
+</header>
+
+<!-- ════════ STATS BAR ════════ -->
+<div class="stats-bar">
+  <div class="stat accent-blue"><span class="num" data-target="4">0</span><span class="lbl">Deploy Options</span></div>
+  <div class="stat accent-purple"><span class="num" data-target="5">0</span><span class="lbl">Env Vars</span></div>
+  <div class="stat accent-green"><span class="num" data-target="8">0</span><span class="lbl">Infra Resources</span></div>
+  <div class="stat accent-orange"><span class="num" data-target="4">0</span><span class="lbl">RBAC Roles</span></div>
+  <div class="stat accent-cyan"><span class="num" data-target="5">0</span><span class="lbl">Known Issues</span></div>
+</div>
+
+<!-- ════════ NAV ════════ -->
+<nav class="nav-wrap" aria-label="Section navigation">
+  <div class="nav-inner">
+    <a class="nav-pill" href="#prerequisites">Prerequisites</a>
+    <a class="nav-pill" href="#architecture">Architecture</a>
+    <a class="nav-pill" href="#path1">Path 1: Foundry</a>
+    <a class="nav-pill" href="#path2">Path 2: Container Apps</a>
+    <a class="nav-pill" href="#known-issues">Known Issues</a>
+    <a class="nav-pill" href="#path3">Path 3: App Service</a>
+    <a class="nav-pill" href="#env-vars">Env Vars</a>
+    <a class="nav-pill" href="#identity">Identity</a>
+    <a class="nav-pill" href="#dashboard">Dashboard</a>
+    <a class="nav-pill" href="#validation">Validation</a>
+    <a class="nav-pill" href="#troubleshooting">Troubleshoot</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀️ Light</button>
+  </div>
+</nav>
+
+<!-- ════════ CONTENT ════════ -->
+<main class="content" id="main">
+
+<!-- ──── Prerequisites ──── -->
+<section class="section" id="prerequisites">
+  <h2>1. Prerequisites</h2>
+  <p>Before you begin, ensure you have the following installed and configured.</p>
+
+  <h3>Required Tools</h3>
+  <table>
+    <tr><th>Tool</th><th>Min Version</th><th>Install</th></tr>
+    <tr><td>Azure CLI</td><td>2.60+</td><td><code>winget install Microsoft.AzureCLI</code></td></tr>
+    <tr><td>Docker Desktop</td><td>24+</td><td><a href="https://www.docker.com/products/docker-desktop/">docker.com</a></td></tr>
+    <tr><td>Python</td><td>3.10+</td><td><a href="https://www.python.org/downloads/">python.org</a> (local dev only)</td></tr>
+    <tr><td>Git</td><td>2.40+</td><td><code>winget install Git.Git</code></td></tr>
+  </table>
+
+  <h3>Azure Resources</h3>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">Azure Subscription</div>
+      <p class="card-desc">With Contributor role on a resource group to create ACR, Container Apps, etc.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Container Registry (ACR)</div>
+      <p class="card-desc">Stores your Docker image. Created automatically by the Bicep template or manually.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Foundry Project (Path 1 only)</div>
+      <p class="card-desc">With a deployed model like <code>gpt-4.1</code> or <code>gpt-4o</code>.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Entra ID App Registration</div>
+      <p class="card-desc">Only needed for the web dashboard. Provides SSO for end users.</p>
+    </div>
+  </div>
+
+  <h3>Authenticate</h3>
+  <div class="config-block">
+    <pre><code># Log in to Azure
+az login
+
+# Set your subscription (if you have multiple)
+az account set --subscription "YOUR_SUBSCRIPTION_NAME"
+
+# Verify
+az account show --query "{name:name, id:id}" -o table</code></pre>
+  </div>
+</section>
+
+<!-- ──── Architecture ──── -->
+<section class="section" id="architecture">
+  <h2>2. Architecture Overview</h2>
+  <p>PostureIQ can deploy in three modes. Choose the one that fits your use case.</p>
+
+  <table>
+    <tr><th>Aspect</th><th>Path 1: Foundry</th><th>Path 2: Container Apps</th><th>Path 3: App Service</th></tr>
+    <tr><td><strong>Interface</strong></td><td>Conversational AI</td><td>Web dashboard + AI</td><td>REST API only</td></tr>
+    <tr><td><strong>Port</strong></td><td>8088</td><td>8088</td><td>8000</td></tr>
+    <tr><td><strong>Protocol</strong></td><td><code>responses</code> v1</td><td><code>responses</code> v1</td><td>HTTP/JSON</td></tr>
+    <tr><td><strong>Entry point</strong></td><td><code>main.py</code></td><td><code>main.py</code></td><td><code>app/api.py</code></td></tr>
+    <tr><td><strong>Scaling</strong></td><td>Managed by Foundry</td><td>0–3 replicas (auto)</td><td>App Service Plan</td></tr>
+    <tr><td><strong>Best for</strong></td><td>AI-powered Q&amp;A</td><td>End-user dashboards</td><td>CI/CD automation</td></tr>
+  </table>
+
+  <div class="step-grid">
+    <div class="step-card accent-blue">
+      <span class="step-num" style="color:var(--accent-blue)">1</span>
+      <div class="step-title">Foundry Hosted Agent</div>
+      <p class="step-desc">Natural language Q&amp;A via Foundry portal. Recommended for AI-first teams.</p>
+    </div>
+    <div class="step-card accent-purple">
+      <span class="step-num" style="color:var(--accent-purple)">2</span>
+      <div class="step-title">Container Apps</div>
+      <p class="step-desc">Auto-scaling container + optional web dashboard for end users.</p>
+    </div>
+    <div class="step-card accent-orange">
+      <span class="step-num" style="color:var(--accent-orange)">3</span>
+      <div class="step-title">App Service (REST)</div>
+      <p class="step-desc">FastAPI REST API on port 8000. Ideal for CI/CD pipelines.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ──── Path 1: Foundry ──── -->
+<section class="section" id="path1">
+  <h2>3. Path 1 — Deploy to Microsoft Foundry</h2>
+  <p>The recommended path. The agent runs as a hosted Foundry agent that users interact with via natural language.</p>
+
+  <h3>Step 1: Create a Resource Group</h3>
+  <div class="config-block">
+    <pre><code># Choose a name and region
+RESOURCE_GROUP="rg-esiq-prod"
+LOCATION="eastus2"
+
+az group create --name $RESOURCE_GROUP --location $LOCATION</code></pre>
+  </div>
+
+  <h3>Step 2: Create a Foundry Project</h3>
+  <ol>
+    <li>Go to <a href="https://ai.azure.com">Azure AI Foundry</a></li>
+    <li>Click <strong>+ New project</strong></li>
+    <li>Select your subscription and resource group</li>
+    <li>Choose a name (e.g., <code>esiq-foundry</code>) and region</li>
+    <li>Click <strong>Create</strong></li>
+    <li>After creation, go to <strong>Project settings → Overview</strong></li>
+    <li>Copy the <strong>Project endpoint</strong> (e.g., <code>https://esiq-foundry.services.ai.azure.com/api</code>)</li>
+  </ol>
+
+  <h3>Step 3: Deploy a Model</h3>
+  <ol>
+    <li>In your Foundry project, go to <strong>Model catalog</strong></li>
+    <li>Search for and deploy <strong>gpt-4.1</strong> (or <code>gpt-4o</code>)</li>
+    <li>Note the <strong>Deployment name</strong> (e.g., <code>gpt-4.1</code>)</li>
+  </ol>
+
+  <h3>Step 4: Create an Azure Container Registry</h3>
+  <div class="config-block">
+    <pre><code>ACR_NAME="esiqacr"  # Globally unique, lowercase, no dashes
+
+az acr create \
+  --resource-group $RESOURCE_GROUP \
+  --name $ACR_NAME \
+  --sku Basic
+
+az acr login --name $ACR_NAME</code></pre>
+  </div>
+
+  <h3>Step 5: Build and Push the Docker Image</h3>
+  <div class="config-block">
+    <pre><code>cd AIAgent
+
+# Build for linux/amd64 (required for Azure)
+docker build --platform linux/amd64 -t enterprisesecurityiq-agent .
+
+# Tag for your ACR
+docker tag enterprisesecurityiq-agent $ACR_NAME.azurecr.io/enterprisesecurityiq-agent:latest
+
+# Push
+docker push $ACR_NAME.azurecr.io/enterprisesecurityiq-agent:latest</code></pre>
+  </div>
+
+  <h3>Step 6: Create the Hosted Agent</h3>
+  <ol>
+    <li>Go to your Foundry project in <a href="https://ai.azure.com">Azure AI Foundry</a></li>
+    <li>Navigate to <strong>Agents → + New agent</strong></li>
+    <li>Select <strong>Hosted agent</strong> type</li>
+    <li>Configure:
+      <ul>
+        <li><strong>Container image:</strong> <code>&lt;your-acr&gt;.azurecr.io/enterprisesecurityiq-agent:latest</code></li>
+        <li><strong>Port:</strong> <code>8088</code></li>
+        <li><strong>Protocol:</strong> <code>responses v1</code></li>
+      </ul>
+    </li>
+    <li>Set environment variables:
+      <ul>
+        <li><code>FOUNDRY_PROJECT_ENDPOINT</code> = your project endpoint</li>
+        <li><code>FOUNDRY_MODEL_DEPLOYMENT_NAME</code> = your model deployment name</li>
+        <li><code>AZURE_TENANT_ID</code> = target tenant ID</li>
+      </ul>
+    </li>
+    <li>Click <strong>Create</strong></li>
+  </ol>
+
+  <h3>Step 7: Test the Agent</h3>
+  <p>In the Foundry portal, open your agent and try these prompts:</p>
+  <div class="config-block">
+    <pre><code>What permissions do I need to run assessments?
+
+Run a full compliance assessment
+
+What are the top 10 risks in my tenant?</code></pre>
+  </div>
+</section>
+
+<!-- ──── Path 2: Container Apps ──── -->
+<section class="section" id="path2">
+  <h2>4. Path 2 — Deploy to Azure Container Apps</h2>
+  <p>Deploys the agent as a publicly accessible container with auto-scaling. Pair with the <a href="#dashboard">web dashboard</a> for a complete end-user experience.</p>
+
+  <h3>Option A: Deploy with Bicep (Recommended)</h3>
+  <p>The <code>infra/</code> directory contains a ready-to-use Bicep template that creates all required resources.</p>
+
+  <h4>Step 1: Edit Parameters</h4>
+  <div class="config-block">
+    <h4>infra/parameters.json</h4>
+    <pre><code>{
+  "parameters": {
+    "baseName": { "value": "esiq" },
+    "imageTag": { "value": "latest" },
+    "foundryProjectEndpoint": { "value": "https://your-project.services.ai.azure.com/api" },
+    "modelDeploymentName": { "value": "gpt-4.1" },
+    "tenantId": { "value": "00000000-0000-0000-0000-000000000000" }
+  }
+}</code></pre>
+  </div>
+
+  <h4>Step 2: Create Resource Group and Deploy</h4>
+  <div class="config-block">
+    <pre><code>RESOURCE_GROUP="rg-esiq-prod"
+LOCATION="eastus2"
+
+# Create the resource group
+az group create --name $RESOURCE_GROUP --location $LOCATION
+
+# Deploy infrastructure
+az deployment group create \
+  --resource-group $RESOURCE_GROUP \
+  --template-file infra/main.bicep \
+  --parameters infra/parameters.json</code></pre>
+  </div>
+
+  <h4>Step 3: Build and Push Image</h4>
+  <div class="config-block">
+    <pre><code># Get ACR login server from deployment output
+ACR_SERVER=$(az deployment group show \
+  --resource-group $RESOURCE_GROUP \
+  --name main \
+  --query properties.outputs.acrLoginServer.value -o tsv)
+
+az acr login --name ${ACR_SERVER%%.*}
+
+cd AIAgent
+docker build --platform linux/amd64 -t $ACR_SERVER/enterprisesecurityiq-agent:latest .
+docker push $ACR_SERVER/enterprisesecurityiq-agent:latest</code></pre>
+  </div>
+
+  <h4>Step 4: Verify</h4>
+  <div class="config-block">
+    <pre><code>APP_URL=$(az deployment group show \
+  --resource-group $RESOURCE_GROUP \
+  --name main \
+  --query properties.outputs.containerAppUrl.value -o tsv)
+
+echo "Agent running at: $APP_URL"</code></pre>
+  </div>
+
+  <h3>Option B: Deploy with Azure CLI</h3>
+  <details>
+    <summary>CLI-only deployment (no Bicep)</summary>
+    <div class="detail-body">
+      <div class="config-block">
+        <pre><code>RESOURCE_GROUP="rg-esiq-prod"
+LOCATION="eastus2"
+ACR_NAME="esiqacr"
+APP_NAME="esiq-agent"
+
+az group create --name $RESOURCE_GROUP --location $LOCATION
+az acr create --resource-group $RESOURCE_GROUP --name $ACR_NAME --sku Basic
+az acr login --name $ACR_NAME
+
+cd AIAgent
+docker build --platform linux/amd64 -t $ACR_NAME.azurecr.io/enterprisesecurityiq-agent:latest .
+docker push $ACR_NAME.azurecr.io/enterprisesecurityiq-agent:latest
+
+az containerapp up \
+  --name $APP_NAME \
+  --resource-group $RESOURCE_GROUP \
+  --image $ACR_NAME.azurecr.io/enterprisesecurityiq-agent:latest \
+  --ingress external \
+  --target-port 8088 \
+  --env-vars \
+    FOUNDRY_PROJECT_ENDPOINT="https://your-project.services.ai.azure.com/api" \
+    FOUNDRY_MODEL_DEPLOYMENT_NAME="gpt-4.1" \
+    AZURE_TENANT_ID="your-tenant-id"</code></pre>
+      </div>
+    </div>
+  </details>
+
+  <h3>Option C: Deploy with PowerShell (No Docker — ACR Tasks)</h3>
+  <p>If Docker Desktop is not available, use <code>infra/deploy.ps1</code> which builds images in the cloud via ACR Tasks. <strong>No Docker Desktop required.</strong></p>
+
+  <h4>Quick Start</h4>
+  <div class="config-block">
+    <pre><code># From the repository root
+cd infra
+
+# Deploy everything with a single command
+.\deploy.ps1 -BaseName "ESIQ" -Location "swedencentral" -SubscriptionName "AI"</code></pre>
+  </div>
+  <p>The script is fully <strong>parameterized</strong> and <strong>idempotent</strong> — re-running it skips resources that already exist.</p>
+
+  <h4>Parameters</h4>
+  <table>
+    <tr><th>Parameter</th><th>Required</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>-BaseName</code></td><td>Yes</td><td>—</td><td>Prefix for all resources (e.g., <code>ESIQ</code> → <code>ESIQ-RG</code>, <code>esiqacr</code>)</td></tr>
+    <tr><td><code>-Location</code></td><td>Yes</td><td>—</td><td>Azure region (<code>swedencentral</code>, <code>eastus2</code>, etc.)</td></tr>
+    <tr><td><code>-SubscriptionName</code></td><td>Yes</td><td>—</td><td>Target Azure subscription name</td></tr>
+    <tr><td><code>-PrimaryModel</code></td><td>No</td><td><code>gpt-4.1</code></td><td>Primary model deployment</td></tr>
+    <tr><td><code>-FallbackModel</code></td><td>No</td><td><code>gpt-5.1</code></td><td>Fallback model (set to <code>""</code> to skip)</td></tr>
+    <tr><td><code>-ModelSku</code></td><td>No</td><td><code>Standard</code></td><td>Model SKU (<code>Standard</code> keeps data in-region)</td></tr>
+    <tr><td><code>-TenantId</code></td><td>No</td><td>auto-detected</td><td>Target tenant for security assessments</td></tr>
+  </table>
+
+  <h4>Resources Created</h4>
+  <table>
+    <tr><th>#</th><th>Resource</th><th>Naming Pattern</th><th>Example</th></tr>
+    <tr><td>1</td><td>Resource Group</td><td><code>{Base}-RG</code></td><td><code>ESIQ-RG</code></td></tr>
+    <tr><td>2</td><td>AI Services</td><td><code>{Base}-AI</code></td><td><code>ESIQ-AI</code></td></tr>
+    <tr><td>3</td><td>Model Deployments</td><td><code>{model-name}</code></td><td><code>gpt-4.1</code>, <code>gpt-5.1</code></td></tr>
+    <tr><td>4</td><td>Container Registry</td><td><code>{base}acr</code></td><td><code>esiqacr</code></td></tr>
+    <tr><td>5</td><td>Managed Identity</td><td><code>{Base}-identity</code></td><td><code>ESIQ-identity</code></td></tr>
+    <tr><td>6</td><td>Log Analytics</td><td><code>{Base}-law</code></td><td><code>ESIQ-law</code></td></tr>
+    <tr><td>7</td><td>Container App Env</td><td><code>{Base}-env</code></td><td><code>ESIQ-env</code></td></tr>
+    <tr><td>8</td><td>Container App</td><td><code>{base}-agent</code></td><td><code>esiq-agent</code></td></tr>
+  </table>
+  <p>Also assigns 4 RBAC roles: <code>AcrPull</code> (ACR), <code>Reader</code> (subscription), <code>Security Reader</code> (subscription), <code>Cognitive Services OpenAI User</code> (AI Services).</p>
+
+  <h4>Rebuild After Code Changes</h4>
+  <div class="config-block">
+    <pre><code>.\redeploy-image.ps1 -BaseName "ESIQ"</code></pre>
+  </div>
+  <p>Rebuilds the image via ACR Tasks and restarts the container app — takes ~2 minutes.</p>
+
+  <div class="safety-banner">
+    <h3>📦 What the Bicep Template Creates</h3>
+    <div class="card-grid">
+      <div class="card accent-blue"><div class="card-title">Container Registry</div><p class="card-desc">Basic SKU ACR to store your Docker image</p></div>
+      <div class="card accent-purple"><div class="card-title">Managed Identity</div><p class="card-desc">User-assigned identity with AcrPull role</p></div>
+      <div class="card accent-green"><div class="card-title">Log Analytics</div><p class="card-desc">Workspace for container logs and diagnostics</p></div>
+      <div class="card accent-orange"><div class="card-title">Container App Env</div><p class="card-desc">Hosting environment with log analytics integration</p></div>
+      <div class="card accent-cyan"><div class="card-title">Container App</div><p class="card-desc">Agent container on port 8088, 0–3 replicas</p></div>
+      <div class="card accent-red"><div class="card-title">Role Assignment</div><p class="card-desc">AcrPull for managed identity → ACR</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ──── Known Issues ──── -->
+<section class="section" id="known-issues">
+  <h2>Known Issues &amp; Workarounds</h2>
+  <p>Issues discovered during deployment (April 2026) and their fixes.</p>
+
+  <details open>
+    <summary>Azure CLI 2.77.0 — Bicep <code>@secure()</code> Bug</summary>
+    <div class="detail-body">
+      <p><strong>Symptom:</strong> <code>az deployment group create</code> fails with <code>"The content for this response was already consumed"</code>.</p>
+      <p><strong>Cause:</strong> Azure CLI 2.77.0 has a bug parsing <code>@secure()</code> parameters in Bicep templates.</p>
+      <p><strong>Workaround:</strong> Use <code>infra/deploy.ps1</code> (Option C) which creates resources individually. The Bicep template is provided for reference but may fail on CLI 2.77.0.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Dockerfile <code>FROM --platform</code> in ACR Tasks</summary>
+    <div class="detail-body">
+      <p><strong>Symptom:</strong> ACR Tasks build fails with <code>"unable to understand line FROM --platform=linux/amd64 python:3.12-slim"</code>.</p>
+      <p><strong>Fix:</strong> Remove <code>--platform</code> from the <code>FROM</code> line. Pass <code>--platform linux/amd64</code> to <code>az acr build</code> instead. Already fixed in the repository.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Missing <code>six</code> Module (Python 3.12 slim)</summary>
+    <div class="detail-body">
+      <p><strong>Symptom:</strong> Container crashes with <code>ModuleNotFoundError: No module named 'six'</code>.</p>
+      <p><strong>Cause:</strong> <code>azure-mgmt-resourcegraph==8.0.0</code> imports <code>six</code> but Python 3.12-slim doesn't include it.</p>
+      <p><strong>Fix:</strong> Added <code>six</code> to <code>requirements.txt</code>. Already fixed in the repository.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Beta-Only Azure SDK Packages</summary>
+    <div class="detail-body">
+      <p><strong>Symptom:</strong> <code>pip install</code> fails with <code>"No matching distribution found"</code> for packages like <code>azure-mgmt-securityinsight>=2.0.0</code>.</p>
+      <p><strong>Fix:</strong> Changed version specifiers to <code>>=2.0.0b1</code> and added <code>--pre</code> flag in Dockerfile. Already fixed.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Container App Name Must Be Lowercase</summary>
+    <div class="detail-body">
+      <p><strong>Symptom:</strong> <code>az containerapp create</code> fails with <code>ContainerAppInvalidName</code>.</p>
+      <p><strong>Fix:</strong> The deploy script uses <code>$BaseName.ToLower() + "-agent"</code> for the container app name.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ──── Path 3: App Service ──── -->
+<section class="section" id="path3">
+  <h2>5. Path 3 — Deploy to Azure App Service</h2>
+  <p>Deploys the FastAPI REST API (<code>app/api.py</code>) for headless / CI/CD integration.</p>
+
+  <div class="config-block">
+    <pre><code>RESOURCE_GROUP="rg-esiq-prod"
+APP_NAME="esiq-api"
+ACR_NAME="esiqacr"
+
+cd AIAgent
+docker build --platform linux/amd64 \
+  -t $ACR_NAME.azurecr.io/enterprisesecurityiq-api:latest \
+  --build-arg CMD="uvicorn app.api:app --host 0.0.0.0 --port 8000" .
+
+docker push $ACR_NAME.azurecr.io/enterprisesecurityiq-api:latest
+
+az appservice plan create \
+  --name esiq-plan \
+  --resource-group $RESOURCE_GROUP \
+  --is-linux --sku B1
+
+az webapp create \
+  --name $APP_NAME \
+  --resource-group $RESOURCE_GROUP \
+  --plan esiq-plan \
+  --deployment-container-image-name $ACR_NAME.azurecr.io/enterprisesecurityiq-api:latest
+
+az webapp config appsettings set \
+  --name $APP_NAME \
+  --resource-group $RESOURCE_GROUP \
+  --settings \
+    FOUNDRY_PROJECT_ENDPOINT="https://your-project.services.ai.azure.com/api" \
+    FOUNDRY_MODEL_DEPLOYMENT_NAME="gpt-4.1" \
+    AZURE_TENANT_ID="your-tenant-id"</code></pre>
+  </div>
+
+  <h3>API Endpoints</h3>
+  <table>
+    <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+    <tr><td><code>POST</code></td><td><code>/assessments</code></td><td>Start an assessment (async). Returns <code>assessment_id</code></td></tr>
+    <tr><td><code>GET</code></td><td><code>/assessments/{id}</code></td><td>Get assessment status and results</td></tr>
+    <tr><td><code>GET</code></td><td><code>/health</code></td><td>Health check</td></tr>
+  </table>
+</section>
+
+<!-- ──── Env Vars ──── -->
+<section class="section" id="env-vars">
+  <h2>6. Environment Variables Reference</h2>
+  <table>
+    <tr><th>Variable</th><th>Required</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>FOUNDRY_PROJECT_ENDPOINT</code></td><td>Yes</td><td>—</td><td>Foundry project endpoint URL</td></tr>
+    <tr><td><code>FOUNDRY_MODEL_DEPLOYMENT_NAME</code></td><td>Yes</td><td><code>gpt-4.1</code></td><td>Deployed model name</td></tr>
+    <tr><td><code>AZURE_TENANT_ID</code></td><td>Recommended</td><td>—</td><td>Target tenant for assessments</td></tr>
+    <tr><td><code>AZURE_CLIENT_ID</code></td><td>Optional</td><td>—</td><td>Service principal client ID</td></tr>
+    <tr><td><code>AZURE_CLIENT_SECRET</code></td><td>Optional</td><td>—</td><td>Service principal secret</td></tr>
+  </table>
+
+  <div class="safety-banner">
+    <h3>🔒 Security Note</h3>
+    <p style="color:var(--text-secondary);font-size:.9rem">Never commit secrets to source control. Use Azure Key Vault or Container App secrets for production deployments. The Bicep template passes <code>foundryProjectEndpoint</code> as a <code>@secure()</code> parameter.</p>
+  </div>
+</section>
+
+<!-- ──── Identity ──── -->
+<section class="section" id="identity">
+  <h2>7. Identity &amp; Permissions</h2>
+  <p>The agent needs Azure RBAC roles to read your tenant's security posture.</p>
+
+  <h3>Required Roles</h3>
+  <table>
+    <tr><th>Scope</th><th>Role</th><th>Purpose</th></tr>
+    <tr><td>Subscription</td><td><strong>Reader</strong></td><td>Read ARM resources (VMs, storage, networking, etc.)</td></tr>
+    <tr><td>Subscription</td><td><strong>Security Reader</strong></td><td>Read Defender for Cloud findings, security policies</td></tr>
+    <tr><td>Entra ID</td><td><strong>Directory Reader</strong></td><td>Read users, groups, apps, conditional access</td></tr>
+    <tr><td>Entra ID</td><td><strong>Global Reader</strong></td><td>Read MFA status, PIM assignments, risky users</td></tr>
+  </table>
+
+  <h3>Assign Roles to the Managed Identity</h3>
+  <div class="config-block">
+    <pre><code># Get the managed identity principal ID
+PRINCIPAL_ID=$(az deployment group show \
+  --resource-group $RESOURCE_GROUP \
+  --name main \
+  --query properties.outputs.identityPrincipalId.value -o tsv)
+
+# Assign Reader at subscription scope
+az role assignment create \
+  --assignee $PRINCIPAL_ID \
+  --role "Reader" \
+  --scope "/subscriptions/$(az account show --query id -o tsv)"
+
+# Assign Security Reader at subscription scope
+az role assignment create \
+  --assignee $PRINCIPAL_ID \
+  --role "Security Reader" \
+  --scope "/subscriptions/$(az account show --query id -o tsv)"</code></pre>
+  </div>
+  <p>For Entra ID directory roles, use the Azure Portal: <strong>Entra ID → Roles and administrators → Directory Reader / Global Reader → Add assignments</strong> → select your managed identity.</p>
+</section>
+
+<!-- ──── Dashboard ──── -->
+<section class="section" id="dashboard">
+  <h2>8. Web Dashboard (Optional)</h2>
+  <p>A single-page web dashboard is available in <code>webapp/index.html</code>. It provides:</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-title">🔐 SSO Login</div><p class="card-desc">Microsoft Entra ID sign-in via MSAL.js</p></div>
+    <div class="card"><div class="card-title">🔍 Assessment Runner</div><p class="card-desc">Select frameworks, choose scope, launch assessments</p></div>
+    <div class="card"><div class="card-title">📊 Results Viewer</div><p class="card-desc">Findings by domain/severity with filtering and search</p></div>
+    <div class="card"><div class="card-title">💬 Agent Chat</div><p class="card-desc">Natural-language interaction with the Foundry agent</p></div>
+  </div>
+
+  <h3>Deploy to Azure Static Web Apps</h3>
+  <div class="config-block">
+    <pre><code>npm install -g @azure/static-web-apps-cli
+
+swa deploy ./webapp \
+  --deployment-token &lt;YOUR_DEPLOYMENT_TOKEN&gt; \
+  --env production</code></pre>
+  </div>
+  <p>See <a href="../webapp/README.md">webapp/README.md</a> for full configuration instructions including App Registration setup.</p>
+</section>
+
+<!-- ──── Validation ──── -->
+<section class="section" id="validation">
+  <h2>9. Post-Deployment Validation</h2>
+
+  <h3>Check Agent Health</h3>
+  <div class="config-block">
+    <pre><code>curl -s https://&lt;your-app-url&gt;/health | jq .</code></pre>
+  </div>
+
+  <h3>Run a Permissions Check</h3>
+  <p>Foundry agent: ask <code>Check my permissions</code></p>
+  <p>REST API:</p>
+  <div class="config-block">
+    <pre><code>curl -X POST https://&lt;your-app-url&gt;/assessments \
+  -H "Content-Type: application/json" \
+  -d '{"scope": "permissions-check"}'</code></pre>
+  </div>
+
+  <h3>Run a Scoped Assessment</h3>
+  <p>Start small to verify end-to-end:</p>
+  <div class="config-block">
+    <pre><code># Via Foundry agent:
+Run an assessment scoped to Access Control only
+
+# Via REST API:
+curl -X POST https://&lt;your-app-url&gt;/assessments \
+  -H "Content-Type: application/json" \
+  -d '{"scope": "access_control"}'</code></pre>
+  </div>
+</section>
+
+<!-- ──── Troubleshooting ──── -->
+<section class="section" id="troubleshooting">
+  <h2>10. Troubleshooting</h2>
+
+  <details>
+    <summary>Container won't start</summary>
+    <div class="detail-body">
+      <div class="config-block">
+        <pre><code>az containerapp logs show \
+  --name esiq-agent \
+  --resource-group $RESOURCE_GROUP \
+  --follow</code></pre>
+      </div>
+      <ul>
+        <li><strong>Missing env vars:</strong> <code>FOUNDRY_PROJECT_ENDPOINT</code> is required</li>
+        <li><strong>ACR pull failure:</strong> Ensure the managed identity has <code>AcrPull</code> on the ACR</li>
+        <li><strong>Port mismatch:</strong> Ingress must target port <strong>8088</strong> (not 8000 or 80)</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>Authentication failures</summary>
+    <div class="detail-body">
+      <div class="config-block">
+        <pre><code>az role assignment list \
+  --assignee $PRINCIPAL_ID \
+  --all \
+  --query "[].{role:roleDefinitionName, scope:scope}" -o table</code></pre>
+      </div>
+      <p>Ensure the identity has <strong>Reader</strong> + <strong>Security Reader</strong> at subscription scope.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Agent returns empty results</summary>
+    <div class="detail-body">
+      <ul>
+        <li>Need <strong>Reader</strong> + <strong>Security Reader</strong> at subscription scope</li>
+        <li>Entra ID collectors need <strong>Directory Reader</strong></li>
+        <li>Run <code>Check my permissions</code> to diagnose</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>Docker build fails</summary>
+    <div class="detail-body">
+      <div class="config-block">
+        <pre><code># Ensure correct platform
+docker build --platform linux/amd64 -t enterprisesecurityiq-agent .
+
+# Force clean build
+docker build --no-cache --platform linux/amd64 -t enterprisesecurityiq-agent .</code></pre>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>Bicep deployment fails</summary>
+    <div class="detail-body">
+      <div class="config-block">
+        <pre><code># Validate first
+az deployment group validate \
+  --resource-group $RESOURCE_GROUP \
+  --template-file infra/main.bicep \
+  --parameters infra/parameters.json
+
+# Check errors
+az deployment group show \
+  --resource-group $RESOURCE_GROUP \
+  --name main \
+  --query properties.error</code></pre>
+      </div>
+    </div>
+  </details>
+</section>
+
+</main>
+
+<!-- ════════ FOOTER ════════ -->
+<footer>
+  <p>PostureIQ — Deployment Guide · Author: Murali Chillakuru</p>
+  <p style="margin-top:.3rem">4 deployment options · 8 infrastructure resources · 4 RBAC roles · 5 known issues documented</p>
+</footer>
+
+<button class="back-top" id="backTop" aria-label="Back to top">↑</button>
+
+<script>
+const toggle=document.getElementById('themeToggle'),root=document.documentElement;
+function setTheme(t){root.dataset.theme=t;toggle.textContent=t==='dark'?'☀️ Light':'🌙 Dark';localStorage.setItem('esiq-theme',t)}
+toggle.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark'));
+setTheme(localStorage.getItem('esiq-theme')||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const el=e.target,t=+el.dataset.target;let c=0;const d=Math.max(1,Math.floor(30/(t||1)));const iv=setInterval(()=>{c+=d;if(c>=t){el.textContent=(t>100?'~':'')+t;clearInterval(iv)}else{el.textContent=c}},16);io.unobserve(el)}})},{threshold:.5});
+document.querySelectorAll('.num[data-target]').forEach(el=>io.observe(el));
+const pills=document.querySelectorAll('.nav-pill[href]'),sections=[];
+pills.forEach(p=>{const id=p.getAttribute('href')?.slice(1);if(id){const s=document.getElementById(id);if(s)sections.push({el:s,pill:p})}});
+const spy=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const m=sections.find(s=>s.el===e.target);if(m)m.pill.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px',threshold:0});
+sections.forEach(s=>spy.observe(s.el));
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('progressBar').style.width=(window.scrollY/h*100)+'%'});
+const btn=document.getElementById('backTop');
+window.addEventListener('scroll',()=>{btn.classList.toggle('show',window.scrollY>400)});
+btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+<script src="seq-engine.js"></script>
+</body>
+</html>

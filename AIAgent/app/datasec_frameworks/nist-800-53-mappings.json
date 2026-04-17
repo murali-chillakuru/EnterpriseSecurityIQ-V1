@@ -1,0 +1,332 @@
+{
+  "blob_public_access": [
+    "AC-3",
+    "SC-7"
+  ],
+  "storage_https": [
+    "SC-8"
+  ],
+  "storage_network_rules": [
+    "SC-7"
+  ],
+  "soft_delete_disabled": [
+    "CP-9"
+  ],
+  "min_tls_weak": [
+    "SC-8"
+  ],
+  "shared_key_enabled": [
+    "IA-5"
+  ],
+  "no_blob_logging": [
+    "AU-2"
+  ],
+  "blob_versioning_disabled": [
+    "CP-9"
+  ],
+  "sql_tde_disabled": [
+    "SC-28"
+  ],
+  "sql_auditing_disabled": [
+    "AU-2"
+  ],
+  "sql_atp_disabled": [
+    "SI-4"
+  ],
+  "sql_no_ddm": [
+    "SC-28"
+  ],
+  "sql_no_rls": [
+    "AC-3"
+  ],
+  "cosmosdb_public_access": [
+    "SC-7"
+  ],
+  "eventual_consistency": [
+    "SC-28"
+  ],
+  "access_policy_model": [
+    "AC-3"
+  ],
+  "purge_protection_off": [
+    "CP-9"
+  ],
+  "no_expiry_set": [
+    "IA-5"
+  ],
+  "cert_no_auto_renewal": [
+    "IA-5"
+  ],
+  "keys_not_hsm_backed": [
+    "SC-28"
+  ],
+  "disk_encryption_missing": [
+    "SC-28"
+  ],
+  "overprivileged_access": [
+    "AC-6"
+  ],
+  "defender_coverage_gaps": [
+    "SI-4"
+  ],
+  "audit_log_short_retention": [
+    "AU-6"
+  ],
+  "nsg_data_ports_open": [
+    "SC-7"
+  ],
+  "no_dlp_policies": [
+    "SC-28"
+  ],
+  "dlp_no_sensitive_info_types": [
+    "SC-28"
+  ],
+  "sql_local_auth_enabled": [
+    "IA-2"
+  ],
+  "pg_mysql_no_aad_auth": [
+    "IA-2"
+  ],
+  "no_managed_identity": [
+    "IA-5"
+  ],
+  "no_resource_lock": [
+    "CM-5"
+  ],
+  "adf_no_managed_vnet": [
+    "SC-7"
+  ],
+  "synapse_no_exfiltration_protection": [
+    "SC-7"
+  ],
+  "ai_services_public_access": [
+    "SC-7"
+  ],
+  "log_analytics_no_cmk": [
+    "SC-28"
+  ],
+  "no_immutable_audit_logs": [
+    "AU-2"
+  ],
+  "redis_non_ssl_port": [
+    "SC-8"
+  ],
+  "redis_weak_tls": [
+    "SC-8"
+  ],
+  "redis_no_firewall": [
+    "SC-7"
+  ],
+  "eventhub_public_access": [
+    "SC-7"
+  ],
+  "servicebus_public_access": [
+    "SC-7"
+  ],
+  "messaging_weak_tls": [
+    "SC-8"
+  ],
+  "purge_protection_disabled": [
+    "CP-9"
+  ],
+  "legacy_access_policy_model": [
+    "AC-3"
+  ],
+  "no_network_restrictions": [
+    "SC-7"
+  ],
+  "purview_public_access": [
+    "SC-7"
+  ],
+  "purview_no_private_endpoint": [
+    "SC-7"
+  ],
+  "purview_scan_coverage_gap": [
+    "PM-5"
+  ],
+  "purview_scan_issues": [
+    "CA-7"
+  ],
+  "managed_disk_no_cmk": [
+    "SC-28"
+  ],
+  "no_diagnostic_settings": [
+    "AU-2"
+  ],
+  "no_private_endpoint": [
+    "SC-7"
+  ],
+  "no_ddos_protection": [
+    "SC-5"
+  ],
+  "no_sas_expiration_policy": [
+    "IA-5"
+  ],
+  "no_immutability_policy": [
+    "AU-2"
+  ],
+  "change_feed_disabled": [
+    "AU-2"
+  ],
+  "unencrypted_disks": [
+    "SC-28"
+  ],
+  "no_encryption_at_host": [
+    "SC-28"
+  ],
+  "no_security_action_groups": [
+    "IR-6"
+  ],
+  "ai_key_auth_enabled": [
+    "IA-2"
+  ],
+  "ai_no_managed_identity": [
+    "IA-5"
+  ],
+  "ai_no_cmk": [
+    "SC-12"
+  ],
+  "adf_public_access": [
+    "SC-7"
+  ],
+  "adf_no_managed_identity": [
+    "IA-5"
+  ],
+  "adf_no_git_integration": [
+    "CM-3"
+  ],
+  "synapse_public_access": [
+    "SC-7"
+  ],
+  "synapse_sql_auth_enabled": [
+    "IA-2"
+  ],
+  "eventhub_local_auth": [
+    "IA-2"
+  ],
+  "servicebus_local_auth": [
+    "IA-2"
+  ],
+  "eventhub_no_capture": [
+    "AU-2"
+  ],
+  "redis_no_patch_schedule": [
+    "SI-2"
+  ],
+  "redis_public_access": [
+    "SC-7"
+  ],
+  "data_services_no_managed_identity": [
+    "IA-5"
+  ],
+  "sqlmi_no_atp": [
+    "SI-4"
+  ],
+  "sqlmi_public_endpoint": [
+    "SC-7"
+  ],
+  "sqlmi_no_aad_only": [
+    "IA-2"
+  ],
+  "appconfig_public_access": [
+    "SC-7"
+  ],
+  "appconfig_no_private_endpoint": [
+    "SC-7"
+  ],
+  "appconfig_no_soft_delete": [
+    "CP-9"
+  ],
+  "cert_expiring_soon": [
+    "SC-17"
+  ],
+  "cert_no_auto_renew": [
+    "SC-17"
+  ],
+  "cert_weak_key": [
+    "SC-12"
+  ],
+  "databricks_no_vnet": [
+    "SC-7"
+  ],
+  "databricks_no_cmk": [
+    "SC-12"
+  ],
+  "databricks_public_access": [
+    "SC-7"
+  ],
+  "apim_no_vnet": [
+    "SC-7"
+  ],
+  "apim_no_managed_identity": [
+    "IA-5"
+  ],
+  "frontdoor_no_waf": [
+    "SC-7"
+  ],
+  "frontdoor_old_tls": [
+    "SC-8"
+  ],
+  "secret_in_app_settings": [
+    "SC-28",
+    "IA-5"
+  ],
+  "no_keyvault_references": [
+    "SC-28"
+  ],
+  "firewall_no_threat_intel": [
+    "SI-4"
+  ],
+  "firewall_no_idps": [
+    "SI-4"
+  ],
+  "appgw_no_waf": [
+    "SC-7"
+  ],
+  "no_bastion_open_rdp": [
+    "AC-17"
+  ],
+  "bastion_shareable_links": [
+    "AC-3"
+  ],
+  "data_policy_noncompliant": [
+    "CA-7"
+  ],
+  "defender_data_recs_unhealthy": [
+    "RA-5"
+  ],
+  "stale_data_role_assignment": [
+    "AC-2"
+  ],
+  "storage_unusual_bypass": [
+    "SC-7"
+  ],
+  "cross_sub_private_endpoint": [
+    "AC-3"
+  ],
+  "nsg_unrestricted_outbound": [
+    "SC-7"
+  ],
+  "no_mfa_ca_policy": [
+    "IA-2(1)"
+  ],
+  "pim_permanent_assignments": [
+    "AC-2(5)"
+  ],
+  "drift_detected": [
+    "CM-3",
+    "CM-6"
+  ],
+  "aks_no_acr_integration": [
+    "SA-12",
+    "CM-7"
+  ],
+  "acr_admin_enabled": [
+    "AC-6",
+    "SA-12"
+  ],
+  "func_external_package": [
+    "SA-12",
+    "SI-7"
+  ]
+}

@@ -1,0 +1,606 @@
+{
+  "framework": "CIS Azure Foundations v2.1",
+  "version": "2.1",
+  "mappings": {
+    "no_auth_required": [
+      "1.1.1",
+      "1.2.1"
+    ],
+    "non_aad_auth": [
+      "1.1.1"
+    ],
+    "stale_auth_config": [
+      "1.11",
+      "1.14"
+    ],
+    "cs_auth_no_sign_in_required": [
+      "1.1.1",
+      "1.2.1"
+    ],
+    "cs_auth_generic_oauth": [
+      "1.1.1"
+    ],
+    "unauthenticated_web_channel": [
+      "1.1.1",
+      "1.2.1"
+    ],
+    "teams_channel_no_sso": [
+      "1.1.1"
+    ],
+    "no_pp_dlp_policies": [
+      "3.1",
+      "3.12"
+    ],
+    "cs_dlp_no_auth_connector_allowed": [
+      "3.1",
+      "3.12"
+    ],
+    "cs_dlp_knowledge_source_unrestricted": [
+      "3.1",
+      "3.12"
+    ],
+    "cs_dlp_channel_unrestricted": [
+      "3.1",
+      "3.12"
+    ],
+    "cs_dlp_skills_unrestricted": [
+      "3.1",
+      "3.12"
+    ],
+    "cs_dlp_default_group_not_blocked": [
+      "3.1",
+      "3.12"
+    ],
+    "cs_dlp_no_tenant_policy": [
+      "3.1",
+      "3.12"
+    ],
+    "cs_dlp_http_unrestricted": [
+      "6.1",
+      "6.4"
+    ],
+    "cs_auth_dlp_not_enforcing": [
+      "3.1",
+      "3.12"
+    ],
+    "connector_no_dlp_coverage": [
+      "3.1",
+      "3.12"
+    ],
+    "unmanaged_environments": [
+      "1.24",
+      "2.1"
+    ],
+    "no_security_group": [
+      "1.22",
+      "1.23"
+    ],
+    "cs_env_bots_in_default": [
+      "1.24",
+      "2.1"
+    ],
+    "cs_env_bots_in_dev_env": [
+      "1.24",
+      "2.1"
+    ],
+    "cs_env_sandbox_for_production": [
+      "1.24",
+      "2.1"
+    ],
+    "cs_env_no_tenant_isolation": [
+      "6.1",
+      "6.4"
+    ],
+    "cs_env_gen_ai_unrestricted": [
+      "9.2"
+    ],
+    "no_conversation_logging": [
+      "5.1.1",
+      "5.2.1"
+    ],
+    "environment_audit_disabled": [
+      "5.1.1",
+      "5.2.1"
+    ],
+    "cs_audit_no_purview_integration": [
+      "5.1.1",
+      "5.2.1"
+    ],
+    "cs_audit_no_dspm_for_ai": [
+      "5.1.1",
+      "5.2.1"
+    ],
+    "cs_agent_shared_to_everyone": [
+      "1.22",
+      "1.23"
+    ],
+    "cs_agent_event_triggers_ungoverned": [
+      "1.24",
+      "2.1"
+    ],
+    "cs_agent_http_unrestricted": [
+      "6.1",
+      "6.4"
+    ],
+    "cs_compliance_cross_geo_data_movement": [
+      "4.1"
+    ],
+    "cs_compliance_env_region_mismatch": [
+      "4.1"
+    ],
+    "cs_dv_env_maker_in_prod": [
+      "1.22",
+      "1.23"
+    ],
+    "cs_dv_no_lockbox": [
+      "3.9",
+      "3.10"
+    ],
+    "cs_dv_no_cmk": [
+      "3.9",
+      "3.10"
+    ],
+    "pp_env_governance_for_readiness": [
+      "1.24",
+      "2.1"
+    ],
+    "pp_dlp_coverage_for_copilot": [
+      "3.1",
+      "3.12"
+    ],
+    "pp_cross_tenant_for_readiness": [
+      "4.1"
+    ],
+    "overshared_knowledge_source": [
+      "3.1",
+      "3.12"
+    ],
+    "external_knowledge_source": [
+      "2.15"
+    ],
+    "public_website_source": [
+      "6.1",
+      "6.4"
+    ],
+    "generative_answers_no_guardrails": [
+      "9.2"
+    ],
+    "generative_orchestration_unrestricted": [
+      "1.22"
+    ],
+    "unpublished_bot_with_secrets": [
+      "1.11",
+      "1.14"
+    ],
+    "bot_not_solution_aware": [
+      "1.24",
+      "2.1"
+    ],
+    "draft_bot_stale": [
+      "1.24",
+      "2.1"
+    ],
+    "custom_connector_no_auth": [
+      "1.1.1",
+      "1.2.1"
+    ],
+    "premium_connector_uncontrolled": [
+      "1.24",
+      "2.1"
+    ],
+    "public_access_enabled": [
+      "6.1",
+      "6.4"
+    ],
+    "no_private_endpoints": [
+      "6.1",
+      "6.4"
+    ],
+    "workspace_no_isolation": [
+      "6.1",
+      "6.4"
+    ],
+    "workspace_no_managed_network": [
+      "6.1",
+      "6.4"
+    ],
+    "managed_network_no_outbound_rules": [
+      "6.1",
+      "6.4"
+    ],
+    "outbound_fqdn_unrestricted": [
+      "6.1",
+      "6.4"
+    ],
+    "local_auth_enabled": [
+      "1.1.1",
+      "1.2.1"
+    ],
+    "workspace_no_managed_identity": [
+      "1.1.1"
+    ],
+    "project_no_managed_identity": [
+      "1.1.1"
+    ],
+    "shared_project_identity": [
+      "1.22",
+      "1.23"
+    ],
+    "agent_permission_drift": [
+      "1.22",
+      "1.23"
+    ],
+    "no_content_filter": [
+      "9.2"
+    ],
+    "weak_content_filters": [
+      "9.2"
+    ],
+    "content_filter_gaps": [
+      "9.2"
+    ],
+    "no_prompt_shield": [
+      "9.2"
+    ],
+    "jailbreak_filter_disabled": [
+      "9.2"
+    ],
+    "blocklist_not_configured": [
+      "9.2"
+    ],
+    "no_prompt_injection_mitigation": [
+      "9.2"
+    ],
+    "no_groundedness_detection": [
+      "9.2"
+    ],
+    "no_pii_filter": [
+      "3.1",
+      "3.12"
+    ],
+    "agent_no_custom_guardrail": [
+      "9.2"
+    ],
+    "agent_account_no_content_safety": [
+      "9.2"
+    ],
+    "permissive_content_filters": [
+      "9.2"
+    ],
+    "serverless_no_content_safety": [
+      "9.2"
+    ],
+    "deployment_no_rai_policy": [
+      "9.2"
+    ],
+    "high_capacity_allocation": [
+      "1.24",
+      "2.1"
+    ],
+    "deployment_deprecated_model": [
+      "2.15"
+    ],
+    "unapproved_model_deployed": [
+      "2.15"
+    ],
+    "model_version_outdated": [
+      "2.15"
+    ],
+    "outdated_model_version": [
+      "2.15"
+    ],
+    "no_token_rate_limit": [
+      "9.2"
+    ],
+    "excessive_rate_limit": [
+      "9.2"
+    ],
+    "no_hub_structure": [
+      "1.24",
+      "2.1"
+    ],
+    "workspace_no_cmk": [
+      "3.9",
+      "3.10"
+    ],
+    "hub_no_project_isolation": [
+      "6.1",
+      "6.4"
+    ],
+    "compute_public_ip": [
+      "6.1",
+      "6.4"
+    ],
+    "compute_ssh_enabled": [
+      "6.1",
+      "6.4"
+    ],
+    "compute_idle_no_shutdown": [
+      "1.24",
+      "2.1"
+    ],
+    "compute_no_managed_identity": [
+      "1.1.1"
+    ],
+    "datastore_credential_in_config": [
+      "1.11",
+      "1.14"
+    ],
+    "datastore_no_encryption": [
+      "3.9",
+      "3.10"
+    ],
+    "online_endpoint_public": [
+      "6.1",
+      "6.4"
+    ],
+    "endpoint_no_auth": [
+      "1.1.1",
+      "1.2.1"
+    ],
+    "endpoint_key_auth_only": [
+      "1.1.1"
+    ],
+    "endpoint_no_logging": [
+      "5.1.1",
+      "5.2.1"
+    ],
+    "public_endpoint_exposure": [
+      "6.1",
+      "6.4"
+    ],
+    "no_auth_policy": [
+      "1.1.1",
+      "1.2.1"
+    ],
+    "deployment_unhealthy": [
+      "1.24",
+      "2.1"
+    ],
+    "registry_public_access": [
+      "6.1",
+      "6.4"
+    ],
+    "registry_no_rbac": [
+      "1.22",
+      "1.23"
+    ],
+    "connection_static_credentials": [
+      "1.11",
+      "1.14"
+    ],
+    "connection_shared_to_all": [
+      "1.22",
+      "1.23"
+    ],
+    "connection_expired_credentials": [
+      "1.11",
+      "1.14"
+    ],
+    "connection_no_expiry": [
+      "1.11",
+      "1.14"
+    ],
+    "serverless_key_auth": [
+      "1.1.1"
+    ],
+    "serverless_key_not_rotated": [
+      "1.11",
+      "1.14"
+    ],
+    "ws_no_diagnostic_settings": [
+      "5.1.1",
+      "5.2.1"
+    ],
+    "ws_no_log_analytics": [
+      "5.1.1",
+      "5.2.1"
+    ],
+    "mcp_no_secure_auth": [
+      "1.1.1",
+      "1.2.1"
+    ],
+    "mcp_public_endpoint": [
+      "6.1",
+      "6.4"
+    ],
+    "mcp_shared_to_all": [
+      "1.22",
+      "1.23"
+    ],
+    "a2a_no_identity_auth": [
+      "1.1.1",
+      "1.2.1"
+    ],
+    "non_microsoft_tool_connection": [
+      "2.15"
+    ],
+    "tool_credential_based_auth": [
+      "1.11",
+      "1.14"
+    ],
+    "hosted_no_vnet": [
+      "6.1",
+      "6.4"
+    ],
+    "hosted_no_acr": [
+      "1.24",
+      "2.1"
+    ],
+    "hosted_unhealthy": [
+      "1.24",
+      "2.1"
+    ],
+    "data_connection_no_managed_identity": [
+      "1.1.1"
+    ],
+    "no_customer_managed_key": [
+      "3.9",
+      "3.10"
+    ],
+    "data_connection_shared_to_all": [
+      "1.22",
+      "1.23"
+    ],
+    "workspace_no_diagnostics": [
+      "5.1.1",
+      "5.2.1"
+    ],
+    "project_no_tracing": [
+      "5.1.1",
+      "5.2.1"
+    ],
+    "workspace_limited_log_coverage": [
+      "5.1.1",
+      "5.2.1"
+    ],
+    "shadow_agents_unpublished": [
+      "1.24",
+      "2.1"
+    ],
+    "excess_unpublished_agents": [
+      "1.24",
+      "2.1"
+    ],
+    "agent_no_rbac": [
+      "1.22",
+      "1.23"
+    ],
+    "sp_excessive_permissions": [
+      "1.22",
+      "1.23"
+    ],
+    "sp_credential_expiry": [
+      "1.11",
+      "1.14"
+    ],
+    "sp_no_credential_rotation": [
+      "1.11",
+      "1.14"
+    ],
+    "sp_multi_tenant_exposure": [
+      "4.1"
+    ],
+    "sp_no_managed_identity": [
+      "1.1.1"
+    ],
+    "sp_ai_api_over_scoped": [
+      "1.22",
+      "1.23"
+    ],
+    "sp_risky_identity_protection": [
+      "1.22",
+      "1.23"
+    ],
+    "sp_privileged_directory_roles": [
+      "1.23"
+    ],
+    "sp_owner_governance_weak": [
+      "1.22",
+      "1.23"
+    ],
+    "sp_stale_disabled": [
+      "1.24",
+      "2.1"
+    ],
+    "no_ca_for_ai_apps": [
+      "1.2.4",
+      "1.2.5"
+    ],
+    "no_token_lifetime_restriction": [
+      "1.2.4",
+      "1.2.5"
+    ],
+    "ca_weak_policy_quality": [
+      "1.2.4",
+      "1.2.5"
+    ],
+    "ca_no_session_controls": [
+      "1.2.4",
+      "1.2.5"
+    ],
+    "broad_user_consent_to_ai_apps": [
+      "1.22",
+      "1.23"
+    ],
+    "admin_consent_ai_high_privilege": [
+      "1.22",
+      "1.23"
+    ],
+    "ai_specific_consent_scopes": [
+      "1.22",
+      "1.23"
+    ],
+    "wif_missing_federation": [
+      "1.1.1"
+    ],
+    "cross_tenant_ai_exposure": [
+      "4.1"
+    ],
+    "pim_missing_for_ai_roles": [
+      "1.23"
+    ],
+    "no_defender_for_ai": [
+      "2.1.15"
+    ],
+    "defender_ai_alerts_suppressed": [
+      "5.1.1",
+      "5.2.1"
+    ],
+    "no_ai_azure_policies": [
+      "1.24",
+      "2.1"
+    ],
+    "ai_policy_non_compliant": [
+      "1.24",
+      "2.1"
+    ],
+    "agent_no_auth_between_agents": [
+      "1.1.1",
+      "1.2.1"
+    ],
+    "agent_unrestricted_tool_access": [
+      "1.22"
+    ],
+    "agent_memory_no_encryption": [
+      "3.9",
+      "3.10"
+    ],
+    "no_agent_inventory": [
+      "1.24",
+      "2.1"
+    ],
+    "agent_no_human_in_loop": [
+      "1.22"
+    ],
+    "shadow_ai_agents": [
+      "1.24",
+      "2.1"
+    ],
+    "no_diagnostic_settings": [
+      "5.1.1",
+      "5.2.1"
+    ],
+    "no_audit_logging": [
+      "5.1.1",
+      "5.2.1"
+    ],
+    "training_data_no_classification": [
+      "3.1"
+    ],
+    "output_data_no_retention_policy": [
+      "3.1"
+    ],
+    "key_without_network_restriction": [
+      "6.1",
+      "6.4"
+    ],
+    "multi_region_sprawl": [
+      "4.1"
+    ],
+    "no_cmk_encryption": [
+      "3.9",
+      "3.10"
+    ]
+  }
+}

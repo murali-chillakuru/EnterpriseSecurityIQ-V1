@@ -1,0 +1,336 @@
+{
+  "framework": "CSA Cloud Controls Matrix v4",
+  "version": "4.0",
+  "controls": [
+    {
+      "control_id": "CSA-IAM-01",
+      "title": "Identity Management and Authorization",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-user-lifecycle-summary",
+        "entra-role-assignment",
+        "azure-role-assignment"
+      ],
+      "evaluation_logic": "check_account_management",
+      "rationale": "Manage identities and enforce authorization controls",
+      "recommendation": "Implement centralized identity management with role-based access"
+    },
+    {
+      "control_id": "CSA-IAM-02",
+      "title": "MFA and Authentication",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-security-defaults",
+        "azure-keyvault",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_mfa_enforcement",
+      "rationale": "Require strong authentication methods",
+      "recommendation": "Enforce MFA for all users and privileged access",
+      "compensating_evidence": [
+        "entra-security-defaults"
+      ]
+    },
+    {
+      "control_id": "CSA-IAM-03",
+      "title": "Privilege Access Management",
+      "domain": "access",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-pim-eligible-assignment",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_pim_configuration",
+      "rationale": "Control and monitor privileged user access",
+      "recommendation": "Implement JIT access with approval workflows"
+    },
+    {
+      "control_id": "CSA-DSP-01",
+      "title": "Data Classification and Handling",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-queue",
+        "azure-policy-compliance",
+        "azure-storage-security"
+      ],
+      "evaluation_logic": "check_storage_security",
+      "rationale": "Classify and protect data based on sensitivity",
+      "recommendation": "Tag all data with classification levels"
+    },
+    {
+      "control_id": "CSA-DSP-02",
+      "title": "Encryption and Key Management",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-keyvault",
+        "azure-storage-security",
+        "azure-disk-encryption-set"
+      ],
+      "evaluation_logic": "check_key_vault_security",
+      "rationale": "Encrypt data at rest and in transit",
+      "recommendation": "Use customer-managed keys for sensitive data"
+    },
+    {
+      "control_id": "CSA-DSP-03",
+      "title": "Data Retention and Disposal",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-security",
+        "azure-policy-compliance"
+      ],
+      "evaluation_logic": "check_policy_compliance",
+      "rationale": "Manage data lifecycle and secure disposal",
+      "recommendation": "Implement retention policies with secure erasure"
+    },
+    {
+      "control_id": "CSA-IVS-01",
+      "title": "Infrastructure Security",
+      "domain": "network",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-nsg-rule",
+        "azure-app-service-network",
+        "azure-private-endpoint"
+      ],
+      "evaluation_logic": "check_nsg_rules",
+      "rationale": "Secure cloud infrastructure from unauthorized access",
+      "recommendation": "Implement network segmentation and firewalls",
+      "compensating_evidence": [
+        "azure-waf-policy",
+        "azure-firewall"
+      ]
+    },
+    {
+      "control_id": "CSA-IVS-02",
+      "title": "Virtual Machine and Container Security",
+      "domain": "network",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-aks-cluster",
+        "azure-acr-repository",
+        "azure-vm-config"
+      ],
+      "evaluation_logic": "check_aks_security",
+      "rationale": "Secure virtual compute resources",
+      "recommendation": "Enable host-based firewalls and intrusion detection"
+    },
+    {
+      "control_id": "CSA-LOG-01",
+      "title": "Audit Logging and Monitoring",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-activity-log",
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_activity_logs",
+      "rationale": "Log and monitor all security-relevant activities",
+      "recommendation": "Centralize logs with alerting for suspicious activities"
+    },
+    {
+      "control_id": "CSA-LOG-02",
+      "title": "Incident Detection and Response",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-alert-rule",
+        "azure-defender-pricing"
+      ],
+      "evaluation_logic": "check_monitoring_alerts",
+      "rationale": "Detect and respond to security incidents",
+      "recommendation": "Implement SIEM with automated response capabilities"
+    },
+    {
+      "control_id": "CSA-GRC-01",
+      "title": "Compliance Monitoring and Reporting",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-compliance",
+        "azure-defender-pricing"
+      ],
+      "evaluation_logic": "check_policy_compliance",
+      "rationale": "Monitor compliance with security policies",
+      "recommendation": "Generate compliance reports quarterly"
+    },
+    {
+      "control_id": "CSA-GRC-02",
+      "title": "Vulnerability and Patch Management",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-sql-advanced-threat",
+        "azure-vm-config"
+      ],
+      "evaluation_logic": "check_defender_plans",
+      "rationale": "Identify and remediate vulnerabilities",
+      "recommendation": "Scan for vulnerabilities monthly and patch within 30 days"
+    },
+    {
+      "control_id": "CSA-BCR-01",
+      "title": "Business Continuity and Recovery",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-recovery-vault",
+        "azure-policy-compliance"
+      ],
+      "evaluation_logic": "check_backup_recovery",
+      "rationale": "Ensure business continuity and disaster recovery",
+      "recommendation": "Test recovery procedures semi-annually"
+    },
+    {
+      "control_id": "CSA-GEN-01",
+      "title": "Shared Responsibility Model Compliance",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "entra-access-review"
+      ],
+      "evaluation_logic": "check_policy_compliance",
+      "rationale": "Understand and implement shared responsibilities",
+      "recommendation": "Document customer and provider responsibilities"
+    },
+    {
+      "control_id": "CSA-THR-01",
+      "title": "Threat Detection and Response",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-alert-rule"
+      ],
+      "evaluation_logic": "check_monitoring_alerts",
+      "rationale": "Detect and respond to security threats",
+      "recommendation": "Implement threat intelligence integration with alerts"
+    },
+    {
+      "control_id": "CSA-SEF-02",
+      "title": "Incident Management",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-alert-rule",
+        "entra-risk-summary"
+      ],
+      "evaluation_logic": "check_incident_detection",
+      "rationale": "CSA-CCM requires incident detection and management capabilities.",
+      "recommendation": "Enable Defender for Cloud and configure alert rules."
+    },
+    {
+      "control_id": "CSA-SEF-03",
+      "title": "Incident Reporting",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-action-group",
+        "azure-alert-rule",
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_incident_alerting",
+      "rationale": "Incident reporting infrastructure must support timely notification.",
+      "recommendation": "Configure action groups with notification receivers."
+    },
+    {
+      "control_id": "CSA-SEF-04",
+      "title": "Security Contact Management",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_security_contact_config",
+      "rationale": "Security contacts must be designated for incident coordination.",
+      "recommendation": "Configure security contacts with alert notifications."
+    },
+    {
+      "control_id": "CSA-CCC-01",
+      "title": "Change Management Policy",
+      "domain": "change_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "azure-policy-definition"
+      ],
+      "evaluation_logic": "check_change_control_policies",
+      "rationale": "Change control policies must govern cloud resource modifications.",
+      "recommendation": "Assign policies with deny effects for unauthorized changes."
+    },
+    {
+      "control_id": "CSA-CCC-02",
+      "title": "Change Tracking",
+      "domain": "change_management",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-activity-log",
+        "azure-activity-event",
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_configuration_change_tracking",
+      "rationale": "All configuration changes must be tracked and auditable.",
+      "recommendation": "Ensure activity logs capture Write and Delete events."
+    },
+    {
+      "control_id": "CSA-BCR-01b",
+      "title": "Business Continuity Planning",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-recovery-vault",
+        "azure-vm-config",
+        "azure-sql-server"
+      ],
+      "evaluation_logic": "check_backup_configuration",
+      "rationale": "Business continuity plans must include backup and recovery.",
+      "recommendation": "Deploy Recovery Services vaults with soft delete."
+    },
+    {
+      "control_id": "CSA-BCR-02",
+      "title": "Data Resilience and Redundancy",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-account",
+        "azure-cosmosdb-account"
+      ],
+      "evaluation_logic": "check_geo_redundancy",
+      "rationale": "Data must be stored with geographic redundancy.",
+      "recommendation": "Use GRS/RA-GRS replication for storage accounts."
+    },
+    {
+      "control_id": "CSA-DCS-01",
+      "title": "Asset Inventory",
+      "domain": "asset_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource",
+        "azure-resource-group",
+        "azure-managed-identity"
+      ],
+      "evaluation_logic": "check_asset_inventory",
+      "rationale": "All cloud assets must be inventoried and classified.",
+      "recommendation": "Maintain comprehensive asset inventory."
+    },
+    {
+      "control_id": "CSA-DCS-02",
+      "title": "Data Classification",
+      "domain": "asset_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource",
+        "azure-resource-group"
+      ],
+      "evaluation_logic": "check_classification_tagging",
+      "rationale": "Data must be classified and labeled appropriately.",
+      "recommendation": "Apply mandatory data classification tags."
+    }
+  ]
+}

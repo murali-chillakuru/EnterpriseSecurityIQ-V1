@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostureIQ — File Reference</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+/* ── CSS Variables ─────────────────────────────────────────────── */
+:root {
+  --bg-primary: #0D1117; --bg-secondary: #161B22; --bg-card: #1C2128;
+  --bg-card-hover: #22272E; --border-color: #30363D; --text-primary: #E6EDF3;
+  --text-secondary: #8B949E; --text-muted: #6E7681;
+  --accent-blue: #1F6FEB; --accent-purple: #A371F7; --accent-green: #3FB950;
+  --accent-orange: #D29922; --accent-cyan: #39D2C0; --accent-red: #F85149;
+  --accent-blue-bg: rgba(31,111,235,.12); --accent-purple-bg: rgba(163,113,247,.12);
+  --accent-green-bg: rgba(63,185,80,.12); --accent-orange-bg: rgba(210,153,34,.12);
+  --accent-cyan-bg: rgba(57,210,192,.12); --accent-red-bg: rgba(248,81,73,.12);
+  --shadow: 0 2px 8px rgba(0,0,0,.3); --radius: 12px;
+  --max-width:1200px;
+}
+[data-theme="light"] {
+  --bg-primary: #F6F8FA; --bg-secondary: #FFFFFF; --bg-card: #FFFFFF;
+  --bg-card-hover: #F3F4F6; --border-color: #D0D7DE; --text-primary: #1F2328;
+  --text-secondary: #57606A; --text-muted: #8C959F;
+  --accent-blue-bg: rgba(31,111,235,.08); --accent-purple-bg: rgba(163,113,247,.08);
+  --accent-green-bg: rgba(63,185,80,.08); --accent-orange-bg: rgba(210,153,34,.08);
+  --accent-cyan-bg: rgba(57,210,192,.08); --accent-red-bg: rgba(248,81,73,.08);
+  --shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+/* ── Reset & Base ──────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  background:var(--bg-primary);color:var(--text-primary);line-height:1.7;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent-blue);text-decoration:none}a:hover{text-decoration:underline}
+code{font-family:'Cascadia Code','Fira Code',monospace;font-size:.9em;
+  background:var(--bg-card);padding:2px 6px;border-radius:4px;border:1px solid var(--border-color)}
+/* ── Skip Nav ──────────────────────────────────────────────────── */
+.skip-nav{position:absolute;top:-100px;left:8px;background:var(--accent-blue);color:#fff;
+  padding:8px 16px;border-radius:0 0 8px 8px;z-index:1000;font-weight:600}
+.skip-nav:focus{top:0}
+/* ── Progress Bar ──────────────────────────────────────────────── */
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple));
+  z-index:9999;transition:width .15s}
+/* ── Hero ──────────────────────────────────────────────────────── */
+.hero{position:relative;padding:4rem 2rem 3rem;text-align:center;overflow:hidden;
+  background:linear-gradient(135deg,var(--bg-secondary) 0%,var(--bg-primary) 100%)}
+.hero::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(31,111,235,.15),transparent 70%);top:-200px;right:-100px}
+.hero::after{content:'';position:absolute;width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(163,113,247,.1),transparent 70%);bottom:-150px;left:-50px}
+.hero h1{font-size:2.5rem;font-weight:700;margin-bottom:.5rem;position:relative}
+.hero .subtitle{font-size:1.15rem;color:var(--text-secondary);max-width:800px;margin:0 auto 1rem;position:relative}
+.hero .author{font-size:.95rem;color:var(--text-muted);position:relative}
+/* ── Stats Bar ─────────────────────────────────────────────────── */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;
+  max-width:1100px;margin:-1.5rem auto 2rem;padding:0 2rem;position:relative;z-index:2}
+.stat{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius);
+  padding:1rem;text-align:center;box-shadow:var(--shadow)}
+.stat .num{font-size:1.8rem;font-weight:700;display:block}
+.stat .lbl{font-size:.75rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px}
+/* ── Sticky Nav ────────────────────────────────────────────────── */
+.sticky-nav{position:sticky;top:0;z-index:100;background:var(--bg-secondary);
+  border-bottom:1px solid var(--border-color);padding:.6rem 2rem;
+  display:flex;align-items:center;gap:.5rem;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.sticky-nav::-webkit-scrollbar{height:0}
+.nav-pill{padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:500;
+  white-space:nowrap;color:var(--text-secondary);background:transparent;border:1px solid transparent;
+  cursor:pointer;transition:all .2s}
+.nav-pill:hover,.nav-pill.active{color:var(--accent-blue);background:var(--accent-blue-bg);border-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;background:var(--bg-card);border:1px solid var(--border-color);
+  padding:6px 12px;border-radius:20px;cursor:pointer;font-size:.85rem;color:var(--text-primary)}
+/* ── Content Container ───────────────────────────────────────────────────── */
+.container{max-width:var(--max-width);margin:0 auto;padding:2rem}
+/* ── Section ───────────────────────────────────────────────────── */
+section{margin-bottom:3rem}
+section h2{font-size:1.6rem;font-weight:700;margin-bottom:.5rem;padding-bottom:.4rem;
+  border-bottom:2px solid var(--accent-blue)}
+section h3{font-size:1.2rem;font-weight:600;margin:1.5rem 0 .5rem;color:var(--accent-purple)}
+/* ── Tables ────────────────────────────────────────────────────── */
+.table-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+thead{background:var(--bg-secondary);position:sticky;top:52px;z-index:5}
+th{padding:10px 12px;text-align:left;font-weight:600;color:var(--text-secondary);
+  border-bottom:2px solid var(--accent-blue);white-space:nowrap;text-transform:uppercase;letter-spacing:.4px;font-size:.75rem}
+td{padding:10px 12px;border-bottom:1px solid var(--border-color);vertical-align:top}
+tr:hover td{background:var(--bg-card-hover)}
+td code{font-size:.82rem}
+/* ── Grid Cards ────────────────────────────────────────────────── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin:1rem 0}
+.card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius);
+  padding:1.2rem;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.2)}
+.card .card-title{font-size:1rem;font-weight:600;margin-bottom:.3rem}
+.card .card-meta{font-size:.8rem;color:var(--text-muted);margin-bottom:.5rem}
+.card .card-desc{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.card .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:600;margin-right:.3rem}
+.badge-blue{background:var(--accent-blue-bg);color:var(--accent-blue)}
+.badge-purple{background:var(--accent-purple-bg);color:var(--accent-purple)}
+.badge-green{background:var(--accent-green-bg);color:var(--accent-green)}
+.badge-orange{background:var(--accent-orange-bg);color:var(--accent-orange)}
+.badge-cyan{background:var(--accent-cyan-bg);color:var(--accent-cyan)}
+.badge-red{background:var(--accent-red-bg);color:var(--accent-red)}
+/* ── Mermaid ───────────────────────────────────────────────────── */
+.mermaid-wrap{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius);
+  padding:1.5rem;margin:1.5rem 0;overflow-x:auto}
+.mermaid-wrap h4{margin-bottom:1rem;font-size:1rem;color:var(--accent-cyan)}
+.diagram-note{margin-top:1rem;padding:1rem;background:var(--accent-cyan-bg);border-left:3px solid var(--accent-cyan);
+  border-radius:0 8px 8px 0;font-size:.85rem;color:var(--text-secondary)}
+/* ── Detail / Expandable ───────────────────────────────────────── */
+details{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius);
+  margin:.5rem 0;padding:0}
+details[open]{box-shadow:var(--shadow)}
+summary{padding:1rem 1.2rem;cursor:pointer;font-weight:600;font-size:.95rem;
+  list-style:none;display:flex;align-items:center;gap:.5rem}
+summary::before{content:'▶';font-size:.7rem;transition:transform .2s;color:var(--accent-blue)}
+details[open] summary::before{transform:rotate(90deg)}
+summary::-webkit-details-marker{display:none}
+details .detail-body{padding:0 1.2rem 1rem}
+/* ── Info Banner ───────────────────────────────────────────────── */
+.info-banner{background:linear-gradient(135deg,var(--accent-green-bg),var(--accent-cyan-bg));
+  border:1px solid var(--accent-green);border-radius:var(--radius);padding:1.5rem;margin:1.5rem 0}
+.info-banner h3{color:var(--accent-green);margin-bottom:.5rem}
+.info-banner ul{padding-left:1.2rem;color:var(--text-secondary);font-size:.9rem}
+.info-banner li{margin:.3rem 0}
+/* ── Footer ────────────────────────────────────────────────────── */
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.85rem;
+  border-top:1px solid var(--border-color);margin-top:3rem}
+/* ── Pipe char ─────────────────────────────────────────────────── */
+.pipe{display:inline-block;width:3px;height:40px;background:var(--border-color);margin:0 auto}
+/* ── Phase Cards ───────────────────────────────────────────────── */
+.phase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin:1rem 0}
+.phase-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius);
+  padding:1.2rem;position:relative;overflow:hidden}
+.phase-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.phase-card.p1::before{background:var(--accent-blue)}
+.phase-card.p2::before{background:var(--accent-purple)}
+.phase-card.p3::before{background:var(--accent-orange)}
+.phase-card.p4::before{background:var(--accent-green)}
+.phase-card .phase-num{font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);font-weight:600}
+.phase-card .phase-title{font-size:1.1rem;font-weight:700;margin:.3rem 0}
+.phase-card .phase-detail{font-size:.85rem;color:var(--text-secondary)}
+/* ── Accessibility ─────────────────────────────────────────────── */
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media(forced-colors:active){.card,.stat,.phase-card{border:2px solid LinkText}}
+@media print{.sticky-nav,.theme-toggle,.progress-bar,.skip-nav{display:none!important}
+  body{background:#fff;color:#000}.hero{background:#f0f0f0;padding:2rem}}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-nav">Skip to content</a>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<header class="hero">
+  <h1>File Reference</h1>
+  <p class="subtitle">Complete inventory of every file in PostureIQ — 64 collectors, modular assessment engines (PostureIQ, Risk, RBAC, Copilot, AI Agent Security, Data Security, Query), 11 compliance frameworks, 24 report generators, 14 agent tools, 15 test suites, and 11 web dashboard SPAs.</p>
+  <p class="author">Author: Murali Chillakuru</p>
+</header>
+
+<!-- ═══════════════════ STATS BAR ═══════════════════ -->
+<div class="stats-bar">
+  <div class="stat"><span class="num" data-target="64">0</span><span class="lbl">Collectors</span></div>
+  <div class="stat"><span class="num" data-target="10">0</span><span class="lbl">Eval Domains</span></div>
+  <div class="stat"><span class="num" data-target="113">0</span><span class="lbl">Eval Functions</span></div>
+  <div class="stat"><span class="num" data-target="24">0</span><span class="lbl">Report Generators</span></div>
+  <div class="stat"><span class="num" data-target="14">0</span><span class="lbl">Agent Tools</span></div>
+  <div class="stat"><span class="num" data-target="11">0</span><span class="lbl">Frameworks</span></div>
+  <div class="stat"><span class="num" data-target="525">0</span><span class="lbl">Controls</span></div>
+  <div class="stat"><span class="num" data-target="15">0</span><span class="lbl">Test Suites</span></div>
+</div>
+
+<!-- ═══════════════════ STICKY NAV ═══════════════════ -->
+<nav class="sticky-nav" role="navigation" aria-label="Section navigation">
+  <a href="#pipeline" class="nav-pill">Pipeline</a>
+  <a href="#cli" class="nav-pill">CLI Scripts</a>
+  <a href="#foundry" class="nav-pill">Foundry Agent</a>
+  <a href="#core" class="nav-pill">Core Modules</a>
+  <a href="#collectors" class="nav-pill">Collectors</a>
+  <a href="#evaluators" class="nav-pill">Evaluators</a>
+  <a href="#engines" class="nav-pill">Engines</a>
+  <a href="#tools" class="nav-pill">Agent Tools</a>
+  <a href="#reports" class="nav-pill">Reports</a>
+  <a href="#config" class="nav-pill">Config</a>
+  <a href="#frameworks" class="nav-pill">Frameworks</a>
+  <a href="#tests" class="nav-pill">Tests</a>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌓 Theme</button>
+</nav>
+
+<!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+<main id="main" class="container">
+<!-- EXEC SUMMARY -->
+<div style="background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.25);border-radius:8px;padding:16px 20px;margin:0 0 24px;font-size:.9rem;color:var(--text-secondary)">
+<strong>📋 Executive Summary</strong> — Complete file-by-file inventory: every Python module, JSON schema, test file, and configuration file with purpose and key exports. Use as a navigation map when exploring or extending the codebase.
+<div style="margin-top:8px;font-size:.82rem"><strong>Audience:</strong> Developers, contributors · <strong>Prerequisites:</strong> <a href="architecture.html">Architecture</a> · <strong>Related:</strong> <a href="agent-capabilities.html">Agent Capabilities</a> · <a href="extending-frameworks.html">Extending Frameworks</a></div>
+</div>
+<!-- ── Pipeline Overview ───────────────────────────────── -->
+<section id="pipeline">
+  <h2>Pipeline Overview</h2>
+  <p style="color:var(--text-secondary);margin-bottom:1rem">The assessment pipeline runs in four phases — authenticate, collect, evaluate, and report. Each phase is modular and can be invoked independently via CLI scripts or agent tools.</p>
+  <div class="phase-grid">
+    <div class="phase-card p1">
+      <div class="phase-num">Phase 1</div>
+      <div class="phase-title">Authenticate</div>
+      <div class="phase-detail">4 auth modes via <code>ComplianceCredentials</code>: auto, azurecli, serviceprincipal, appregistration. Unified DefaultAzureCredential for ARM + Graph. Preflight permissions check.</div>
+    </div>
+    <div class="phase-card p2">
+      <div class="phase-num">Phase 2</div>
+      <div class="phase-title">Collect</div>
+      <div class="phase-detail">68 async collectors in concurrent batches. 47 registered Azure + 17 Entra + 2 standalone + M365. Checkpoint/resume. 200+ evidence types.</div>
+    </div>
+    <div class="phase-card p3">
+      <div class="phase-num">Phase 3</div>
+      <div class="phase-title">Evaluate</div>
+      <div class="phase-detail">10 domain evaluators (113 functions). Severity-weighted scoring. Maps evidence → 525 controls across 11 frameworks. Suppression rules + plugin hooks.</div>
+    </div>
+    <div class="phase-card p4">
+      <div class="phase-num">Phase 4</div>
+      <div class="phase-title">Report</div>
+      <div class="phase-detail">24 generators → HTML, MD, Excel, PDF, JSON, CSV, OSCAL, SARIF. Delta/drift/trending. Remediation playbooks. Per-framework sub-folders.</div>
+    </div>
+  </div>
+
+  <div class="mermaid-wrap">
+    <h4>End-to-End Pipeline Sequence</h4>
+    <pre class="mermaid" data-seq-details='[{"overview":"The CLI runner initiates a preflight check to verify Azure and Entra ID permissions before starting the assessment. This prevents wasted API calls if credentials are expired or insufficient.","dataFlow":"CLI sends credential object to auth.py for validation against Microsoft Graph and Azure Resource Manager endpoints.","keyPoints":["Checks both Azure RBAC and Entra ID Graph permissions","Validates token freshness and scope","Fails fast with actionable error messages"],"whyItMatters":"Running a full assessment with invalid credentials would waste time and produce incomplete results.","output":"Boolean permission status with details of any missing roles"},{"overview":"The auth module confirms that all required permissions are in place. The CLI can proceed to launch the full assessment pipeline.","dataFlow":"Auth returns a verified permission set including Azure subscription access and Graph API scopes.","keyPoints":["Covers Reader role on subscriptions","Validates Directory.Read.All for Entra","Reports any gaps before proceeding"],"whyItMatters":"Early permission verification prevents partial assessment runs that would produce misleading compliance scores.","output":"Permission verification result with scope details"},{"overview":"The CLI delegates to the orchestrator, passing credentials and the merged configuration. This is the main entry point for the entire assessment pipeline.","dataFlow":"Credentials, tenant config, framework selections, and batch sizes flow into the orchestrator.","keyPoints":["Config merges defaults with user overrides","Supports multi-tenant assessment","Timestamps the run for output folder naming"],"whyItMatters":"The orchestrator is the central coordinator that manages the entire lifecycle of an assessment run.","output":"Orchestrator begins pipeline execution"},{"overview":"The orchestrator asks the collector registry to discover all available data collectors. Each collector is a Python module that gathers specific evidence from Azure or Entra ID.","dataFlow":"Registry scans the collectors directory and returns module references sorted by their declared priority.","keyPoints":["64 total collectors across Azure and Entra domains","Priority sorting ensures dependencies are collected first","Collectors can be disabled via configuration"],"whyItMatters":"Dynamic discovery allows new collectors to be added without modifying the orchestrator code.","output":"Ordered list of collector modules ready for execution"},{"overview":"The registry returns collectors sorted by execution priority. Lower-priority collectors that depend on earlier evidence will run after their dependencies.","dataFlow":"Sorted collector list flows back with metadata including domain, priority, and estimated API call count.","keyPoints":["47 Azure collectors and 17 Entra collectors","Each collector declares its priority level","Disabled collectors are filtered out"],"whyItMatters":"Correct ordering prevents missing-evidence scenarios where a collector needs data from another collector that has not run yet.","output":"Prioritized collector manifest"},{"overview":"Azure collectors run in parallel batches of 6 (configurable). Each batch makes concurrent API calls to Azure Resource Manager to gather security evidence.","dataFlow":"Orchestrator dispatches up to 6 Azure collectors simultaneously, each calling ARM REST APIs for their specific resource types.","keyPoints":["Batch size of 6 balances throughput with API throttling limits","Includes collectors for NSGs, Key Vaults, Storage, SQL, and more","Each collector returns standardized evidence dictionaries"],"whyItMatters":"Batching prevents Azure API rate limiting while maximizing data collection throughput.","output":"Raw evidence dictionaries from Azure resource analysis"},{"overview":"Azure collectors return evidence dictionaries containing resource configurations, policy states, and security settings discovered from the Azure environment.","dataFlow":"Evidence dicts flow back containing resource inventories, configuration snapshots, and compliance-relevant properties.","keyPoints":["Evidence is keyed by collector name for traceability","Includes raw API responses and normalized findings","Failed collectors report errors without blocking others"],"whyItMatters":"Standardized evidence format allows the evaluation engine to process findings uniformly across all resource types.","output":"Consolidated Azure evidence collection"},{"overview":"Entra ID collectors run in parallel batches of 4. These gather identity and access management evidence from Microsoft Entra ID via the Graph API.","dataFlow":"Orchestrator dispatches up to 4 Entra collectors simultaneously, each querying Microsoft Graph API endpoints.","keyPoints":["Covers conditional access, MFA, privileged roles, and app registrations","Smaller batch size reflects Graph API throttling thresholds","Runs concurrently with Azure collectors when possible"],"whyItMatters":"Identity security is often the weakest link - Entra collectors surface risky configurations that attackers target first.","output":"Evidence dictionaries from Entra ID analysis"},{"overview":"Entra collectors return evidence about identity configurations, authentication policies, and directory settings that impact the security posture.","dataFlow":"Evidence dicts flow back containing user policies, role assignments, app consent grants, and authentication method configurations.","keyPoints":["MFA enrollment status across all users","Privileged role assignment analysis","Stale credential and dormant account detection"],"whyItMatters":"Entra evidence drives many high-severity findings since identity compromise is the top attack vector.","output":"Consolidated Entra ID evidence collection"},{"overview":"The evaluation engine processes collected evidence against framework controls. Each control defines what to check and what constitutes compliance.","dataFlow":"Evidence dictionaries and control definitions flow into the evaluation engine, which runs domain-specific evaluation logic.","keyPoints":["11 frameworks with 525 total controls","Domain evaluators handle specific resource types","Supports custom evaluation plugins"],"whyItMatters":"This is where raw evidence becomes actionable findings - the core value of the security assessment.","output":"Individual findings with compliance status per control"},{"overview":"The evaluation engine returns findings and control results. Each finding includes a compliance status, severity, and remediation guidance.","dataFlow":"Findings flow back with status (compliant, non-compliant, partial, missing_evidence), severity weights, and remediation steps.","keyPoints":["Severity-weighted scoring: Critical(4), High(3), Medium(2), Low(1)","Suppression rules can downgrade or dismiss findings","Cross-domain correlation identifies compound risks"],"whyItMatters":"Weighted scoring prioritizes the most impactful findings so security teams focus remediation effort where it matters most.","output":"Scored findings with compliance percentages per domain"},{"overview":"The orchestrator sends findings to report generators that produce human-readable and machine-parseable output in multiple formats.","dataFlow":"Findings, compliance scores, and metadata flow into report generators that produce HTML, Markdown, Excel, JSON, and CSV outputs.","keyPoints":["24 report generator modules available","Per-framework compliance reports with drill-down","Executive summary with trend comparison"],"whyItMatters":"Multiple output formats serve different audiences - executives get summaries while engineers get detailed remediation plans.","output":"Report files in configured formats"},{"overview":"Report generators confirm that output files have been written to the timestamped sub-folder for this assessment run.","dataFlow":"File paths and generation status flow back to the orchestrator for inclusion in the final summary.","keyPoints":["Output organized in timestamped folders","Includes both per-framework and cross-framework reports","Evidence snapshots preserved for audit trail"],"whyItMatters":"Organized output structure enables historical comparison and audit compliance documentation.","output":"File manifest of generated reports"},{"overview":"The orchestrator returns the final AssessmentSummary to the CLI, containing overall compliance scores, finding counts, and output file locations.","dataFlow":"Summary object flows back with aggregate scores, finding counts by severity, framework compliance percentages, and output paths.","keyPoints":["Overall compliance percentage across all frameworks","Finding counts grouped by severity and status","Execution timing and collector success rates"],"whyItMatters":"The summary provides the definitive picture of the security posture and serves as the entry point for remediation planning.","output":"AssessmentSummary object with complete run results"}]'>
+sequenceDiagram
+    participant CLI as CLI / Agent Tool
+    participant Auth as auth.py
+    participant Orch as postureiq_orchestrator.py
+    participant Reg as registry.py
+    participant AzC as Azure Collectors (47)
+    participant EnC as Entra Collectors (17)
+    participant Eval as Evaluators (10)
+    participant Rep as Reports (24)
+
+    CLI->>Auth: preflight_check()
+    Auth-->>CLI: permissions verified
+
+    CLI->>Orch: run_full_assessment(creds, config)
+    Orch->>Reg: discover_collectors()
+    Reg-->>Orch: sorted by priority
+
+    par Azure + Entra concurrent
+        Orch->>AzC: batch by azure_batch_size (6)
+        AzC-->>Orch: evidence dicts
+    and
+        Orch->>EnC: batch by entra_batch_size (4)
+        EnC-->>Orch: evidence dicts
+    end
+
+    Note over Orch: Checkpoint saved after each batch
+
+    loop Each framework (11)
+        Orch->>Eval: evaluate(evidence, controls)
+        Eval-->>Orch: findings + control results
+        Orch->>Rep: generate reports (HTML/MD/Excel/...)
+        Rep-->>Orch: files written to sub-folder
+    end
+
+    Orch-->>CLI: AssessmentSummary
+    </pre>
+    <div class="diagram-note">
+      <strong>How it works:</strong> The orchestrator auto-discovers collectors via the <code>@register_collector</code> decorator, sorts them by priority, and dispatches them in concurrent batches. Azure and Entra groups run in parallel. After all evidence is collected, the evaluation engine iterates each framework's 525 controls, dispatching to the appropriate domain evaluator. Finally, 24 report generators produce per-framework outputs in timestamped sub-folders.
+    </div>
+  </div>
+</section>
+
+<!-- ── CLI Entry Points ────────────────────────────────── -->
+<section id="cli">
+  <h2>CLI Entry Points (8 Scripts)</h2>
+  <h3>Primary Assessment Scripts</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Script</th><th>Purpose</th><th>Key Arguments</th><th>Engine</th></tr></thead>
+      <tbody>
+        <tr><td><code>run_rbac_report.py</code></td><td>Interactive RBAC hierarchy tree report</td><td><code>--tenant</code>, <code>--output-dir</code>, <code>--subscriptions</code></td><td>rbac_collector → rbac_report</td></tr>
+        <tr><td><code>run_query.py</code></td><td>Interactive REPL for ARG (KQL) and MS Graph queries</td><td><code>--tenant</code></td><td>query_engine.py</td></tr>
+        <tr><td><code>run_risk_analysis.py</code></td><td>Security risk gap analysis across 5 categories</td><td><code>--tenant</code></td><td>risk_engine.py</td></tr>
+        <tr><td><code>run_data_security.py</code></td><td>Data security posture assessment (7 categories)</td><td><code>--tenant</code></td><td>data_security_engine.py</td></tr>
+        <tr><td><code>run_copilot_readiness.py</code></td><td>M365 Copilot readiness assessment (7 categories)</td><td><code>--tenant</code>, <code>--evidence</code>, <code>--category</code>, <code>--previous-run</code>, <code>--fail-on-severity</code></td><td>copilot_readiness_engine.py</td></tr>
+        <tr><td><code>run_ai_agent_security.py</code></td><td>AI agent security assessment (Copilot Studio, Foundry, custom)</td><td><code>--tenant</code>, <code>--evidence</code>, <code>--category</code>, <code>--previous-run</code>, <code>--fail-on-severity</code></td><td>ai_agent_security_engine.py</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Determinism Validation Scripts</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Script</th><th>Purpose</th><th>Pattern</th></tr></thead>
+      <tbody>
+        <tr><td><code>run_cr_determinism_check.py</code></td><td>Copilot Readiness determinism</td><td>Run 3× with identical evidence → diff</td></tr>
+        <tr><td><code>run_rbac_determinism_check.py</code></td><td>RBAC Report determinism</td><td>Collect → re-score 3× → hash</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── Foundry Agent Entry Points ──────────────────────── -->
+<section id="foundry">
+  <h2>Foundry Agent Entry Points</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">main.py</div>
+      <div class="card-meta"><span class="badge badge-blue">Entry Point</span><span class="badge badge-purple">Port 8088</span></div>
+      <div class="card-desc">Starts the Foundry agent HTTP server using the <code>responses</code> protocol v1 via <code>AzureAIClient.as_agent()</code>. Loads 14 tools from <code>agent.py</code>.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">agent.yaml</div>
+      <div class="card-meta"><span class="badge badge-cyan">Config</span></div>
+      <div class="card-desc">Azure Foundry agent definition — model, instructions, tool references, safety system messages.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Dockerfile</div>
+      <div class="card-meta"><span class="badge badge-orange">Container</span></div>
+      <div class="card-desc">Multi-stage container image — Python 3.10+, Playwright for PDF export, exposes port 8088.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">requirements.txt</div>
+      <div class="card-meta"><span class="badge badge-green">Dependencies</span></div>
+      <div class="card-desc">40+ azure-mgmt-* SDKs, msgraph-sdk 1.12.0, agent-framework-azure-ai, openpyxl, playwright, aiohttp.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Core Modules ────────────────────────────────────── -->
+<section id="core">
+  <h2>Core Modules</h2>
+  <p style="color:var(--text-secondary);margin-bottom:1rem">The <code>AIAgent/app/</code> directory contains the core application logic — agent integration, authentication, configuration, orchestration, and data models.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Module</th><th>Purpose</th><th>Key Functions / Classes</th></tr></thead>
+      <tbody>
+        <tr><td><code>agent.py</code></td><td>Agent Framework integration — system prompt + 14 tool functions</td><td><code>TOOLS</code> list, thread-safe <code>_session_state</code> with <code>asyncio.Lock</code></td></tr>
+        <tr><td><code>auth.py</code></td><td>Unified authentication with 4 modes</td><td><code>ComplianceCredentials</code>, <code>preflight_check()</code>, <code>get_graph_client()</code></td></tr>
+        <tr><td><code>config.py</code></td><td>Configuration dataclasses with env-var overrides</td><td><code>AssessmentConfig.from_file()</code>, <code>AuthConfig</code>, <code>CollectorConfig</code></td></tr>
+        <tr><td><code>postureiq_orchestrator.py</code></td><td>Central coordinator — collect → evaluate → report</td><td><code>run_postureiq_assessment()</code>, auto-discovery, checkpoint/resume, delta mode</td></tr>
+        <tr><td><code>models.py</code></td><td>Core data models (snake_case → PascalCase serialization)</td><td><code>EvidenceRecord</code>, <code>FindingRecord</code>, <code>ComplianceControlResult</code>, <code>CheckpointState</code></td></tr>
+        <tr><td><code>api.py</code></td><td>FastAPI REST API for programmatic assessments</td><td>POST endpoints, uvicorn entry point</td></tr>
+        <tr><td><code>logger.py</code></td><td>Logging config — console + file handlers</td><td><code>log</code> instance, configurable log level</td></tr>
+        <tr><td><code>i18n.py</code></td><td>Internationalization — locale JSON loading</td><td>Loads <code>locales/en.json</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── Collectors ──────────────────────────────────────── -->
+<section id="collectors">
+  <h2>Collectors (68 Total)</h2>
+  <p style="color:var(--text-secondary);margin-bottom:1rem">Evidence collectors are auto-discovered via the <code>@register_collector</code> decorator. They run as async functions in concurrent batches, sorted by priority (lower = earlier).</p>
+
+  <!-- Collector Infrastructure -->
+  <h3>Collector Infrastructure</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Module</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>collectors/registry.py</code></td><td><code>@register_collector</code> decorator, <code>discover_collectors()</code>, <code>get_collector_functions()</code></td></tr>
+        <tr><td><code>collectors/base.py</code></td><td>Retry logic (3× with backoff), <code>_v()</code> safe enum extractor, <code>AccessDeniedError</code> for 403/401</td></tr>
+        <tr><td><code>collectors/inventory.py</code></td><td><code>ResourceInventory</code> singleton — thread-safe ARM resource cache shared across collectors</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Azure Control Plane -->
+  <details>
+    <summary><span class="badge badge-blue">39 modules</span> Azure Collectors — Control Plane</summary>
+    <div class="detail-body">
+      <p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:.5rem">Registered with <code>plane="control"</code>, <code>source="azure"</code>. All accept <code>(creds, subscriptions)</code> → <code>list[dict]</code>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>P</th><th>File</th><th>Function</th><th>Purpose</th><th>SDK</th></tr></thead>
+          <tbody>
+            <tr><td>10</td><td><code>resources.py</code></td><td><code>collect_azure_resources</code></td><td>Subscriptions, RGs, resource inventory</td><td>azure-mgmt-resource</td></tr>
+            <tr><td>20</td><td><code>rbac.py</code></td><td><code>collect_azure_rbac</code></td><td>Role assignments, custom roles, privileged analysis</td><td>azure-mgmt-authorization</td></tr>
+            <tr><td>30</td><td><code>policy.py</code></td><td><code>collect_azure_policy</code></td><td>Policy assignments, definitions, enforcement</td><td>azure-mgmt-policyinsights</td></tr>
+            <tr><td>30</td><td><code>policy_compliance.py</code></td><td><code>collect_azure_policy_compliance</code></td><td>Per-resource policy compliance states</td><td>azure-mgmt-policyinsights</td></tr>
+            <tr><td>40</td><td><code>diagnostics.py</code></td><td><code>collect_azure_diagnostics</code></td><td>Diagnostic settings coverage per resource</td><td>azure-mgmt-monitor</td></tr>
+            <tr><td>40</td><td><code>activity_logs.py</code></td><td><code>collect_azure_activity_logs</code></td><td>Activity logs (90-day), resource locks</td><td>azure-mgmt-monitor, locks</td></tr>
+            <tr><td>50</td><td><code>monitoring.py</code></td><td><code>collect_azure_monitoring</code></td><td>Alert rules, Log Analytics workspaces</td><td>azure-mgmt-monitor</td></tr>
+            <tr><td>60</td><td><code>security.py</code></td><td><code>collect_azure_security</code></td><td>Key Vaults, Defender assessments</td><td>azure-mgmt-keyvault, security</td></tr>
+            <tr><td>60</td><td><code>defender_plans.py</code></td><td><code>collect_azure_defender_plans</code></td><td>Defender pricing tiers per sub</td><td>azure-mgmt-security</td></tr>
+            <tr><td>60</td><td><code>defender_advanced.py</code></td><td><code>collect_azure_defender_advanced</code></td><td>Secure scores, JIT, alerts, regulatory</td><td>azure-mgmt-security</td></tr>
+            <tr><td>70</td><td><code>compute.py</code></td><td><code>collect_azure_compute</code></td><td>VMs, managed disks, extensions</td><td>azure-mgmt-compute</td></tr>
+            <tr><td>70</td><td><code>managed_disks.py</code></td><td><code>collect_azure_disks_snapshots</code></td><td>Disks, snapshots, encryption sets</td><td>azure-mgmt-compute</td></tr>
+            <tr><td>80</td><td><code>network.py</code></td><td><code>collect_azure_network</code></td><td>NSGs, VNets, subnets, private endpoints</td><td>azure-mgmt-network</td></tr>
+            <tr><td>80</td><td><code>network_expanded.py</code></td><td><code>collect_azure_network_expanded</code></td><td>Storage account network-layer security</td><td>azure-mgmt-storage</td></tr>
+            <tr><td>80</td><td><code>app_gateway.py</code></td><td><code>collect_azure_app_gateway</code></td><td>App Gateways, WAF policies</td><td>azure-mgmt-network</td></tr>
+            <tr><td>90</td><td><code>additional_services.py</code></td><td><code>collect_azure_additional_services</code></td><td>Web Apps, SQL Servers</td><td>azure-mgmt-web, sql</td></tr>
+            <tr><td>90</td><td><code>webapp_detailed.py</code></td><td><code>collect_azure_webapp_detailed</code></td><td>Auth, IP restrictions, CORS, diagnostics</td><td>azure-mgmt-web</td></tr>
+            <tr><td>100</td><td><code>functions.py</code></td><td><code>collect_azure_functions</code></td><td>Function apps, slots</td><td>azure-mgmt-web</td></tr>
+            <tr><td>100</td><td><code>containers.py</code></td><td><code>collect_azure_containers</code></td><td>ACR, Container Apps config</td><td>azure-mgmt-containerregistry, appcontainers</td></tr>
+            <tr><td>100</td><td><code>aks_in_cluster.py</code></td><td><code>collect_azure_aks_config</code></td><td>AKS RBAC, network policies, node pools</td><td>azure-mgmt-containerservice</td></tr>
+            <tr><td>110</td><td><code>databases.py</code></td><td><code>collect_azure_databases</code></td><td>Cosmos DB, PostgreSQL, MySQL Flexible</td><td>azure-mgmt-cosmosdb, rdbms</td></tr>
+            <tr><td>110</td><td><code>sql_detailed.py</code></td><td><code>collect_azure_sql_detailed</code></td><td>Per-DB auditing, TDE, ATP, LTR</td><td>azure-mgmt-sql</td></tr>
+            <tr><td>110</td><td><code>rdbms_detailed.py</code></td><td><code>collect_azure_rdbms_detailed</code></td><td>PostgreSQL/MySQL params, firewall, SSL</td><td>azure-mgmt-rdbms</td></tr>
+            <tr><td>120</td><td><code>storage.py</code></td><td><code>collect_azure_storage</code></td><td>Encryption, soft delete, lifecycle, network</td><td>azure-mgmt-storage</td></tr>
+            <tr><td>120</td><td><code>ai_services.py</code></td><td><code>collect_azure_ai_services</code></td><td>Cognitive Services, OpenAI, ML Workspaces</td><td>azure-mgmt-cognitiveservices, ml</td></tr>
+            <tr><td>120</td><td><code>ml_cognitive.py</code></td><td><code>collect_azure_ml_cognitive</code></td><td>ML compute, Cognitive extended</td><td>azure-mgmt-machinelearningservices</td></tr>
+            <tr><td>130</td><td><code>dns.py</code></td><td><code>collect_azure_dns</code></td><td>DNS, Private DNS, Traffic Manager</td><td>azure-mgmt-dns, privatedns, trafficmanager</td></tr>
+            <tr><td>130</td><td><code>frontdoor_cdn.py</code></td><td><code>collect_azure_frontdoor_cdn</code></td><td>Front Door, WAF, CDN</td><td>azure-mgmt-frontdoor, cdn</td></tr>
+            <tr><td>140</td><td><code>messaging.py</code></td><td><code>collect_azure_messaging</code></td><td>Service Bus, Event Hubs</td><td>azure-mgmt-servicebus, eventhub</td></tr>
+            <tr><td>140</td><td><code>sentinel.py</code></td><td><code>collect_azure_sentinel</code></td><td>Sentinel, connectors, analytics, watchlists</td><td>azure-mgmt-securityinsight, loganalytics</td></tr>
+            <tr><td>150</td><td><code>ai_content_safety.py</code></td><td><code>collect_azure_ai_content_safety</code></td><td>AI content safety, governance, blocklists</td><td>azure-mgmt-cognitiveservices</td></tr>
+            <tr><td>150</td><td><code>data_analytics.py</code></td><td><code>collect_azure_data_analytics</code></td><td>Synapse, Data Factory, Databricks</td><td>azure-mgmt-synapse, datafactory, databricks</td></tr>
+            <tr><td>160</td><td><code>redis_iot_logic.py</code></td><td><code>collect_azure_redis_iot_logic</code></td><td>Redis, IoT Hub, Logic Apps</td><td>azure-mgmt-redis, iothub, logic</td></tr>
+            <tr><td>160</td><td><code>api_management.py</code></td><td><code>collect_azure_api_management</code></td><td>APIM: TLS, VNet, identity, PE</td><td>azure-mgmt-apimanagement</td></tr>
+            <tr><td>170</td><td><code>batch_aci.py</code></td><td><code>collect_azure_batch_aci</code></td><td>Batch accounts, ACI groups</td><td>azure-mgmt-batch, containerinstance</td></tr>
+            <tr><td>170</td><td><code>arc_hybrid.py</code></td><td><code>collect_azure_arc</code></td><td>Arc servers, extensions, K8s</td><td>azure-mgmt-hybridcompute, resource</td></tr>
+            <tr><td>180</td><td><code>copilot_studio.py</code></td><td><code>collect_copilot_studio</code></td><td>Copilot Studio bots, Power Platform DLP</td><td>aiohttp (Power Platform + Graph beta)</td></tr>
+            <tr><td>180</td><td><code>cost_billing.py</code></td><td><code>collect_azure_cost_billing</code></td><td>Budgets, Advisor cost recs</td><td>azure-mgmt-costmanagement, advisor</td></tr>
+            <tr><td>190</td><td><code>backup_dr.py</code></td><td><code>collect_azure_backup_dr</code></td><td>Recovery vaults, backup policies</td><td>azure-mgmt-recoveryservices</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <!-- Azure Data Plane -->
+  <details>
+    <summary><span class="badge badge-purple">8 modules</span> Azure Collectors — Data Plane</summary>
+    <div class="detail-body">
+      <p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:.5rem">Registered with <code>plane="data"</code>. Require additional data-plane tokens beyond ARM.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>P</th><th>File</th><th>Function</th><th>Purpose</th><th>SDK</th></tr></thead>
+          <tbody>
+            <tr><td>200</td><td><code>cosmosdb_data_plane.py</code></td><td><code>collect_azure_cosmosdb_data_plane</code></td><td>CosmosDB databases, containers, RBAC</td><td>azure-mgmt-cosmosdb</td></tr>
+            <tr><td>200</td><td><code>storage_data_plane.py</code></td><td><code>collect_azure_storage_data_plane</code></td><td>Per-container access, immutability</td><td>azure.storage.blob.aio</td></tr>
+            <tr><td>210</td><td><code>apim_data_plane.py</code></td><td><code>collect_azure_apim_data_plane</code></td><td>APIM APIs, products, certs</td><td>azure-mgmt-apimanagement</td></tr>
+            <tr><td>210</td><td><code>acr_data_plane.py</code></td><td><code>collect_azure_acr_data_plane</code></td><td>ACR repos, tag mutability, manifests</td><td>azure.containerregistry.aio</td></tr>
+            <tr><td>220</td><td><code>purview_dlp.py</code></td><td><code>collect_azure_purview_dlp</code></td><td>Purview, sensitivity labels, DLP</td><td>azure-mgmt-purview, msgraph</td></tr>
+            <tr><td>220</td><td><code>sharepoint_onedrive.py</code></td><td><code>collect_sharepoint_onedrive</code></td><td>Sites, permissions, sharing, oversharing</td><td>msgraph (Graph v1.0 + beta)</td></tr>
+            <tr><td>230</td><td><code>foundry_config.py</code></td><td><code>collect_foundry_config</code></td><td>Foundry, OpenAI, AI Services (16 evidence types)</td><td>aiohttp (ARM REST)</td></tr>
+            <tr><td>240</td><td><code>m365_sensitivity_labels.py</code></td><td><code>collect_m365_sensitivity_labels</code></td><td>Label definitions, auto-labeling, usage</td><td>msgraph (Graph v1.0 + beta)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <!-- M365 / Hybrid -->
+  <details>
+    <summary><span class="badge badge-orange">5+ functions</span> M365 / Hybrid Collectors</summary>
+    <div class="detail-body">
+      <p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:.5rem">Registered as <code>source="entra"</code> but live in <code>collectors/azure/</code>. Use Graph beta APIs for M365 compliance features.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>File</th><th>Functions</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>m365_compliance.py</code></td><td><code>collect_m365_retention</code>, <code>collect_m365_insider_risk</code>, <code>collect_m365_ediscovery</code>, <code>collect_m365_dlp</code>, <code>collect_m365_label_usage</code></td><td>M365 Purview: retention, Insider Risk, eDiscovery, DLP alerts, label usage</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <!-- Standalone -->
+  <details>
+    <summary><span class="badge badge-red">2 modules</span> Standalone Collectors</summary>
+    <div class="detail-body">
+      <p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:.5rem">Not in the plugin registry — invoked directly by dedicated CLI scripts and engines.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>File</th><th>Function</th><th>Lines</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>azure/rbac_collector.py</code></td><td><code>collect_rbac_data</code></td><td>983</td><td>Full mgmt-group → subscription → RG → resource hierarchy with role assignments, PIM eligibility, group expansion, risk scoring</td></tr>
+            <tr><td><code>entra/ai_identity.py</code></td><td>AI identity analysis</td><td>419</td><td>AI service principals, OAuth consent grants for AI services, cross-tenant policies for AI workloads</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <!-- Entra Directory -->
+  <details>
+    <summary><span class="badge badge-cyan">12 modules</span> Entra Collectors — Directory</summary>
+    <div class="detail-body">
+      <p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:.5rem">All async functions using Microsoft Graph Python SDK (read-only). Accept <code>(graph_client)</code> → <code>list[dict]</code>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>File</th><th>Function</th><th>Purpose</th><th>Permissions</th></tr></thead>
+          <tbody>
+            <tr><td><code>tenant.py</code></td><td><code>collect_entra_tenant</code></td><td>Tenant info, auth methods policy</td><td>Directory.Read.All, Policy.Read.All</td></tr>
+            <tr><td><code>roles.py</code></td><td><code>collect_entra_roles</code></td><td>Directory roles, privileged assignments, admin units</td><td>RoleManagement.Read.All</td></tr>
+            <tr><td><code>conditional_access.py</code></td><td><code>collect_entra_conditional_access</code></td><td>CA policies (MFA, block, device)</td><td>Policy.Read.All</td></tr>
+            <tr><td><code>applications.py</code></td><td><code>collect_entra_applications</code></td><td>App registrations, SPs, credential expiry</td><td>Application.Read.All</td></tr>
+            <tr><td><code>users.py</code></td><td><code>collect_entra_users</code></td><td>User/group aggregate summaries (no PII)</td><td>User.Read.All, Group.Read.All</td></tr>
+            <tr><td><code>user_details.py</code></td><td><code>collect_entra_user_details</code></td><td>Per-user lifecycle, OAuth2 grants</td><td>User.Read.All, AuditLog.Read.All</td></tr>
+            <tr><td><code>audit_logs.py</code></td><td><code>collect_entra_audit_logs</code></td><td>Sign-in logs, directory audit, named locations</td><td>AuditLog.Read.All</td></tr>
+            <tr><td><code>identity_protection.py</code></td><td><code>collect_entra_identity_protection</code></td><td>Risk detections, risky users</td><td>IdentityRiskEvent.Read.All</td></tr>
+            <tr><td><code>governance.py</code></td><td><code>collect_entra_governance</code></td><td>Access reviews, entitlement management</td><td>AccessReview.Read.All</td></tr>
+            <tr><td><code>security_policies.py</code></td><td><code>collect_entra_security_policies</code></td><td>Security defaults, cross-tenant access</td><td>Policy.Read.All</td></tr>
+            <tr><td><code>workload_identity.py</code></td><td><code>collect_entra_workload_identity</code></td><td>Federated credentials, managed identity SPs</td><td>Application.Read.All</td></tr>
+            <tr><td><code>risk_policies.py</code></td><td><code>collect_entra_risk_policies</code></td><td>Risk policies, auth methods/strength</td><td>IdentityRiskEvent.Read.All, Policy.Read.All</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- ── Evaluators ──────────────────────────────────────── -->
+<section id="evaluators">
+  <h2>Domain Evaluators (10 Domains, 113 Functions)</h2>
+  <p style="color:var(--text-secondary);margin-bottom:1rem">Each PostureIQ evaluator handles a compliance domain. The orchestrator dispatches based on the <code>evaluation_logic</code> field in PostureIQ framework mapping JSON (CIS, NIST, custom posture evaluation). All expose <code>evaluate(evidence, controls)</code> returning findings and control results. Evaluators live in <code>AIAgent/app/postureiq_evaluators/</code>.</p>
+
+  <div class="card-grid">
+    <div class="card"><div class="card-title">access</div><div class="card-meta"><span class="badge badge-blue">8 functions</span></div><div class="card-desc">RBAC Owner count ≤ threshold, privileged access separation, least privilege, JIT access</div></div>
+    <div class="card"><div class="card-title">identity</div><div class="card-meta"><span class="badge badge-purple">22 functions</span></div><div class="card-desc">Centralized IdP, MFA enforcement, credential lifecycle, user lifecycle (stale), OAuth2 consent</div></div>
+    <div class="card"><div class="card-title">data_protection</div><div class="card-meta"><span class="badge badge-green">22 functions</span></div><div class="card-desc">Encryption at rest, Key Vault security, TLS enforcement, disk encryption, CMK coverage</div></div>
+    <div class="card"><div class="card-title">logging</div><div class="card-meta"><span class="badge badge-orange">13 functions</span></div><div class="card-desc">Diagnostic settings coverage, activity logs, sign-in log monitoring, audit logging</div></div>
+    <div class="card"><div class="card-title">network</div><div class="card-meta"><span class="badge badge-cyan">16 functions</span></div><div class="card-desc">VNet segmentation, NSG rule analysis, storage HTTPS, private endpoints, public IP exposure</div></div>
+    <div class="card"><div class="card-title">governance</div><div class="card-meta"><span class="badge badge-red">21 functions</span></div><div class="card-desc">Policy coverage, enforcement modes, resource locks, Defender posture, Secure Score, budgets</div></div>
+    <div class="card"><div class="card-title">incident_response</div><div class="card-meta"><span class="badge badge-blue">6 functions</span></div><div class="card-desc">Sentinel analytics rules, incident procedures, alert coverage, playbook automation</div></div>
+    <div class="card"><div class="card-title">change_management</div><div class="card-meta"><span class="badge badge-purple">4 functions</span></div><div class="card-desc">Resource locks, policy deployment modes, change audit trails, drift detection</div></div>
+    <div class="card"><div class="card-title">business_continuity</div><div class="card-meta"><span class="badge badge-green">4 functions</span></div><div class="card-desc">Backup vault coverage, backup policy compliance, DR config, RTO/RPO validation</div></div>
+    <div class="card"><div class="card-title">asset_management</div><div class="card-meta"><span class="badge badge-orange">4 functions</span></div><div class="card-desc">Resource inventory completeness, tagging compliance, orphaned resources, lifecycle</div></div>
+  </div>
+
+  <h3>Evaluator Infrastructure</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Module</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>engine.py</code></td><td>Cross-domain fallback evaluation, severity-weighted scoring algorithm, compliance % calculation</td></tr>
+        <tr><td><code>plugins.py</code></td><td>Plugin hook system — inject external evaluation functions at runtime</td></tr>
+        <tr><td><code>suppressions.py</code></td><td>Suppression rule engine — skip/downgrade findings by control ID, domain, resource pattern, regex</td></tr>
+        <tr><td><code>remediation.py</code></td><td>Maps evaluation results → remediation recommendation IDs</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mermaid-wrap">
+    <h4>Evaluation Dispatch Flow</h4>
+    <pre class="mermaid" data-seq-details='[{"overview":"The orchestrator loads all security controls defined for the current framework. Each framework JSON file contains controls with evaluation logic, severity, and compliance mappings.","dataFlow":"Framework JSON files are read from disk, parsing control definitions including evaluation_logic fields that route to domain evaluators.","keyPoints":["11 frameworks with 525 total controls","Each control specifies its evaluation domain","Controls include severity, remediation, and compliance mappings"],"whyItMatters":"Framework controls are the specification layer - they define exactly what security properties to verify.","output":"Parsed control definitions ready for evaluation"},{"overview":"For each control, the orchestrator calls the evaluation engine with the collected evidence and the control definition. The engine determines which domain evaluator should handle it.","dataFlow":"Evidence dictionary and control object flow into the engine, which reads the evaluation_logic field to select the appropriate domain evaluator.","keyPoints":["Engine acts as a dispatch router for evaluations","Each control is evaluated independently","Evidence is filtered to relevant subset per control"],"whyItMatters":"Centralized dispatch ensures consistent evaluation patterns while allowing domain-specific logic.","output":"Evaluation request routed to correct handler"},{"overview":"The engine parses the evaluation_logic field from the control definition to determine which domain evaluator should handle this control.","dataFlow":"The evaluation_logic string is parsed to extract the domain name (e.g., network_security, identity, encryption) and any parameters.","keyPoints":["Domain names map to specific evaluator modules","Supports parameterized evaluation logic","Unknown domains trigger fallback handling"],"whyItMatters":"Clean separation of dispatch logic from evaluation logic makes the system extensible and maintainable.","output":"Domain evaluator selection with parameters"},{"overview":"When the domain is recognized, the engine delegates to the specialized domain evaluator. Each domain evaluator contains expert logic for its resource type.","dataFlow":"Evidence and control flow to the domain evaluator, which applies resource-type-specific compliance checks.","keyPoints":["10 domain evaluators covering all Azure and Entra resource types","Domain evaluators understand resource-specific compliance requirements","Returns structured finding with evidence references"],"whyItMatters":"Domain specialization ensures that compliance checks are accurate and resource-aware rather than generic.","output":"Domain-specific compliance finding"},{"overview":"The domain evaluator returns its finding with a compliance result. Each finding includes the status, evidence references, and preliminary severity assessment.","dataFlow":"Finding object flows back containing compliance status, matched evidence keys, and the evaluator reasoning chain.","keyPoints":["Status values: compliant, non-compliant, partial, missing_evidence","Evidence references enable audit trail","Reasoning chain supports explainability"],"whyItMatters":"Structured findings with evidence references provide the transparency needed for security audit processes.","output":"Finding with compliance status and evidence links"},{"overview":"When no domain evaluator matches the evaluation_logic field, the engine falls back to cross-domain evaluation using general heuristics.","dataFlow":"The engine applies generic evidence-matching logic when no specialized domain evaluator is available.","keyPoints":["Prevents controls from being silently skipped","Uses evidence-presence heuristics as baseline","Flags findings for manual review"],"whyItMatters":"Fallback evaluation ensures complete coverage even when new control types are added before specialized evaluators exist.","output":"Fallback evaluation triggered"},{"overview":"The fallback evaluator produces a finding based on whether relevant evidence exists. If evidence is present, a basic compliance check is performed; otherwise, missing_evidence status is assigned.","dataFlow":"Finding generated from evidence presence analysis with lower confidence than domain-specific evaluations.","keyPoints":["Missing evidence results in explicit missing_evidence status","Evidence-present findings use conservative compliance logic","Lower confidence flagged for review"],"whyItMatters":"Explicit missing_evidence status distinguishes between verified non-compliance and gaps in data collection.","output":"Fallback finding with confidence indicator"},{"overview":"After domain evaluation, the finding passes through the plugin system. Plugins can enrich, modify, or annotate findings with additional context.","dataFlow":"Finding object flows through registered plugins, each potentially adding metadata, adjusting severity, or enriching remediation guidance.","keyPoints":["Plugins run in priority order","Can add MITRE attack framework mappings or custom tags","Non-destructive: plugins cannot delete findings"],"whyItMatters":"The plugin system enables customization without modifying core evaluation logic, supporting organization-specific requirements.","output":"Enriched finding with plugin annotations"},{"overview":"Plugins return the modified finding with any enrichments applied. The finding now carries additional context from all registered plugins.","dataFlow":"Modified finding flows back with plugin-added metadata, enriched remediation steps, and any severity adjustments.","keyPoints":["Plugin modifications are tracked for transparency","Multiple plugins can augment the same finding","Plugin errors are isolated and logged"],"whyItMatters":"Plugin enrichment transforms generic findings into organization-relevant actionable items with specific remediation context.","output":"Plugin-enriched finding"},{"overview":"The enriched finding is checked against the suppression rules. Suppressions can dismiss known-acceptable findings or downgrade their severity.","dataFlow":"Finding is matched against suppression rules defined in configuration, checking control ID, resource patterns, and expiration dates.","keyPoints":["Suppressions require justification and expiration dates","Can suppress by control ID, resource name, or pattern","Audit trail maintained for all suppressions"],"whyItMatters":"Suppression management prevents alert fatigue from known-acceptable risks while maintaining accountability.","output":"Suppression check request"},{"overview":"The suppression module returns its verdict: the finding passes through unchanged, is downgraded in severity, or is fully suppressed with an audit record.","dataFlow":"Suppression verdict flows back indicating whether the finding should pass, be downgraded, or be suppressed, along with the matching rule reference.","keyPoints":["Suppressed findings still appear in detailed reports","Expired suppressions are automatically reinstated","Downgrade preserves the finding with reduced severity"],"whyItMatters":"Transparent suppression handling ensures that risk acceptance decisions are documented and time-limited.","output":"Suppression verdict with rule reference"},{"overview":"The engine returns the final finding and its severity-weighted score to the orchestrator. The score contributes to the overall compliance percentage calculation.","dataFlow":"Final finding with weighted score flows back: Critical(4), High(3), Medium(2), Low(1) multiplied by compliance status.","keyPoints":["Weighted scoring prioritizes critical findings","Score normalization enables cross-framework comparison","Per-domain scores track improvement over time"],"whyItMatters":"Severity-weighted scoring ensures that a single critical misconfiguration outweighs multiple low-severity informational findings.","output":"Scored finding ready for aggregation"},{"overview":"After all controls in a framework are evaluated, the orchestrator aggregates findings into per-domain compliance percentages and an overall framework score.","dataFlow":"All findings for the framework are grouped by domain, with weighted compliance percentages calculated for each domain and overall.","keyPoints":["Compliance percentage = weighted compliant / total weighted controls","Per-domain breakdown identifies weakest areas","Historical comparison shows improvement trends"],"whyItMatters":"Aggregated compliance percentages provide the executive-level view of security posture across domains and frameworks.","output":"Framework compliance summary with per-domain breakdown"}]'>
+sequenceDiagram
+    participant Orch as orchestrator.py
+    participant FW as Framework JSON (525 controls)
+    participant Eng as engine.py
+    participant Dom as Domain Evaluator
+    participant Sup as suppressions.py
+    participant Plug as plugins.py
+
+    Orch->>FW: Load controls for framework
+    loop Each control
+        Orch->>Eng: evaluate_control(evidence, control)
+        Eng->>Eng: Match evaluation_logic → domain
+        alt Known domain
+            Eng->>Dom: domain.evaluate(evidence, control)
+            Dom-->>Eng: finding + result
+        else Unknown domain
+            Eng->>Eng: Cross-domain fallback
+            Eng-->>Eng: finding based on evidence presence
+        end
+        Eng->>Plug: run_plugins(finding)
+        Plug-->>Eng: modified finding
+        Eng->>Sup: check_suppression(finding)
+        Sup-->>Eng: suppress / downgrade / pass
+        Eng-->>Orch: final finding + weighted score
+    end
+    Orch->>Orch: Aggregate compliance % per domain
+    </pre>
+    <div class="diagram-note">
+      <strong>How evaluation works:</strong> For each framework control, the engine reads the <code>evaluation_logic</code> field to determine which domain evaluator handles it. The evaluator examines the collected evidence and returns a finding (compliant / non-compliant / partial / missing_evidence). The suppression engine can then downgrade or suppress findings based on configured rules. The engine calculates a severity-weighted compliance score: Critical(4), High(3), Medium(2), Low(1) weights.
+    </div>
+  </div>
+</section>
+
+<!-- ── Engines ─────────────────────────────────────────── -->
+<section id="engines">
+  <h2>Standalone Engines</h2>
+  <p style="color:var(--text-secondary);margin-bottom:1rem">Modular engines in <code>AIAgent/app/</code> providing specialized analysis. Each major engine follows a <code>{prefix}_orchestrator.py</code> + <code>{prefix}_evaluators/</code> + <code>{prefix}_reports/</code> pattern (v49+).</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Engine</th><th>Orchestrator</th><th>Evaluators</th><th>Entry Function</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><strong>PostureIQ</strong></td><td><code>postureiq_orchestrator.py</code></td><td><code>postureiq_evaluators/</code> (18 files)</td><td><code>run_postureiq_assessment()</code></td><td>Risk-weighted compliance posture with attack paths, priority ranking, AI-powered remediation</td></tr>
+        <tr><td><strong>Risk</strong></td><td><code>risk_orchestrator.py</code></td><td><code>risk_evaluators/</code> (7 files)</td><td><code>run_risk_analysis()</code></td><td>Security risk gap analysis across 5 categories: Identity, Network, Defender, Config, Data</td></tr>
+        <tr><td><strong>RBAC</strong></td><td><code>rbac_orchestrator.py</code></td><td><code>rbac_evaluators/</code> (6 files)</td><td><code>generate_rbac_report()</code></td><td>Interactive RBAC hierarchy tree with role assignments and PIM</td></tr>
+        <tr><td><strong>Copilot Readiness</strong></td><td><code>copilot_orchestrator.py</code></td><td><code>copilot_evaluators/</code> (13 files)</td><td><code>run_copilot_readiness_assessment()</code></td><td>M365 Copilot readiness across 7 categories</td></tr>
+        <tr><td><strong>AI Agent Security</strong></td><td><code>aiagentsec_orchestrator.py</code></td><td><code>aiagentsec_evaluators/</code> (13 files)</td><td><code>run_ai_agent_security_assessment()</code></td><td>AI agent security: Copilot Studio, Foundry, custom agents, Entra AI identity</td></tr>
+        <tr><td><strong>Data Security</strong></td><td><code>data_security_engine.py</code></td><td><code>datasec_evaluators/</code> (11 files)</td><td><code>run_data_security_assessment()</code></td><td>Data security: Storage, Database, Key/Secret, Encryption, Classification, Lifecycle, DLP</td></tr>
+        <tr><td><strong>Query</strong></td><td><code>query_engine.py</code> (shim)</td><td><code>query_evaluators/</code> (8 modules)</td><td><code>query_resource_graph()</code>, <code>dispatch_natural_language()</code></td><td>Interactive query engine for ARG (KQL) and MS Graph with NL support</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Non-Modular Engines</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Module</th><th>Lines</th><th>Key Function</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>data_residency_engine.py</code></td><td>296</td><td><code>assess_data_residency()</code></td><td>Region compliance, storage/DB replication, cross-region dependencies</td></tr>
+        <tr><td><code>remediation_engine.py</code></td><td>299</td><td><code>generate_remediation()</code></td><td>Auto-generates az CLI, PowerShell, ARM template remediation snippets</td></tr>
+        <tr><td><code>continuous_monitor.py</code></td><td>196</td><td><code>ContinuousMonitor</code></td><td>Scheduled monitoring — delegates to <code>postureiq_orchestrator.run_postureiq_assessment()</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Supporting Modules</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Module</th><th>Lines</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>siem_integration.py</code></td><td>156</td><td>SIEM/SOAR export: Azure Sentinel (DCR), Splunk (HEC), generic webhook</td></tr>
+        <tr><td><code>operational_integrations.py</code></td><td>443</td><td>Webhook/email alerts, ServiceNow/Jira tickets, Azure DevOps work items</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── Agent Tools ─────────────────────────────────────── -->
+<section id="tools">
+  <h2>Agent Tools (14)</h2>
+  <p style="color:var(--text-secondary);margin-bottom:1rem">The Foundry agent exposes 14 tools registered in <code>agent.py</code>. Each tool wraps a backing engine or module. Thread-safe session state is shared across tools via <code>asyncio.Lock</code>.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Tool</th><th>Purpose</th><th>Backing Engine</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>query_results</code></td><td>Query assessment results by control ID, domain, severity, keyword</td><td>tools/query.py</td></tr>
+        <tr><td>2</td><td><code>search_tenant</code></td><td>Natural language / KQL search of Azure resources and Entra objects</td><td>query_engine.py</td></tr>
+        <tr><td>3</td><td><code>analyze_risk</code></td><td>Security risk gap analysis across 5 categories with composite scoring</td><td>risk_engine.py</td></tr>
+        <tr><td>4</td><td><code>assess_data_security</code></td><td>Data-layer posture: storage, DB, KV, encryption, classification, lifecycle, DLP</td><td>data_security_engine.py</td></tr>
+        <tr><td>5</td><td><code>generate_rbac_report</code></td><td>Interactive RBAC hierarchy tree with role assignments and PIM</td><td>rbac_collector.py → rbac_report.py</td></tr>
+        <tr><td>6</td><td><code>generate_report</code></td><td>Generate HTML and/or JSON compliance reports from session state</td><td>reports/*.py</td></tr>
+        <tr><td>7</td><td><code>assess_copilot_readiness</code></td><td>M365 Copilot readiness across 7 categories</td><td>copilot_readiness_engine.py</td></tr>
+        <tr><td>8</td><td><code>assess_ai_agent_security</code></td><td>AI agent security: Copilot Studio, Foundry, custom agents, Entra AI identity</td><td>ai_agent_security_engine.py</td></tr>
+        <tr><td>9</td><td><code>check_permissions</code></td><td>Probe ARM, Graph, and Entra permissions before assessment</td><td>auth.py</td></tr>
+        <tr><td>10</td><td><code>compare_runs</code></td><td>Delta comparison: new findings, resolved, status changes, score drift</td><td>Session state comparison</td></tr>
+        <tr><td>11</td><td><code>search_exposure</code></td><td>Quick exposure scan: public storage, open NSGs, unencrypted VMs, unattached disks, public IPs</td><td>Inline evidence scan</td></tr>
+        <tr><td>12</td><td><code>generate_custom_report</code></td><td>Generate custom-scoped reports with user-selected frameworks and format options</td><td>reports/*.py</td></tr>
+        <tr><td>13</td><td><code>run_postureiq_assessment</code></td><td>PostureIQ risk-weighted posture assessment with attack paths, priority ranking, and AI fix recommendations</td><td>postureiq_orchestrator.py</td></tr>
+        <tr><td>14</td><td><code>query_assessment_history</code></td><td>Browse and trend-analyze past assessment runs (actions: list, trend, detail, compare)</td><td>evidence_history.py</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mermaid-wrap">
+    <h4>Agent Tool Invocation Flow</h4>
+    <pre class="mermaid" data-seq-details='[{"overview":"A user or the Foundry platform invokes one of 14 agent tools via natural language. The agent parses the request and maps it to the appropriate backing engine.","dataFlow":"Tool invocation request flows from the user or LLM orchestrator to agent.py, which identifies the target tool and validates parameters.","keyPoints":["14 tools covering assessment, query, risk, and comparison","Natural language mapped to structured tool calls","Parameter validation before execution"],"whyItMatters":"The agent serves as the conversational interface to the full security assessment pipeline, making it accessible without CLI expertise.","output":"Validated tool call ready for execution"},{"overview":"Before executing any assessment, the agent acquires an asyncio.Lock to serialize concurrent requests. This prevents multiple assessments from running simultaneously and corrupting shared state.","dataFlow":"Agent requests exclusive access to the session state via asyncio.Lock, ensuring thread-safe operation.","keyPoints":["Prevents concurrent assessment race conditions","Lock is per-session, not global","Non-blocking wait with timeout handling"],"whyItMatters":"Assessment engines write to shared state dictionaries - concurrent execution could produce corrupted or inconsistent results.","output":"Lock acquisition request"},{"overview":"The session state confirms the lock has been acquired. The agent now has exclusive access to run its assessment and update state safely.","dataFlow":"Lock confirmation flows back, granting the agent exclusive write access to session state for this operation.","keyPoints":["Lock timeout prevents indefinite blocking","Only one tool execution proceeds at a time","Lock scope covers the entire tool execution lifecycle"],"whyItMatters":"Serialized execution is essential for maintaining data integrity in multi-turn conversational assessment sessions.","output":"Exclusive lock granted"},{"overview":"The agent calls the appropriate backing engine to perform the actual security assessment. Each tool maps to a specific engine method.","dataFlow":"Credentials and parameters flow to the backing engine (e.g., data_security_engine, risk_engine, copilot_readiness_engine) for execution.","keyPoints":["Each tool maps to a dedicated engine method","Engines reuse the same collectors and evaluators as CLI","Full assessment results returned in structured format"],"whyItMatters":"Backing engines contain the actual assessment logic - the agent is a thin orchestration layer that handles state and formatting.","output":"Engine execution initiated"},{"overview":"The backing engine completes its assessment and returns a structured results dictionary containing findings, scores, and recommendations.","dataFlow":"Results dictionary flows back with findings, compliance scores, resource inventories, and remediation guidance.","keyPoints":["Results follow the same schema as CLI output","Includes severity-weighted compliance scores","Remediation steps with specific Azure portal links"],"whyItMatters":"Consistent result format between CLI and agent ensures that the same assessment produces identical findings regardless of interface.","output":"Structured assessment results"},{"overview":"The agent stores the assessment results in the session state dictionary. This enables downstream tools to reference previous results without re-running assessments.","dataFlow":"Results are stored in the _session_state dictionary under a key derived from the tool name and timestamp.","keyPoints":["Results keyed by tool name for easy retrieval","Timestamps enable run comparison across sessions","Session state persists across conversation turns"],"whyItMatters":"Session state enables multi-turn workflows where users can run an assessment, then query results, then compare with previous runs.","output":"Results persisted to session state"},{"overview":"The session state confirms successful storage. The results are now available for downstream tools like query_results and compare_runs.","dataFlow":"Storage confirmation flows back to the agent, indicating the results are safely persisted and queryable.","keyPoints":["Atomic write ensures consistency","Previous results preserved for comparison","Memory-efficient storage with configurable retention"],"whyItMatters":"Reliable state management is the foundation for the conversational assessment experience that differentiates the agent from CLI usage.","output":"Storage confirmation"},{"overview":"The agent formats the results into a human-readable response and returns it to the user. The formatting adapts based on the tool type and result complexity.","dataFlow":"Results are transformed into formatted text with summaries, key findings, and actionable next steps returned to the user or LLM.","keyPoints":["Adaptive formatting based on result complexity","Highlights critical findings with severity indicators","Suggests relevant follow-up tool invocations"],"whyItMatters":"Well-formatted responses make complex security assessment data accessible and actionable through natural conversation.","output":"Formatted assessment response with next-step suggestions"}]'>
+sequenceDiagram
+    participant User as User / LLM
+    participant Agent as agent.py (14 tools)
+    participant State as _session_state (Lock)
+    participant Engine as Backing Engine
+
+    User->>Agent: Tool call (e.g., assess_data_security)
+    Agent->>State: acquire asyncio.Lock
+    State-->>Agent: lock acquired
+    Agent->>Engine: run_data_security_assessment(creds)
+    Engine-->>Agent: results dict
+    Agent->>State: store results in session
+    State-->>Agent: stored
+    Agent-->>User: formatted response
+
+    Note over User,Agent: Subsequent tools (query_results, compare_runs) read from session state
+    </pre>
+    <div class="diagram-note">
+      <strong>Session state flow:</strong> Each tool stores its results in a thread-safe <code>_session_state</code> dictionary. Downstream tools like <code>query_results</code> and <code>compare_runs</code> read from this state, enabling multi-turn conversations where the agent remembers previous assessment results.
+    </div>
+  </div>
+</section>
+
+<!-- ── Reports ─────────────────────────────────────────── -->
+<section id="reports">
+  <h2>Report Generators (24 Modules)</h2>
+
+  <h3>Compliance Reports (per-framework)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Module</th><th>Output</th><th>Description</th><th>Lines</th></tr></thead>
+      <tbody>
+        <tr><td><code>compliance_report_html.py</code></td><td>compliance-report.html + executive-summary.html</td><td>Interactive HTML with sidebar, search, filters, compliance ring, Fluent theme</td><td>~1,680</td></tr>
+        <tr><td><code>compliance_report_md.py</code></td><td>compliance-report.md</td><td>Full Markdown report</td><td>—</td></tr>
+        <tr><td><code>html_report.py</code></td><td>HTML report</td><td>Professional blog-style FedRAMP HTML (Fluent Design)</td><td>—</td></tr>
+        <tr><td><code>markdown_report.py</code></td><td>Markdown report</td><td>Human-readable Markdown compliance report</td><td>—</td></tr>
+        <tr><td><code>json_report.py</code></td><td>JSON report</td><td>Structured JSON output of full assessment</td><td>—</td></tr>
+        <tr><td><code>gaps_report.py</code></td><td>gaps-report.html + .md</td><td>Non-compliant findings with phased remediation roadmap</td><td>~473</td></tr>
+        <tr><td><code>excel_export.py</code></td><td>{framework}-report.xlsx</td><td>3-sheet workbook: Compliance, Gaps, Executive Summary</td><td>~236</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Specialized Reports</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Module</th><th>Output</th><th>Description</th><th>Lines</th></tr></thead>
+      <tbody>
+        <tr><td><code>data_security_report.py</code></td><td>Data security HTML + Excel</td><td>7-category data security posture with remediation</td><td>~3,348</td></tr>
+        <tr><td><code>copilot_readiness_report.py</code></td><td>Copilot readiness HTML + Excel</td><td>M365 Copilot readiness with 7-category breakdown</td><td>~3,409</td></tr>
+        <tr><td><code>ai_agent_security_report.py</code></td><td>AI agent security HTML + Excel</td><td>Copilot Studio, Foundry, custom agent security</td><td>~1,518</td></tr>
+        <tr><td><code>rbac_report.py</code></td><td>RBAC hierarchy HTML</td><td>Interactive tree: mgmt-group → sub → RG with PIM</td><td>~1,913</td></tr>
+        <tr><td><code>risk_report.py</code></td><td>Risk analysis HTML + Excel</td><td>Security risk gap analysis with remediation roadmap</td><td>~917</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Cross-Framework &amp; Executive</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Module</th><th>Output</th><th>Description</th><th>Lines</th></tr></thead>
+      <tbody>
+        <tr><td><code>master_report.py</code></td><td>master-report.html + .md</td><td>Combined master across all frameworks</td><td>~594</td></tr>
+        <tr><td><code>executive_dashboard.py</code></td><td>executive-dashboard.html</td><td>Executive dashboard with compliance metrics</td><td>~222</td></tr>
+        <tr><td><code>executive_summary.py</code></td><td>executive-summary.html/md</td><td>One-page executive summary with compliance ring</td><td>—</td></tr>
+        <tr><td><code>methodology_report.py</code></td><td>methodology-report.html</td><td>11-section auditor-facing report</td><td>—</td></tr>
+        <tr><td><code>remediation.py</code></td><td>Remediation playbooks</td><td>Step-by-step remediation with az CLI, PS, ARM</td><td>~547</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Data Exports</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Module</th><th>Output</th><th>Description</th><th>Lines</th></tr></thead>
+      <tbody>
+        <tr><td><code>data_exports.py</code></td><td>findings.json/csv, control-results.json/csv, evidence.json</td><td>Structured data for SIEM and programmatic use</td><td>—</td></tr>
+        <tr><td><code>oscal_export.py</code></td><td>oscal-results.json</td><td>NIST OSCAL assessment results format</td><td>~102</td></tr>
+        <tr><td><code>sarif_export.py</code></td><td>results.sarif</td><td>SARIF format for security tool integration</td><td>~119</td></tr>
+        <tr><td><code>pdf_export.py</code></td><td>PDF files</td><td>HTML → PDF via headless Chromium (Playwright)</td><td>~85</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Trend &amp; Drift</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Module</th><th>Output</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>delta_report.py</code></td><td>Embedded in HTML</td><td>Trend analysis vs previous run — new/resolved findings</td></tr>
+        <tr><td><code>drift_report_html.py</code></td><td>drift-report.html</td><td>Compliance drift visualization over time</td></tr>
+        <tr><td><code>trending.py</code></td><td>Trend data</td><td>Historical trending analysis with time-series</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Infrastructure &amp; Utilities</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Module</th><th>Purpose</th><th>Lines</th></tr></thead>
+      <tbody>
+        <tr><td><code>shared_theme.py</code></td><td>Dark/light Fluent Design CSS theme shared across all HTML reports</td><td>~294</td></tr>
+        <tr><td><code>evidence_catalog.py</code></td><td>Evidence type catalog — lists all evidence types collected</td><td>—</td></tr>
+        <tr><td><code>inventory.py</code></td><td>Resource inventory report generation</td><td>—</td></tr>
+        <tr><td><code>notifications.py</code></td><td>Alert/notification dispatch for report delivery</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── Config ──────────────────────────────────────────── -->
+<section id="config">
+  <h2>Configuration</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">enterprisesecurityiq.config.json</div>
+      <div class="card-meta"><span class="badge badge-blue">Master Config</span></div>
+      <div class="card-desc">Top-level keys: <code>name</code>, <code>frameworks[]</code>, <code>logLevel</code>, <code>outputFormats[]</code>, <code>outputDir</code>, <code>checkpointEnabled</code>, <code>auth{}</code>, <code>collectors{}</code>, <code>thresholds{}</code>. 18 configurable thresholds controlling evaluator sensitivity.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">config.schema.json</div>
+      <div class="card-meta"><span class="badge badge-purple">JSON Schema</span></div>
+      <div class="card-desc">Validates <code>enterprisesecurityiq.config.json</code> against the Python dataclass structure.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">data-security-relevance.json</div>
+      <div class="card-meta"><span class="badge badge-green">Descriptions</span></div>
+      <div class="card-desc">Prose rationale for each data-security category — used as contextual descriptions in Data Security reports.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Frameworks ──────────────────────────────────────── -->
+<section id="frameworks">
+  <h2>Framework Mappings (11 Frameworks, 525 Controls)</h2>
+  <p style="color:var(--text-secondary);margin-bottom:1rem">Each JSON file in <code>AIAgent/app/postureiq_frameworks/</code> defines compliance controls. Structure per control: <code>control_id</code>, <code>title</code>, <code>domain</code>, <code>severity</code>, <code>evidence_types[]</code>, <code>evaluation_logic</code>, <code>rationale</code>, <code>recommendation</code>, <code>compensating_evidence</code>. The original <code>frameworks/</code> directory was removed in v50b; active framework mappings are maintained per engine.</p>
+
+  <div class="card-grid">
+    <div class="card"><div class="card-title">NIST 800-53</div><div class="card-meta"><span class="badge badge-blue">83 controls</span></div><div class="card-desc">NIST 800-53 Rev 5</div></div>
+    <div class="card"><div class="card-title">FedRAMP</div><div class="card-meta"><span class="badge badge-purple">69 controls</span></div><div class="card-desc">FedRAMP High Baseline</div></div>
+    <div class="card"><div class="card-title">CIS Azure</div><div class="card-meta"><span class="badge badge-green">53 controls</span></div><div class="card-desc">CIS Azure Benchmarks</div></div>
+    <div class="card"><div class="card-title">MCSB</div><div class="card-meta"><span class="badge badge-orange">53 controls</span></div><div class="card-desc">Microsoft Cloud Security Benchmark</div></div>
+    <div class="card"><div class="card-title">PCI DSS</div><div class="card-meta"><span class="badge badge-cyan">51 controls</span></div><div class="card-desc">PCI DSS v4.0</div></div>
+    <div class="card"><div class="card-title">ISO 27001</div><div class="card-meta"><span class="badge badge-red">51 controls</span></div><div class="card-desc">ISO 27001:2022</div></div>
+    <div class="card"><div class="card-title">SOC 2</div><div class="card-meta"><span class="badge badge-blue">47 controls</span></div><div class="card-desc">SOC 2 Type II</div></div>
+    <div class="card"><div class="card-title">HIPAA</div><div class="card-meta"><span class="badge badge-purple">43 controls</span></div><div class="card-desc">HIPAA Security Rule</div></div>
+    <div class="card"><div class="card-title">NIST CSF</div><div class="card-meta"><span class="badge badge-green">29 controls</span></div><div class="card-desc">NIST Cybersecurity Framework</div></div>
+    <div class="card"><div class="card-title">CSA CCM</div><div class="card-meta"><span class="badge badge-orange">24 controls</span></div><div class="card-desc">CSA Cloud Controls Matrix</div></div>
+    <div class="card"><div class="card-title">GDPR</div><div class="card-meta"><span class="badge badge-cyan">22 controls</span></div><div class="card-desc">General Data Protection Regulation</div></div>
+  </div>
+</section>
+
+<!-- ── Tests ───────────────────────────────────────────── -->
+<section id="tests">
+  <h2>Tests (15 Suites, ~1,357 Functions)</h2>
+  <p style="color:var(--text-secondary);margin-bottom:1rem">Python test suite using <code>pytest</code>. Total: ~16,834 lines across 15 files.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Test File</th><th>Lines</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>test_ai_agent_security_engine.py</code></td><td>4,450</td><td>AI Agent Security: Copilot Studio, Foundry, custom, Entra AI identity</td></tr>
+        <tr><td><code>test_data_security_engine.py</code></td><td>4,230</td><td>Data Security: storage, database, KV, encryption, classification, lifecycle, DLP</td></tr>
+        <tr><td><code>test_copilot_readiness_engine.py</code></td><td>2,324</td><td>Copilot Readiness: oversharing, labels, DLP, retention, access, lifecycle, audit</td></tr>
+        <tr><td><code>test_ai_agent_security_determinism.py</code></td><td>1,005</td><td>Determinism: AI Agent Security identical output for identical input</td></tr>
+        <tr><td><code>test_rbac_determinism.py</code></td><td>809</td><td>Determinism: RBAC report stats/risks/scores stable</td></tr>
+        <tr><td><code>test_assessment_determinism.py</code></td><td>737</td><td>Determinism: full assessment with shuffled evidence</td></tr>
+        <tr><td><code>test_copilot_readiness_determinism.py</code></td><td>708</td><td>Determinism: Copilot Readiness identical output</td></tr>
+        <tr><td><code>test_report_determinism.py</code></td><td>598</td><td>Determinism: report generation identical HTML/MD</td></tr>
+        <tr><td><code>test_risk_engine.py</code></td><td>538</td><td>Risk engine: identity, network, defender, config, data</td></tr>
+        <tr><td><code>test_evaluators.py</code></td><td>460</td><td>Evaluator logic: all 10 domains with sample evidence</td></tr>
+        <tr><td><code>test_enhancements.py</code></td><td>442</td><td>Enhancement features: delta, drift, trending, notifications</td></tr>
+        <tr><td><code>test_query_engine.py</code></td><td>304</td><td>Query engine: ARG, Graph, compliance cross-reference</td></tr>
+        <tr><td><code>test_determinism.py</code></td><td>295</td><td>Core determinism utilities: hash comparison, shuffle, diff</td></tr>
+        <tr><td><code>test_reports.py</code></td><td>270</td><td>Report generation: HTML, Markdown, Excel, data exports</td></tr>
+        <tr><td><code>test_dry_run_ds.py</code></td><td>264</td><td>Dry-run mode for Data Security engine</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── Safety Banner ───────────────────────────────────── -->
+<div class="info-banner">
+  <h3>Safety Guarantees</h3>
+  <ul>
+    <li><strong>Read-only access</strong> — all collectors use read-only Azure SDK and Graph API calls; no write operations</li>
+    <li><strong>No PII in output</strong> — user_details collects aggregate lifecycle metrics, never names/emails/UPNs</li>
+    <li><strong>Credential isolation</strong> — credentials never logged, serialized, or stored in evidence</li>
+    <li><strong>Deterministic evaluation</strong> — 5 determinism test suites validate identical output for identical input</li>
+    <li><strong>Graceful degradation</strong> — 403/401 errors produce AccessDenied evidence instead of failures</li>
+    <li><strong>Configurable timeouts</strong> — per-collector timeout prevents runaway API calls</li>
+    <li><strong>Checkpoint recovery</strong> — resumes from last successful batch on restart</li>
+    <li><strong>Thread-safe state</strong> — asyncio.Lock protects shared session state in agent mode</li>
+  </ul>
+</div>
+
+</main>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer>
+  <p>PostureIQ File Reference — Author: Murali Chillakuru</p>
+  <p style="margin-top:.3rem">64 Collectors &middot; 10 Domains &middot; 113 Functions &middot; 11 Frameworks &middot; 525 Controls &middot; 24 Reports &middot; 14 Tools &middot; 15 Test Suites</p>
+</footer>
+
+<!-- ═══════════════════ BACK TO TOP ═══════════════════ -->
+<button onclick="window.scrollTo({top:0,behavior:'smooth'})" id="backTop"
+  style="position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;
+  background:var(--accent-blue);color:#fff;border:none;cursor:pointer;font-size:1.2rem;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);display:none;z-index:99"
+  aria-label="Back to top">↑</button>
+
+<!-- ═══════════════════ SCRIPTS ═══════════════════ -->
+<script>
+// Theme toggle
+function toggleTheme(){
+  const t=document.documentElement.dataset.theme==='dark'?'light':'dark';
+  document.documentElement.dataset.theme=t;
+  localStorage.setItem('esiq-theme',t);
+  mermaid.initialize({startOnLoad:false,theme:t==='dark'?'dark':'default'});
+  document.querySelectorAll('.mermaid[data-processed]').forEach(el=>{
+    el.removeAttribute('data-processed');
+    el.innerHTML=el.getAttribute('data-original')||el.innerHTML;
+  });
+  mermaid.run();
+}
+(function(){const s=localStorage.getItem('esiq-theme');if(s)document.documentElement.dataset.theme=s})();
+
+// Mermaid init
+mermaid.initialize({startOnLoad:true,theme:document.documentElement.dataset.theme==='dark'?'dark':'default',
+  securityLevel:'loose'});
+document.querySelectorAll('.mermaid').forEach(el=>el.setAttribute('data-original',el.innerHTML));
+
+// Animated counters
+const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){
+  const el=e.target,t=+el.dataset.target,d=Math.max(1,Math.floor(1200/t));let c=0;
+  const iv=setInterval(()=>{c+=Math.ceil(t/60);if(c>=t){c=t;clearInterval(iv)}el.textContent=c},d);
+  observer.unobserve(el)}})},{threshold:.5});
+document.querySelectorAll('.num[data-target]').forEach(el=>observer.observe(el));
+
+// Scroll-spy
+const pills=document.querySelectorAll('.nav-pill[href^="#"]');
+const sections=Array.from(pills).map(p=>document.querySelector(p.getAttribute('href'))).filter(Boolean);
+const spy=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){
+  pills.forEach(p=>p.classList.remove('active'));
+  const id=e.target.id;
+  document.querySelector(`.nav-pill[href="#${id}"]`)?.classList.add('active');
+}})},{rootMargin:'-80px 0px -60% 0px',threshold:0});
+sections.forEach(s=>spy.observe(s));
+
+// Progress bar
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  document.getElementById('progressBar').style.width=(window.scrollY/h*100)+'%';
+  document.getElementById('backTop').style.display=window.scrollY>400?'block':'none';
+});
+</script>
+<script src="seq-engine.js"></script>
+</body>
+</html>

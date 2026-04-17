@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostureIQ — Data Security Engine Deep Dive</title>
+<meta name="description" content="Deep dive documentation for the Data Security Engine: 9,904 lines, 43 assessment categories, ~160 check functions, 8 compliance frameworks.">
+<meta name="author" content="Murali Chillakuru">
+<style>
+:root {
+    --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-tertiary:#1C2128;--bg-card:#21262D;--bg-card-hover:#282E36;--bg-inset:#0D1117;
+    --border-primary:#30363D;--border-secondary:#21262D;--border-accent:#1F6FEB;
+    --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;--text-link:#58A6FF;
+    --accent-blue:#1F6FEB;--accent-blue-light:#388BFD;--accent-green:#3FB950;--accent-green-bg:rgba(63,185,80,.12);
+    --accent-orange:#D29922;--accent-orange-bg:rgba(210,153,34,.12);--accent-red:#F85149;--accent-red-bg:rgba(248,81,73,.12);
+    --accent-purple:#A371F7;--accent-purple-bg:rgba(163,113,247,.12);--accent-cyan:#39D2C0;--accent-cyan-bg:rgba(57,210,192,.12);
+    --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);--shadow-lg:0 8px 24px rgba(0,0,0,.5);
+    --radius:8px;--radius-lg:12px;
+    --font-sans:'Segoe UI Variable','Segoe UI',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+    --font-mono:'Cascadia Code','Fira Code','Consolas','Monaco',monospace;
+    --max-width:1100px;
+}
+[data-theme="light"]{
+    --bg-primary:#F6F8FA;--bg-secondary:#FFFFFF;--bg-tertiary:#F0F2F5;--bg-card:#FFFFFF;--bg-card-hover:#F6F8FA;--bg-inset:#F0F2F5;
+    --border-primary:#D0D7DE;--border-secondary:#E1E4E8;--border-accent:#0078D4;
+    --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;--text-link:#0969DA;
+    --accent-blue:#0969DA;--accent-blue-light:#0078D4;--accent-green:#1A7F37;--accent-green-bg:rgba(26,127,55,.08);
+    --accent-orange:#9A6700;--accent-orange-bg:rgba(154,103,0,.08);--accent-red:#CF222E;--accent-red-bg:rgba(207,34,46,.08);
+    --accent-purple:#8250DF;--accent-purple-bg:rgba(130,80,223,.08);--accent-cyan:#0E8A8A;--accent-cyan-bg:rgba(14,138,138,.08);
+    --shadow-sm:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.1);--shadow-lg:0 8px 24px rgba(0,0,0,.12);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(31,111,235,.4)}a{color:var(--text-link);text-decoration:none;transition:color .15s}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.85em;background:var(--bg-inset);padding:2px 7px;border-radius:4px;color:var(--accent-cyan);border:1px solid var(--border-secondary)}
+pre{background:var(--bg-inset);border:1px solid var(--border-primary);border-radius:var(--radius);padding:20px 24px;overflow-x:auto;margin:1rem 0;line-height:1.5}
+pre code{background:none;border:none;padding:0;font-size:.82rem;color:var(--text-primary)}
+.skip-nav{position:absolute;top:-100%;left:16px;padding:12px 24px;background:var(--accent-blue);color:#fff;font-size:14px;font-weight:600;border-radius:0 0 8px 8px;z-index:10000;text-decoration:none;transition:top .2s}.skip-nav:focus{top:0}
+:focus-visible{outline:2px solid var(--accent-blue);outline-offset:2px;border-radius:2px}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#0078D4,#00B7C3);z-index:1001;width:0%;transition:width 80ms linear}
+.hero{position:relative;padding:80px 0 60px;background:linear-gradient(145deg,var(--bg-primary) 0%,#0D2137 50%,var(--bg-primary) 100%);border-bottom:1px solid var(--border-primary);overflow:hidden}
+[data-theme="light"] .hero{background:linear-gradient(145deg,#EBF3FE 0%,#D4E6FC 50%,#EBF3FE 100%)}
+.hero::before{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(31,111,235,.08) 0%,transparent 70%)}
+.hero-inner{max-width:var(--max-width);margin:0 auto;padding:0 32px;position:relative;z-index:1}
+.hero-label{display:inline-flex;align-items:center;gap:8px;background:rgba(31,111,235,.15);border:1px solid rgba(31,111,235,.3);padding:6px 16px;border-radius:20px;font-size:.8rem;color:var(--accent-blue-light);letter-spacing:.5px;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-size:2.4rem;font-weight:700;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;margin-bottom:16px}
+.hero p.subtitle{font-size:1.05rem;color:var(--text-secondary);max-width:700px;line-height:1.7}
+.hero-meta{display:flex;gap:24px;flex-wrap:wrap;font-size:.85rem;color:var(--text-muted);margin-top:20px}
+.hero-meta span{display:flex;align-items:center;gap:6px}
+.stats-bar{max-width:var(--max-width);margin:-34px auto 40px;padding:0 32px;position:relative;z-index:2}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:22px 24px}
+.stat-item{text-align:center}.stat-number{font-size:1.6rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.stat-number.blue{color:var(--accent-blue)}.stat-number.green{color:var(--accent-green)}.stat-number.purple{color:var(--accent-purple)}.stat-number.orange{color:var(--accent-orange)}.stat-number.cyan{color:var(--accent-cyan)}.stat-number.red{color:var(--accent-red)}
+.stat-label{font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-top:6px}
+.sticky-nav{position:sticky;top:0;background:rgba(13,17,23,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-primary);z-index:100}
+[data-theme="light"] .sticky-nav{background:rgba(255,255,255,.92)}
+.sticky-nav-inner{max-width:var(--max-width);margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:2px;overflow-x:auto;scrollbar-width:none}
+.sticky-nav-inner::-webkit-scrollbar{display:none}
+.nav-pill{display:inline-block;padding:12px 12px;font-size:.8rem;color:var(--text-secondary);white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;cursor:pointer}
+.nav-pill:hover{color:var(--text-primary);text-decoration:none}.nav-pill.active{color:var(--accent-blue-light);border-bottom-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;padding:6px 14px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);color:var(--text-secondary);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font-sans);white-space:nowrap}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--accent-blue)}
+.container{max-width:var(--max-width);margin:0 auto;padding:0 32px 80px}
+.section{margin-bottom:48px;scroll-margin-top:60px}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border-primary)}
+.section-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.section-icon.blue{background:rgba(31,111,235,.15);border:1px solid rgba(31,111,235,.3)}
+.section-icon.green{background:var(--accent-green-bg);border:1px solid rgba(63,185,80,.3)}
+.section-icon.purple{background:var(--accent-purple-bg);border:1px solid rgba(163,113,247,.3)}
+.section-icon.orange{background:var(--accent-orange-bg);border:1px solid rgba(210,153,34,.3)}
+.section-icon.cyan{background:var(--accent-cyan-bg);border:1px solid rgba(57,210,192,.3)}
+.section-icon.red{background:var(--accent-red-bg);border:1px solid rgba(248,81,73,.3)}
+.section-header h2{font-size:1.4rem;font-weight:600}
+.section-desc{color:var(--text-secondary);margin-bottom:20px;font-size:.95rem;line-height:1.7}
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border-primary);margin-bottom:16px}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.data-table thead th{text-align:left;padding:10px 14px;background:var(--bg-tertiary);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);border-bottom:2px solid var(--border-primary)}
+.data-table tbody td{padding:10px 14px;border-bottom:1px solid var(--border-secondary);vertical-align:top;color:var(--text-secondary)}
+.data-table tbody tr:last-child td{border-bottom:none}.data-table tbody tr:hover{background:var(--bg-card-hover)}
+.diagram-container{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:24px;margin-bottom:24px;overflow-x:auto;box-shadow:var(--shadow-sm)}
+.diagram-container .mermaid{text-align:center}
+.diagram-title{font-size:1rem;font-weight:600;margin-bottom:12px;color:var(--accent-blue-light)}
+.diagram-explanation{margin-top:16px;padding:16px;background:var(--bg-tertiary);border-radius:var(--radius);font-size:.88rem;color:var(--text-secondary);line-height:1.7}
+.diagram-explanation ol{margin:8px 0 0 20px}.diagram-explanation li{margin-bottom:6px}
+.info-box{border-radius:var(--radius);padding:16px 20px;margin:1rem 0;font-size:.9rem;border:1px solid}
+.info-box.blue{background:rgba(31,111,235,.08);border-color:rgba(31,111,235,.25);color:var(--text-secondary)}
+.info-box.green{background:var(--accent-green-bg);border-color:rgba(63,185,80,.25);color:var(--text-secondary)}
+.info-box.orange{background:var(--accent-orange-bg);border-color:rgba(210,153,34,.25);color:var(--text-secondary)}
+.domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}
+.domain-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);padding:18px;border-top:3px solid var(--accent-blue);transition:all .2s}
+.domain-card:hover{border-color:var(--accent-blue-light);transform:translateY(-2px)}
+.domain-icon{font-size:1.6rem;margin-bottom:8px}.domain-card h4{font-size:.88rem;margin-bottom:4px;font-weight:600}
+.domain-checks{font-size:.8rem;color:var(--accent-blue-light);font-weight:600}
+.framework-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:24px}
+.framework-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);padding:18px;text-align:center;transition:border-color .15s,transform .15s}
+.framework-card:hover{border-color:var(--border-accent);transform:translateY(-2px)}
+.framework-count{font-size:1.5rem;font-weight:700;color:var(--accent-blue)}
+.framework-name{font-size:.72rem;font-weight:600;margin-top:4px;color:var(--text-secondary)}
+.severity-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:600;text-transform:uppercase}
+.severity-badge.critical{background:var(--accent-red-bg);color:var(--accent-red);border:1px solid rgba(248,81,73,.3)}
+.severity-badge.high{background:var(--accent-orange-bg);color:var(--accent-orange);border:1px solid rgba(210,153,34,.3)}
+.severity-badge.medium{background:rgba(31,111,235,.08);color:var(--accent-blue);border:1px solid rgba(31,111,235,.25)}
+.severity-badge.low{background:var(--accent-green-bg);color:var(--accent-green);border:1px solid rgba(63,185,80,.3)}
+.severity-badge.info{background:var(--accent-cyan-bg);color:var(--accent-cyan);border:1px solid rgba(57,210,192,.3)}
+.back-to-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--accent-blue);color:#fff;font-size:20px;border:none;cursor:pointer;opacity:0;visibility:hidden;transition:all .3s;z-index:999;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md)}
+.back-to-top.visible{opacity:1;visibility:visible}.back-to-top:hover{transform:scale(1.1)}
+.footer{text-align:center;padding:36px;color:var(--text-muted);font-size:.82rem;border-top:1px solid var(--border-primary);background:var(--bg-secondary)}
+.group-header td{background:var(--bg-tertiary);font-weight:700;color:var(--text-primary);font-size:.82rem;letter-spacing:.3px;padding:10px 14px;border-bottom:2px solid var(--border-primary)}
+@media(max-width:768px){.hero h1{font-size:1.6rem}.stats-grid{grid-template-columns:repeat(3,1fr)}.domain-grid{grid-template-columns:repeat(2,1fr)}.framework-grid{grid-template-columns:repeat(2,1fr)}}
+@media print{.sticky-nav,.theme-toggle,.back-to-top,.skip-nav,.progress-bar{display:none!important}body{background:#fff;color:#000}.hero{background:#f0f4f8!important;padding:40px 0 30px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+
+<a href="#main-content" class="skip-nav">Skip to main content</a>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ═══════════════════════════════════════════ HERO ═══════════════════════════════════════════ -->
+<header class="hero">
+    <div class="hero-inner">
+        <div class="hero-label">🛡️ Data Security Engine</div>
+        <h1>Data Security Engine — Deep Dive</h1>
+        <p class="subtitle">9,904-line evidence-driven engine analyzing data-layer security posture across Azure and M365 tenants. 43 assessment categories, ~200 check functions, 8 compliance framework mappings.</p>
+        <div class="hero-meta">
+            <span>👤 Murali Chillakuru</span>
+            <span>📅 April 2026</span>
+            <span>📄 data_security_engine.py</span>
+        </div>
+    </div>
+</header>
+
+<!-- ═══════════════════════════════════════════ STATS BAR ═══════════════════════════════════════ -->
+<div class="stats-bar">
+    <div class="stats-grid">
+        <div class="stat-item"><div class="stat-number blue" data-target="43">0</div><div class="stat-label">Categories</div></div>
+        <div class="stat-item"><div class="stat-number green" data-target="160">0</div><div class="stat-label">Checks</div></div>
+        <div class="stat-item"><div class="stat-number purple" data-target="9904">0</div><div class="stat-label">Lines</div></div>
+        <div class="stat-item"><div class="stat-number orange" data-target="40">0</div><div class="stat-label">Evidence Types</div></div>
+        <div class="stat-item"><div class="stat-number cyan" data-target="8">0</div><div class="stat-label">Frameworks</div></div>
+        <div class="stat-item"><div class="stat-number red" data-target="7">0</div><div class="stat-label">Report Formats</div></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ STICKY NAV ═══════════════════════════════════════ -->
+<nav class="sticky-nav" aria-label="Section navigation">
+    <div class="sticky-nav-inner">
+        <a href="#overview" class="nav-pill active">Overview</a>
+        <a href="#pipeline" class="nav-pill">Pipeline</a>
+        <a href="#categories" class="nav-pill">Categories</a>
+        <a href="#scoring" class="nav-pill">Scoring</a>
+        <a href="#evidence" class="nav-pill">Evidence</a>
+        <a href="#compliance" class="nav-pill">Compliance</a>
+        <a href="#findings" class="nav-pill">Findings</a>
+        <a href="#cli" class="nav-pill">CLI</a>
+        <a href="#output" class="nav-pill">Output</a>
+        <a href="#source-files" class="nav-pill">Source Files</a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙 Dark</button>
+    </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════ MAIN CONTENT ═══════════════════════════════════ -->
+<main class="container" id="main-content">
+
+<!-- EXEC SUMMARY -->
+<div style="background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.25);border-radius:8px;padding:16px 20px;margin:0 0 24px;font-size:.9rem;color:var(--text-secondary)">
+<strong>📋 Executive Summary</strong> — Deep dive into the Data Security Engine (9,904 lines): 43 assessment categories, ~160 individual checks, 8 compliance framework mappings, and 7 report formats. The canonical data security assessment reference.
+<div style="margin-top:8px;font-size:.82rem"><strong>Audience:</strong> Data security analysts, compliance engineers · <strong>Prerequisites:</strong> <a href="architecture.html">Architecture</a> · <strong>Related:</strong> <a href="evaluation-rules.html">Evaluation Rules</a> · <a href="tenant-assessment-deep-dive.html">Tenant Assessment</a></div>
+</div>
+
+<!-- ────────────────────── 1. OVERVIEW ────────────────────── -->
+<section class="section" id="overview">
+    <div class="section-header">
+        <div class="section-icon blue">📊</div>
+        <h2>Overview</h2>
+    </div>
+    <p class="section-desc">
+        The Data Security Engine (<code>data_security_engine.py</code>) is a 9,904-line, purely functional assessment engine that evaluates data-layer security posture across Azure and Microsoft 365 tenants. It collects evidence from Azure Resource Graph, ARM sub-resource APIs, and Microsoft Graph, then runs 43 category analyzers comprising approximately 160 individual check functions. Every finding is backed by concrete evidence — resource IDs, configuration snippets, and API responses — indexed by 40+ evidence types for O(1) lookup. The engine maps all findings to 8 compliance frameworks and produces structured output across 7 report formats.
+    </p>
+    <div class="info-box blue">
+        <strong>Design Philosophy:</strong> Evidence-first, purely functional (no classes), deterministic output. Every check function receives an immutable evidence index and returns findings — no side effects, no shared mutable state. This makes the engine trivially testable and CI/CD friendly.
+    </div>
+</section>
+
+<!-- ────────────────────── 2. PIPELINE ────────────────────── -->
+<section class="section" id="pipeline">
+    <div class="section-header">
+        <div class="section-icon green">⚡</div>
+        <h2>Assessment Pipeline</h2>
+    </div>
+    <p class="section-desc">
+        The data security assessment follows a collect → enrich → index → analyze → score → report pipeline. Evidence is collected from three sources (Azure Resource Graph, ARM APIs, Microsoft Graph), indexed by type for constant-time lookup, then fed to 43 category analyzers. Compliance mappings are enriched post-analysis before scoring and report generation.
+    </p>
+    <div class="diagram-container">
+        <div class="diagram-title">End-to-End Assessment Pipeline</div>
+        <div class="mermaid">
+sequenceDiagram
+    participant U as User / CI Pipeline
+    participant R as run_data_security.py
+    participant E as DataSecurityEngine
+    participant ARG as Azure Resource Graph
+    participant ARM as Azure ARM APIs
+    participant G as Microsoft Graph
+    participant S as Scoring Engine
+    participant RP as Report Generators
+    U->>R: python run_data_security.py --tenant T
+    R->>E: run_data_security_assessment(creds)
+    E->>ARG: _ds_lightweight_collect()
+    ARG-->>E: Resource configurations
+    E->>ARM: _ds_arm_enrich() — sub-resource details
+    ARM-->>E: TDE, auditing, keys, firewall …
+    E->>G: M365 DLP, labels, SharePoint
+    G-->>E: M365 evidence
+    E->>E: Index evidence by type → O(1) lookup
+    E->>E: Run 43 category analyzers (~160 checks)
+    E->>E: enrich_compliance_mapping() — 8 frameworks
+    E->>S: compute_data_security_scores()
+    S-->>E: Scores + severity distribution
+    E-->>R: Full assessment result
+    R->>RP: HTML + Excel + JSON + PDF + scripts
+    RP-->>U: Output files written
+        </div>
+        <div class="diagram-explanation">
+            <ol>
+                <li><strong>Collect:</strong> <code>_ds_lightweight_collect()</code> queries Azure Resource Graph for storage accounts, SQL servers, key vaults, Cosmos DB, networking, and more.</li>
+                <li><strong>Enrich:</strong> <code>_ds_arm_enrich()</code> calls ARM sub-resource APIs for TDE status, auditing policies, encryption keys, firewall rules, and advanced threat protection.</li>
+                <li><strong>M365:</strong> Microsoft Graph queries retrieve DLP policies, sensitivity labels, SharePoint site configurations, and retention policies.</li>
+                <li><strong>Index:</strong> Evidence is organized by type (e.g., <code>azure-storage-security</code>) into a dictionary for O(1) lookup during analysis.</li>
+                <li><strong>Analyze:</strong> 43 category analyzers run ~200 individual checks, each producing typed findings with severity, remediation, and affected resources.</li>
+                <li><strong>Compliance:</strong> <code>enrich_compliance_mapping()</code> maps findings to 8 frameworks (CIS, PCI-DSS, HIPAA, NIST, ISO 27001, SOC 2, CSF, MCSB).</li>
+                <li><strong>Score:</strong> <code>compute_data_security_scores()</code> computes per-category and overall weighted scores.</li>
+                <li><strong>Report:</strong> Generates HTML, Excel, JSON, PDF, executive brief, and remediation scripts.</li>
+            </ol>
+        </div>
+    </div>
+</section>
+
+<!-- ────────────────────── 3. CATEGORIES ────────────────────── -->
+<section class="section" id="categories">
+    <div class="section-header">
+        <div class="section-icon purple">📋</div>
+        <h2>Assessment Categories (43)</h2>
+    </div>
+    <p class="section-desc">
+        The engine evaluates 43 categories organized into 7 domain groups. Each category has a dedicated analyzer function, a unique key, and produces findings with per-resource detail. Categories marked with "—" checks are structural analyzers or use dynamic check counts based on the evidence collected.
+    </p>
+
+    <div class="domain-grid">
+        <div class="domain-card">
+            <div class="domain-icon">🔒</div>
+            <h4>Storage &amp; Encryption</h4>
+            <div class="domain-checks">6 categories · 36+ checks</div>
+        </div>
+        <div class="domain-card">
+            <div class="domain-icon">🗄️</div>
+            <h4>Database Security</h4>
+            <div class="domain-checks">5 categories · 22+ checks</div>
+        </div>
+        <div class="domain-card">
+            <div class="domain-icon">🔑</div>
+            <h4>Identity &amp; Access</h4>
+            <div class="domain-checks">4 categories · 9+ checks</div>
+        </div>
+        <div class="domain-card">
+            <div class="domain-icon">🌐</div>
+            <h4>Network &amp; Exposure</h4>
+            <div class="domain-checks">5 categories · 8+ checks</div>
+        </div>
+        <div class="domain-card">
+            <div class="domain-icon">🏷️</div>
+            <h4>Data Governance</h4>
+            <div class="domain-checks">8 categories · 30+ checks</div>
+        </div>
+        <div class="domain-card">
+            <div class="domain-icon">🏗️</div>
+            <h4>Infrastructure Security</h4>
+            <div class="domain-checks">8 categories · 24+ checks</div>
+        </div>
+        <div class="domain-card">
+            <div class="domain-icon">🛡️</div>
+            <h4>Resilience &amp; Advanced</h4>
+            <div class="domain-checks">7 categories · 10+ checks</div>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr><th>#</th><th>Category</th><th>Key</th><th>Checks</th><th>What It Evaluates</th></tr>
+            </thead>
+            <tbody>
+                <!-- Group: Storage & Encryption -->
+                <tr class="group-header"><td colspan="5">🔒 Storage &amp; Encryption (6)</td></tr>
+                <tr><td>1</td><td>Storage Exposure</td><td><code>storage</code></td><td>16</td><td>Blob public access, HTTPS enforcement, TLS version, soft-delete, infrastructure encryption, anonymous containers, SAS policy, immutability</td></tr>
+                <tr><td>2</td><td>Encryption Posture</td><td><code>encryption</code></td><td>6</td><td>Disk encryption, storage CMK, encryption-at-host, managed disk CMK</td></tr>
+                <tr><td>3</td><td>Key Vault Hygiene</td><td><code>keyvault</code></td><td>9</td><td>Access policies, purge protection, expiring items, RBAC model, network restrictions</td></tr>
+                <tr><td>4</td><td>Certificate Lifecycle</td><td><code>cert_lifecycle</code></td><td>—</td><td>Certificate expiration tracking</td></tr>
+                <tr><td>5</td><td>Secret Sprawl</td><td><code>secret_sprawl</code></td><td>—</td><td>Secrets in App Service / Function App settings</td></tr>
+                <tr><td>6</td><td>Redis Security</td><td><code>redis</code></td><td>5</td><td>TLS enforcement, non-SSL port, firewall rules, patch schedule</td></tr>
+                <!-- Group: Database Security -->
+                <tr class="group-header"><td colspan="5">🗄️ Database Security (5)</td></tr>
+                <tr><td>7</td><td>Database Security</td><td><code>database</code></td><td>10</td><td>SQL TDE, auditing, ATP, firewall, AAD-only auth</td></tr>
+                <tr><td>8</td><td>Cosmos DB</td><td><code>cosmosdb</code></td><td>6</td><td>Public access, IP firewall, key-based auth, CMK</td></tr>
+                <tr><td>9</td><td>PostgreSQL / MySQL</td><td><code>pgmysql</code></td><td>6</td><td>SSL enforcement, public access, geo-redundant backup</td></tr>
+                <tr><td>10</td><td>SQL Managed Instance</td><td><code>sql_mi</code></td><td>—</td><td>SQL MI-specific checks</td></tr>
+                <tr><td>11</td><td>Databricks</td><td><code>databricks</code></td><td>—</td><td>VNet injection, CMK, public access</td></tr>
+                <!-- Group: Identity & Access -->
+                <tr class="group-header"><td colspan="5">🔑 Identity &amp; Access (4)</td></tr>
+                <tr><td>12</td><td>Data Access Controls</td><td><code>data_access</code></td><td>9</td><td>Sensitive data tags, broad RBAC, Defender plans, MI adoption</td></tr>
+                <tr><td>13</td><td>Managed Identity</td><td><code>identity</code></td><td>—</td><td>Broad MI audit</td></tr>
+                <tr><td>14</td><td>Stale Permissions</td><td><code>stale_permissions</code></td><td>—</td><td>Unused RBAC assignments</td></tr>
+                <tr><td>15</td><td>Conditional Access</td><td><code>conditional_access</code></td><td>—</td><td>Missing MFA, permanent PIM</td></tr>
+                <!-- Group: Network & Exposure -->
+                <tr class="group-header"><td colspan="5">🌐 Network &amp; Exposure (5)</td></tr>
+                <tr><td>16</td><td>Private Endpoints</td><td><code>private_endpoints</code></td><td>3</td><td>Missing PEs, pending approval, AI exposure</td></tr>
+                <tr><td>17</td><td>Network Segmentation</td><td><code>network_segmentation</code></td><td>5</td><td>ADF/Synapse managed VNet, NSG permissive ports</td></tr>
+                <tr><td>18</td><td>Data Exfiltration</td><td><code>data_exfiltration</code></td><td>—</td><td>Storage bypass, cross-sub PE, unrestricted outbound</td></tr>
+                <tr><td>19</td><td>Firewall / AppGW</td><td><code>firewall</code></td><td>—</td><td>Threat intel + IDPS, WAF mode</td></tr>
+                <tr><td>20</td><td>Bastion</td><td><code>bastion</code></td><td>—</td><td>Open RDP/SSH, shareable links</td></tr>
+                <!-- Group: Data Governance -->
+                <tr class="group-header"><td colspan="5">🏷️ Data Governance (8)</td></tr>
+                <tr><td>21</td><td>Data Classification</td><td><code>data_classification</code></td><td>8</td><td>SQL sensitivity labels, Purview coverage, auto-labeling</td></tr>
+                <tr><td>22</td><td>Purview</td><td><code>purview</code></td><td>4</td><td>Account existence, public access, MI, PEs</td></tr>
+                <tr><td>23</td><td>M365 DLP</td><td><code>m365_dlp</code></td><td>6</td><td>Policy existence, coverage gaps, SIP types</td></tr>
+                <tr><td>24</td><td>DLP Alerts</td><td><code>dlp_alert</code></td><td>1</td><td>Alert volume, false positive analysis</td></tr>
+                <tr><td>25</td><td>Data Residency</td><td><code>data_residency</code></td><td>2</td><td>Location compliance, geo-replication</td></tr>
+                <tr><td>26</td><td>SharePoint Governance</td><td><code>sharepoint_governance</code></td><td>6</td><td>Anonymous links, external sharing, stale sites</td></tr>
+                <tr><td>27</td><td>M365 Lifecycle</td><td><code>m365_data_lifecycle</code></td><td>3</td><td>Data minimization, retention labels</td></tr>
+                <tr><td>28</td><td>Data Flow</td><td><code>data_flow</code></td><td>—</td><td>Data movement topology</td></tr>
+                <!-- Group: Infrastructure Security -->
+                <tr class="group-header"><td colspan="5">🏗️ Infrastructure Security (8)</td></tr>
+                <tr><td>29</td><td>Container Security</td><td><code>container_security</code></td><td>6</td><td>ACR admin, AKS RBAC, pod security</td></tr>
+                <tr><td>30</td><td>Messaging</td><td><code>messaging</code></td><td>5</td><td>EventHub / ServiceBus network, TLS, local auth</td></tr>
+                <tr><td>31</td><td>AI Services</td><td><code>ai_services</code></td><td>3</td><td>Key auth disabled, MI, CMK</td></tr>
+                <tr><td>32</td><td>Data Pipeline</td><td><code>data_pipeline</code></td><td>5</td><td>ADF / Synapse public access, MI, git</td></tr>
+                <tr><td>33</td><td>API Management</td><td><code>apim</code></td><td>—</td><td>VNet integration, MI</td></tr>
+                <tr><td>34</td><td>Front Door</td><td><code>frontdoor</code></td><td>—</td><td>WAF mode, minimum TLS</td></tr>
+                <tr><td>35</td><td>File Sync</td><td><code>file_sync</code></td><td>5</td><td>Service existence, PEs, stale registered servers</td></tr>
+                <tr><td>36</td><td>App Config</td><td><code>app_config</code></td><td>—</td><td>Public access, PE, soft-delete</td></tr>
+                <!-- Group: Resilience & Compliance + Advanced Analytics -->
+                <tr class="group-header"><td colspan="5">🛡️ Resilience &amp; Compliance (5) + Advanced Analytics (2)</td></tr>
+                <tr><td>37</td><td>Backup &amp; DR</td><td><code>backup_dr</code></td><td>6</td><td>Resource locks, vault redundancy, unprotected VMs</td></tr>
+                <tr><td>38</td><td>Threat Detection</td><td><code>threat_detection</code></td><td>4</td><td>Immutable logs, Defender gaps, audit retention</td></tr>
+                <tr><td>39</td><td>Policy Compliance</td><td><code>policy_compliance</code></td><td>—</td><td>Azure Policy non-compliance</td></tr>
+                <tr><td>40</td><td>Defender Score</td><td><code>defender_score</code></td><td>—</td><td>Unhealthy recommendations</td></tr>
+                <tr><td>41</td><td>Config Drift</td><td><code>config_drift</code></td><td>—</td><td>Security property changes</td></tr>
+                <tr><td>42</td><td>Blast Radius</td><td><code>blast_radius</code></td><td>—</td><td>Cross-resource impact topology</td></tr>
+                <tr><td>43</td><td>Supply Chain</td><td><code>supply_chain</code></td><td>—</td><td>Untrusted registries, external packages</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ────────────────────── 4. SCORING ────────────────────── -->
+<section class="section" id="scoring">
+    <div class="section-header">
+        <div class="section-icon orange">📈</div>
+        <h2>Scoring Model</h2>
+    </div>
+    <p class="section-desc">
+        The scoring engine converts raw findings into actionable risk scores. Each finding's severity maps to a numerical weight. Per-category scores are computed first, then aggregated into an overall weighted average based on finding counts.
+    </p>
+
+    <h3 style="font-size:1rem;margin-bottom:12px;">Severity Weights</h3>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Severity</th><th>Weight</th><th>Badge</th></tr></thead>
+            <tbody>
+                <tr><td>Critical</td><td>10</td><td><span class="severity-badge critical">Critical</span></td></tr>
+                <tr><td>High</td><td>7.5</td><td><span class="severity-badge high">High</span></td></tr>
+                <tr><td>Medium</td><td>5</td><td><span class="severity-badge medium">Medium</span></td></tr>
+                <tr><td>Low</td><td>2.5</td><td><span class="severity-badge low">Low</span></td></tr>
+                <tr><td>Info</td><td>1</td><td><span class="severity-badge info">Info</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3 style="font-size:1rem;margin:20px 0 12px;">Score Calculation</h3>
+    <div class="info-box blue">
+        <strong>Per-category score:</strong> <code>min(100, sum(finding_weights) × 5)</code><br>
+        <strong>Overall score:</strong> Weighted average of category scores, weighted by finding count per category.
+    </div>
+
+    <h3 style="font-size:1rem;margin:20px 0 12px;">Risk Levels</h3>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Score Range</th><th>Risk Level</th><th>Badge</th></tr></thead>
+            <tbody>
+                <tr><td>≥ 75</td><td>Critical</td><td><span class="severity-badge critical">Critical</span></td></tr>
+                <tr><td>≥ 50</td><td>High</td><td><span class="severity-badge high">High</span></td></tr>
+                <tr><td>≥ 25</td><td>Medium</td><td><span class="severity-badge medium">Medium</span></td></tr>
+                <tr><td>&lt; 25</td><td>Low</td><td><span class="severity-badge low">Low</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3 style="font-size:1rem;margin:20px 0 12px;">Score Output Structure</h3>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Field</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>OverallScore</code></td><td>Weighted aggregate score across all categories (0–100)</td></tr>
+                <tr><td><code>CategoryScores</code></td><td>Per-category risk scores with finding count</td></tr>
+                <tr><td><code>SeverityDistribution</code></td><td>Count of findings by severity level</td></tr>
+                <tr><td><code>TopFindings</code></td><td>Highest-impact findings ranked by weight</td></tr>
+                <tr><td><code>RemediationImpact</code></td><td>Projected score improvement per remediation action</td></tr>
+                <tr><td><code>TrendAnalysis</code></td><td>Score comparison against previous assessment runs</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ────────────────────── 5. EVIDENCE ────────────────────── -->
+<section class="section" id="evidence">
+    <div class="section-header">
+        <div class="section-icon cyan">📦</div>
+        <h2>Evidence Collection</h2>
+    </div>
+    <p class="section-desc">
+        Evidence is collected from Azure Resource Graph, ARM sub-resource APIs, and Microsoft Graph, then indexed by type for O(1) lookup. The engine uses 40+ evidence types to power its analysis. Each evidence record includes the raw API response, resource ID, and collection timestamp.
+    </p>
+
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Evidence Type</th><th>Source</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>azure-storage-security</code></td><td>ARG + ARM</td><td>Storage account config: public access, TLS, encryption, soft-delete, SAS policy</td></tr>
+                <tr><td><code>azure-sql-server</code></td><td>ARG + ARM</td><td>SQL server config: TDE, auditing, ATP, firewall, AAD-only</td></tr>
+                <tr><td><code>azure-cosmosdb</code></td><td>ARG + ARM</td><td>Cosmos DB account: public access, IP rules, key auth, CMK</td></tr>
+                <tr><td><code>azure-keyvault</code></td><td>ARG + ARM</td><td>Key Vault: access policies, purge protection, RBAC, network rules</td></tr>
+                <tr><td><code>azure-compute-instance</code></td><td>ARG</td><td>VM/VMSS: disk encryption, encryption-at-host, managed identity</td></tr>
+                <tr><td><code>azure-role-assignments</code></td><td>ARM</td><td>RBAC role assignments: scope, principal, role definition</td></tr>
+                <tr><td><code>azure-defender-plans</code></td><td>ARM</td><td>Microsoft Defender for Cloud plan status per resource type</td></tr>
+                <tr><td><code>azure-private-endpoint-connections</code></td><td>ARG</td><td>Private endpoint connections: status, target resource, approval state</td></tr>
+                <tr><td><code>azure-nsg</code></td><td>ARG</td><td>Network security groups: rules, permissive ports, any-any allowances</td></tr>
+                <tr><td><code>azure-recovery-vault</code></td><td>ARG + ARM</td><td>Recovery Services vault: redundancy, protected items, locks</td></tr>
+                <tr><td><code>azure-policy-states</code></td><td>ARM</td><td>Azure Policy compliance states: non-compliant resources</td></tr>
+                <tr><td><code>azure-redis</code></td><td>ARG + ARM</td><td>Redis Cache: TLS, non-SSL port, firewall, patch schedule</td></tr>
+                <tr><td><code>azure-acr</code></td><td>ARG + ARM</td><td>Container registries: admin user, network rules, content trust</td></tr>
+                <tr><td><code>azure-aks</code></td><td>ARG + ARM</td><td>AKS clusters: RBAC, pod security, network policies</td></tr>
+                <tr><td><code>azure-eventhub</code></td><td>ARG + ARM</td><td>Event Hub namespaces: network rules, TLS, local auth</td></tr>
+                <tr><td><code>azure-servicebus</code></td><td>ARG + ARM</td><td>Service Bus namespaces: network rules, TLS, local auth</td></tr>
+                <tr><td><code>azure-adf</code></td><td>ARG + ARM</td><td>Data Factory: public access, managed VNet, MI, git config</td></tr>
+                <tr><td><code>azure-ai-services</code></td><td>ARG + ARM</td><td>Cognitive/AI Services: key auth, MI, CMK, network rules</td></tr>
+                <tr><td><code>azure-purview</code></td><td>ARG + ARM</td><td>Purview accounts: public access, MI, private endpoints</td></tr>
+                <tr><td><code>m365-dlp-policies</code></td><td>Graph</td><td>M365 DLP policies: scope, conditions, actions, SIP types</td></tr>
+                <tr><td><code>m365-sensitivity-label-definition</code></td><td>Graph</td><td>Sensitivity label definitions: auto-labeling, protection settings</td></tr>
+                <tr><td><code>m365-sharepoint-sites</code></td><td>Graph</td><td>SharePoint sites: sharing policy, anonymous links, external access</td></tr>
+                <tr><td><code>m365-retention-labels</code></td><td>Graph</td><td>Retention labels: retention period, disposition, auto-apply</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="info-box green">
+        <strong>Evidence Reuse:</strong> The <code>--evidence-dir</code> CLI flag lets you re-analyze previously-collected evidence without re-querying APIs — ideal for offline analysis and reproducible CI/CD runs.
+    </div>
+</section>
+
+<!-- ────────────────────── 6. COMPLIANCE ────────────────────── -->
+<section class="section" id="compliance">
+    <div class="section-header">
+        <div class="section-icon blue">⚖️</div>
+        <h2>Compliance Framework Mappings</h2>
+    </div>
+    <p class="section-desc">
+        Every finding produced by the engine is enriched with compliance mappings via <code>enrich_compliance_mapping()</code>. The mapping data is maintained in structured JSON definitions that associate each check with specific controls from 8 industry and regulatory frameworks. This enables compliance-filtered reporting and gap analysis out of the box.
+    </p>
+
+    <div class="framework-grid">
+        <div class="framework-card"><div class="framework-count">CIS</div><div class="framework-name">CIS Azure Benchmark</div></div>
+        <div class="framework-card"><div class="framework-count">PCI</div><div class="framework-name">PCI-DSS v4.0.1</div></div>
+        <div class="framework-card"><div class="framework-count">HIPAA</div><div class="framework-name">HIPAA</div></div>
+        <div class="framework-card"><div class="framework-count">NIST</div><div class="framework-name">NIST 800-53 r5</div></div>
+        <div class="framework-card"><div class="framework-count">ISO</div><div class="framework-name">ISO 27001:2022</div></div>
+        <div class="framework-card"><div class="framework-count">SOC</div><div class="framework-name">SOC 2</div></div>
+        <div class="framework-card"><div class="framework-count">CSF</div><div class="framework-name">NIST CSF 2.0</div></div>
+        <div class="framework-card"><div class="framework-count">MCSB</div><div class="framework-name">MCSB 1.0</div></div>
+    </div>
+
+    <div class="info-box blue">
+        <strong>Enrichment Process:</strong> After all 43 category analyzers complete, <code>enrich_compliance_mapping()</code> iterates through every finding, looks up the associated category key and subcategory, and attaches an array of framework control references. This post-analysis enrichment pattern keeps the analyzers decoupled from compliance logic.
+    </div>
+</section>
+
+<!-- ────────────────────── 7. FINDINGS ────────────────────── -->
+<section class="section" id="findings">
+    <div class="section-header">
+        <div class="section-icon red">🔍</div>
+        <h2>Finding Schema</h2>
+    </div>
+    <p class="section-desc">
+        Every finding emitted by the engine follows a consistent schema. Findings include per-resource detail with the specific configuration values that triggered the check, enabling precise remediation guidance.
+    </p>
+
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>DataSecurityFindingId</code></td><td>string</td><td>Unique finding identifier (e.g., <code>DS-STORAGE-001</code>)</td></tr>
+                <tr><td><code>Category</code></td><td>string</td><td>Top-level category key (e.g., <code>storage</code>, <code>keyvault</code>)</td></tr>
+                <tr><td><code>Subcategory</code></td><td>string</td><td>Specific check within the category</td></tr>
+                <tr><td><code>Title</code></td><td>string</td><td>Human-readable finding title</td></tr>
+                <tr><td><code>Description</code></td><td>string</td><td>Detailed description of the security issue</td></tr>
+                <tr><td><code>Severity</code></td><td>enum</td><td><span class="severity-badge critical">Critical</span> <span class="severity-badge high">High</span> <span class="severity-badge medium">Medium</span> <span class="severity-badge low">Low</span> <span class="severity-badge info">Info</span></td></tr>
+                <tr><td><code>AffectedResources</code></td><td>int</td><td>Count of resources affected by this finding</td></tr>
+                <tr><td><code>Remediation</code></td><td>string</td><td>Step-by-step remediation guidance</td></tr>
+                <tr><td><code>ComplianceMapping</code></td><td>array</td><td>Mapped framework controls (CIS, PCI-DSS, NIST, etc.)</td></tr>
+                <tr><td><code>PerResourceDetails</code></td><td>array</td><td>Per-resource configuration evidence that triggered the finding</td></tr>
+                <tr><td><code>DetectedAt</code></td><td>datetime</td><td>ISO 8601 timestamp of detection</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ────────────────────── 8. CLI ────────────────────── -->
+<section class="section" id="cli">
+    <div class="section-header">
+        <div class="section-icon green">💻</div>
+        <h2>CLI Usage</h2>
+    </div>
+    <p class="section-desc">
+        The data security assessment is driven by <code>run_data_security.py</code>. It supports full runs, evidence reuse, category filtering, trend comparison, suppressions, and CI/CD gating.
+    </p>
+
+    <pre><code># Full assessment
+python run_data_security.py --tenant YOUR_TENANT_ID
+
+# Reuse previously-collected evidence
+python run_data_security.py --tenant YOUR_TENANT_ID --evidence-dir output/20260410_102337_PM
+
+# Filter to specific categories
+python run_data_security.py --tenant YOUR_TENANT_ID --categories storage,keyvault,database
+
+# Trend comparison against a previous run
+python run_data_security.py --tenant YOUR_TENANT_ID --compare output/20260409_083000_AM
+
+# Apply finding suppressions
+python run_data_security.py --tenant YOUR_TENANT_ID --suppressions config/suppressions.json
+
+# CI/CD gate — exit non-zero if critical findings exist
+python run_data_security.py --tenant YOUR_TENANT_ID --fail-on critical
+
+# List available categories
+python run_data_security.py --list-categories
+
+# Specify output format
+python run_data_security.py --tenant YOUR_TENANT_ID --format json,html,excel</code></pre>
+
+    <h3 style="font-size:1rem;margin:20px 0 12px;">Arguments Reference</h3>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Argument</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>--tenant</code></td><td>Yes</td><td>Azure tenant ID to assess</td></tr>
+                <tr><td><code>--evidence-dir</code></td><td>No</td><td>Path to previously-collected evidence for offline analysis</td></tr>
+                <tr><td><code>--categories</code></td><td>No</td><td>Comma-separated list of category keys to evaluate</td></tr>
+                <tr><td><code>--compare</code></td><td>No</td><td>Path to previous output directory for trend comparison</td></tr>
+                <tr><td><code>--suppressions</code></td><td>No</td><td>Path to suppressions JSON file</td></tr>
+                <tr><td><code>--fail-on</code></td><td>No</td><td>Severity threshold for CI/CD gate (<code>critical</code>, <code>high</code>, <code>medium</code>, <code>low</code>)</td></tr>
+                <tr><td><code>--list-categories</code></td><td>No</td><td>Print all available category keys and exit</td></tr>
+                <tr><td><code>--format</code></td><td>No</td><td>Comma-separated output formats: <code>json</code>, <code>html</code>, <code>excel</code>, <code>pdf</code></td></tr>
+                <tr><td><code>--output-dir</code></td><td>No</td><td>Override default output directory</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ────────────────────── 9. OUTPUT ────────────────────── -->
+<section class="section" id="output">
+    <div class="section-header">
+        <div class="section-icon purple">📄</div>
+        <h2>Output Artifacts</h2>
+    </div>
+    <p class="section-desc">
+        Each assessment run produces a timestamped output directory containing structured data, interactive reports, remediation scripts, and executive summaries.
+    </p>
+
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>File</th><th>Format</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>data-security-assessment.json</code></td><td>JSON</td><td>Complete assessment payload: findings, scores, evidence, compliance mappings</td></tr>
+                <tr><td><code>data-security-report.html</code></td><td>HTML</td><td>Interactive HTML report with charts, filtering, and drill-down</td></tr>
+                <tr><td><code>data-security-report.xlsx</code></td><td>Excel</td><td>Multi-sheet workbook: summary, findings, per-resource details, compliance</td></tr>
+                <tr><td><code>executive-brief.html</code></td><td>HTML</td><td>Executive summary with risk posture, top findings, and trend analysis</td></tr>
+                <tr><td><code>cost-methodology-report.html</code></td><td>HTML</td><td>Remediation cost impact methodology and estimates</td></tr>
+                <tr><td><code>remediate.ps1</code></td><td>PowerShell</td><td>Auto-generated remediation script for Windows environments</td></tr>
+                <tr><td><code>remediate.sh</code></td><td>Bash</td><td>Auto-generated remediation script for Linux/macOS environments</td></tr>
+                <tr><td><code>*.pdf</code></td><td>PDF</td><td>PDF versions of HTML reports (when <code>--format pdf</code> is specified)</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ────────────────────── 10. SOURCE FILES ────────────────────── -->
+<section class="section" id="source-files">
+    <div class="section-header">
+        <div class="section-icon cyan">📁</div>
+        <h2>Source Files</h2>
+    </div>
+    <p class="section-desc">
+        The Data Security Engine spans four key source files. The core engine contains all evidence collection, analysis, and scoring logic in a single, purely functional module.
+    </p>
+
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>File</th><th>Lines</th><th>Purpose</th></tr></thead>
+            <tbody>
+                <tr><td><code>app/data_security_engine.py</code></td><td>9,904</td><td>Core engine: evidence collection, 43 category analyzers, ~200 check functions, scoring, compliance enrichment</td></tr>
+                <tr><td><code>run_data_security.py</code></td><td>~600</td><td>CLI entry point: argument parsing, credential setup, orchestration, report generation</td></tr>
+                <tr><td><code>config/data-security-relevance.json</code></td><td>—</td><td>Category metadata, severity mappings, compliance control definitions</td></tr>
+                <tr><td><code>app/reports/data_security_report.py</code></td><td>—</td><td>Report generators: HTML, Excel, PDF, executive brief, remediation scripts</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════ FOOTER ═══════════════════════════════════════════ -->
+<footer class="footer">
+    PostureIQ — Data Security Engine Deep Dive<br>
+    Author: Murali Chillakuru · April 2026
+</footer>
+
+<!-- ═══════════════════════════════════════════ BACK TO TOP ═══════════════════════════════════════ -->
+<button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+<!-- ═══════════════════════════════════════════ SCRIPTS ═══════════════════════════════════════════ -->
+<script>
+(function(){var s=localStorage.getItem('enterprisesecurityiq-theme');var t=s||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');document.documentElement.setAttribute('data-theme',t);var b=document.getElementById('themeToggle');if(b)b.textContent=t==='dark'?'🌙 Dark':'☀️ Light'})();
+document.getElementById('themeToggle').addEventListener('click',function(){var h=document.documentElement;var c=h.getAttribute('data-theme')||'dark';var n=c==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('enterprisesecurityiq-theme',n);this.textContent=n==='dark'?'🌙 Dark':'☀️ Light';if(typeof mermaid!=='undefined'){mermaid.initialize({startOnLoad:false,theme:n==='dark'?'dark':'default'});document.querySelectorAll('.mermaid[data-processed]').forEach(function(e){e.removeAttribute('data-processed')});mermaid.run()}});
+window.addEventListener('scroll',function(){var h=document.documentElement;document.getElementById('progressBar').style.width=((h.scrollTop/(h.scrollHeight-h.clientHeight))*100)+'%'});
+document.querySelectorAll('.stat-number[data-target]').forEach(function(el){var t=parseInt(el.getAttribute('data-target'));var d=1200;var s=null;function a(ts){if(!s)s=ts;var p=Math.min((ts-s)/d,1);el.textContent=Math.round((1-Math.pow(1-p,3))*t).toLocaleString();if(p<1)requestAnimationFrame(a);else el.textContent=t>=200?t.toLocaleString()+'+':t.toLocaleString()}requestAnimationFrame(a)});
+(function(){var ss=document.querySelectorAll('section[id]');var pp=document.querySelectorAll('.nav-pill[href]');ss.forEach(function(s){new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){pp.forEach(function(p){p.classList.toggle('active',p.getAttribute('href')==='#'+e.target.id)})}})},{rootMargin:'-20% 0px -70% 0px'}).observe(s)})})();
+(function(){var b=document.getElementById('backToTop');window.addEventListener('scroll',function(){b.classList.toggle('visible',window.scrollY>300)});b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})})})();
+document.addEventListener('DOMContentLoaded',function(){var t=document.documentElement.getAttribute('data-theme')||'dark';mermaid.initialize({startOnLoad:true,theme:t==='dark'?'dark':'default'})});
+</script>
+<script src="seq-engine.js"></script>
+</body>
+</html>

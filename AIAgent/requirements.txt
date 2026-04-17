@@ -1,0 +1,84 @@
+# Microsoft Agent Framework (pinned)
+agent-framework-azure-ai==1.0.0rc3
+agent-framework-core==1.0.0rc3
+azure-ai-agentserver-agentframework==1.0.0b16
+azure-ai-agentserver-core==1.0.0b16
+
+# Azure Identity
+azure-identity>=1.25.1
+six
+
+# Azure Management SDKs — Core
+azure-mgmt-resource==23.2.0
+azure-mgmt-authorization==4.0.0
+azure-mgmt-monitor==6.0.0
+azure-mgmt-security==7.0.0
+azure-mgmt-network==27.0.0
+azure-mgmt-compute==33.0.0
+azure-mgmt-storage==22.0.0
+azure-mgmt-keyvault==10.3.1
+azure-keyvault-secrets>=4.9.0
+azure-keyvault-certificates>=4.9.0
+azure-keyvault-keys>=4.10.0
+azure-storage-blob==12.28.0
+azure-containerregistry==1.2.0
+azure-mgmt-sql==4.0.0b20
+azure-mgmt-web==7.3.1
+azure-mgmt-containerservice==32.0.0
+azure-mgmt-containerregistry==10.3.0
+azure-mgmt-appcontainers==4.0.0
+azure-mgmt-cosmosdb==9.9.0
+azure-mgmt-rdbms==10.1.1
+azure-mgmt-apimanagement==5.0.0
+azure-mgmt-policyinsights==1.1.0b4
+azure-mgmt-managementgroups==1.0.0
+azure-mgmt-resourcegraph==8.0.0
+azure-mgmt-recoveryservices==3.0.0
+azure-mgmt-cognitiveservices>=14.0.0
+azure-mgmt-machinelearningservices>=2.0.0b1
+
+# Azure Management SDKs — Added for extended coverage
+azure-mgmt-dns>=8.1.0
+azure-mgmt-privatedns>=1.1.0
+azure-mgmt-trafficmanager>=1.1.0
+azure-mgmt-frontdoor>=1.2.0
+azure-mgmt-cdn>=13.1.0
+azure-mgmt-servicebus>=8.2.0
+azure-mgmt-eventhub>=11.1.0
+azure-mgmt-securityinsight>=2.0.0b1
+azure-mgmt-loganalytics>=13.0.0
+azure-mgmt-synapse>=2.0.0
+azure-mgmt-datafactory>=9.0.0
+azure-mgmt-databricks>=2.0.0
+azure-mgmt-redis>=14.4.0
+azure-mgmt-iothub>=3.0.0
+azure-mgmt-logic>=10.0.0
+azure-mgmt-purview>=1.1.0b1
+azure-mgmt-batch>=17.3.0
+azure-mgmt-containerinstance>=10.1.0
+azure-mgmt-hybridcompute>=9.0.0
+azure-mgmt-costmanagement>=4.0.0
+azure-mgmt-recoveryservicesbackup>=9.1.0
+azure-mgmt-advisor>=9.0.0
+
+# Microsoft Graph SDK
+msgraph-sdk==1.12.0
+msgraph-beta-sdk==1.12.0
+
+# Utilities
+python-dotenv>=1.0.1
+aiohttp>=3.13.0
+jinja2>=3.1.4
+fastapi>=0.115.0
+uvicorn>=0.34.0
+httpx>=0.28.0
+openpyxl>=3.1.0
+playwright>=1.52.0
+
+# Azure OpenAI SDK (chat completions + Assistants API)
+openai>=1.30.0
+
+# Security pins (transitive dependency fixes)
+cryptography>=46.0.6    # CVE-2026-34073: DNS name constraint bypass
+pyjwt>=2.12.0           # CVE-2026-32597: missing crit header validation
+requests>=2.33.0        # CVE-2026-25645: predictable temp file extraction

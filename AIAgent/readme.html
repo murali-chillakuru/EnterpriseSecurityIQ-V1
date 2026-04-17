@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EnterpriseSecurityIQ — AI Compliance Assessment Agent</title>
+<meta name="description" content="AI-powered compliance assessment agent built with Microsoft Agent Framework SDK.">
+<meta name="author" content="Murali Chillakuru">
+<style>
+:root {
+    --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-tertiary:#1C2128;--bg-card:#21262D;--bg-card-hover:#282E36;--bg-inset:#0D1117;
+    --border-primary:#30363D;--border-secondary:#21262D;--border-accent:#1F6FEB;
+    --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;--text-link:#58A6FF;
+    --accent-blue:#1F6FEB;--accent-blue-light:#388BFD;--accent-green:#3FB950;--accent-green-bg:rgba(63,185,80,.12);
+    --accent-orange:#D29922;--accent-orange-bg:rgba(210,153,34,.12);--accent-red:#F85149;--accent-red-bg:rgba(248,81,73,.12);
+    --accent-purple:#A371F7;--accent-purple-bg:rgba(163,113,247,.12);--accent-cyan:#39D2C0;--accent-cyan-bg:rgba(57,210,192,.12);
+    --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);--shadow-lg:0 8px 24px rgba(0,0,0,.5);
+    --radius:8px;--radius-lg:12px;
+    --font-sans:'Segoe UI Variable','Segoe UI',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+    --font-mono:'Cascadia Code','Fira Code','Consolas','Monaco',monospace;
+    --max-width:1100px;
+}
+[data-theme="light"]{
+    --bg-primary:#F6F8FA;--bg-secondary:#FFFFFF;--bg-tertiary:#F0F2F5;--bg-card:#FFFFFF;--bg-card-hover:#F6F8FA;--bg-inset:#F0F2F5;
+    --border-primary:#D0D7DE;--border-secondary:#E1E4E8;--border-accent:#0078D4;
+    --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;--text-link:#0969DA;
+    --accent-blue:#0969DA;--accent-blue-light:#0078D4;--accent-green:#1A7F37;--accent-green-bg:rgba(26,127,55,.08);
+    --accent-orange:#9A6700;--accent-orange-bg:rgba(154,103,0,.08);--accent-red:#CF222E;--accent-red-bg:rgba(207,34,46,.08);
+    --accent-purple:#8250DF;--accent-purple-bg:rgba(130,80,223,.08);--accent-cyan:#0E8A8A;--accent-cyan-bg:rgba(14,138,138,.08);
+    --shadow-sm:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.1);--shadow-lg:0 8px 24px rgba(0,0,0,.12);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(31,111,235,.4)}a{color:var(--text-link);text-decoration:none;transition:color .15s}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.85em;background:var(--bg-inset);padding:2px 7px;border-radius:4px;color:var(--accent-cyan);border:1px solid var(--border-secondary)}
+pre{background:var(--bg-inset);border:1px solid var(--border-primary);border-radius:var(--radius);padding:20px 24px;overflow-x:auto;margin:1rem 0;line-height:1.5}
+pre code{background:none;border:none;padding:0;font-size:.82rem;color:var(--text-primary)}
+.skip-nav{position:absolute;top:-100%;left:16px;padding:12px 24px;background:var(--accent-blue);color:#fff;font-size:14px;font-weight:600;border-radius:0 0 8px 8px;z-index:10000;text-decoration:none;transition:top .2s}.skip-nav:focus{top:0}
+:focus-visible{outline:2px solid var(--accent-blue);outline-offset:2px;border-radius:2px}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#0078D4,#00B7C3);z-index:1001;width:0%;transition:width 80ms linear}
+.hero{position:relative;padding:80px 0 60px;background:linear-gradient(145deg,var(--bg-primary) 0%,#0D2137 50%,var(--bg-primary) 100%);border-bottom:1px solid var(--border-primary);overflow:hidden}
+[data-theme="light"] .hero{background:linear-gradient(145deg,#EBF3FE 0%,#D4E6FC 50%,#EBF3FE 100%)}
+.hero::before{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(31,111,235,.08) 0%,transparent 70%)}
+.hero-inner{max-width:var(--max-width);margin:0 auto;padding:0 32px;position:relative;z-index:1}
+.hero-label{display:inline-flex;align-items:center;gap:8px;background:rgba(31,111,235,.15);border:1px solid rgba(31,111,235,.3);padding:6px 16px;border-radius:20px;font-size:.8rem;color:var(--accent-blue-light);letter-spacing:.5px;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-size:2.4rem;font-weight:700;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;margin-bottom:16px}
+.hero p.subtitle{font-size:1.05rem;color:var(--text-secondary);max-width:700px;line-height:1.7;margin-bottom:24px}
+.hero-meta{display:flex;gap:24px;flex-wrap:wrap;font-size:.85rem;color:var(--text-muted)}
+.hero-meta span{display:flex;align-items:center;gap:6px}
+.stats-bar{max-width:var(--max-width);margin:-34px auto 40px;padding:0 32px;position:relative;z-index:2}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:22px 24px}
+.stat-item{text-align:center}.stat-number{font-size:1.6rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.stat-number.blue{color:var(--accent-blue)}.stat-number.green{color:var(--accent-green)}.stat-number.purple{color:var(--accent-purple)}.stat-number.orange{color:var(--accent-orange)}.stat-number.cyan{color:var(--accent-cyan)}.stat-number.red{color:var(--accent-red)}
+.stat-label{font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-top:6px}
+.sticky-nav{position:sticky;top:0;background:rgba(13,17,23,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-primary);z-index:100}
+[data-theme="light"] .sticky-nav{background:rgba(255,255,255,.92)}
+.sticky-nav-inner{max-width:var(--max-width);margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:2px;overflow-x:auto;scrollbar-width:none}
+.sticky-nav-inner::-webkit-scrollbar{display:none}
+.nav-pill{display:inline-block;padding:12px 12px;font-size:.8rem;color:var(--text-secondary);white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;cursor:pointer}
+.nav-pill:hover{color:var(--text-primary);text-decoration:none}.nav-pill.active{color:var(--accent-blue-light);border-bottom-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;padding:6px 14px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);color:var(--text-secondary);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font-sans);white-space:nowrap}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--accent-blue)}
+.container{max-width:var(--max-width);margin:0 auto;padding:0 32px 80px}
+.section{margin-bottom:48px;scroll-margin-top:60px}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border-primary)}
+.section-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.section-icon.blue{background:rgba(31,111,235,.15);border:1px solid rgba(31,111,235,.3)}
+.section-icon.green{background:var(--accent-green-bg);border:1px solid rgba(63,185,80,.3)}
+.section-icon.purple{background:var(--accent-purple-bg);border:1px solid rgba(163,113,247,.3)}
+.section-icon.orange{background:var(--accent-orange-bg);border:1px solid rgba(210,153,34,.3)}
+.section-icon.cyan{background:var(--accent-cyan-bg);border:1px solid rgba(57,210,192,.3)}
+.section-icon.red{background:var(--accent-red-bg);border:1px solid rgba(248,81,73,.3)}
+.section-header h2{font-size:1.4rem;font-weight:600}
+.section-desc{color:var(--text-secondary);margin-bottom:20px;font-size:.95rem;line-height:1.7}
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border-primary);margin-bottom:16px}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.data-table thead th{text-align:left;padding:10px 14px;background:var(--bg-tertiary);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);border-bottom:2px solid var(--border-primary)}
+.data-table tbody td{padding:10px 14px;border-bottom:1px solid var(--border-secondary);vertical-align:top;color:var(--text-secondary)}
+.data-table tbody tr:last-child td{border-bottom:none}.data-table tbody tr:hover{background:var(--bg-card-hover)}
+.tool-name{color:var(--accent-cyan);font-family:var(--font-mono);font-size:.82rem}
+.script-name{color:var(--accent-purple);font-family:var(--font-mono);font-size:.82rem}
+.tree-block{background:var(--bg-inset);border:1px solid var(--border-primary);border-radius:var(--radius);padding:24px;overflow-x:auto;margin-bottom:24px;font-family:var(--font-mono);font-size:.78rem;line-height:1.85;color:var(--text-secondary)}
+.tree-block .highlight{color:var(--accent-cyan)}.tree-block .dim{color:var(--text-muted)}.tree-block .accent{color:var(--accent-blue-light)}
+.domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:20px}
+.domain-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);padding:18px;border-top:3px solid var(--accent-blue);transition:all .2s}
+.domain-card:hover{border-color:var(--accent-blue-light);transform:translateY(-2px)}
+.domain-icon{font-size:1.6rem;margin-bottom:8px}.domain-card h4{font-size:.88rem;margin-bottom:4px;font-weight:600}
+.domain-checks{font-size:.8rem;color:var(--accent-blue-light);font-weight:600}
+.diagram-container{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:24px;margin-bottom:24px;overflow-x:auto;box-shadow:var(--shadow-sm)}
+.diagram-container .mermaid{text-align:center}
+.diagram-title{font-size:1rem;font-weight:600;margin-bottom:12px;color:var(--accent-blue-light)}
+.diagram-explanation{margin-top:16px;padding:16px;background:var(--bg-tertiary);border-radius:var(--radius);font-size:.88rem;color:var(--text-secondary);line-height:1.7}
+.diagram-explanation ol{margin:8px 0 0 20px}.diagram-explanation li{margin-bottom:6px}
+.info-box{border-radius:var(--radius);padding:16px 20px;margin:1rem 0;font-size:.9rem;border:1px solid}
+.info-box.blue{background:rgba(31,111,235,.08);border-color:rgba(31,111,235,.25);color:var(--text-secondary)}
+.info-box.green{background:var(--accent-green-bg);border-color:rgba(63,185,80,.25);color:var(--text-secondary)}
+.steps{counter-reset:step;list-style:none;margin-bottom:24px}
+.steps li{counter-increment:step;padding:16px 20px 16px 56px;position:relative;border-left:2px solid var(--border-primary);margin-left:16px}
+.steps li::before{content:counter(step);position:absolute;left:-18px;top:14px;width:34px;height:34px;border-radius:50%;background:var(--accent-blue);color:#fff;font-size:.8rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.steps li h4{font-size:.95rem;margin-bottom:6px;color:var(--text-primary)}.steps li p{font-size:.88rem;color:var(--text-secondary)}
+.back-to-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--accent-blue);color:#fff;font-size:20px;border:none;cursor:pointer;opacity:0;visibility:hidden;transition:all .3s;z-index:999;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md)}
+.back-to-top.visible{opacity:1;visibility:visible}.back-to-top:hover{transform:scale(1.1)}
+.footer{text-align:center;padding:36px;color:var(--text-muted);font-size:.82rem;border-top:1px solid var(--border-primary);background:var(--bg-secondary)}
+@media(max-width:768px){.hero h1{font-size:1.6rem}.stats-grid{grid-template-columns:repeat(3,1fr)}.domain-grid{grid-template-columns:repeat(2,1fr)}}
+@media print{.sticky-nav,.theme-toggle,.back-to-top,.skip-nav,.progress-bar{display:none!important}body{background:#fff;color:#000}.hero{background:#f0f4f8!important;padding:40px 0 30px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+@media(forced-colors:active){.back-to-top,.theme-toggle,.nav-pill{border:1px solid ButtonText;forced-color-adjust:none}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+<div class="progress-bar" id="progressBar" role="progressbar" aria-label="Reading progress"></div>
+
+<!-- Hero -->
+<section class="hero">
+<div class="hero-inner">
+    <span class="hero-label">🤖 Agent Reference</span>
+    <h1>EnterpriseSecurityIQ — AI Compliance Assessment Agent</h1>
+    <p class="subtitle">Built with the Microsoft Agent Framework SDK. Runs as a hosted agent on Microsoft Foundry or standalone via CLI. Collects evidence from Azure, Entra ID, M365, and AI platforms, evaluates against 11 compliance frameworks, and generates professional reports in 8 formats.</p>
+    <div class="hero-meta">
+        <span>👤 Murali Chillakuru</span>
+        <span>📅 April 2026</span>
+        <span>🏷️ Python 3.10+ · Foundry Agent · Port 8088</span>
+    </div>
+</div>
+</section>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+<div class="stats-grid" role="list" aria-label="Key metrics">
+    <div class="stat-item" role="listitem"><div class="stat-number blue" data-target="12">0</div><div class="stat-label">Agent Tools</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number purple" data-target="10">0</div><div class="stat-label">CLI Scripts</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number green" data-target="64">0</div><div class="stat-label">Collectors</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number orange" data-target="10">0</div><div class="stat-label">Eval Domains</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number cyan" data-target="113">0</div><div class="stat-label">Check Functions</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number red" data-target="1357">0</div><div class="stat-label">Test Functions</div></div>
+</div>
+</div>
+
+<!-- Sticky Nav -->
+<nav class="sticky-nav" aria-label="Section navigation">
+<div class="sticky-nav-inner">
+    <a class="nav-pill" href="#architecture">Architecture</a>
+    <a class="nav-pill" href="#domains">Domains</a>
+    <a class="nav-pill" href="#tools">Agent Tools</a>
+    <a class="nav-pill" href="#cli">CLI Scripts</a>
+    <a class="nav-pill" href="#quickstart">Quick Start</a>
+    <a class="nav-pill" href="#deploy">Deploy</a>
+    <a class="nav-pill" href="#testing">Testing</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme">🌙 Dark</button>
+</div>
+</nav>
+
+<!-- EXEC SUMMARY -->
+<div class="container" style="padding-bottom:0">
+<div style="background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.25);border-radius:8px;padding:16px 20px;margin:24px 0 0;font-size:.9rem;color:var(--text-secondary)">
+<strong>📋 Executive Summary</strong> — Quick reference for the AI Compliance Assessment Agent: architecture, 10 evaluation domains, 12 agent tools, 10 CLI scripts, and deployment guide.
+<div style="margin-top:8px;font-size:.82rem"><strong>Audience:</strong> Agent developers, operators · <strong>Prerequisites:</strong> <a href="../docs/readme.html">Project Overview</a> · <strong>Related:</strong> <a href="../docs/architecture.html">Architecture</a> · <a href="../docs/prompts.html">Usage Guide</a></div>
+</div>
+</div>
+
+<main id="main-content">
+<div class="container">
+
+<!-- Architecture -->
+<section class="section" id="architecture">
+<div class="section-header"><div class="section-icon purple">⚙️</div><h2>Architecture</h2></div>
+<div class="tree-block">
+<span class="accent">main.py</span>                              <span class="dim">Foundry agent hosting adapter (port 8088)</span>
+├── <span class="accent">app/agent.py</span>                     <span class="dim">System prompt + 12 tools</span>
+├── <span class="accent">app/orchestrator.py</span>              <span class="dim">Concurrent collector → evaluator → report pipeline</span>
+├── <span class="highlight">app/collectors/</span>
+│   ├── registry.py                  <span class="dim">Auto-discovery @register_collector decorator</span>
+│   ├── base.py                      <span class="dim">Retry logic, pagination, access-denied handling</span>
+│   ├── inventory.py                 <span class="dim">Shared resource inventory cache</span>
+│   ├── <span class="accent">azure/</span> <span class="dim">(50 collectors)</span>       <span class="dim">ARM SDK + data-plane: 29 resource categories</span>
+│   └── <span class="accent">entra/</span> <span class="dim">(18 collectors)</span>       <span class="dim">Graph SDK: users, MFA, CA, roles, apps, PIM, risk…</span>
+├── <span class="highlight">app/evaluators/</span> <span class="dim">(10 domains)</span>     <span class="dim">120 evaluation functions with compliance thresholds</span>
+├── <span class="highlight">app/frameworks/</span>                  <span class="dim">11 framework mappings (525 controls)</span>
+├── <span class="highlight">app/reports/</span>                     <span class="dim">29 report generators (HTML, MD, Excel, OSCAL, SARIF, PDF…)</span>
+├── <span class="accent">app/query_engine.py</span>              <span class="dim">ARG + Graph interactive query engine (714 lines)</span>
+├── <span class="accent">app/risk_engine.py</span>               <span class="dim">Security risk gap analysis — 4 categories (1,124 lines)</span>
+├── <span class="accent">app/data_security_engine.py</span>      <span class="dim">Data security assessment — 12 categories (9,085 lines)</span>
+├── <span class="accent">app/copilot_readiness_engine.py</span>  <span class="dim">M365 Copilot readiness — 9+ categories (5,090 lines)</span>
+├── <span class="accent">app/ai_agent_security_engine.py</span>  <span class="dim">AI agent security — 6 platforms, 23+ areas (5,968 lines)</span>
+├── <span class="accent">app/data_residency_engine.py</span>     <span class="dim">Data residency compliance — 5 checks (296 lines)</span>
+├── <span class="accent">app/remediation_engine.py</span>        <span class="dim">Automated remediation plans — 7 rules (299 lines)</span>
+├── <span class="accent">app/continuous_monitor.py</span>        <span class="dim">Scheduled re-assessments with drift detection (196 lines)</span>
+├── <span class="accent">app/siem_integration.py</span>          <span class="dim">Sentinel, Splunk, generic webhook export (156 lines)</span>
+├── <span class="accent">app/operational_integrations.py</span>  <span class="dim">ServiceNow, Jira, Azure DevOps connectors (443 lines)</span>
+├── <span class="accent">app/auth.py</span>                      <span class="dim">Unified DefaultAzureCredential (ARM + Graph) with preflight</span>
+├── <span class="accent">app/config.py</span>                    <span class="dim">Environment-driven configuration with 18 thresholds</span>
+├── <span class="accent">app/models.py</span>                    <span class="dim">Typed dataclasses with deterministic UUID5 IDs</span>
+├── <span class="accent">app/i18n.py</span>                      <span class="dim">Locale-based string localization</span>
+└── <span class="accent">app/logger.py</span>                    <span class="dim">Structured logging</span>
+</div>
+
+<div class="diagram-container">
+<div class="diagram-title">Pipeline Overview</div>
+<div class="mermaid" data-seq-details='[{"overview":"The user (or Microsoft Foundry) invokes the assessment through the Agent, specifying the target scope and compliance frameworks to evaluate. The Agent exposes this as a callable tool function in Foundry chat.","dataFlow":"Assessment parameters (scope, frameworks) flow from the user or Foundry runtime to the Agent tool function in agent.py.","keyPoints":["Agent wraps the full pipeline as Foundry-callable tool functions","Supports natural language requests that are parsed into structured parameters","Scope can target specific subscriptions, resource groups, or the entire tenant"],"whyItMatters":"Exposing the assessment as an AI Agent tool function enables conversational security assessments, making compliance checks accessible without CLI expertise.","output":"Parsed assessment request with scope and framework configuration"},{"overview":"The Agent delegates to the Orchestrator by calling run_full_assessment with pre-configured credentials and the parsed configuration.","dataFlow":"Credential objects and assessment configuration flow from agent.py to the Orchestrator run_full_assessment method.","keyPoints":["Credentials are pre-configured via managed identity in the Foundry environment","Configuration merges user parameters with default agent settings","The Agent handles error recovery and retry logic at this boundary"],"whyItMatters":"Separating the Agent interface from the Orchestrator allows the same assessment engine to serve both the AI Agent and CLI entry points.","output":"Orchestrator initialized with credentials and configuration, pipeline execution started"},{"overview":"The Orchestrator dispatches 50 Azure collectors in batches of 8, querying ARM and data-plane APIs for resource configurations and security settings.","dataFlow":"API requests flow from the Orchestrator to Azure Collectors in parallel batches; each collector targets specific Azure resource types.","keyPoints":["50 collectors cover compute, storage, networking, databases, key vaults, and more","Batch size of 8 balances throughput against ARM API throttling limits","Priority ordering ensures foundational resources are collected first"],"whyItMatters":"Batched concurrent collection enables fast evidence gathering while respecting Azure API rate limits, which is especially important for large tenants.","output":"API calls dispatched to Azure Resource Manager across 50 collector functions"},{"overview":"Azure Collectors return their raw evidence to the Orchestrator, providing configuration data across all major Azure resource categories.","dataFlow":"Structured evidence objects flow from Azure Collectors back to the Orchestrator, covering resource configurations, policies, and security settings.","keyPoints":["Evidence is normalized into consistent schemas regardless of source API","Failed collectors log warnings but do not block the pipeline","Checkpoint saved after Azure collection for potential resume"],"whyItMatters":"Resilient evidence collection with checkpointing ensures assessments can recover from transient API failures without restarting from scratch.","output":"Azure evidence pool containing resource configuration data"},{"overview":"The Orchestrator dispatches 18 Entra collectors in batches of 6, querying Microsoft Graph APIs for identity and directory configurations.","dataFlow":"Graph API requests flow from the Orchestrator to Entra Collectors in parallel batches targeting identity and directory resources.","keyPoints":["18 collectors cover users, groups, roles, conditional access, MFA, and app registrations","Batch size of 6 respects Graph API throttling limits","Runs after Azure collection completes (sequential phase)"],"whyItMatters":"Identity assessment is critical for compliance — conditional access policies, MFA adoption, and privileged role assignments are key controls in every framework.","output":"Graph API calls dispatched across 18 Entra collector functions"},{"overview":"Entra Collectors return their raw evidence to the Orchestrator, providing identity and directory configuration data.","dataFlow":"Structured identity evidence objects flow from Entra Collectors back to the Orchestrator, covering users, groups, roles, and policies.","keyPoints":["Identity evidence includes user configurations, role assignments, and conditional access states","Combined with Azure evidence to form the complete evidence pool","Checkpoint saved after Entra collection completes"],"whyItMatters":"Complete identity evidence enables cross-domain analysis, linking network and data access controls to the identity policies that govern them.","output":"Entra evidence pool merged with Azure evidence into a unified collection"},{"overview":"The Orchestrator passes the complete evidence pool and selected frameworks to the Evaluation Engine, which analyzes all evidence against compliance controls.","dataFlow":"The unified evidence dictionary and framework selection list flow from the Orchestrator to the evaluate_all function in the Evaluation Engine.","keyPoints":["120 check functions across 10 security domains analyze the evidence","Cross-domain fallback routes handle controls that span multiple evaluator domains","Suppressions from configuration are applied to filter known exceptions"],"whyItMatters":"Centralized evaluation with framework-aware mapping ensures every piece of evidence is checked against all applicable compliance controls in a single pass.","output":"Evaluation process initiated with evidence and framework context"},{"overview":"The Evaluation Engine returns an array of FindingRecord objects and per-framework compliance scores to the Orchestrator.","dataFlow":"FindingRecord arrays with severity, status, evidence references, and remediation guidance flow back to the Orchestrator along with aggregated scores.","keyPoints":["Each FindingRecord includes pass/fail status, severity level, and remediation steps","Scores are weighted by severity for meaningful compliance percentages","Per-domain and per-framework breakdowns are included in the results"],"whyItMatters":"Structured finding records with consistent schemas enable the Agent to provide detailed, actionable responses about specific compliance gaps.","output":"Complete findings array and compliance scores for all selected frameworks"},{"overview":"The Orchestrator calls the Report Generators to produce output files in multiple formats from the evaluation results.","dataFlow":"Findings and scores flow from the Orchestrator to the report generation modules, which render output files.","keyPoints":["29 report modules produce different formats and views","Per-framework subfolders organize output by compliance standard","Report generation is the final phase of the pipeline"],"whyItMatters":"Multi-format reports ensure assessment results are useful for diverse consumers — from automated SIEM ingestion to executive presentations.","output":"Report generation initiated for all configured output formats"},{"overview":"Report Generators return the completed output files to the Orchestrator, including HTML dashboards, JSON exports, Markdown summaries, and standards-based formats.","dataFlow":"Generated report files and their paths flow from the Report Generators back to the Orchestrator.","keyPoints":["HTML includes interactive compliance dashboards with drill-down capability","OSCAL and SARIF formats enable GRC and DevSecOps tool integration","Excel workbooks provide auditor-friendly worksheets with conditional formatting","PDF generation available via optional Playwright rendering"],"whyItMatters":"Comprehensive output in standardized formats maximizes the long-term value of each assessment for audit preparation and continuous monitoring.","output":"Complete set of report files in HTML, JSON, MD, Excel, OSCAL, SARIF, and PDF formats"},{"overview":"The Orchestrator returns an AssessmentSummary object to the Agent, containing compliance scores, finding counts, and the output directory path.","dataFlow":"An AssessmentSummary object with scores, statistics, and file paths flows from the Orchestrator back to agent.py.","keyPoints":["Summary includes overall compliance percentage and per-framework scores","Contains finding counts by severity and domain","Includes the output directory path for linking to full reports"],"whyItMatters":"A structured summary object allows the Agent to compose intelligent, contextual responses without parsing raw report files.","output":"AssessmentSummary object with compliance scores, finding statistics, and output path"},{"overview":"The Agent formats the AssessmentSummary into a user-friendly response and returns it through the Foundry chat interface.","dataFlow":"Formatted text with compliance scores, key findings, and recommendations flows from agent.py back to the user via the Foundry chat interface.","keyPoints":["Response includes overall compliance score and framework breakdowns","Highlights critical findings requiring immediate attention","Provides direct links to detailed report files when available"],"whyItMatters":"Formatting assessment results as conversational responses makes security compliance accessible to non-technical stakeholders through natural language interaction.","output":"Formatted chat response with compliance summary, critical findings, and report links"}]'>
+sequenceDiagram
+    participant U as User / CLI
+    participant A as agent.py
+    participant O as orchestrator.py
+    participant C as Collectors (68)
+    participant E as Evaluators (10)
+    participant R as Reports (29)
+
+    U->>A: run_assessment(scope, frameworks)
+    A->>O: run_full_assessment(creds, config)
+
+    par Azure Collectors
+        O->>C: 50 Azure collectors (batches of 8)
+        C-->>O: Azure evidence
+    and Entra Collectors
+        O->>C: 18 Entra collectors (batches of 6)
+        C-->>O: Entra evidence
+    end
+
+    O->>E: evaluate_all(evidence, frameworks)
+    E-->>O: FindingRecord[] + scores
+
+    O->>R: generate_reports()
+    R-->>O: HTML, JSON, MD, Excel, OSCAL, SARIF, PDF
+
+    O-->>A: AssessmentSummary
+    A-->>U: Formatted response
+</div>
+<div class="diagram-explanation">
+<strong>Three-phase pipeline:</strong>
+<ol>
+<li><strong>Collect</strong> — Azure and Entra groups run concurrently via <code>asyncio.gather()</code>, batched to avoid throttling. Checkpoint saved after each batch for resume.</li>
+<li><strong>Evaluate</strong> — 120 functions across 10 domains. Cross-domain fallback for unassessed controls. Severity-weighted scoring.</li>
+<li><strong>Report</strong> — Per-framework HTML/JSON in subfolders. Master report, executive dashboard, optional PDF conversion via Playwright.</li>
+</ol>
+</div>
+</div>
+</section>
+
+<!-- Domains -->
+<section class="section" id="domains">
+<div class="section-header"><div class="section-icon green">📊</div><h2>Domains &amp; Controls</h2></div>
+<p class="section-desc">10 evaluation domains with 120 check functions covering identity, data, network, governance, and operations.</p>
+<div class="domain-grid">
+<div class="domain-card"><div class="domain-icon">🔑</div><h4>Access Control</h4><div class="domain-checks">8 checks</div></div>
+<div class="domain-card"><div class="domain-icon">🪪</div><h4>Identity &amp; Auth</h4><div class="domain-checks">22 checks</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-green)"><div class="domain-icon">🛡️</div><h4>Data Protection</h4><div class="domain-checks">22 checks</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-orange)"><div class="domain-icon">📋</div><h4>Logging</h4><div class="domain-checks">13 checks</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-cyan)"><div class="domain-icon">🌐</div><h4>Network</h4><div class="domain-checks">16 checks</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-purple)"><div class="domain-icon">⚖️</div><h4>Governance</h4><div class="domain-checks">21 checks</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-red)"><div class="domain-icon">🚨</div><h4>Incident Response</h4><div class="domain-checks">6 checks</div></div>
+<div class="domain-card" style="border-top-color:#00B7C3"><div class="domain-icon">🔄</div><h4>Change Mgmt</h4><div class="domain-checks">4 checks</div></div>
+<div class="domain-card" style="border-top-color:#FFB900"><div class="domain-icon">💾</div><h4>Business Continuity</h4><div class="domain-checks">4 checks</div></div>
+<div class="domain-card" style="border-top-color:#F7630C"><div class="domain-icon">📦</div><h4>Asset Mgmt</h4><div class="domain-checks">4 checks</div></div>
+</div>
+</section>
+
+<!-- Agent Tools -->
+<section class="section" id="tools">
+<div class="section-header"><div class="section-icon blue">🧰</div><h2>Agent Tools (12)</h2></div>
+<p class="section-desc">Foundry-hosted agent exposes 12 tools via <code>app/agent.py</code>.</p>
+<div class="table-wrap">
+<table class="data-table" aria-label="Agent tools">
+<thead><tr><th>Tool</th><th>Description</th><th>Engine</th></tr></thead>
+<tbody>
+<tr><td class="tool-name">run_assessment</td><td>Full or scoped compliance assessment</td><td>orchestrator.py</td></tr>
+<tr><td class="tool-name">query_results</td><td>Query findings by control ID, domain, severity, or natural language</td><td>In-memory search</td></tr>
+<tr><td class="tool-name">search_tenant</td><td>Live Azure Resource Graph + MS Graph queries (natural language)</td><td>query_engine.py</td></tr>
+<tr><td class="tool-name">analyze_risk</td><td>Security risk gap analysis across 4 categories</td><td>risk_engine.py</td></tr>
+<tr><td class="tool-name">assess_data_security</td><td>Data security: storage exposure, DB security, encryption, classification</td><td>data_security_engine.py</td></tr>
+<tr><td class="tool-name">generate_rbac_report</td><td>RBAC hierarchy tree with PIM and risk analysis</td><td>rbac_collector + rbac_report</td></tr>
+<tr><td class="tool-name">assess_copilot_readiness</td><td>M365 Copilot readiness: oversharing, labels, DLP, access governance</td><td>copilot_readiness_engine.py</td></tr>
+<tr><td class="tool-name">assess_ai_agent_security</td><td>AI agent security across Copilot Studio, Foundry, custom agents</td><td>ai_agent_security_engine.py</td></tr>
+<tr><td class="tool-name">generate_report</td><td>Regenerate HTML/JSON reports from cached results</td><td>Report generators</td></tr>
+<tr><td class="tool-name">check_permissions</td><td>Preflight probe for ARM access, Graph scopes, Entra roles</td><td>auth.py</td></tr>
+<tr><td class="tool-name">compare_runs</td><td>Diff current vs. previous: new, resolved, changed, score drift</td><td>delta_report.py</td></tr>
+<tr><td class="tool-name">search_exposure</td><td>Surface exposure: public storage, open NSGs, unencrypted VMs</td><td>query_engine.py ARG templates</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- CLI Scripts -->
+<section class="section" id="cli">
+<div class="section-header"><div class="section-icon green">💻</div><h2>CLI Scripts (10)</h2></div>
+<p class="section-desc">Standalone scripts for running each capability from the command line. Run from the <code>AIAgent/</code> directory.</p>
+<div class="table-wrap">
+<table class="data-table" aria-label="CLI scripts">
+<thead><tr><th>Script</th><th>Purpose</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td class="script-name">run_assessment.py</td><td>Full compliance assessment</td><td><code>python run_assessment.py --tenant &lt;id&gt; --framework PCI-DSS HIPAA</code></td></tr>
+<tr><td class="script-name">run_query.py</td><td>Interactive ARG / Graph REPL</td><td><code>python run_query.py --tenant &lt;id&gt;</code></td></tr>
+<tr><td class="script-name">run_risk_analysis.py</td><td>Security risk gap analysis</td><td><code>python run_risk_analysis.py --tenant &lt;id&gt;</code></td></tr>
+<tr><td class="script-name">run_data_security.py</td><td>Data security assessment</td><td><code>python run_data_security.py --tenant &lt;id&gt;</code></td></tr>
+<tr><td class="script-name">run_rbac_report.py</td><td>RBAC hierarchy tree + PIM</td><td><code>python run_rbac_report.py --tenant &lt;id&gt;</code></td></tr>
+<tr><td class="script-name">run_copilot_readiness.py</td><td>M365 Copilot readiness</td><td><code>python run_copilot_readiness.py --tenant &lt;id&gt;</code></td></tr>
+<tr><td class="script-name">run_ai_agent_security.py</td><td>AI agent security</td><td><code>python run_ai_agent_security.py --tenant &lt;id&gt;</code></td></tr>
+<tr><td class="script-name">run_assessment_determinism_check.py</td><td>Verify assessment determinism</td><td><code>python run_assessment_determinism_check.py</code></td></tr>
+<tr><td class="script-name">run_rbac_determinism_check.py</td><td>Verify RBAC report determinism</td><td><code>python run_rbac_determinism_check.py</code></td></tr>
+<tr><td class="script-name">run_cr_determinism_check.py</td><td>Verify Copilot readiness determinism</td><td><code>python run_cr_determinism_check.py</code></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- Quick Start -->
+<section class="section" id="quickstart">
+<div class="section-header"><div class="section-icon orange">🚀</div><h2>Quick Start</h2></div>
+<ol class="steps">
+<li>
+<h4>Install Dependencies</h4>
+<p><pre><code>cd AIAgent
+pip install -r requirements.txt
+pip install debugpy agent-dev-cli --pre</code></pre></p>
+</li>
+<li>
+<h4>Configure Environment</h4>
+<p><pre><code>cp .env.template .env
+# Edit .env with your Foundry project endpoint and model deployment name</code></pre></p>
+<p>Required: <code>FOUNDRY_PROJECT_ENDPOINT</code>, <code>FOUNDRY_MODEL_DEPLOYMENT_NAME</code> (default: <code>gpt-4.1</code>), optional <code>AZURE_TENANT_ID</code>.</p>
+</li>
+<li>
+<h4>Authenticate</h4>
+<p><pre><code>az login</code></pre></p>
+<p>Uses unified <code>DefaultAzureCredential</code> for both ARM and Graph — no browser popup required.</p>
+</li>
+<li>
+<h4>Run Locally</h4>
+<p><pre><code>python main.py
+# Agent starts on http://localhost:8088</code></pre></p>
+</li>
+<li>
+<h4>Debug with AI Toolkit</h4>
+<p>In VS Code, press <strong>F5</strong> → select <strong>Debug EnterpriseSecurityIQ Agent (HTTP Server)</strong>. Launches with <code>agentdev</code> instrumentation and opens the AI Toolkit Agent Inspector.</p>
+</li>
+</ol>
+</section>
+
+<!-- Deploy -->
+<section class="section" id="deploy">
+<div class="section-header"><div class="section-icon cyan">☁️</div><h2>Deploy to Foundry</h2></div>
+<div class="info-box blue"><strong>Protocol:</strong> <code>responses</code> v1 on port 8088. Container image, published to ACR, then referenced in Foundry hosted agent creation.</div>
+<pre><code># Build &amp; push container
+docker build --platform linux/amd64 -t enterprisesecurityiq-agent .
+docker tag enterprisesecurityiq-agent &lt;your-acr&gt;.azurecr.io/enterprisesecurityiq-agent:latest
+docker push &lt;your-acr&gt;.azurecr.io/enterprisesecurityiq-agent:latest</code></pre>
+<p class="section-desc" style="margin-top:12px">SDK versions: <code>agent-framework-azure-ai==1.0.0rc3</code>, <code>agent-framework-core==1.0.0rc3</code>, <code>msgraph-sdk==1.12.0</code>, <code>msgraph-beta-sdk==1.12.0</code></p>
+</section>
+
+<!-- Testing -->
+<section class="section" id="testing">
+<div class="section-header"><div class="section-icon red">🧪</div><h2>Testing</h2></div>
+<p class="section-desc">15 test files · 1,357 test functions · 14,915 lines of test code.</p>
+<div class="table-wrap">
+<table class="data-table" aria-label="Testing overview">
+<thead><tr><th>Category</th><th>Files</th><th>Coverage</th></tr></thead>
+<tbody>
+<tr><td><strong>Evaluator Unit Tests</strong></td><td><code>test_evaluators.py</code></td><td>All 10 domains, 120 check functions</td></tr>
+<tr><td><strong>Engine Unit Tests</strong></td><td><code>test_risk_engine.py</code>, <code>test_data_security_engine.py</code>, <code>test_copilot_readiness_engine.py</code>, <code>test_ai_agent_security_engine.py</code>, <code>test_query_engine.py</code></td><td>All standalone engines</td></tr>
+<tr><td><strong>Report Tests</strong></td><td><code>test_reports.py</code>, <code>test_report_determinism.py</code></td><td>29 report generators, output determinism</td></tr>
+<tr><td><strong>Determinism Tests</strong></td><td><code>test_determinism.py</code>, <code>test_assessment_determinism.py</code>, <code>test_rbac_determinism.py</code>, <code>test_copilot_readiness_determinism.py</code>, <code>test_ai_agent_security_determinism.py</code></td><td>Pipeline repeatability with fixed inputs</td></tr>
+<tr><td><strong>Integration Tests</strong></td><td><code>test_enhancements.py</code>, <code>test_dry_run_ds.py</code></td><td>End-to-end pipeline, dry-run data security</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code>cd AIAgent
+python -m pytest tests/ -v</code></pre>
+</section>
+
+</div>
+</main>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+<footer class="footer"><strong>EnterpriseSecurityIQ</strong> — AI Compliance Assessment Agent<br>Author: Murali Chillakuru · April 2026</footer>
+
+<script>
+(function(){var s=localStorage.getItem('enterprisesecurityiq-theme');var t=s||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');document.documentElement.setAttribute('data-theme',t);var b=document.getElementById('themeToggle');if(b)b.textContent=t==='dark'?'🌙 Dark':'☀️ Light'})();
+document.getElementById('themeToggle').addEventListener('click',function(){var h=document.documentElement;var c=h.getAttribute('data-theme')||'dark';var n=c==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('enterprisesecurityiq-theme',n);this.textContent=n==='dark'?'🌙 Dark':'☀️ Light';if(typeof mermaid!=='undefined'){mermaid.initialize({startOnLoad:false,theme:n==='dark'?'dark':'default'});document.querySelectorAll('.mermaid[data-processed]').forEach(function(e){e.removeAttribute('data-processed')});mermaid.run()}});
+window.addEventListener('scroll',function(){var h=document.documentElement;document.getElementById('progressBar').style.width=((h.scrollTop/(h.scrollHeight-h.clientHeight))*100)+'%'});
+document.querySelectorAll('.stat-number[data-target]').forEach(function(el){var t=parseInt(el.getAttribute('data-target'));var d=1200;var s=null;function a(ts){if(!s)s=ts;var p=Math.min((ts-s)/d,1);el.textContent=Math.round((1-Math.pow(1-p,3))*t).toLocaleString();if(p<1)requestAnimationFrame(a);else el.textContent=t>=200?t.toLocaleString()+'+':t.toLocaleString()}requestAnimationFrame(a)});
+(function(){var ss=document.querySelectorAll('section[id]');var pp=document.querySelectorAll('.nav-pill[href]');if(!ss.length)return;new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){var id=e.target.getAttribute('id');pp.forEach(function(p){p.classList.toggle('active',p.getAttribute('href')==='#'+id)})}})},{rootMargin:'-20% 0px -70% 0px'}).observe;ss.forEach(function(s){new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){pp.forEach(function(p){p.classList.toggle('active',p.getAttribute('href')==='#'+e.target.id)})}})},{rootMargin:'-20% 0px -70% 0px'}).observe(s)})})();
+(function(){var b=document.getElementById('backToTop');window.addEventListener('scroll',function(){b.classList.toggle('visible',window.scrollY>300)});b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})})})();
+document.addEventListener('DOMContentLoaded',function(){var t=document.documentElement.getAttribute('data-theme')||'dark';mermaid.initialize({startOnLoad:true,theme:t==='dark'?'dark':'default'})});
+</script>
+<script src="../docs/seq-engine.js"></script>
+</body>
+</html>

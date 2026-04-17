@@ -1,0 +1,677 @@
+{
+  "framework": "ISO-27001",
+  "frameworkName": "ISO/IEC 27001:2022",
+  "version": "2022",
+  "description": "Mappings from PostureIQ evidence types to ISO 27001 Annex A controls",
+  "controls": [
+    {
+      "control_id": "ISO-A.5.15",
+      "title": "Access control",
+      "domain": "access",
+      "severity": "high",
+      "evidence_types": [
+        "azure-role-assignment",
+        "entra-role-assignment",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_access_enforcement",
+      "rationale": "Access control ensures only authorized individuals access information assets.",
+      "recommendation": "Implement RBAC and Conditional Access policies to enforce access control."
+    },
+    {
+      "control_id": "ISO-A.5.16",
+      "title": "Identity management",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-tenant-info",
+        "entra-role-assignment"
+      ],
+      "evaluation_logic": "check_centralized_identity",
+      "rationale": "Proper identity management ensures unique identification and accountability.",
+      "recommendation": "Maintain centralized identity management through Microsoft Entra ID."
+    },
+    {
+      "control_id": "ISO-A.5.17",
+      "title": "Authentication information",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-conditional-access-policy",
+        "entra-application"
+      ],
+      "evaluation_logic": "check_user_authentication",
+      "rationale": "Strong authentication prevents unauthorized access to systems and data.",
+      "recommendation": "Enforce MFA and implement strong credential policies."
+    },
+    {
+      "control_id": "ISO-A.5.18",
+      "title": "Access rights",
+      "domain": "access",
+      "severity": "high",
+      "evidence_types": [
+        "azure-role-assignment",
+        "entra-role-assignment"
+      ],
+      "evaluation_logic": "check_least_privilege",
+      "rationale": "Access rights must follow the principle of least privilege.",
+      "recommendation": "Review role assignments regularly and minimize privileged access."
+    },
+    {
+      "control_id": "ISO-A.8.1",
+      "title": "User endpoint devices",
+      "domain": "identity",
+      "severity": "medium",
+      "evidence_types": [
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_device_compliance",
+      "rationale": "Endpoint device management ensures secure access from trusted devices.",
+      "recommendation": "Implement Conditional Access policies requiring compliant devices."
+    },
+    {
+      "control_id": "ISO-A.8.9",
+      "title": "Configuration management",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "azure-resource"
+      ],
+      "evaluation_logic": "check_baseline_configuration",
+      "rationale": "Configuration management ensures systems are deployed and maintained securely.",
+      "recommendation": "Use Azure Policy to enforce and audit configuration baselines."
+    },
+    {
+      "control_id": "ISO-A.8.15",
+      "title": "Logging",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_logging_enabled",
+      "rationale": "Logging provides audit trails for security monitoring and incident investigation.",
+      "recommendation": "Enable diagnostic settings on all resources to ensure comprehensive logging."
+    },
+    {
+      "control_id": "ISO-A.8.16",
+      "title": "Monitoring activities",
+      "domain": "logging",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-diagnostic-setting",
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_continuous_monitoring",
+      "rationale": "Monitoring enables detection of anomalous behavior and security incidents.",
+      "recommendation": "Configure Azure Monitor alerts and review activity logs regularly."
+    },
+    {
+      "control_id": "ISO-A.8.20",
+      "title": "Networks security",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-app-service-network",
+        "azure-api-management",
+        "azure-resource"
+      ],
+      "evaluation_logic": "check_network_segmentation",
+      "rationale": "Network security controls protect information in transit and at rest.",
+      "recommendation": "Implement network segmentation, NSGs, and firewall rules.",
+      "compensating_evidence": [
+        "azure-waf-policy",
+        "azure-firewall"
+      ]
+    },
+    {
+      "control_id": "ISO-A.8.24",
+      "title": "Use of cryptography",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource",
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_data_at_rest_encryption",
+      "rationale": "Cryptography protects the confidentiality and integrity of information.",
+      "recommendation": "Ensure encryption is enabled for data at rest and in transit."
+    },
+    {
+      "control_id": "ISO-A.8.5",
+      "title": "Secure authentication - MFA Registration Coverage",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-mfa-registration",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_mfa_registration_coverage",
+      "rationale": "Multi-factor authentication must be enforced for all users.",
+      "recommendation": "Enforce MFA registration. Target 90%+ registration rate."
+    },
+    {
+      "control_id": "ISO-A.8.16b",
+      "title": "Monitoring activities - Risky User Detection",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-risky-user",
+        "entra-risk-detection"
+      ],
+      "evaluation_logic": "check_risky_users",
+      "rationale": "Identity-based threats must be detected and responded to promptly.",
+      "recommendation": "Enable Identity Protection. Remediate high-risk users."
+    },
+    {
+      "control_id": "ISO-A.5.19",
+      "title": "Information security in supplier relationships - Cross-Tenant",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-cross-tenant-policy"
+      ],
+      "evaluation_logic": "check_cross_tenant_access",
+      "rationale": "Cross-tenant access must be controlled to protect organizational data.",
+      "recommendation": "Configure cross-tenant MFA trust. Restrict B2B collaboration."
+    },
+    {
+      "control_id": "ISO-A.5.36",
+      "title": "Compliance with policies, rules and standards",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-compliance",
+        "azure-policy-definition"
+      ],
+      "evaluation_logic": "check_policy_compliance_state",
+      "rationale": "Policy compliance must be continuously monitored.",
+      "recommendation": "Remediate non-compliant resources. Target 80%+ compliance."
+    },
+    {
+      "control_id": "ISO-A.8.6",
+      "title": "Capacity management - Defender Plans",
+      "domain": "governance",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-auto-provisioning",
+        "azure-sql-advanced-threat",
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_defender_plans",
+      "rationale": "Security monitoring must cover all critical workloads.",
+      "recommendation": "Enable all Defender plans. Configure auto-provisioning and contacts."
+    },
+    {
+      "control_id": "ISO-A.8.2",
+      "title": "Privileged access rights - PIM Configuration",
+      "domain": "governance",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-pim-eligible-assignment"
+      ],
+      "evaluation_logic": "check_pim_configuration",
+      "rationale": "Privileged access must be time-limited and require strong authentication.",
+      "recommendation": "Require MFA and justification for PIM. Limit activation to 8 hours."
+    },
+    {
+      "control_id": "ISO-A.5.18b",
+      "title": "Access rights - Access Reviews",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "entra-access-review",
+        "entra-role-assignment"
+      ],
+      "evaluation_logic": "check_access_reviews",
+      "rationale": "Access rights must be reviewed periodically.",
+      "recommendation": "Configure recurring access reviews for privileged roles."
+    },
+    {
+      "control_id": "ISO-A.8.8",
+      "title": "Management of technical vulnerabilities - VM Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-registry",
+        "azure-aks-cluster",
+        "azure-vm-config"
+      ],
+      "evaluation_logic": "check_vm_security",
+      "rationale": "VMs must be hardened with encryption, identity, and security agents.",
+      "recommendation": "Enable disk encryption, managed identity, and MDE extension."
+    },
+    {
+      "control_id": "ISO-A.8.9b",
+      "title": "Configuration management - Web App Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-webapp-auth",
+        "azure-webapp-tls",
+        "azure-webapp-diagnostic",
+        "azure-webapp-config"
+      ],
+      "evaluation_logic": "check_webapp_security",
+      "rationale": "Web apps must enforce secure configuration defaults.",
+      "recommendation": "Enable HTTPS, TLS 1.2+, disable FTP and remote debugging."
+    },
+    {
+      "control_id": "ISO-A.8.10",
+      "title": "Information deletion - SQL Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-sql-server",
+        "azure-sql-tde",
+        "azure-sql-database",
+        "azure-sql-firewall",
+        "azure-sql-auditing",
+        "azure-sql-vulnerability",
+        "azure-sql-advanced-threat"
+      ],
+      "evaluation_logic": "check_sql_security",
+      "rationale": "Database security must include authentication, encryption, and auditing.",
+      "recommendation": "Configure Azure AD admin, auditing, TDE, and restrict public access.",
+      "compensating_evidence": [
+        "azure-sql-advanced-threat"
+      ]
+    },
+    {
+      "control_id": "ISO-A.8.21",
+      "title": "Security of network services - AKS Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-acr-repository",
+        "azure-aks-cluster"
+      ],
+      "evaluation_logic": "check_aks_security",
+      "rationale": "Container platforms must enforce access control and network segmentation.",
+      "recommendation": "Enable RBAC, AAD, network policy, and Defender for Containers."
+    },
+    {
+      "control_id": "ISO-A.8.22",
+      "title": "Segregation of networks - Firewall Protection",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-firewall"
+      ],
+      "evaluation_logic": "check_firewall_protection",
+      "rationale": "Firewalls must enforce network segregation with threat intelligence.",
+      "recommendation": "Enable threat intelligence. Configure rule collections."
+    },
+    {
+      "control_id": "ISO-A.8.23",
+      "title": "Web filtering - Route and Flow Log Security",
+      "domain": "network",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-route-table",
+        "azure-nsg-flow-log"
+      ],
+      "evaluation_logic": "check_route_table_security",
+      "rationale": "Network routes and flow logs must be properly configured for security.",
+      "recommendation": "Configure controlled routing and enable NSG flow logs."
+    },
+    {
+      "control_id": "ISO-A.8.25",
+      "title": "Secure development life cycle - Monitoring Coverage",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-log-analytics",
+        "azure-alert-rule",
+        "azure-action-group"
+      ],
+      "evaluation_logic": "check_monitoring_coverage",
+      "rationale": "Centralized monitoring must cover all critical resources.",
+      "recommendation": "Configure Log Analytics, alert rules, and action groups."
+    },
+    {
+      "control_id": "ISO-A.5.23",
+      "title": "AI Services Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-cognitive-account"
+      ],
+      "evaluation_logic": "check_ai_services_security",
+      "rationale": "AI accounts must enforce network isolation and disable local auth.",
+      "recommendation": "Disable public access, disable local auth, enable CMK on AI accounts."
+    },
+    {
+      "control_id": "ISO-A.8.26",
+      "title": "Resource Group Asset Classification",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource-group"
+      ],
+      "evaluation_logic": "check_resource_group_governance",
+      "rationale": "Resource groups must be tagged for asset inventory and classification.",
+      "recommendation": "Apply mandatory tags to all resource groups."
+    },
+    {
+      "control_id": "ISO-A.5.24",
+      "title": "AI Deployment Governance",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-ai-deployment"
+      ],
+      "evaluation_logic": "check_ai_governance",
+      "rationale": "AI deployments must have content filtering and rate limits.",
+      "recommendation": "Configure content filter policies and rate limits on AI deployments."
+    },
+    {
+      "control_id": "ISO-A.8.22b",
+      "title": "ML Workspace Network Segregation",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-ml-workspace"
+      ],
+      "evaluation_logic": "check_ml_network_security",
+      "rationale": "ML workspaces must use private endpoints for network segregation.",
+      "recommendation": "Disable public network access. Configure private endpoints."
+    },
+    {
+      "control_id": "ISO-A.8.10b",
+      "title": "Storage Account Information Deletion and Protection",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-account"
+      ],
+      "evaluation_logic": "check_storage_account_security",
+      "rationale": "Storage accounts must enforce encryption, soft delete, and network isolation.",
+      "recommendation": "Enable HTTPS-only, soft delete, TLS 1.2, and configure firewall."
+    },
+    {
+      "control_id": "ISO-A.8.27",
+      "title": "Container Registry Secure Architecture",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-registry"
+      ],
+      "evaluation_logic": "check_container_registry_security",
+      "rationale": "Container registries must disable admin access and enable content trust.",
+      "recommendation": "Disable admin user. Enable content trust. Use private endpoints."
+    },
+    {
+      "control_id": "ISO-A.8.23b",
+      "title": "Container App Web Filtering",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-app"
+      ],
+      "evaluation_logic": "check_container_app_network",
+      "rationale": "Container Apps must enforce secure ingress.",
+      "recommendation": "Disable insecure connections. Enable managed identity."
+    },
+    {
+      "control_id": "ISO-A.8.11",
+      "title": "Cosmos DB Data Masking and Protection",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-cosmosdb-account"
+      ],
+      "evaluation_logic": "check_cosmosdb_security",
+      "rationale": "Cosmos DB must disable local auth, use CMK, and enforce network isolation.",
+      "recommendation": "Disable local auth. Enable CMK. Use private endpoints."
+    },
+    {
+      "control_id": "ISO-A.8.12",
+      "title": "Database Server Data Leakage Prevention",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-database-server"
+      ],
+      "evaluation_logic": "check_database_server_security",
+      "rationale": "Database servers must disable public access and enable HA and geo-redundant backup.",
+      "recommendation": "Disable public access. Enable HA. Enable geo-redundant backup."
+    },
+    {
+      "control_id": "ISO-A.8.28",
+      "title": "Application Gateway Secure Coding Verification",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-app-gateway",
+        "azure-waf-policy"
+      ],
+      "evaluation_logic": "check_app_gateway_security",
+      "rationale": "Application Gateways must enable WAF in Prevention mode.",
+      "recommendation": "Enable WAF. Set Prevention mode. Configure TLS 1.2."
+    },
+    {
+      "control_id": "ISO-A.8.24b",
+      "title": "API Management Cryptography Controls",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-apim-instance"
+      ],
+      "evaluation_logic": "check_apim_network_security",
+      "rationale": "APIM must disable legacy TLS/SSL and use VNet integration.",
+      "recommendation": "Disable TLS 1.0/1.1. Configure VNet. Enable managed identity."
+    },
+    {
+      "control_id": "ISO-A.8.3",
+      "title": "Storage Container Information Access Restriction",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-container"
+      ],
+      "evaluation_logic": "check_storage_container_security",
+      "rationale": "Storage containers must not allow anonymous public access.",
+      "recommendation": "Set container access to Private. Configure lifecycle and immutability policies."
+    },
+    {
+      "control_id": "ISO-A.8.16c",
+      "title": "SQL Server Monitoring Activities",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-sql-detailed"
+      ],
+      "evaluation_logic": "check_sql_detailed_security",
+      "rationale": "SQL Servers must enable ATP and per-database auditing.",
+      "recommendation": "Enable ATP and vulnerability assessment. Verify per-database auditing."
+    },
+    {
+      "control_id": "ISO-A.8.2b",
+      "title": "Web Application Privileged Access Rights",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-webapp-detailed"
+      ],
+      "evaluation_logic": "check_webapp_detailed_security",
+      "rationale": "Web Apps must enable authentication and restrict access.",
+      "recommendation": "Enable App Service Auth. Restrict CORS. Configure IP restrictions."
+    },
+    {
+      "control_id": "ISO-A.8.15b",
+      "title": "Database Server Logging and Monitoring",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-database-config"
+      ],
+      "evaluation_logic": "check_database_config_security",
+      "rationale": "Database servers must enforce secure transport and audit logging.",
+      "recommendation": "Enable require_secure_transport. Enable log_checkpoints and audit logging."
+    },
+    {
+      "control_id": "ISO-A.8.29",
+      "title": "Container Registry Security Testing",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-acr-repository"
+      ],
+      "evaluation_logic": "check_acr_repository_security",
+      "rationale": "ACR repositories must enforce tag immutability and clean up stale images.",
+      "recommendation": "Enable tag immutability. Remove stale repositories."
+    },
+    {
+      "control_id": "ISO-A.5.24b",
+      "title": "Information Security Incident Management Planning",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-alert-rule",
+        "entra-risk-summary"
+      ],
+      "evaluation_logic": "check_incident_detection",
+      "rationale": "ISO 27001 requires planning and preparation for managing security incidents.",
+      "recommendation": "Enable Defender and configure alert rules for incident detection."
+    },
+    {
+      "control_id": "ISO-A.5.25",
+      "title": "Assessment and Decision on Information Security Events",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-action-group",
+        "azure-alert-rule",
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_incident_alerting",
+      "rationale": "Security events must be assessed and escalated through alert infrastructure.",
+      "recommendation": "Configure action groups with multiple notification receivers."
+    },
+    {
+      "control_id": "ISO-A.5.26",
+      "title": "Response to Information Security Incidents",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_security_contact_config",
+      "rationale": "Security contacts must be designated for incident response coordination.",
+      "recommendation": "Configure security contacts with email and alert notifications."
+    },
+    {
+      "control_id": "ISO-A.5.27",
+      "title": "Learning from Information Security Incidents",
+      "domain": "incident_response",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-log-analytics",
+        "azure-diagnostic-setting",
+        "azure-activity-log"
+      ],
+      "evaluation_logic": "check_incident_investigation_readiness",
+      "rationale": "Investigation capability is essential for learning from incidents.",
+      "recommendation": "Deploy Log Analytics and configure diagnostic settings."
+    },
+    {
+      "control_id": "ISO-A.8.32",
+      "title": "Change Management",
+      "domain": "change_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "azure-policy-definition"
+      ],
+      "evaluation_logic": "check_change_control_policies",
+      "rationale": "ISO 27001 requires formal change management processes.",
+      "recommendation": "Assign policies with deny effects to control unauthorized changes."
+    },
+    {
+      "control_id": "ISO-A.8.33",
+      "title": "Configuration Change Tracking",
+      "domain": "change_management",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-activity-log",
+        "azure-activity-event",
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_configuration_change_tracking",
+      "rationale": "Configuration changes must be logged and monitored.",
+      "recommendation": "Ensure activity logs capture Write, Delete, and Action events."
+    },
+    {
+      "control_id": "ISO-A.5.29",
+      "title": "ICT Readiness for Business Continuity",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-recovery-vault",
+        "azure-vm-config",
+        "azure-sql-server"
+      ],
+      "evaluation_logic": "check_backup_configuration",
+      "rationale": "ISO 27001 requires ICT continuity planning including backup.",
+      "recommendation": "Deploy Recovery Services vaults with soft delete."
+    },
+    {
+      "control_id": "ISO-A.5.30",
+      "title": "ICT Redundancy",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-account",
+        "azure-cosmosdb-account"
+      ],
+      "evaluation_logic": "check_geo_redundancy",
+      "rationale": "ICT facilities must have sufficient redundancy.",
+      "recommendation": "Use geo-redundant storage replication."
+    },
+    {
+      "control_id": "ISO-A.5.9",
+      "title": "Inventory of Information and Associated Assets",
+      "domain": "asset_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource",
+        "azure-resource-group",
+        "azure-managed-identity"
+      ],
+      "evaluation_logic": "check_asset_inventory",
+      "rationale": "ISO 27001 requires identification and inventory of information assets.",
+      "recommendation": "Maintain a comprehensive resource inventory."
+    },
+    {
+      "control_id": "ISO-A.5.12",
+      "title": "Classification of Information",
+      "domain": "asset_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource",
+        "azure-resource-group"
+      ],
+      "evaluation_logic": "check_classification_tagging",
+      "rationale": "Information must be classified according to organizational needs.",
+      "recommendation": "Apply data classification tags to all resources."
+    },
+    {
+      "control_id": "ISO-A.6.3",
+      "title": "Information Security Awareness and Training",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "entra-terms-of-use",
+        "azure-policy-compliance",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_security_awareness",
+      "rationale": "ISO 27001 requires security awareness training for personnel.",
+      "recommendation": "Configure Terms of Use and enforce policy acknowledgement."
+    }
+  ]
+}

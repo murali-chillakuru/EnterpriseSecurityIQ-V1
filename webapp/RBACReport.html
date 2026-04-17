@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RBAC Report — PostureIQ</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0D1117;--bg2:#161B22;--bg3:#1C2128;--bg4:#252D38;
+  --tx:#E6EDF3;--tx2:#8B949E;--tx3:#6E7681;
+  --bd:#30363D;
+  --blue:#1F6FEB;--purple:#A371F7;--green:#3FB950;--orange:#D29922;--cyan:#39D2C0;--red:#F85149;
+  --shadow:0 4px 12px rgba(0,0,0,.4);
+  --r:10px;
+  --font:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --mono:'Cascadia Code','Fira Code',Consolas,monospace;
+  --sidebar-w:280px;
+  color-scheme:dark;
+}
+[data-theme="light"]{
+  --bg:#FFFFFF;--bg2:#F6F8FA;--bg3:#FFFFFF;--bg4:#F0F3F6;
+  --tx:#1F2328;--tx2:#656D76;--tx3:#8C959F;
+  --bd:#D0D7DE;
+  --blue:#0969DA;--purple:#8250DF;--green:#1A7F37;--orange:#BF8700;--cyan:#1B7C83;--red:#CF222E;
+  --shadow:0 4px 12px rgba(31,35,40,.1);
+  color-scheme:light
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--tx);line-height:1.6;min-height:100vh}
+a{color:var(--blue)}
+code{font-family:var(--mono);font-size:.85em;background:var(--bg2);padding:2px 6px;border-radius:4px}
+button{font-family:inherit;cursor:pointer}
+
+/* ── Login Page ── */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bg) 0%,var(--bg2) 100%);position:relative;overflow:hidden}
+.login-page::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,var(--cyan),transparent 70%);top:-200px;right:-150px;opacity:.06;pointer-events:none;border-radius:50%}
+.login-page::after{content:'';position:absolute;width:500px;height:500px;background:radial-gradient(circle,var(--blue),transparent 70%);bottom:-150px;left:-100px;opacity:.06;pointer-events:none;border-radius:50%}
+.login-card{position:relative;z-index:1;background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:3rem 2.5rem;max-width:460px;width:90%;text-align:center;box-shadow:var(--shadow)}
+.login-card .logo{font-size:3rem;margin-bottom:1rem}
+.login-card h1{font-size:1.6rem;font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.login-card .desc{color:var(--tx2);font-size:.92rem;margin-bottom:2rem;line-height:1.6}
+.login-btn{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:.85rem 1.5rem;font-size:1rem;font-weight:600;border:none;border-radius:8px;background:var(--blue);color:#fff;transition:background .2s}
+.login-btn:hover{background:#1a5fd0}
+.login-btn svg{width:20px;height:20px;fill:currentColor}
+.login-note{margin-top:1.5rem;font-size:.78rem;color:var(--tx3);line-height:1.5}
+.login-note strong{color:var(--tx2)}
+
+/* ── App Shell ── */
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* ── Header ── */
+.hdr{background:var(--bg2);border-bottom:1px solid var(--bd);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.8rem;flex-shrink:0}
+.hdr-title{font-size:1rem;font-weight:700;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:.6rem}
+.hdr-tenant{display:flex;align-items:center;gap:.5rem;padding:.35rem .8rem;background:var(--bg);border:1px solid var(--bd);border-radius:8px;font-size:.78rem;color:var(--tx2)}
+.hdr-tenant .tenant-icon{font-size:.9rem}
+.hdr-tenant .tenant-info{display:flex;flex-direction:column;line-height:1.3}
+.hdr-tenant .tenant-name{color:var(--tx);font-weight:500;font-size:.78rem}
+.hdr-tenant .tenant-id{color:var(--tx3);font-size:.68rem;font-family:var(--mono)}
+.hdr-user{display:flex;align-items:center;gap:.5rem;padding:.35rem .8rem;background:var(--bg);border:1px solid var(--bd);border-radius:20px;font-size:.78rem;color:var(--tx2)}
+.hdr-user .avatar{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff;font-weight:700;flex-shrink:0}
+.hdr-btn{padding:.3rem .7rem;border-radius:6px;font-size:.76rem;font-weight:500;border:1px solid var(--bd);background:var(--bg3);color:var(--tx);transition:all .18s}
+.hdr-btn:hover{border-color:var(--blue);background:var(--bg4)}
+
+/* ── Main Content (sidebar + resizer + chat) ── */
+.main-content{flex:1;display:flex;overflow:hidden}
+
+/* ── Sidebar ── */
+.sidebar{width:var(--sidebar-w);min-width:200px;max-width:50vw;background:var(--bg2);border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;position:relative;transition:width .2s ease}
+.sidebar-scroll{flex:1;overflow-y:auto;padding:.5rem 0}
+.sidebar-section{padding:.6rem .8rem .2rem;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3)}
+.sidebar-item{display:flex;align-items:center;gap:.6rem;padding:.55rem .8rem;margin:1px .4rem;border-radius:8px;cursor:pointer;transition:all .15s;font-size:.84rem;color:var(--tx);user-select:none}
+.sidebar-item:hover{background:var(--bg4)}
+.sidebar-item.active{background:var(--bg4);border-left:2px solid var(--blue)}
+.sidebar-item-icon{font-size:1.1rem;flex-shrink:0;width:24px;text-align:center}
+.sidebar-item-body{flex:1;min-width:0}
+.sidebar-item-title{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-item-desc{color:var(--tx3);font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-divider{height:1px;background:var(--bd);margin:.5rem .8rem}
+
+/* Framework picker (inline in sidebar) */
+.sidebar-fw{overflow:hidden;max-height:0;transition:max-height .3s ease;padding:0 .6rem}
+.sidebar-fw.open{max-height:500px;padding:.4rem .6rem .6rem}
+.sidebar-fw-list{display:flex;flex-direction:column;gap:.15rem}
+.sidebar-fw-item{display:flex;align-items:center;gap:.4rem;padding:.25rem .4rem;border-radius:4px;font-size:.78rem;color:var(--tx);cursor:pointer;user-select:none}
+.sidebar-fw-item:hover{background:var(--bg4)}
+.sidebar-fw-item input[type="checkbox"]{accent-color:var(--blue);width:14px;height:14px;cursor:pointer}
+.sidebar-fw-item.select-all{font-weight:600;border-bottom:1px solid var(--bd);padding-bottom:.35rem;margin-bottom:.15rem}
+.sidebar-fw-run{width:100%;padding:.4rem .8rem;border-radius:6px;font-size:.78rem;font-weight:600;border:none;background:var(--blue);color:#fff;cursor:pointer;transition:background .15s;margin-top:.4rem}
+.sidebar-fw-run:hover{background:#1a5fd0}
+.sidebar-fw-run:disabled{opacity:.5;cursor:not-allowed}
+.sidebar-fw-chevron{margin-left:auto;font-size:.7rem;color:var(--tx3);transition:transform .2s}
+.sidebar-fw-chevron.open{transform:rotate(90deg)}
+
+/* ── Sidebar toggle (header hamburger) ── */
+.sidebar-menu-btn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;border:1px solid var(--bd);background:var(--bg3);color:var(--tx);cursor:pointer;transition:all .15s;flex-shrink:0;padding:0}
+.sidebar-menu-btn:hover{border-color:var(--blue);background:var(--bg4)}
+.sidebar-menu-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+.sidebar.collapsed{width:0!important;min-width:0;padding:0;overflow:hidden;border-right:none}
+.sidebar.collapsed+.resizer{display:none}
+
+/* ── Stop button ── */
+.stop-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .7rem;border-radius:6px;font-size:.76rem;font-weight:500;border:1px solid var(--red);background:transparent;color:var(--red);cursor:pointer;transition:all .15s;margin-left:.5rem}
+.stop-btn:hover{background:var(--red);color:#fff}
+
+/* ── Resizer ── */
+.resizer{width:4px;background:transparent;cursor:col-resize;flex-shrink:0;position:relative;z-index:10;transition:background .15s}
+.resizer:hover,.resizer.active{background:var(--blue)}
+
+/* ── Chat Pane ── */
+.chat-pane{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden;max-width:860px;width:100%;margin:0 auto;padding:0 1rem}
+.chat-area.wide{max-width:1200px}
+.chat-area.full{max-width:none;padding:0 2.5rem}
+
+/* Width toggle button */
+.width-toggle{display:flex;align-items:center;gap:.25rem;padding:.3rem .6rem;border-radius:6px;font-size:.72rem;font-weight:500;border:1px solid var(--bd);background:var(--bg3);color:var(--tx);transition:all .18s;cursor:pointer;white-space:nowrap}
+.width-toggle:hover{border-color:var(--blue);background:var(--bg4)}
+.width-toggle svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* Tenant Switch Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s ease}
+.modal-card{background:var(--bg3);border:1px solid var(--bd);border-radius:12px;padding:1.5rem;width:420px;max-width:90vw;box-shadow:var(--shadow)}
+.modal-card h3{font-size:1rem;font-weight:600;margin-bottom:.4rem;color:var(--tx)}
+.modal-card p{font-size:.82rem;color:var(--tx2);margin-bottom:1rem;line-height:1.5}
+.modal-input{width:100%;padding:.6rem .8rem;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:.82rem;outline:none;transition:border-color .15s}
+.modal-input:focus{border-color:var(--blue)}
+.modal-input::placeholder{color:var(--tx3)}
+.modal-actions{display:flex;gap:.5rem;margin-top:1rem;justify-content:flex-end}
+.modal-btn{padding:.45rem 1rem;border-radius:6px;font-size:.82rem;font-weight:500;border:1px solid var(--bd);background:var(--bg);color:var(--tx);cursor:pointer;transition:all .15s}
+.modal-btn:hover{border-color:var(--blue);background:var(--bg4)}
+.modal-btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.modal-btn-primary:hover{background:#1a5fd0}
+.modal-hint{font-size:.72rem;color:var(--tx3);margin-top:.5rem;line-height:1.4}
+.chat-header{padding:.8rem 0 .4rem;display:flex;align-items:center;gap:.6rem;flex-shrink:0}
+.chat-header-title{font-size:.9rem;font-weight:600;color:var(--tx2)}
+.chat-new-btn{margin-left:auto;padding:.25rem .6rem;border-radius:6px;font-size:.74rem;font-weight:500;border:1px solid var(--bd);background:var(--bg3);color:var(--tx);transition:all .15s}
+.chat-new-btn:hover{border-color:var(--blue);background:var(--bg4)}
+.chat-scroll{flex:1;overflow-y:auto;padding:.5rem 0;display:flex;flex-direction:column;gap:1rem}
+
+/* Welcome message */
+.chat-welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--tx3);text-align:center;padding:2rem}
+.chat-welcome-icon{font-size:3rem;margin-bottom:.8rem}
+.chat-welcome h3{font-size:1.1rem;font-weight:600;color:var(--tx2);margin-bottom:.4rem}
+.chat-welcome p{font-size:.85rem;max-width:400px;line-height:1.6}
+
+/* Messages */
+.msg{display:flex;gap:.6rem;max-width:100%;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.msg-user{justify-content:flex-end}
+.msg-user .msg-bubble{background:var(--blue);color:#fff;border-radius:var(--r) var(--r) 4px var(--r)}
+.msg-agent .msg-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--blue));display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;margin-top:.2rem}
+.msg-agent .msg-bubble{background:var(--bg3);border:1px solid var(--bd);border-radius:4px var(--r) var(--r) var(--r)}
+.msg-bubble{padding:.75rem 1rem;font-size:.88rem;line-height:1.65;max-width:85%;white-space:pre-wrap;word-break:break-word}
+.msg-bubble p{margin:.4rem 0}
+.msg-bubble strong{color:var(--cyan)}
+.msg-tools{font-size:.72rem;color:var(--tx3);padding:.3rem 0 0 2.5rem;display:flex;align-items:center;gap:.3rem}
+.msg-tools span{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:.15rem .5rem;font-size:.7rem}
+
+/* Progress indicator */
+.progress-panel{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);padding:.8rem 1rem;margin:.5rem 0;animation:fadeIn .25s ease}
+.progress-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+.progress-title{font-size:.82rem;font-weight:600;color:var(--tx)}
+.progress-elapsed{font-size:.72rem;color:var(--tx3);font-family:var(--mono)}
+.progress-bar-track{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-bottom:.6rem}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:3px;transition:width .4s ease;width:0%}
+.progress-bar-fill.indeterminate{width:100%;background:linear-gradient(90deg,transparent,var(--blue),var(--cyan),transparent);background-size:200% 100%;animation:indeterminate 1.5s linear infinite}
+@keyframes indeterminate{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.progress-phases{display:flex;flex-direction:column;gap:.2rem}
+.progress-phase{display:flex;align-items:center;gap:.4rem;font-size:.76rem;color:var(--tx2)}
+.progress-phase-icon{width:16px;text-align:center;font-size:.7rem}
+.progress-phase.done .progress-phase-icon{color:var(--green)}
+.progress-phase.active .progress-phase-icon{color:var(--blue)}
+.progress-phase.active{color:var(--tx);font-weight:500}
+
+/* Report download buttons */
+.report-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .9rem;border-radius:8px;font-size:.8rem;font-weight:600;text-decoration:none;cursor:pointer;margin:.3rem .4rem .3rem 0;transition:background .15s,transform .1s}
+.report-btn:hover{transform:translateY(-1px)}
+.report-btn-view{background:#0078D4;color:#fff}
+.report-btn-view:hover{background:#106EBE}
+.report-btn-download{background:var(--bg2);color:var(--tx);border:1px solid var(--bd)}
+.report-btn-download:hover{background:var(--bg3)}
+.report-links{margin:.5rem 0;display:flex;flex-wrap:wrap;align-items:center}
+
+/* Report table */
+.report-table-wrap{margin-top:.8rem;overflow-x:auto}
+.report-table{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--bg2);border-radius:10px;overflow:hidden;border:1px solid var(--bd)}
+.report-table th{background:var(--bg3);color:var(--cyan);font-weight:700;text-align:left;padding:.55rem .7rem;border-bottom:2px solid var(--bd);white-space:nowrap}
+.report-table td{padding:.45rem .7rem;border-bottom:1px solid var(--bd);vertical-align:middle}
+.report-table tr:last-child td{border-bottom:none}
+.report-table tr:hover td{background:rgba(0,120,212,.06)}
+.report-table .rt-fw{font-weight:600;color:var(--tx);white-space:nowrap}
+.report-table .rt-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .65rem;border-radius:6px;font-size:.75rem;font-weight:600;text-decoration:none;cursor:pointer;transition:background .15s,transform .1s}
+.report-table .rt-btn:hover{transform:translateY(-1px)}
+.report-table .rt-btn-view{background:#0078D4;color:#fff}
+.report-table .rt-btn-view:hover{background:#106EBE}
+.report-table .rt-btn-dl{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}
+.report-table .rt-btn-dl:hover{background:var(--bg3)}
+.report-table .rt-zip-row td{background:rgba(0,120,212,.04);border-top:2px solid var(--bd)}
+.report-table .rt-shared td{font-size:.78rem;color:var(--tx2)}
+
+/* Token usage badge */
+.token-badge{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin-top:.5rem;padding:.4rem .75rem;background:var(--bg2);border:1px solid var(--bd);border-radius:8px;font-size:.7rem;color:var(--tx3);font-family:var(--font);max-width:fit-content}
+.token-badge .tb-icon{font-size:.8rem}
+.token-badge .tb-label{font-weight:500;color:var(--tx3)}
+.token-badge .tb-val{color:var(--tx2);font-weight:600}
+.token-badge .tb-cost{color:var(--tx2);font-weight:600}
+.token-badge .tb-model{color:var(--tx3);font-style:italic}
+.token-badge .tb-sep{color:var(--bd);margin:0 .1rem}
+.token-badge .tb-disclaimer{width:100%;font-size:.62rem;color:var(--tx3);font-style:italic;margin-top:.2rem;line-height:1.3;opacity:.8}
+
+/* Input */
+.chat-input-area{flex-shrink:0;padding:1rem 0 1.5rem;border-top:1px solid var(--bd)}
+.chat-input-box{display:flex;align-items:flex-end;gap:.5rem;background:var(--bg3);border:2px solid var(--bd);border-radius:12px;padding:.6rem .8rem;transition:border-color .2s;box-shadow:0 0 0 1px rgba(31,111,235,.08)}
+.chat-input-box:focus-within{border-color:var(--blue);box-shadow:0 0 0 2px rgba(31,111,235,.15)}
+.chat-input-box textarea{flex:1;border:none;background:transparent;color:var(--tx);font-family:var(--font);font-size:.9rem;resize:none;outline:none;line-height:1.5;max-height:150px;min-height:24px}
+.chat-input-box textarea::placeholder{color:var(--tx3)}
+.send-btn{width:36px;height:36px;border-radius:8px;border:none;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}
+.send-btn:hover{background:#1a5fd0}
+.send-btn:disabled{background:var(--bg4);color:var(--tx3);cursor:not-allowed}
+.send-btn svg{width:18px;height:18px}
+
+.chat-footer{text-align:center;padding:.5rem 0 0;font-size:.7rem;color:var(--tx3)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .sidebar{display:none}
+  .resizer{display:none}
+  .chat-area{padding:0 .5rem}
+  .msg-bubble{max-width:95%}
+}
+@media(prefers-reduced-motion:reduce){*{transition-duration:0s!important;animation-duration:0s!important}}
+
+/* ── Typing indicator (3-dot pulse) ── */
+.typing-indicator{display:flex;align-items:center;gap:4px;padding:4px 0}
+.typing-indicator span{width:6px;height:6px;border-radius:50%;background:var(--tx3);animation:typingPulse 1.4s ease-in-out infinite}
+.typing-indicator span:nth-child(2){animation-delay:.2s}
+.typing-indicator span:nth-child(3){animation-delay:.4s}
+@keyframes typingPulse{0%,60%,100%{opacity:.3;transform:scale(.8)}30%{opacity:1;transform:scale(1)}}
+
+
+
+/* ── Copy button on agent messages ── */
+.msg-agent .msg-bubble{position:relative}
+.msg-copy-btn{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:4px;border:1px solid var(--bd);background:var(--bg2);color:var(--tx3);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;font-size:.7rem;padding:0}
+.msg-agent .msg-bubble:hover .msg-copy-btn{opacity:1}
+.msg-copy-btn:hover{background:var(--bg4);color:var(--tx)}
+.msg-copy-btn.copied{color:var(--green);border-color:var(--green)}
+</style>
+</head>
+<body>
+
+<!-- ═════════ LOGIN PAGE ═════════ -->
+<div id="loginPage" class="login-page">
+  <div class="login-card">
+    <div class="logo">🛡️</div>
+    <h1>RBAC Report</h1>
+    <p class="desc">Interactive RBAC hierarchy tree report for Azure. Visualize role assignments, PIM elevation, over-permissioned identities, and risk flags.</p>
+    <button class="login-btn" onclick="signIn()">
+      <svg viewBox="0 0 21 21"><path d="M0 0h10v10H0zM11 0h10v10H11zM0 11h10v10H0zM11 11h10v10H11z"/></svg>
+      Sign in with Microsoft
+    </button>
+    <div class="login-note">
+      Your credentials are used to run assessments against <strong>your Microsoft cloud environment</strong>.
+      The agent reads Azure resources and service configurations using your permissions.<br/>
+      Required roles: <strong>Reader</strong> + <strong>Security Reader</strong> on target subscriptions.
+    </div>
+  </div>
+</div>
+
+<!-- ═════════ APP ═════════ -->
+<div id="app" class="app" style="display:none">
+
+  <!-- Header -->
+  <header class="hdr">
+    <button class="sidebar-menu-btn" id="sidebarMenuBtn" onclick="toggleSidebar()" title="Toggle sidebar">
+      <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <span class="hdr-title">🌳 RBAC Report</span>
+    <div class="hdr-right">
+      <div class="hdr-tenant" id="tenantBadge" title="">
+        <span class="tenant-icon">🏢</span>
+        <div class="tenant-info">
+          <span class="tenant-name" id="tenantName">—</span>
+          <span class="tenant-id" id="tenantId">—</span>
+        </div>
+      </div>
+      <div class="hdr-user" id="userBadge">
+        <div class="avatar" id="userAvatar">?</div>
+        <span id="userName" style="font-weight:500;color:var(--tx)" title="">—</span>
+      </div>
+      <button class="width-toggle" id="widthToggle" onclick="toggleChatWidth()" title="Toggle chat area width">
+        <svg viewBox="0 0 24 24"><path d="M15 3l6 6-6 6"/><path d="M9 3L3 9l6 6"/></svg>
+        <span id="widthLabel">Compact</span>
+      </button>
+      <button class="hdr-btn" onclick="toggleTheme()">🌙</button>
+      <button class="hdr-btn" id="switchTenantBtn" onclick="switchTenant()" title="Sign in with a different tenant account">Switch Tenant</button>
+      <button class="hdr-btn" onclick="signOut()">Sign out</button>
+    </div>
+  </header>
+
+  <!-- Main Content: Sidebar + Resizer + Chat -->
+  <div class="main-content">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-scroll">
+        <div class="sidebar-section">Report</div>
+
+        <div class="sidebar-item active" onclick="startSession('RBAC Tree Report','🌳','Generate an RBAC tree report for all subscriptions')">
+          <span class="sidebar-item-icon">🌳</span>
+          <div class="sidebar-item-body">
+            <div class="sidebar-item-title">RBAC Report</div>
+            <div class="sidebar-item-desc">Role hierarchy, PIM &amp; risk flags</div>
+          </div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section">Utilities</div>
+
+        <div class="sidebar-item" onclick="startSession('Check Permissions','🔑','Check my permissions before running an assessment')">
+          <span class="sidebar-item-icon">🔑</span>
+          <div class="sidebar-item-body">
+            <div class="sidebar-item-title">Check Permissions</div>
+            <div class="sidebar-item-desc">Verify your access levels</div>
+          </div>
+        </div>
+        <div class="sidebar-item" onclick="startCloudExplorer()">
+          <span class="sidebar-item-icon">☁️</span>
+          <div class="sidebar-item-body">
+            <div class="sidebar-item-title">Cloud Explorer</div>
+            <div class="sidebar-item-desc">Explore Microsoft cloud resources &amp; identities</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Resizer -->
+    <div class="resizer" id="resizer"></div>
+
+    <!-- Chat Pane -->
+    <div class="chat-pane">
+      <div class="chat-area">
+        <div class="chat-header">
+          <span class="chat-header-title" id="chatSessionTitle">Select a tool to begin</span>
+          <button class="chat-new-btn" id="newChatBtn" onclick="resetChat()" style="display:none">+ New Chat</button>
+        </div>
+        <div class="chat-scroll" id="chatScroll">
+          <div class="chat-welcome" id="chatWelcome">
+            <div class="chat-welcome-icon">🛡️</div>
+            <h3>RBAC Report</h3>
+            <p>Generate an interactive RBAC tree report showing role assignments, PIM roles, and risk flags. Click RBAC Report to begin.</p>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div class="chat-input-area">
+          <div class="chat-input-box">
+            <textarea id="chatInput" rows="1" placeholder="Ask the agent anything…" onkeydown="handleKey(event)" oninput="autoGrow(this)"></textarea>
+            <button class="send-btn" id="sendBtn" onclick="sendChat()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+            </button>
+          </div>
+          <div class="chat-footer">RBAC Report uses your signed-in credentials to query Microsoft cloud services. Results reflect your permission level.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═════════ MSAL.js (self-hosted v5.6.3) ═════════ -->
+<script src="/msal-browser.min.js"></script>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// CONFIGURATION
+// ─────────────────────────────────────────────────────────────
+const MSAL_CONFIG = {
+  auth: {
+    clientId: "ffb6f10d-6991-430e-b3d6-23a0101a92b1",
+    authority: "https://login.microsoftonline.com/common",
+    redirectUri: window.location.origin,
+    navigateToLoginRequestUrl: false,
+  },
+  cache: { cacheLocation: "localStorage" }
+};
+
+// Scopes the SPA needs — delegated (on behalf of signed-in user)
+const GRAPH_SCOPES = [
+  "User.Read",
+  "Directory.Read.All",
+  "Policy.Read.All",
+  "RoleManagement.Read.All",
+  "AuditLog.Read.All",
+  "UserAuthenticationMethod.Read.All",
+  "IdentityRiskyUser.Read.All",
+];
+const ARM_SCOPES = ["https://management.azure.com/user_impersonation"];
+
+const AGENT_URL = "";   // Same origin when served from Container App
+
+// ─────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────
+let msalInstance = null;
+let currentAccount = null;
+let chatHistory = [];
+let isSending = false;
+let activeItem = null;  // currently selected sidebar item
+let currentAbortController = null;  // for cancelling SSE requests
+let currentReader = null;           // active SSE reader for stop
+let conversationId = null;          // per-session ID for server state isolation
+
+function generateConversationId() {
+  // crypto.randomUUID() with fallback
+  if (crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
+// AUTH  (redirect flow — works in InPrivate / popup-blocked)
+// ─────────────────────────────────────────────────────────────
+async function initMsal() {
+  if (MSAL_CONFIG.auth.clientId === "YOUR-CLIENT-ID-HERE") {
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("app").style.display = "flex";
+    document.getElementById("userName").textContent = "Demo Mode";
+    document.getElementById("tenantName").textContent = "Demo Tenant";
+    document.getElementById("tenantId").textContent = "not-configured";
+    document.getElementById("userAvatar").textContent = "D";
+    return;
+  }
+
+  // Check MSAL library loaded
+  if (typeof msal === "undefined") {
+    document.querySelector(".login-note").innerHTML =
+      '<strong style="color:var(--red)">MSAL library failed to load. Check network / ad-blocker.</strong>';
+    return;
+  }
+
+  try {
+    // Clear any stuck MSAL interaction-in-progress flags from localStorage
+    Object.keys(localStorage).filter(k => k.includes("interaction.status")).forEach(k => localStorage.removeItem(k));
+    msalInstance = new msal.PublicClientApplication(MSAL_CONFIG);
+    await msalInstance.initialize();
+
+    // Process redirect response (when returning from login redirect)
+    const resp = await msalInstance.handleRedirectPromise();
+    if (resp && resp.account) {
+      currentAccount = resp.account;
+      msalInstance.setActiveAccount(currentAccount);
+      showApp();
+      return;
+    }
+
+    // Check for existing session
+    const accounts = msalInstance.getAllAccounts();
+    if (accounts.length > 0) {
+      currentAccount = accounts[0];
+      msalInstance.setActiveAccount(currentAccount);
+      showApp();
+    }
+  } catch (err) {
+    console.error("MSAL init error:", err);
+    document.querySelector(".login-note").innerHTML =
+      '<strong style="color:var(--red)">Authentication init failed: ' + escHtml(String(err)) + '</strong>';
+  }
+}
+
+function signIn() {
+  if (!msalInstance) {
+    alert("Authentication library not loaded. Please refresh the page.");
+    return;
+  }
+  // Redirect to Microsoft login — no popup needed
+  localStorage.setItem("esiq_return_page", window.location.pathname);
+  msalInstance.loginRedirect({
+    scopes: GRAPH_SCOPES,
+    prompt: "select_account",
+  });
+}
+
+function signOut() {
+  if (msalInstance && currentAccount) {
+    msalInstance.logoutRedirect({ account: currentAccount });
+  } else {
+    sessionStorage.clear();
+    location.reload();
+  }
+}
+
+function switchTenant() {
+  if (!msalInstance) return;
+  showTenantModal();
+}
+
+function showTenantModal() {
+  // Remove existing modal if any
+  var existing = document.getElementById('tenantModal');
+  if (existing) existing.remove();
+
+  var overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'tenantModal';
+  overlay.innerHTML =
+    '<div class="modal-card">' +
+      '<h3>🏢 Switch Tenant</h3>' +
+      '<p>Enter a Tenant ID (GUID) to sign in to a specific tenant, or leave blank to pick any account.</p>' +
+      '<input class="modal-input" id="tenantIdInput" type="text" placeholder="e.g. 72f988bf-86f1-41af-91ab-2d7cd011db47" maxlength="36" spellcheck="false" autocomplete="off"/>' +
+      '<div class="modal-hint">Find your Tenant ID in Azure Portal → Microsoft Entra ID → Overview</div>' +
+      '<div class="modal-actions">' +
+        '<button class="modal-btn" onclick="closeTenantModal()">Cancel</button>' +
+        '<button class="modal-btn modal-btn-primary" onclick="submitTenantSwitch()">Sign In</button>' +
+      '</div>' +
+    '</div>';
+
+  // Close on backdrop click
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closeTenantModal();
+  });
+
+  document.body.appendChild(overlay);
+  setTimeout(function() { document.getElementById('tenantIdInput').focus(); }, 100);
+
+  // Allow Enter key to submit
+  document.getElementById('tenantIdInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); submitTenantSwitch(); }
+    if (e.key === 'Escape') { e.preventDefault(); closeTenantModal(); }
+  });
+}
+
+function closeTenantModal() {
+  var modal = document.getElementById('tenantModal');
+  if (modal) modal.remove();
+}
+
+function submitTenantSwitch() {
+  var input = document.getElementById('tenantIdInput');
+  var tenantId = input ? input.value.trim() : '';
+
+  // Validate tenant ID format if provided (GUID)
+  if (tenantId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(tenantId)) {
+    input.style.borderColor = 'var(--red)';
+    input.focus();
+    return;
+  }
+
+  closeTenantModal();
+
+  var loginRequest = {
+    scopes: GRAPH_SCOPES,
+    prompt: 'select_account',
+  };
+
+  // If tenant ID provided, set authority to that specific tenant
+  if (tenantId) {
+    loginRequest.authority = 'https://login.microsoftonline.com/' + tenantId;
+  }
+
+  localStorage.setItem("esiq_return_page", window.location.pathname);
+  msalInstance.loginRedirect(loginRequest);
+}
+
+function showApp() {
+  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("app").style.display = "flex";
+  if (currentAccount) {
+    const name = currentAccount.name || currentAccount.username || "User";
+    document.getElementById("userName").textContent = name;
+    document.getElementById("userAvatar").textContent = name.charAt(0).toUpperCase();
+    const tid = currentAccount.tenantId || "";
+    const upn = currentAccount.username || "";
+    const domain = upn.includes("@") ? upn.split("@")[1] : "Tenant";
+    document.getElementById("tenantName").textContent = domain;
+    document.getElementById("tenantId").textContent = tid ? tid.slice(0, 8) + "…" : "—";
+    document.getElementById("tenantBadge").title = "Tenant ID: " + tid;
+    document.getElementById("userName").title = upn;
+  }
+}
+
+/**
+ * Acquire a Graph API token (delegated) for the signed-in user.
+ * Silent first, then redirect if needed.
+ */
+async function getGraphToken() {
+  if (!msalInstance || !currentAccount) return null;
+  try {
+    const resp = await msalInstance.acquireTokenSilent({ scopes: GRAPH_SCOPES, account: currentAccount });
+    return resp.accessToken;
+  } catch {
+    // Token expired or consent needed — redirect to re-auth
+    msalInstance.acquireTokenRedirect({ scopes: GRAPH_SCOPES, account: currentAccount });
+    return null;  // page will redirect
+  }
+}
+
+/**
+ * Acquire an ARM token (delegated) for Azure Resource Manager.
+ * Silent first, then redirect if needed.
+ */
+async function getArmToken() {
+  if (!msalInstance || !currentAccount) return null;
+  try {
+    const resp = await msalInstance.acquireTokenSilent({ scopes: ARM_SCOPES, account: currentAccount });
+    return resp.accessToken;
+  } catch {
+    msalInstance.acquireTokenRedirect({ scopes: ARM_SCOPES, account: currentAccount });
+    return null;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// CHAT WIDTH TOGGLE
+// ─────────────────────────────────────────────────────────────
+const WIDTH_MODES = [
+  { cls: '',     label: 'Compact' },
+  { cls: 'wide', label: 'Wide' },
+  { cls: 'full', label: 'Full' }
+];
+let currentWidthIdx = 0;
+
+function toggleChatWidth() {
+  currentWidthIdx = (currentWidthIdx + 1) % WIDTH_MODES.length;
+  var mode = WIDTH_MODES[currentWidthIdx];
+  var area = document.querySelector('.chat-area');
+  area.classList.remove('wide', 'full');
+  if (mode.cls) area.classList.add(mode.cls);
+  document.getElementById('widthLabel').textContent = mode.label;
+  localStorage.setItem('esiq-chat-width', currentWidthIdx);
+}
+
+(function(){
+  var saved = localStorage.getItem('esiq-chat-width');
+  if (saved !== null) {
+    currentWidthIdx = parseInt(saved, 10) || 0;
+    if (currentWidthIdx >= WIDTH_MODES.length) currentWidthIdx = 0;
+  }
+})();
+
+// Apply saved width after DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  var mode = WIDTH_MODES[currentWidthIdx];
+  var area = document.querySelector('.chat-area');
+  if (area && mode.cls) area.classList.add(mode.cls);
+  var label = document.getElementById('widthLabel');
+  if (label) label.textContent = mode.label;
+});
+
+// ─────────────────────────────────────────────────────────────
+// THEME
+// ─────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const curr = document.documentElement.getAttribute("data-theme");
+  if (curr === "light") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", "light");
+  localStorage.setItem("esiq-theme", curr === "light" ? "dark" : "light");
+}
+(function(){
+  const s = localStorage.getItem("esiq-theme");
+  if (s === "light") document.documentElement.setAttribute("data-theme", "light");
+})();
+
+// ─────────────────────────────────────────────────────────────
+// SIDEBAR
+// ─────────────────────────────────────────────────────────────
+function setActiveSidebar(el) {
+  if (activeItem) activeItem.classList.remove("active");
+  if (el) el.classList.add("active");
+  activeItem = el;
+}
+
+function toggleFwPicker() {
+  const panel = document.getElementById("fwPanel");
+  const chevron = document.getElementById("fwChevron");
+  const isOpen = panel.classList.toggle("open");
+  chevron.classList.toggle("open", isOpen);
+  setActiveSidebar(document.getElementById("sidebarCompliance"));
+}
+
+function toggleAllFw(master) {
+  document.querySelectorAll(".fw-cb").forEach(function(cb) { cb.checked = master.checked; });
+  updateFwRunBtn();
+}
+
+function updateFwRunBtn() {
+  var cbs = document.querySelectorAll(".fw-cb");
+  var checked = Array.prototype.filter.call(cbs, function(c) { return c.checked; });
+  var btn = document.getElementById("fwRunBtn");
+  var allCb = document.getElementById("fwSelectAll");
+  allCb.checked = checked.length === cbs.length;
+  btn.disabled = checked.length === 0;
+  btn.textContent = checked.length === cbs.length
+    ? "Run All Frameworks"
+    : "Run " + checked.length + " Framework" + (checked.length !== 1 ? "s" : "");
+}
+
+// Attach change listeners to individual checkboxes
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll(".fw-cb").forEach(function(cb) {
+    cb.addEventListener("change", updateFwRunBtn);
+  });
+});
+
+function runSelectedFrameworks(event) {
+  if (event) event.stopPropagation();
+  var checked = Array.prototype.filter.call(
+    document.querySelectorAll(".fw-cb"),
+    function(c) { return c.checked; }
+  );
+  if (checked.length === 0) return;
+  var names = checked.map(function(c) { return c.value; });
+  var allCount = document.querySelectorAll(".fw-cb").length;
+  var fwArg = names.length === allCount ? "all" : names.join(", ");
+  var label = names.length === allCount
+    ? "Compliance Assessment (All Frameworks)"
+    : "Compliance Assessment (" + names.join(", ") + ")";
+  var prompt = names.length === allCount
+    ? "Run a full compliance assessment on my tenant using all frameworks"
+    : "Run a compliance assessment on my tenant using these frameworks: " + fwArg;
+  // Set structured frameworks for the backend
+  pendingFrameworks = names;
+  startSession(label, "🔍", prompt);
+}
+
+// ─────────────────────────────────────────────────────────────
+// SIDEBAR TOGGLE
+// ─────────────────────────────────────────────────────────────
+function toggleSidebar() {
+  var sb = document.getElementById('sidebar');
+  var collapsed = sb.classList.toggle('collapsed');
+  localStorage.setItem('esiq-sidebar-collapsed', collapsed ? '1' : '0');
+}
+
+(function(){
+  if (localStorage.getItem('esiq-sidebar-collapsed') === '1') {
+    document.addEventListener('DOMContentLoaded', function() {
+      var sb = document.getElementById('sidebar');
+      if (sb) { sb.classList.add('collapsed'); }
+    });
+  }
+})();
+
+// ─────────────────────────────────────────────────────────────
+// SESSION / CHAT
+// ─────────────────────────────────────────────────────────────
+function startSession(label, icon, prompt) {
+  // Reset server-side session state for the old conversation
+  if (conversationId) {
+    fetch(AGENT_URL + "/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ conversation_id: conversationId })
+    }).catch(function() {}); // fire-and-forget
+  }
+  conversationId = generateConversationId();
+
+  // Reset chat state for a fresh session
+  chatHistory = [];
+  document.getElementById("chatScroll").innerHTML = "";
+
+  // Hide welcome
+  var welcome = document.getElementById("chatWelcome");
+  if (welcome) welcome.style.display = "none";
+
+  // Update chat header
+  document.getElementById("chatSessionTitle").textContent = icon + " " + label;
+  document.getElementById("newChatBtn").style.display = "";
+
+  // Highlight sidebar item
+  var items = document.querySelectorAll(".sidebar-item");
+  var matched = false;
+  items.forEach(function(item) {
+    var titleEl = item.querySelector(".sidebar-item-title");
+    if (titleEl && label.includes(titleEl.textContent)) {
+      setActiveSidebar(item);
+      matched = true;
+    }
+  });
+  if (!matched) setActiveSidebar(null);
+
+  // Auto-send the prompt (if not free chat)
+  if (prompt) {
+    document.getElementById("chatInput").value = prompt;
+    sendChat();
+  } else {
+    document.getElementById("chatInput").focus();
+  }
+}
+
+function startCloudExplorer() {
+  startSession('Cloud Explorer', '☁️', '');
+  // Show a welcome message instead of auto-sending
+  var html = '<div class="msg assistant">';
+  html += '<div class="msg-content">';
+  html += '<h3>☁️ Cloud Explorer</h3>';
+  html += '<p>I can explore your Microsoft cloud environment in real time. Ask me anything about:</p>';
+  html += '<ul>';
+  html += '<li><strong>Cloud Resources</strong> — VMs, storage accounts, databases, Key Vaults, web apps, AKS, NICs, NSGs, firewalls, and more</li>';
+  html += '<li><strong>Security &amp; Compliance</strong> — Defender plans, secure score, security recommendations, policy compliance, resource locks</li>';
+  html += '<li><strong>Identities &amp; Access</strong> — users, groups, apps, service principals, directory roles, conditional access policies, risky users, PIM</li>';
+  html += '<li><strong>Networking</strong> — VNets, subnets, private endpoints, public IPs, NSG rules, load balancers, firewalls</li>';
+  html += '<li><strong>AI &amp; ML</strong> — Azure OpenAI, ML workspaces, AI services, cognitive services</li>';
+  html += '<li><strong>Infrastructure</strong> — subscriptions, resource groups, management groups, tags, locations</li>';
+  html += '</ul>';
+  html += '<p><em>Just type your question below — for example: "list all storage accounts" or "show admin users"</em></p>';
+  html += '</div></div>';
+  document.getElementById('chatScroll').innerHTML = html;
+  document.getElementById('chatInput').placeholder = 'Explore your cloud — e.g., "list all VMs", "show admin users", "storage accounts with public access"...';
+  document.getElementById('chatInput').focus();
+}
+
+function resetChat() {
+  // Reset server-side session state
+  if (conversationId) {
+    fetch(AGENT_URL + "/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ conversation_id: conversationId })
+    }).catch(function() {});
+  }
+  conversationId = null;
+
+  chatHistory = [];
+  document.getElementById("chatScroll").innerHTML = "";
+  document.getElementById("chatInput").value = "";
+  document.getElementById("chatSessionTitle").textContent = "Select a tool to begin";
+  document.getElementById("newChatBtn").style.display = "none";
+  setActiveSidebar(null);
+
+  // Re-show welcome
+  var scroll = document.getElementById("chatScroll");
+  scroll.innerHTML = '<div class="chat-welcome" id="chatWelcome"><div class="chat-welcome-icon">🛡️</div><h3>Welcome to PostureIQ</h3><p>Select an assessment or tool from the sidebar to start a focused session, or open Free Chat for ad-hoc Azure queries.</p></div>';
+  document.getElementById("chatInput").focus();
+}
+
+// ─────────────────────────────────────────────────────────────
+// RESIZER
+// ─────────────────────────────────────────────────────────────
+(function(){
+  var isResizing = false;
+  document.addEventListener("DOMContentLoaded", function() {
+    var r = document.getElementById("resizer");
+    var s = document.getElementById("sidebar");
+    if (!r || !s) return;
+
+    // Restore saved width
+    var saved = localStorage.getItem("esiq-sidebar-w");
+    if (saved) s.style.width = saved;
+
+    r.addEventListener("mousedown", function(e) {
+      isResizing = true;
+      r.classList.add("active");
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+      e.preventDefault();
+    });
+
+    document.addEventListener("mousemove", function(e) {
+      if (!isResizing) return;
+      var w = e.clientX;
+      if (w < 200) w = 200;
+      if (w > window.innerWidth * 0.5) w = window.innerWidth * 0.5;
+      s.style.width = w + "px";
+    });
+
+    document.addEventListener("mouseup", function() {
+      if (!isResizing) return;
+      isResizing = false;
+      r.classList.remove("active");
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      localStorage.setItem("esiq-sidebar-w", s.style.width);
+    });
+  });
+})();
+
+// ─────────────────────────────────────────────────────────────
+// CHAT
+// ─────────────────────────────────────────────────────────────
+function handleKey(e) {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); }
+}
+
+function autoGrow(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 150) + "px";
+}
+
+// ─────────────────────────────────────────────────────────────
+// PROGRESS INDICATOR
+// ─────────────────────────────────────────────────────────────
+let progressEl = null;
+let progressStartTime = null;
+let progressTimer = null;
+let progressPhases = [];
+
+// Friendly names for known tools
+const TOOL_LABELS = {
+  check_permissions: "Checking permissions",
+  run_assessment: "Running compliance assessment",
+  run_full_assessment: "Running full assessment",
+  run_risk_analysis: "Analyzing security risks",
+  run_data_security_assessment: "Assessing data security",
+  run_copilot_readiness_assessment: "Evaluating Copilot readiness",
+  run_ai_agent_security_assessment: "Auditing AI agent security",
+  generate_rbac_tree_report: "Generating RBAC report",
+  generate_report: "Generating reports",
+  generate_custom_report: "Generating custom report",
+  search_exposure: "Searching exposure",
+  query_azure: "Querying Azure resources",
+  query_graph: "Querying Microsoft Graph",
+  search_tenant: "Exploring cloud resources",
+};
+
+
+
+function createProgressPanel() {
+  progressPhases = [];
+  progressStartTime = Date.now();
+
+  var panel = document.createElement("div");
+  panel.className = "progress-panel";
+  panel.id = "progressPanel";
+  panel.innerHTML =
+    '<div class="progress-header">' +
+      '<span class="progress-title"><span class="typing-indicator"><span></span><span></span><span></span></span> Working\u2026</span>' +
+      '<span style="display:flex;align-items:center;gap:.4rem">' +
+        '<button class="stop-btn" id="stopBtn" onclick="stopChat()">\u25a0 Stop</button>' +
+        '<span class="progress-elapsed" id="progressElapsed">0:00</span>' +
+      '</span>' +
+    '</div>' +
+    '<div class="progress-bar-track"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>' +
+    '<div class="progress-phases" id="progressPhases"></div>';
+
+  var scroll = document.getElementById("chatScroll");
+  scroll.appendChild(panel);
+  scroll.scrollTop = scroll.scrollHeight;
+  progressEl = panel;
+
+  progressTimer = setInterval(function() {
+    if (!progressEl) return;
+    var elapsed = Math.floor((Date.now() - progressStartTime) / 1000);
+    var m = Math.floor(elapsed / 60);
+    var s = elapsed % 60;
+    var el = progressEl.querySelector(".progress-elapsed");
+    if (el) el.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+  }, 1000);
+
+  return panel;
+}
+
+
+
+var _lastActiveTool = null;
+
+function updateProgress(toolName, status) {
+  if (!progressEl) createProgressPanel();
+
+  var label = TOOL_LABELS[toolName] || toolName.replace(/_/g, " ");
+
+  if (status === "running") {
+    // Mark all previous phases as done
+    progressPhases.forEach(function(p) { p.status = "done"; });
+    // Add new phase
+    progressPhases.push({ name: label, status: "active" });
+    _lastActiveTool = toolName;
+  } else {
+    // Mark matching phase as done
+    var p = progressPhases.find(function(ph) { return ph.name === label; });
+    if (p) p.status = "done";
+  }
+
+  // Render phases list
+  var container = progressEl.querySelector(".progress-phases");
+  if (container) {
+    container.innerHTML = progressPhases.map(function(p) {
+      var icon = p.status === "done" ? "\u2705" : "\ud83d\udd04";
+      var cls = p.status === "done" ? "done" : "active";
+      return '<div class="progress-phase ' + cls + '"><span class="progress-phase-icon">' + icon + '</span> ' + escHtml(p.name) + '</div>';
+    }).join("");
+  }
+
+  // Update title
+  var title = progressEl.querySelector(".progress-title");
+  if (title) {
+    var active = progressPhases.find(function(p) { return p.status === "active"; });
+    title.innerHTML = active
+      ? '<span class="typing-indicator"><span></span><span></span><span></span></span> ' + escHtml(active.name) + '\u2026'
+      : '<span class="typing-indicator"><span></span><span></span><span></span></span> Working\u2026';
+  }
+
+  // Update progress bar
+  var bar = progressEl.querySelector(".progress-bar-fill");
+  if (bar) {
+    bar.classList.remove("indeterminate");
+    bar.style.width = "100%";
+  }
+
+  var scroll = document.getElementById("chatScroll");
+  scroll.scrollTop = scroll.scrollHeight;
+}
+
+function removeProgress() {
+  if (progressTimer) { clearInterval(progressTimer); progressTimer = null; }
+  if (progressEl) {
+    // Mark all phases done and show 100%
+    progressPhases.forEach(function(p) { p.status = "done"; });
+    var bar = progressEl.querySelector(".progress-bar-fill");
+    if (bar) { bar.classList.remove("indeterminate"); bar.style.width = "100%"; }
+    var title = progressEl.querySelector(".progress-title");
+    if (title) title.textContent = "\u2705 Complete";
+    _lastActiveTool = null;
+    // Hide the Stop button
+    var stopBtn = progressEl.querySelector(".stop-btn");
+    if (stopBtn) stopBtn.style.display = "none";
+    var container = progressEl.querySelector(".progress-phases");
+    if (container) {
+      container.innerHTML = progressPhases.map(function(p) {
+        return '<div class="progress-phase done"><span class="progress-phase-icon">\u2705</span> ' + escHtml(p.name) + '</div>';
+      }).join("");
+    }
+    progressEl = null;
+    progressPhases = [];
+    progressStartTime = null;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// SEND CHAT
+// ─────────────────────────────────────────────────────────────
+// Track pending frameworks from sidebar selection
+let pendingFrameworks = null;
+
+async function sendChat() {
+  const input = document.getElementById("chatInput");
+  const msg = input.value.trim();
+  if (!msg || isSending) return;
+  input.value = "";
+  input.style.height = "auto";
+
+  // Hide welcome if visible
+  var welcome = document.getElementById("chatWelcome");
+  if (welcome) welcome.style.display = "none";
+
+  // Show new chat button
+  document.getElementById("newChatBtn").style.display = "";
+  if (document.getElementById("chatSessionTitle").textContent === "Select a tool to begin") {
+    document.getElementById("chatSessionTitle").textContent = "💬 Chat";
+  }
+
+  appendMsg("user", msg);
+  chatHistory.push({role: "user", content: msg});
+
+  isSending = true;
+  document.getElementById("sendBtn").disabled = true;
+  currentAbortController = new AbortController();
+
+  try {
+    const headers = { "Content-Type": "application/json" };
+
+    // Acquire Graph + ARM tokens so the backend tools run as the signed-in user
+    const [graphToken, armToken] = await Promise.all([getGraphToken(), getArmToken()]);
+
+    const body = {
+      message: msg,
+      history: chatHistory.slice(0, -1),
+    };
+    if (graphToken) body.graph_token = graphToken;
+    if (armToken) body.arm_token = armToken;
+    if (!conversationId) conversationId = generateConversationId();
+    body.conversation_id = conversationId;
+    body.page = "RBACReport";
+
+    // Pass structured frameworks list when triggered from sidebar
+    if (pendingFrameworks) {
+      body.frameworks = pendingFrameworks;
+      pendingFrameworks = null;
+    }
+
+    // Cloud Explorer mode: force direct API execution (bypass LLM routing)
+    var sessionTitle = document.getElementById("chatSessionTitle").textContent || "";
+    if (sessionTitle.includes("Cloud Explorer")) {
+      body.mode = "tenant_search";
+    }
+
+    const resp = await fetch(AGENT_URL + "/chat", {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+      signal: currentAbortController.signal
+    });
+
+    if (!resp.ok) {
+      throw new Error("Agent returned HTTP " + resp.status);
+    }
+
+    // Read SSE stream — extract tool events, report links, and final result
+    currentReader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let finalData = null;
+    let buf = "";
+    const reportLinks = [];
+    let reportTable = null;
+    let tokenUsage = null;
+
+    while (true) {
+      const { done, value } = await currentReader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      // Process complete SSE lines
+      const lines = buf.split("\n");
+      buf = lines.pop(); // keep incomplete line in buffer
+      for (const line of lines) {
+        if (line.startsWith("data: ")) {
+          try {
+            const evt = JSON.parse(line.slice(6));
+            if (evt.type === "tool") {
+              updateProgress(evt.name, evt.status);
+            } else if (evt.type === "report_table") {
+              reportTable = evt;
+            } else if (evt.type === "token_usage") {
+              tokenUsage = evt;
+            } else if (evt.type === "report") {
+              reportLinks.push(evt);
+            } else {
+              finalData = evt;
+            }
+          } catch (_) { /* ignore malformed lines */ }
+        }
+      }
+    }
+
+    removeProgress();
+
+    if (!finalData) throw new Error("No response from agent");
+    if (finalData.error) throw new Error(finalData.error);
+    const reply = finalData.response || finalData.message || JSON.stringify(finalData);
+
+    appendMsg("agent", reply, finalData.tools_used, reportLinks, reportTable, tokenUsage);
+    chatHistory.push({role: "assistant", content: reply});
+
+  } catch (e) {
+    removeProgress();
+    if (e.name === 'AbortError') {
+      appendMsg("agent", "⏹ Process stopped by user.");
+    } else {
+      appendMsg("agent", "Error: " + e.message);
+    }
+  } finally {
+    isSending = false;
+    currentAbortController = null;
+    currentReader = null;
+    document.getElementById("sendBtn").disabled = false;
+    input.focus();
+  }
+}
+
+function stopChat() {
+  if (currentAbortController) {
+    currentAbortController.abort();
+  }
+}
+
+function appendMsg(role, text, toolsUsed, reportLinks, reportTable, tokenUsage) {
+  const scroll = document.getElementById("chatScroll");
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "msg msg-" + role;
+
+  if (role === "agent") {
+    const avatar = document.createElement("div");
+    avatar.className = "msg-avatar";
+    avatar.textContent = "🛡";
+    wrapper.appendChild(avatar);
+  }
+
+  const bubble = document.createElement("div");
+  bubble.className = "msg-bubble";
+  // Render simple markdown-like formatting
+  bubble.innerHTML = renderText(text);
+
+  // Copy button for agent messages
+  if (role === "agent") {
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "msg-copy-btn";
+    copyBtn.title = "Copy to clipboard";
+    copyBtn.innerHTML = "📋";
+    copyBtn.onclick = function() {
+      navigator.clipboard.writeText(text).then(function() {
+        copyBtn.innerHTML = "✓";
+        copyBtn.classList.add("copied");
+        setTimeout(function(){ copyBtn.innerHTML = "📋"; copyBtn.classList.remove("copied"); }, 1500);
+      });
+    };
+    bubble.appendChild(copyBtn);
+  }
+
+  // Render structured report table if available
+  if (reportTable && reportTable.rows && reportTable.rows.length > 0) {
+    const wrap = document.createElement("div");
+    wrap.className = "report-table-wrap";
+    let html = '<table class="report-table"><thead><tr>';
+    html += '<th>Framework</th><th>📄 HTML</th><th>📕 PDF</th><th>📊 Excel</th><th>{} JSON</th>';
+    html += '</tr></thead><tbody>';
+
+    reportTable.rows.forEach(function(row) {
+      html += '<tr>';
+      html += '<td class="rt-fw">' + escHtml(row.framework) + '</td>';
+      // HTML column
+      if (row.html) {
+        html += '<td><a class="rt-btn rt-btn-view" href="' + escHtml(row.html) + '" target="_blank" rel="noopener">View</a> '
+              + '<a class="rt-btn rt-btn-dl" href="' + escHtml(row.html) + '" download="' + escHtml(row.html_name || 'report.html') + '">⬇</a></td>';
+      } else { html += '<td>—</td>'; }
+      // PDF column
+      if (row.pdf) {
+        html += '<td><a class="rt-btn rt-btn-view" href="' + escHtml(row.pdf) + '" target="_blank" rel="noopener">View</a> '
+              + '<a class="rt-btn rt-btn-dl" href="' + escHtml(row.pdf) + '" download="' + escHtml(row.pdf_name || 'report.pdf') + '">⬇</a></td>';
+      } else { html += '<td>—</td>'; }
+      // Excel column
+      if (row.xlsx) {
+        html += '<td><a class="rt-btn rt-btn-dl" href="' + escHtml(row.xlsx) + '" download="' + escHtml(row.xlsx_name || 'report.xlsx') + '">⬇ Download</a></td>';
+      } else { html += '<td>—</td>'; }
+      // JSON column
+      if (row.json) {
+        html += '<td><a class="rt-btn rt-btn-dl" href="' + escHtml(row.json) + '" download="' + escHtml(row.json_name || 'data.json') + '">⬇ Download</a></td>';
+      } else { html += '<td>—</td>'; }
+      html += '</tr>';
+    });
+
+    // Shared files row(s)
+    if (reportTable.shared && reportTable.shared.length > 0) {
+      html += '<tr class="rt-shared"><td colspan="5" style="padding-top:.6rem"><strong>Additional Files:</strong> ';
+      reportTable.shared.forEach(function(sf, i) {
+        if (i > 0) html += ' &nbsp;|&nbsp; ';
+        html += '<a class="rt-btn rt-btn-dl" href="' + escHtml(sf.url) + '" download="' + escHtml(sf.name) + '">⬇ ' + escHtml(sf.name) + '</a>';
+      });
+      html += '</td></tr>';
+    }
+
+    // ZIP download row
+    if (reportTable.zip) {
+      html += '<tr class="rt-zip-row"><td colspan="5">';
+      html += '<a class="rt-btn rt-btn-view" href="' + escHtml(reportTable.zip) + '" download="all-compliance-reports.zip" style="font-size:.85rem;padding:.5rem 1.2rem">📦 Download All Reports (ZIP)</a>';
+      html += '</td></tr>';
+    }
+
+    html += '</tbody></table>';
+    wrap.innerHTML = html;
+    bubble.appendChild(wrap);
+  }
+  // Fallback: flat button list from individual report SSE events
+  else if (reportLinks && reportLinks.length > 0) {
+    const container = document.createElement("div");
+    container.style.marginTop = ".6rem";
+    reportLinks.forEach(function(r) {
+      const ext = r.url.split('.').pop().toLowerCase();
+      const icon = ext === 'html' ? '📄' : ext === 'xlsx' ? '📊' : ext === 'pdf' ? '📕' : ext === 'csv' ? '📋' : '📁';
+      let btns = '';
+      if (ext === 'html' || ext === 'pdf') {
+        btns += '<a class="report-btn report-btn-view" href="' + escHtml(r.url) + '" target="_blank" rel="noopener">' + icon + ' View Report</a>';
+      }
+      btns += '<a class="report-btn report-btn-download" href="' + escHtml(r.url) + '" download="' + escHtml(r.name) + '">⬇ Download ' + escHtml(r.name) + '</a>';
+      container.innerHTML += '<span class="report-links">' + btns + '</span>';
+    });
+    bubble.appendChild(container);
+  }
+
+  wrapper.appendChild(bubble);
+  scroll.appendChild(wrapper);
+
+  // Show tools used
+  if (toolsUsed && toolsUsed.length > 0) {
+    const tools = document.createElement("div");
+    tools.className = "msg-tools";
+    tools.innerHTML = "🛠️ " + toolsUsed.map(t => "<span>" + escHtml(t) + "</span>").join("");
+    scroll.appendChild(tools);
+  }
+
+  // Show token usage as informational badge with disclaimer
+  if (tokenUsage && tokenUsage.total_tokens > 0) {
+    const badge = document.createElement("div");
+    badge.className = "token-badge";
+    const costStr = tokenUsage.estimated_cost_usd < 0.01
+      ? '< $0.01'
+      : '$' + tokenUsage.estimated_cost_usd.toFixed(4);
+    badge.innerHTML = '<span class="tb-icon">ℹ️</span>'
+      + '<span class="tb-label">Tokens used:</span>'
+      + '<span class="tb-val">' + tokenUsage.total_tokens.toLocaleString() + '</span>'
+      + '<span class="tb-label">(in: ' + tokenUsage.prompt_tokens.toLocaleString()
+      + ' / out: ' + tokenUsage.completion_tokens.toLocaleString() + ')</span>'
+      + '<span class="tb-sep">|</span>'
+      + '<span class="tb-label">Est. cost:</span>'
+      + '<span class="tb-cost">' + costStr + '</span>'
+      + '<span class="tb-model">' + escHtml(tokenUsage.model || '') + '</span>'
+      + '<div class="tb-disclaimer">Token counts are approximate. Cost estimates are indicative based on published model pricing and may not reflect your actual Azure billing.</div>';
+    scroll.appendChild(badge);
+  }
+
+  scroll.scrollTop = scroll.scrollHeight;
+}
+
+// ─────────────────────────────────────────────────────────────
+// TEXT RENDERING — simple markdown support
+// ─────────────────────────────────────────────────────────────
+function renderText(text) {
+  let html = escHtml(text);
+
+  // Headers: ## and ###
+  html = html.replace(/^### (.+)$/gm, '<strong style="font-size:.95em;color:var(--cyan)">$1</strong>');
+  html = html.replace(/^## (.+)$/gm, '<strong style="font-size:1.05em;display:block;margin:.6rem 0 .3rem;color:var(--cyan)">$1</strong>');
+
+  // Bold: **text**
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+  // Inline code: `text`
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // Tables: | col | col |
+  if (html.includes("|---")) {
+    const lines = html.split("\n");
+    let inTable = false;
+    let tableHtml = "";
+    const out = [];
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed.startsWith("|") && trimmed.endsWith("|")) {
+        if (trimmed.includes("|---")) continue; // skip separator
+        if (!inTable) { inTable = true; tableHtml = '<table style="width:100%;border-collapse:collapse;margin:.5rem 0;font-size:.82rem">'; }
+        const cells = trimmed.slice(1, -1).split("|").map(c => c.trim());
+        const tag = inTable && tableHtml.includes("<tr>") ? "td" : "th";
+        tableHtml += "<tr>" + cells.map(c => `<${tag} style="padding:.4rem .6rem;border:1px solid var(--bd);text-align:left">${c}</${tag}>`).join("") + "</tr>";
+      } else {
+        if (inTable) { tableHtml += "</table>"; out.push(tableHtml); inTable = false; tableHtml = ""; }
+        out.push(line);
+      }
+    }
+    if (inTable) { tableHtml += "</table>"; out.push(tableHtml); }
+    html = out.join("\n");
+  }
+
+  // List items: - text
+  html = html.replace(/^- (.+)$/gm, '<div style="padding-left:1rem;margin:.15rem 0">• $1</div>');
+
+  // Report download links: suppress inline links — the structured report table handles downloads
+  html = html.replace(/\[([^\]]+)\]\((?:sandbox:)?\/reports\/[^)]+\)/g, '');
+  // Clean up leftover bullet markers and blank lines from stripped links
+  html = html.replace(/^[•\-\*]\s*$/gm, '');
+
+  // Newlines to <br>
+  html = html.replace(/\n/g, "<br>");
+
+  return html;
+}
+
+function escHtml(s) {
+  const el = document.createElement("span");
+  el.textContent = s;
+  return el.innerHTML;
+}
+
+// ─────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────
+window.addEventListener("DOMContentLoaded", initMsal);
+</script>
+</body>
+</html>

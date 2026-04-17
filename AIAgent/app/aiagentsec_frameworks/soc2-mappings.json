@@ -1,0 +1,509 @@
+{
+  "framework": "SOC 2 Type II",
+  "version": "2017",
+  "mappings": {
+    "no_auth_required": [
+      "CC6.1"
+    ],
+    "non_aad_auth": [
+      "CC6.1"
+    ],
+    "stale_auth_config": [
+      "CC6.1"
+    ],
+    "cs_auth_no_sign_in_required": [
+      "CC6.1"
+    ],
+    "cs_auth_generic_oauth": [
+      "CC6.1"
+    ],
+    "unauthenticated_web_channel": [
+      "CC6.1"
+    ],
+    "teams_channel_no_sso": [
+      "CC6.1"
+    ],
+    "no_pp_dlp_policies": [
+      "CC6.7"
+    ],
+    "cs_dlp_no_auth_connector_allowed": [
+      "CC6.7"
+    ],
+    "cs_dlp_knowledge_source_unrestricted": [
+      "CC6.7"
+    ],
+    "cs_dlp_channel_unrestricted": [
+      "CC6.7"
+    ],
+    "cs_dlp_skills_unrestricted": [
+      "CC6.7"
+    ],
+    "cs_dlp_default_group_not_blocked": [
+      "CC6.7"
+    ],
+    "cs_dlp_no_tenant_policy": [
+      "CC6.7"
+    ],
+    "cs_dlp_http_unrestricted": [
+      "CC6.6"
+    ],
+    "cs_auth_dlp_not_enforcing": [
+      "CC6.7"
+    ],
+    "connector_no_dlp_coverage": [
+      "CC6.7"
+    ],
+    "unmanaged_environments": [
+      "CC1.1"
+    ],
+    "no_security_group": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "cs_env_bots_in_default": [
+      "CC1.1"
+    ],
+    "cs_env_bots_in_dev_env": [
+      "CC1.1"
+    ],
+    "cs_env_sandbox_for_production": [
+      "CC1.1"
+    ],
+    "cs_env_no_tenant_isolation": [
+      "CC6.6"
+    ],
+    "cs_env_gen_ai_unrestricted": [
+      "CC7.1"
+    ],
+    "no_conversation_logging": [
+      "CC7.2"
+    ],
+    "environment_audit_disabled": [
+      "CC7.2"
+    ],
+    "cs_audit_no_purview_integration": [
+      "CC7.2"
+    ],
+    "cs_audit_no_dspm_for_ai": [
+      "CC7.2"
+    ],
+    "cs_agent_shared_to_everyone": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "cs_agent_event_triggers_ungoverned": [
+      "CC1.1"
+    ],
+    "cs_agent_http_unrestricted": [
+      "CC6.6"
+    ],
+    "cs_compliance_cross_geo_data_movement": [
+      "CC6.7"
+    ],
+    "cs_compliance_env_region_mismatch": [
+      "CC6.7"
+    ],
+    "cs_dv_env_maker_in_prod": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "cs_dv_no_lockbox": [
+      "CC6.1"
+    ],
+    "cs_dv_no_cmk": [
+      "CC6.1"
+    ],
+    "pp_env_governance_for_readiness": [
+      "CC1.1"
+    ],
+    "pp_dlp_coverage_for_copilot": [
+      "CC6.7"
+    ],
+    "pp_cross_tenant_for_readiness": [
+      "CC6.7"
+    ],
+    "overshared_knowledge_source": [
+      "CC6.7"
+    ],
+    "external_knowledge_source": [
+      "CC9.2"
+    ],
+    "public_website_source": [
+      "CC6.6"
+    ],
+    "generative_answers_no_guardrails": [
+      "CC7.1"
+    ],
+    "generative_orchestration_unrestricted": [
+      "CC6.1"
+    ],
+    "unpublished_bot_with_secrets": [
+      "CC6.1"
+    ],
+    "bot_not_solution_aware": [
+      "CC1.1"
+    ],
+    "draft_bot_stale": [
+      "CC1.1"
+    ],
+    "custom_connector_no_auth": [
+      "CC6.1"
+    ],
+    "premium_connector_uncontrolled": [
+      "CC1.1"
+    ],
+    "public_access_enabled": [
+      "CC6.6"
+    ],
+    "no_private_endpoints": [
+      "CC6.6"
+    ],
+    "workspace_no_isolation": [
+      "CC6.6"
+    ],
+    "workspace_no_managed_network": [
+      "CC6.6"
+    ],
+    "managed_network_no_outbound_rules": [
+      "CC6.6"
+    ],
+    "outbound_fqdn_unrestricted": [
+      "CC6.6"
+    ],
+    "local_auth_enabled": [
+      "CC6.1"
+    ],
+    "workspace_no_managed_identity": [
+      "CC6.1"
+    ],
+    "project_no_managed_identity": [
+      "CC6.1"
+    ],
+    "shared_project_identity": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "agent_permission_drift": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "no_content_filter": [
+      "CC7.1"
+    ],
+    "weak_content_filters": [
+      "CC7.1"
+    ],
+    "content_filter_gaps": [
+      "CC7.1"
+    ],
+    "no_prompt_shield": [
+      "CC7.1"
+    ],
+    "jailbreak_filter_disabled": [
+      "CC7.1"
+    ],
+    "blocklist_not_configured": [
+      "CC7.1"
+    ],
+    "no_prompt_injection_mitigation": [
+      "CC7.1"
+    ],
+    "no_groundedness_detection": [
+      "CC7.1"
+    ],
+    "no_pii_filter": [
+      "CC6.7"
+    ],
+    "agent_no_custom_guardrail": [
+      "CC7.1"
+    ],
+    "agent_account_no_content_safety": [
+      "CC7.1"
+    ],
+    "permissive_content_filters": [
+      "CC7.1"
+    ],
+    "serverless_no_content_safety": [
+      "CC7.1"
+    ],
+    "deployment_no_rai_policy": [
+      "CC7.1"
+    ],
+    "high_capacity_allocation": [
+      "CC1.1"
+    ],
+    "deployment_deprecated_model": [
+      "CC9.2"
+    ],
+    "unapproved_model_deployed": [
+      "CC9.2"
+    ],
+    "model_version_outdated": [
+      "CC9.2"
+    ],
+    "outdated_model_version": [
+      "CC9.2"
+    ],
+    "no_token_rate_limit": [
+      "CC6.8"
+    ],
+    "excessive_rate_limit": [
+      "CC6.8"
+    ],
+    "no_hub_structure": [
+      "CC1.1"
+    ],
+    "workspace_no_cmk": [
+      "CC6.1"
+    ],
+    "hub_no_project_isolation": [
+      "CC6.6"
+    ],
+    "compute_public_ip": [
+      "CC6.6"
+    ],
+    "compute_ssh_enabled": [
+      "CC6.6"
+    ],
+    "compute_idle_no_shutdown": [
+      "CC1.1"
+    ],
+    "compute_no_managed_identity": [
+      "CC6.1"
+    ],
+    "datastore_credential_in_config": [
+      "CC6.1"
+    ],
+    "datastore_no_encryption": [
+      "CC6.1"
+    ],
+    "online_endpoint_public": [
+      "CC6.6"
+    ],
+    "endpoint_no_auth": [
+      "CC6.1"
+    ],
+    "endpoint_key_auth_only": [
+      "CC6.1"
+    ],
+    "endpoint_no_logging": [
+      "CC7.2"
+    ],
+    "public_endpoint_exposure": [
+      "CC6.6"
+    ],
+    "no_auth_policy": [
+      "CC6.1"
+    ],
+    "deployment_unhealthy": [
+      "CC1.1"
+    ],
+    "registry_public_access": [
+      "CC6.6"
+    ],
+    "registry_no_rbac": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "connection_static_credentials": [
+      "CC6.1"
+    ],
+    "connection_shared_to_all": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "connection_expired_credentials": [
+      "CC6.1"
+    ],
+    "connection_no_expiry": [
+      "CC6.1"
+    ],
+    "serverless_key_auth": [
+      "CC6.1"
+    ],
+    "serverless_key_not_rotated": [
+      "CC6.1"
+    ],
+    "ws_no_diagnostic_settings": [
+      "CC7.2"
+    ],
+    "ws_no_log_analytics": [
+      "CC7.2"
+    ],
+    "mcp_no_secure_auth": [
+      "CC6.1"
+    ],
+    "mcp_public_endpoint": [
+      "CC6.6"
+    ],
+    "mcp_shared_to_all": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "a2a_no_identity_auth": [
+      "CC6.1"
+    ],
+    "non_microsoft_tool_connection": [
+      "CC9.2"
+    ],
+    "tool_credential_based_auth": [
+      "CC6.1"
+    ],
+    "hosted_no_vnet": [
+      "CC6.6"
+    ],
+    "hosted_no_acr": [
+      "CC1.1"
+    ],
+    "hosted_unhealthy": [
+      "CC1.1"
+    ],
+    "data_connection_no_managed_identity": [
+      "CC6.1"
+    ],
+    "no_customer_managed_key": [
+      "CC6.1"
+    ],
+    "data_connection_shared_to_all": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "workspace_no_diagnostics": [
+      "CC7.2"
+    ],
+    "project_no_tracing": [
+      "CC7.2"
+    ],
+    "workspace_limited_log_coverage": [
+      "CC7.2"
+    ],
+    "shadow_agents_unpublished": [
+      "CC1.1"
+    ],
+    "excess_unpublished_agents": [
+      "CC1.1"
+    ],
+    "agent_no_rbac": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "sp_excessive_permissions": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "sp_credential_expiry": [
+      "CC6.1"
+    ],
+    "sp_no_credential_rotation": [
+      "CC6.1"
+    ],
+    "sp_multi_tenant_exposure": [
+      "CC6.7"
+    ],
+    "sp_no_managed_identity": [
+      "CC6.1"
+    ],
+    "sp_ai_api_over_scoped": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "sp_risky_identity_protection": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "sp_privileged_directory_roles": [
+      "CC6.3"
+    ],
+    "sp_owner_governance_weak": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "sp_stale_disabled": [
+      "CC1.1"
+    ],
+    "no_ca_for_ai_apps": [
+      "CC6.1"
+    ],
+    "no_token_lifetime_restriction": [
+      "CC6.1"
+    ],
+    "ca_weak_policy_quality": [
+      "CC6.1"
+    ],
+    "ca_no_session_controls": [
+      "CC6.1"
+    ],
+    "broad_user_consent_to_ai_apps": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "admin_consent_ai_high_privilege": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "ai_specific_consent_scopes": [
+      "CC6.1",
+      "CC6.3"
+    ],
+    "wif_missing_federation": [
+      "CC6.1"
+    ],
+    "cross_tenant_ai_exposure": [
+      "CC6.7"
+    ],
+    "pim_missing_for_ai_roles": [
+      "CC6.3"
+    ],
+    "no_defender_for_ai": [
+      "CC7.1"
+    ],
+    "defender_ai_alerts_suppressed": [
+      "CC7.2"
+    ],
+    "no_ai_azure_policies": [
+      "CC1.1"
+    ],
+    "ai_policy_non_compliant": [
+      "CC1.1"
+    ],
+    "agent_no_auth_between_agents": [
+      "CC6.1"
+    ],
+    "agent_unrestricted_tool_access": [
+      "CC6.1"
+    ],
+    "agent_memory_no_encryption": [
+      "CC6.1"
+    ],
+    "no_agent_inventory": [
+      "CC1.1"
+    ],
+    "agent_no_human_in_loop": [
+      "CC6.1"
+    ],
+    "shadow_ai_agents": [
+      "CC1.1"
+    ],
+    "no_diagnostic_settings": [
+      "CC7.2"
+    ],
+    "no_audit_logging": [
+      "CC7.2"
+    ],
+    "training_data_no_classification": [
+      "CC6.7"
+    ],
+    "output_data_no_retention_policy": [
+      "CC6.5"
+    ],
+    "key_without_network_restriction": [
+      "CC6.6"
+    ],
+    "multi_region_sprawl": [
+      "CC6.7"
+    ],
+    "no_cmk_encryption": [
+      "CC6.1"
+    ]
+  }
+}

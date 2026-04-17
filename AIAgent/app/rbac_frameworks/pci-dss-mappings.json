@@ -1,0 +1,26 @@
+{
+  "standing_owner_high_scope": [
+    "7.1",
+    "7.2.2"
+  ],
+  "contributor_mg_scope": [
+    "7.1",
+    "7.2.2"
+  ],
+  "sp_with_owner": [
+    "7.1",
+    "8.6"
+  ],
+  "large_privileged_group": [
+    "7.1",
+    "7.2.2"
+  ],
+  "custom_role_high_scope": [
+    "7.1",
+    "7.2.1"
+  ],
+  "sp_contributor_broad_scope": [
+    "7.1",
+    "8.6"
+  ]
+}

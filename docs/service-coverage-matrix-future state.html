@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostureIQ — Service Coverage Matrix — Future State</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --border: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+    --green: #2ea043; --green-bg: #0d3117; --green-border: #238636;
+    --yellow: #d29922; --yellow-bg: #2d2200; --yellow-border: #9e6a03;
+    --red: #f85149; --red-bg: #3d0f0f; --red-border: #da3633;
+    --gray: #484f58; --gray-bg: #1c2028; --gray-border: #30363d;
+    --blue: #58a6ff; --blue-bg: #0d2340;
+    --piq: #238636; --piq-bg: #0d3117; --piq-border: #2ea043;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5; padding: 24px; }
+  h1 { font-size: 1.6rem; margin-bottom: 4px; color: var(--accent); }
+  .subtitle { color: var(--text2); font-size: 0.9rem; margin-bottom: 20px; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; padding: 12px 16px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; }
+  .legend-dot { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+  .legend-dot.covered { background: var(--green-bg); border: 1px solid var(--green-border); }
+  .legend-dot.partial { background: var(--yellow-bg); border: 1px solid var(--yellow-border); }
+  .legend-dot.not-covered { background: var(--red-bg); border: 1px solid var(--red-border); }
+  .legend-dot.na { background: var(--gray-bg); border: 1px solid var(--gray-border); }
+  .legend-dot.needed { background: var(--blue-bg); border: 1px solid var(--accent); }
+
+  .stats-bar { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 18px; flex: 1; min-width: 120px; text-align: center; }
+  .stat-card .num { font-size: 1.8rem; font-weight: 700; }
+  .stat-card .lbl { font-size: 0.75rem; color: var(--text2); text-transform: uppercase; }
+
+  .section-header { background: var(--surface); border: 1px solid var(--border); border-radius: 8px 8px 0 0;
+    padding: 12px 16px; margin-top: 24px; cursor: pointer; user-select: none;
+    display: flex; align-items: center; justify-content: space-between; }
+  .section-header:hover { background: #1c2128; }
+  .section-header h2 { font-size: 1.05rem; margin: 0; }
+  .section-header .badge { background: var(--gray); color: #fff; padding: 2px 8px;
+    border-radius: 10px; font-size: 0.75rem; }
+  .section-header .chevron { transition: transform 0.2s; font-size: 1.2rem; }
+  .section-header.collapsed .chevron { transform: rotate(-90deg); }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-top: none;
+    border-radius: 0 0 8px 8px; margin-bottom: 0; }
+  .table-wrap.hidden { display: none; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  thead th { position: sticky; top: 0; background: #1c2128; color: var(--text2);
+    padding: 8px 10px; text-align: center; border-bottom: 2px solid var(--border);
+    font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px;
+    white-space: nowrap; }
+  thead th:first-child { text-align: left; min-width: 260px; }
+  /* PostureIQ column header highlight */
+  thead th:nth-child(2) { background: #122d0f; color: var(--green); border-bottom: 2px solid var(--green); }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:hover { background: #1c2128; }
+  tbody td { padding: 6px 10px; text-align: center; white-space: nowrap; }
+  tbody td:first-child { text-align: left; font-weight: 500; white-space: normal; }
+  /* PostureIQ column cell separator */
+  tbody td:nth-child(2) { border-right: 2px solid var(--green-border); }
+  thead th:nth-child(2) { border-right: 2px solid var(--green-border); }
+  .sub-header td { background: #1a1f27; font-weight: 700; color: var(--accent);
+    font-size: 0.8rem; padding: 8px 10px; border-bottom: 1px solid var(--accent); }
+
+  /* Cell styles */
+  .c { background: var(--green-bg); color: var(--green); font-weight: 600; }
+  .p { background: var(--yellow-bg); color: var(--yellow); font-weight: 600; }
+  .n { background: var(--red-bg); color: var(--red); font-size: 0.78rem; }
+  .na { background: var(--gray-bg); color: var(--gray); font-size: 0.78rem; }
+  .needed { background: var(--blue-bg); color: var(--blue); font-size: 0.72rem; }
+
+  /* Tooltip */
+  td[title] { cursor: help; }
+
+  /* Filter bar */
+  .filter-bar { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-bar input { background: var(--surface); border: 1px solid var(--border); color: var(--text);
+    padding: 8px 14px; border-radius: 6px; font-size: 0.85rem; width: 300px; outline: none; }
+  .filter-bar input:focus { border-color: var(--accent); }
+  .filter-bar select { background: var(--surface); border: 1px solid var(--border); color: var(--text);
+    padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; outline: none; }
+  .filter-bar .btn { background: var(--accent); color: #000; border: none; padding: 8px 16px;
+    border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.82rem; }
+  .filter-bar .btn:hover { opacity: 0.9; }
+
+  .timestamp { color: var(--text2); font-size: 0.75rem; text-align: right; margin-top: 20px; }
+
+  @media print {
+    body { background: #fff; color: #000; }
+    .filter-bar, .legend { display: none; }
+    table { font-size: 0.7rem; }
+    .c { background: #d4edda; color: #155724; }
+    .p { background: #fff3cd; color: #856404; }
+    .n { background: #f8d7da; color: #721c24; }
+    .na { background: #e9ecef; color: #6c757d; }
+  }
+</style>
+</head>
+<body>
+
+<h1>🛡️ PostureIQ — Service Coverage Matrix — Future State</h1>
+<p class="subtitle">PostureIQ as master engine — mapping Azure, M365 &amp; AI services against all assessment tools. PostureIQ column shows target coverage: ✅ where any tool covers today or where coverage is needed.</p>
+
+<div class="legend">
+  <div class="legend-item"><span class="legend-dot covered"></span> ✅ Covered — Actively assessed/queried</div>
+  <div class="legend-item"><span class="legend-dot partial"></span> ⚠️ Partial — Some aspects covered</div>
+  <div class="legend-item"><span class="legend-dot not-covered"></span> ❌ Not Covered — Could be added</div>
+  <div class="legend-item"><span class="legend-dot na"></span> — N/A — Not relevant for this tool</div>
+  <div class="legend-item"><span class="legend-dot needed"></span> 🔵 Needed — Gap that should be addressed</div>
+</div>
+
+<div class="filter-bar">
+  <input type="text" id="searchBox" placeholder="🔍 Filter services..." oninput="filterRows()">
+  <select id="coverageFilter" onchange="filterRows()">
+    <option value="all">All Status</option>
+    <option value="covered">✅ Covered Only</option>
+    <option value="partial">⚠️ Partial Only</option>
+    <option value="not-covered">❌ Not Covered Only</option>
+    <option value="needed">🔵 Needed Gaps</option>
+    <option value="piq-covered">🟢 PostureIQ Covered</option>
+  </select>
+  <button class="btn" onclick="expandAll()">Expand All</button>
+  <button class="btn" onclick="collapseAll()">Collapse All</button>
+</div>
+
+<div id="stats-bar" class="stats-bar"></div>
+
+<div id="matrix-container"></div>
+
+<p class="timestamp">Generated: <span id="genDate"></span> | PostureIQ Future State — based on PostureIQ v49-mastersearch</p>
+
+<script>
+// ── Coverage data ──
+// Status: c=covered, p=partial, n=not-covered, na=not-applicable, needed=gap-to-fix
+// Format: [ServiceName, Compliance, Risk, DataSec, RBAC, CopilotReady, AIAgentSec, TenantSearch]
+// PostureIQ column is computed dynamically as first column
+
+const TOOLS = [
+  "PostureIQ",
+  "Compliance Assessment",
+  "Risk Analysis",
+  "Data Security",
+  "RBAC Report",
+  "Copilot Readiness",
+  "AI Agent Security",
+  "Tenant Search"
+];
+
+const SECTIONS = [
+  {
+    id: "compute",
+    title: "1️⃣ Core Azure Infrastructure — Compute",
+    icon: "💻",
+    rows: [
+      ["Azure Virtual Machines","c","c","p","p","na","na","c"],
+      ["Virtual Machine Scale Sets","c","p","p","p","na","na","c"],
+      ["Azure Dedicated Host","p","n","n","p","na","na","p"],
+      ["Azure Spot VMs","p","n","n","p","na","na","p"],
+      ["Azure Automanage","p","n","n","na","na","na","p"],
+      ["Azure Compute Gallery","n","n","n","na","na","na","p"],
+      ["Azure VMware Solution (AVS)","n","n","n","n","na","na","n"],
+      ["Azure BareMetal Infrastructure","n","n","n","n","na","na","n"],
+      ["Azure CycleCloud","n","n","n","n","na","na","n"],
+      ["Azure Capacity Reservations","n","n","n","na","na","na","p"],
+    ]
+  },
+  {
+    id: "networking",
+    title: "1️⃣ Core Azure Infrastructure — Networking",
+    icon: "🌐",
+    rows: [
+      ["Azure Virtual Network (VNet)","c","c","p","p","na","p","c"],
+      ["Subnets","c","c","p","p","na","p","c"],
+      ["Network Security Groups (NSG)","c","c","p","p","na","p","c"],
+      ["Application Security Groups (ASG)","p","p","n","na","na","na","p"],
+      ["Azure Load Balancer","c","p","n","p","na","na","c"],
+      ["Azure Application Gateway","c","p","n","p","na","na","c"],
+      ["Azure Front Door","c","p","n","p","na","na","p"],
+      ["Azure Traffic Manager","p","n","n","p","na","na","p"],
+      ["Azure ExpressRoute","c","p","n","p","na","na","p"],
+      ["Azure VPN Gateway","c","p","n","p","na","na","p"],
+      ["Azure Bastion","c","p","n","p","na","na","p"],
+      ["Azure Firewall","c","c","n","p","na","na","c"],
+      ["Azure Firewall Manager","p","p","n","na","na","na","p"],
+      ["Azure DDoS Protection","c","p","n","na","na","na","p"],
+      ["Azure Private Link","c","c","c","p","na","p","c"],
+      ["Azure Private Endpoints","c","c","c","p","na","c","c"],
+      ["Azure Service Endpoints","c","p","p","na","na","na","p"],
+      ["Azure NAT Gateway","p","n","n","na","na","na","p"],
+      ["Azure Network Watcher","c","p","n","na","na","na","p"],
+      ["Azure Virtual WAN","p","n","n","p","na","na","p"],
+      ["Azure Route Server","n","n","n","na","na","na","p"],
+      ["Azure DNS","p","n","n","na","na","na","p"],
+      ["Azure DNS Private Resolver","n","n","n","na","na","na","p"],
+    ]
+  },
+  {
+    id: "storage",
+    title: "1️⃣ Core Azure Infrastructure — Storage",
+    icon: "💾",
+    rows: [
+      ["Azure Blob Storage","c","c","c","p","p","na","c"],
+      ["Azure Data Lake Storage Gen2","c","p","c","p","na","na","c"],
+      ["Azure File Storage","c","p","c","p","na","na","c"],
+      ["Azure Queue Storage","p","n","p","p","na","na","c"],
+      ["Azure Table Storage","p","n","p","p","na","na","c"],
+      ["Azure Managed Disks","c","c","c","p","na","na","c"],
+      ["Azure Elastic SAN","n","n","n","n","na","na","n"],
+      ["Azure NetApp Files","p","n","p","p","na","na","p"],
+      ["Azure Archive Storage","p","n","p","na","na","na","p"],
+      ["Azure Backup Vaults","c","p","n","p","na","na","c"],
+      ["Azure Storage Accounts (GPv2, Premium)","c","c","c","p","na","na","c"],
+      ["Azure Import/Export","n","n","n","na","na","na","n"],
+      ["Azure Storage Mover","n","n","n","na","na","na","n"],
+    ]
+  },
+  {
+    id: "app-integration",
+    title: "2️⃣ Platform Services — App & Integration",
+    icon: "⚡",
+    rows: [
+      ["Azure App Service","c","c","c","p","na","na","c"],
+      ["Azure Web Apps","c","c","c","p","na","na","c"],
+      ["Azure API Management","c","p","p","p","na","p","c"],
+      ["Azure Logic Apps","p","n","n","p","na","na","p"],
+      ["Azure Functions","c","p","p","p","na","na","c"],
+      ["Azure Service Bus","c","p","p","p","na","na","c"],
+      ["Azure Event Grid","p","n","n","p","na","na","p"],
+      ["Azure Event Hubs","c","p","p","p","na","na","c"],
+      ["Azure Relay","n","n","n","n","na","na","n"],
+      ["Azure Integration Service Env (ISE)","n","n","n","n","na","na","n"],
+    ]
+  },
+  {
+    id: "containers",
+    title: "2️⃣ Platform Services — Containers",
+    icon: "📦",
+    rows: [
+      ["Azure Kubernetes Service (AKS)","c","c","p","p","na","p","c"],
+      ["AKS Automatic","p","p","n","p","na","na","p"],
+      ["Azure Container Apps","c","p","p","p","na","p","c"],
+      ["Azure Container Instances","c","p","n","p","na","na","p"],
+      ["Azure Container Registry","c","p","p","p","na","c","c"],
+      ["Azure Red Hat OpenShift (ARO)","n","n","n","p","na","na","p"],
+      ["Azure Arc-enabled Kubernetes","p","n","n","p","na","na","p"],
+    ]
+  },
+  {
+    id: "databases",
+    title: "3️⃣ Data & Databases — Relational & NoSQL",
+    icon: "🗄️",
+    rows: [
+      ["Azure SQL Database","c","c","c","p","na","na","c"],
+      ["Azure SQL Managed Instance","c","p","c","p","na","na","p"],
+      ["SQL Server on Azure VM","c","p","p","p","na","na","c"],
+      ["Azure Database for MySQL","c","p","c","p","na","na","c"],
+      ["Azure Database for PostgreSQL","c","p","c","p","na","na","c"],
+      ["Azure Database for MariaDB","p","n","p","p","na","na","p"],
+      ["Azure Cosmos DB","c","p","c","p","na","p","c"],
+      ["Azure Table API (Cosmos)","p","n","p","na","na","na","p"],
+      ["Azure Cache for Redis","c","p","p","p","na","na","c"],
+    ]
+  },
+  {
+    id: "analytics",
+    title: "3️⃣ Data & Analytics — Big Data",
+    icon: "📊",
+    rows: [
+      ["Azure Synapse Analytics","c","p","p","p","na","na","p"],
+      ["Azure Data Factory","c","p","p","p","na","na","p"],
+      ["Azure Data Explorer (Kusto)","p","n","n","p","na","na","p"],
+      ["Azure Data Lake Analytics","n","n","n","p","na","na","n"],
+      ["Azure Databricks","p","n","p","p","na","na","p"],
+      ["Azure Stream Analytics","p","n","n","p","na","na","p"],
+      ["Azure Data Share","n","n","n","na","na","na","n"],
+    ]
+  },
+  {
+    id: "governance-catalog",
+    title: "3️⃣ Data Governance & Catalog",
+    icon: "📑",
+    rows: [
+      ["Microsoft Purview Data Catalog","c","n","c","p","p","na","c"],
+      ["Microsoft Purview Data Map","p","n","c","na","p","na","p"],
+      ["Microsoft Purview Data Estate Insights","p","n","p","na","p","na","n"],
+    ]
+  },
+  {
+    id: "ai-platforms",
+    title: "4️⃣ AI, ML & Cognitive — Platforms",
+    icon: "🤖",
+    rows: [
+      ["Azure OpenAI Service","c","p","p","p","na","c","c"],
+      ["Azure Machine Learning","c","p","p","p","na","c","c"],
+      ["Azure AI Studio / Foundry","p","p","p","p","na","c","c"],
+    ]
+  },
+  {
+    id: "ai-services",
+    title: "4️⃣ AI Services (Cognitive)",
+    icon: "🧠",
+    rows: [
+      ["Azure AI Vision","p","n","n","p","na","p","p"],
+      ["Azure AI Speech","p","n","n","p","na","p","p"],
+      ["Azure AI Language","p","n","n","p","na","p","p"],
+      ["Azure AI Translator","p","n","n","p","na","p","p"],
+      ["Azure AI Search","p","n","p","p","na","c","p"],
+      ["Azure AI Content Safety","p","n","n","na","na","c","p"],
+      ["Azure AI Document Intelligence","p","n","n","p","na","p","p"],
+      ["Azure AI Face","n","n","n","na","na","p","n"],
+      ["Azure AI Metrics Advisor","n","n","n","na","na","n","n"],
+      ["Azure AI Anomaly Detector","n","n","n","na","na","n","n"],
+      ["Azure AI Personalizer","n","n","n","na","na","n","n"],
+    ]
+  },
+  {
+    id: "entra-identity",
+    title: "5️⃣ Security & Identity — Microsoft Entra",
+    icon: "🔐",
+    rows: [
+      ["Microsoft Entra ID (Azure AD)","c","c","p","c","c","c","c"],
+      ["Entra ID Governance","c","c","n","c","c","p","c"],
+      ["Entra ID Protection","c","c","n","p","p","c","c"],
+      ["Entra ID PIM","c","c","n","c","p","c","c"],
+      ["Entra Verified ID","n","n","n","n","n","n","n"],
+      ["Entra External ID","p","p","n","p","n","n","p"],
+      ["Entra Permissions Management","n","n","n","p","n","n","n"],
+      ["Entra Private Access","n","n","n","n","n","n","n"],
+      ["Entra Internet Access","n","n","n","n","n","n","n"],
+    ]
+  },
+  {
+    id: "defender",
+    title: "5️⃣ Security — Microsoft Defender",
+    icon: "🛡️",
+    rows: [
+      ["Microsoft Defender for Cloud","c","c","p","p","na","p","c"],
+      ["Defender for Servers","c","c","p","na","na","na","c"],
+      ["Defender for Containers","c","c","p","na","na","p","c"],
+      ["Defender for Storage","c","c","c","na","na","na","c"],
+      ["Defender for SQL","c","c","c","na","na","na","c"],
+      ["Defender for App Service","c","c","p","na","na","na","c"],
+      ["Defender for APIs","p","p","n","na","na","p","p"],
+      ["Defender for DevOps","p","n","n","na","na","na","n"],
+      ["Defender for Endpoint","p","n","n","na","na","na","n"],
+      ["Defender for Identity","p","p","n","na","na","na","n"],
+      ["Defender for Office 365","n","n","n","na","p","na","n"],
+      ["Defender for IoT","n","n","n","na","na","na","n"],
+      ["Defender EASM","n","n","n","na","na","na","n"],
+    ]
+  },
+  {
+    id: "siem",
+    title: "5️⃣ Security — SIEM & SOAR",
+    icon: "📡",
+    rows: [
+      ["Microsoft Sentinel","c","p","n","p","na","na","c"],
+      ["Sentinel Data Connectors","c","p","n","na","na","na","p"],
+      ["Sentinel Workbooks","p","n","n","na","na","na","n"],
+      ["Sentinel Playbooks (Logic Apps)","p","n","n","na","na","na","n"],
+      ["Sentinel UEBA","p","n","n","na","na","na","n"],
+      ["Sentinel Threat Intelligence","p","n","n","na","na","na","n"],
+    ]
+  },
+  {
+    id: "compliance-risk",
+    title: "5️⃣ Security — Compliance & Risk (Purview)",
+    icon: "📋",
+    rows: [
+      ["Microsoft Purview Compliance Portal","c","p","p","na","c","na","p"],
+      ["Purview Information Protection","c","p","c","na","c","na","c"],
+      ["Purview Data Loss Prevention (DLP)","c","p","c","na","c","na","c"],
+      ["Purview Insider Risk Management","p","c","n","na","p","na","n"],
+      ["Purview eDiscovery","n","n","n","na","p","na","n"],
+      ["Purview Records Management","n","n","n","na","p","na","n"],
+      ["Purview Communication Compliance","n","n","n","na","n","na","n"],
+      ["Purview Audit","c","p","n","na","c","na","n"],
+    ]
+  },
+  {
+    id: "m365-core",
+    title: "6️⃣ Microsoft 365 — Core",
+    icon: "📧",
+    rows: [
+      ["Microsoft 365 Apps (Office Apps)","n","n","n","na","p","na","n"],
+      ["Exchange Online","p","n","n","na","c","na","n"],
+      ["SharePoint Online","p","p","p","na","c","na","c"],
+      ["OneDrive for Business","p","n","p","na","c","na","n"],
+      ["Microsoft Teams","p","n","n","na","c","na","n"],
+    ]
+  },
+  {
+    id: "m365-collab",
+    title: "6️⃣ Microsoft 365 — Collaboration & Productivity",
+    icon: "🤝",
+    rows: [
+      ["Microsoft Loop","n","n","n","na","n","na","n"],
+      ["Microsoft Whiteboard","n","n","n","na","n","na","n"],
+      ["Microsoft Planner","n","n","n","na","n","na","n"],
+      ["Microsoft To Do","n","n","n","na","n","na","n"],
+      ["Microsoft Lists","n","n","n","na","n","na","n"],
+      ["Microsoft Forms","n","n","n","na","n","na","n"],
+      ["Microsoft Stream","n","n","n","na","n","na","n"],
+      ["Viva Connections","n","n","n","na","n","na","n"],
+      ["Viva Engage","n","n","n","na","n","na","n"],
+      ["Viva Insights","n","n","n","na","n","na","n"],
+      ["Viva Learning","n","n","n","na","n","na","n"],
+      ["Viva Goals","n","n","n","na","n","na","n"],
+      ["Viva Topics","n","n","n","na","n","na","n"],
+    ]
+  },
+  {
+    id: "copilot",
+    title: "6️⃣ Microsoft 365 — Copilot",
+    icon: "✨",
+    rows: [
+      ["Microsoft Copilot for M365","n","n","n","na","c","p","n"],
+      ["Copilot Studio","n","n","n","na","p","c","n"],
+      ["Copilot for Security","n","n","n","na","n","p","n"],
+      ["Copilot for Azure","n","n","n","na","n","n","n"],
+      ["GitHub Copilot (Enterprise)","n","n","n","na","n","n","n"],
+    ]
+  },
+  {
+    id: "devops",
+    title: "7️⃣ DevOps & Developer Tools",
+    icon: "🔧",
+    rows: [
+      ["Azure DevOps","n","n","n","p","na","p","n"],
+      ["GitHub Enterprise","n","n","n","n","na","p","n"],
+      ["GitHub Actions","n","n","n","n","na","p","n"],
+      ["GitHub Advanced Security","n","n","n","na","na","p","n"],
+      ["Azure Deployment Environments","n","n","n","na","na","na","n"],
+      ["Azure DevTest Labs","n","n","n","p","na","na","p"],
+      ["Azure Load Testing","n","n","n","na","na","na","n"],
+      ["Azure Chaos Studio","n","n","n","na","na","na","n"],
+      ["Azure API Center","n","n","n","na","na","na","n"],
+    ]
+  },
+  {
+    id: "management",
+    title: "8️⃣ Management, Monitoring & Governance",
+    icon: "📈",
+    rows: [
+      ["Azure Monitor","c","c","p","p","na","p","c"],
+      ["Log Analytics","c","c","p","p","na","p","c"],
+      ["Application Insights","c","p","n","p","na","p","p"],
+      ["Azure Advisor","p","p","n","na","na","na","p"],
+      ["Azure Policy","c","c","p","c","na","c","c"],
+      ["Azure Blueprints","p","n","n","p","na","na","n"],
+      ["Azure Resource Graph","c","c","c","c","na","p","c"],
+      ["Azure Cost Management + Billing","p","n","n","na","na","na","p"],
+      ["Azure Lighthouse","n","n","n","p","na","na","n"],
+      ["Azure Automanage","p","n","n","na","na","na","p"],
+      ["Azure Arc (Servers, SQL, K8s, Apps)","p","p","n","p","na","na","p"],
+      ["Azure Managed Applications","n","n","n","p","na","na","n"],
+    ]
+  },
+  {
+    id: "hybrid",
+    title: "9️⃣ Hybrid, Edge & Migration",
+    icon: "🔄",
+    rows: [
+      ["Azure Arc","p","p","n","p","na","na","p"],
+      ["Azure Stack Hub","n","n","n","n","na","na","n"],
+      ["Azure Stack HCI","n","n","n","n","na","na","n"],
+      ["Azure Stack Edge","n","n","n","n","na","na","n"],
+      ["Azure Migrate","n","n","n","na","na","na","n"],
+      ["Azure Site Recovery","c","p","n","p","na","na","p"],
+      ["Azure Backup","c","p","p","p","na","na","c"],
+      ["Azure Data Box","n","n","n","na","na","na","n"],
+      ["Azure Update Manager","p","n","n","na","na","na","p"],
+    ]
+  },
+  {
+    id: "industry",
+    title: "🔟 Industry & Specialized Clouds",
+    icon: "🏭",
+    rows: [
+      ["Microsoft Cloud for Healthcare","n","n","n","na","n","na","n"],
+      ["Microsoft Cloud for Financial Services","n","n","n","na","n","na","n"],
+      ["Microsoft Cloud for Manufacturing","n","n","n","na","n","na","n"],
+      ["Microsoft Cloud for Retail","n","n","n","na","n","na","n"],
+      ["Microsoft Cloud for Sustainability","n","n","n","na","n","na","n"],
+      ["Microsoft Cloud for Nonprofit","n","n","n","na","n","na","n"],
+      ["Microsoft Cloud for Government","n","n","n","na","n","na","n"],
+    ]
+  },
+  {
+    id: "iot",
+    title: "1️⃣1️⃣ IoT & Digital Twins",
+    icon: "📡",
+    rows: [
+      ["Azure IoT Hub","p","n","n","p","na","na","p"],
+      ["Azure IoT Central","n","n","n","na","na","na","n"],
+      ["Azure Digital Twins","n","n","n","na","na","na","n"],
+      ["Azure Sphere","n","n","n","na","na","na","n"],
+      ["Azure Time Series Insights","n","n","n","na","na","na","n"],
+      ["Azure Device Provisioning Service","n","n","n","na","na","na","n"],
+    ]
+  },
+];
+
+// ── Status labels & rendering ──
+const STATUS = {
+  c:  { label: "✅ Covered", cls: "c", sort: 0 },
+  p:  { label: "⚠️ Partial", cls: "p", sort: 1 },
+  n:  { label: "❌ Not Covered", cls: "n", sort: 2 },
+  na: { label: "— N/A", cls: "na", sort: 3 },
+  needed: { label: "🔵 Needed", cls: "needed", sort: 4 },
+};
+
+// ── Determine if coverage is "needed" for uncovered items ──
+function isNeeded(service, toolIdx, status) {
+  if (status !== "n") return false;
+  const s = service.toLowerCase();
+  // Compliance Assessment (idx 0) — needed for core security services
+  if (toolIdx === 0) {
+    if (s.includes("defender for iot") || s.includes("defender easm") ||
+        s.includes("entra verified") || s.includes("entra private") || s.includes("entra internet")) return true;
+  }
+  // Risk Analysis (idx 1) — needed for defender gaps
+  if (toolIdx === 1) {
+    if (s.includes("defender for endpoint") || s.includes("defender for identity")) return true;
+  }
+  // Data Security (idx 2) — needed for data stores
+  if (toolIdx === 2) {
+    if (s.includes("elastic san") || s.includes("netapp") || s.includes("data share")) return true;
+  }
+  // Tenant Search (idx 6) — needed for searchable resources
+  if (toolIdx === 6) {
+    if (s.includes("vmware") || s.includes("baremetal") || s.includes("cyclecl") ||
+        s.includes("elastic san") || s.includes("data share") || s.includes("relay") ||
+        s.includes("devops") || s.includes("github")) return true;
+  }
+  return false;
+}
+
+// ── Compute PostureIQ status for a row ──
+// PostureIQ = "c" (covered) if ANY other tool is "c" (covered) or "needed" (gap to address)
+function computePostureIQ(svcName, statuses) {
+  for (let i = 0; i < 7; i++) {
+    const st = statuses[i];
+    if (st === "c") return "c";
+    if (isNeeded(svcName, i, st)) return "c";
+  }
+  // Check if any tool has partial coverage
+  for (let i = 0; i < 7; i++) {
+    if (statuses[i] === "p") return "c";
+  }
+  // All n/na — PostureIQ not covered yet
+  let allNA = true;
+  for (let i = 0; i < 7; i++) {
+    if (statuses[i] !== "na") allNA = false;
+  }
+  return allNA ? "na" : "n";
+}
+
+// ── Render ──
+function render() {
+  const container = document.getElementById("matrix-container");
+  let html = "";
+
+  SECTIONS.forEach(sec => {
+    html += `<div class="section-header" onclick="toggleSection('${sec.id}')" id="hdr-${sec.id}">
+      <h2>${sec.icon} ${sec.title}</h2>
+      <div><span class="badge">${sec.rows.length} services</span> <span class="chevron">▼</span></div>
+    </div>`;
+    html += `<div class="table-wrap" id="tbl-${sec.id}">`;
+    html += `<table><thead><tr>`;
+    html += `<th>Service / Product</th>`;
+    TOOLS.forEach(t => {
+      html += `<th>${t}</th>`;
+    });
+    html += `</tr></thead><tbody>`;
+
+    sec.rows.forEach(row => {
+      const svcName = row[0];
+      const statuses = row.slice(1); // 7 tool statuses
+      const piqStatus = computePostureIQ(svcName, statuses);
+
+      html += `<tr data-service="${svcName.toLowerCase()}" data-piq="${piqStatus}">`;
+      html += `<td>${svcName}</td>`;
+
+      // PostureIQ column (first)
+      const piqInfo = STATUS[piqStatus] || STATUS["n"];
+      html += `<td class="${piqInfo.cls}" title="${piqInfo.label}">${piqInfo.label}</td>`;
+
+      // Original 7 tool columns
+      for (let i = 0; i < 7; i++) {
+        let st = statuses[i];
+        if (isNeeded(svcName, i, st)) st = "needed";
+        const info = STATUS[st] || STATUS["n"];
+        html += `<td class="${info.cls}" title="${info.label}">${info.label}</td>`;
+      }
+      html += `</tr>`;
+    });
+
+    html += `</tbody></table></div>`;
+  });
+
+  container.innerHTML = html;
+  updateStats();
+}
+
+// ── Stats ──
+function updateStats() {
+  let total = 0, piqCovered = 0, piqNotCovered = 0, origCovered = 0, origPartial = 0, origNotCovered = 0;
+  SECTIONS.forEach(sec => {
+    sec.rows.forEach(row => {
+      total++;
+      const statuses = row.slice(1);
+      const piq = computePostureIQ(row[0], statuses);
+      if (piq === "c") piqCovered++;
+      else if (piq === "n") piqNotCovered++;
+
+      let hasCovered = false, hasPartial = false, allNA = true;
+      for (let i = 0; i < 7; i++) {
+        const s = statuses[i];
+        if (s !== "na") allNA = false;
+        if (s === "c") hasCovered = true;
+        if (s === "p") hasPartial = true;
+      }
+      if (hasCovered) origCovered++;
+      else if (hasPartial) origPartial++;
+      else if (!allNA) origNotCovered++;
+    });
+  });
+  const piqPct = total ? Math.round(piqCovered / total * 100) : 0;
+  const origPct = total ? Math.round((origCovered + origPartial) / total * 100) : 0;
+
+  document.getElementById("stats-bar").innerHTML = `
+    <div class="stat-card" style="border-color:var(--green-border)"><div class="num" style="color:var(--green)">${piqCovered}</div><div class="lbl">PostureIQ Covered</div></div>
+    <div class="stat-card" style="border-color:var(--green-border)"><div class="num" style="color:var(--green)">${piqPct}%</div><div class="lbl">PostureIQ Coverage</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--accent)">${total}</div><div class="lbl">Total Services</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--green)">${origCovered}</div><div class="lbl">Covered Today (≥1 tool)</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--yellow)">${origPartial}</div><div class="lbl">Partial Today</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--red)">${piqNotCovered}</div><div class="lbl">PostureIQ Gaps</div></div>
+  `;
+}
+
+// ── Filter ──
+function filterRows() {
+  const q = document.getElementById("searchBox").value.toLowerCase();
+  const cf = document.getElementById("coverageFilter").value;
+
+  document.querySelectorAll("tbody tr").forEach(tr => {
+    const svc = tr.dataset.service || "";
+    const matchesSearch = !q || svc.includes(q);
+    let matchesCoverage = true;
+
+    if (cf !== "all") {
+      if (cf === "piq-covered") {
+        matchesCoverage = tr.dataset.piq === "c";
+      } else {
+        const cells = tr.querySelectorAll("td");
+        // Skip first (service name) and second (PostureIQ) — filter on original tools only
+        const statuses = Array.from(cells).slice(2).map(c => c.className);
+        if (cf === "covered") matchesCoverage = statuses.some(s => s === "c");
+        else if (cf === "partial") matchesCoverage = statuses.some(s => s === "p");
+        else if (cf === "not-covered") matchesCoverage = statuses.some(s => s === "n");
+        else if (cf === "needed") matchesCoverage = statuses.some(s => s === "needed");
+      }
+    }
+
+    tr.style.display = matchesSearch && matchesCoverage ? "" : "none";
+  });
+}
+
+// ── Toggle sections ──
+function toggleSection(id) {
+  const hdr = document.getElementById("hdr-" + id);
+  const tbl = document.getElementById("tbl-" + id);
+  hdr.classList.toggle("collapsed");
+  tbl.classList.toggle("hidden");
+}
+function expandAll() {
+  document.querySelectorAll(".section-header").forEach(h => h.classList.remove("collapsed"));
+  document.querySelectorAll(".table-wrap").forEach(t => t.classList.remove("hidden"));
+}
+function collapseAll() {
+  document.querySelectorAll(".section-header").forEach(h => h.classList.add("collapsed"));
+  document.querySelectorAll(".table-wrap").forEach(t => t.classList.add("hidden"));
+}
+
+// ── Init ──
+document.getElementById("genDate").textContent = new Date().toLocaleString();
+render();
+</script>
+</body>
+</html>

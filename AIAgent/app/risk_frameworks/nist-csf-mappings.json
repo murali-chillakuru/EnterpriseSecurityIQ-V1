@@ -1,0 +1,29 @@
+{
+  "framework": "NIST Cybersecurity Framework",
+  "version": "2.0",
+  "mappings": {
+    "dormant_accounts": ["PR.AC-1", "DE.CM-3"],
+    "overpermissioned_service_principals": ["PR.AC-4", "PR.AC-1"],
+    "expired_credentials": ["PR.AC-1", "PR.AC-7"],
+    "expiring_credentials": ["PR.AC-1", "PR.AC-7"],
+    "mfa_gaps": ["PR.AC-7", "PR.AC-1"],
+    "admin_proliferation": ["PR.AC-4", "PR.AC-1"],
+    "guest_user_risk": ["PR.AC-1", "PR.AC-4"],
+    "missing_guest_review": ["PR.AC-1", "DE.CM-3"],
+    "high_risk_users": ["DE.AE-2", "DE.CM-1"],
+    "medium_risk_users": ["DE.AE-2", "DE.CM-1"],
+    "open_management_ports": ["PR.AC-5", "PR.PT-4"],
+    "public_storage": ["PR.AC-5", "PR.DS-1"],
+    "webapp_transport_security": ["PR.DS-2", "PR.AC-5"],
+    "sql_firewall_exposure": ["PR.AC-5", "PR.PT-4"],
+    "disabled_plans": ["DE.AE-2", "DE.CM-8"],
+    "security_recommendations": ["DE.CM-8", "ID.RA-1"],
+    "low_secure_score": ["ID.RA-1", "PR.IP-7"],
+    "missing_diagnostics": ["DE.AE-1", "DE.AE-3"],
+    "policy_noncompliance": ["DE.CM-8", "PR.IP-1"],
+    "missing_tags": ["ID.AM-1", "ID.AM-2"],
+    "irm_not_assessed": ["DE.CM-1", "DE.AE-2"],
+    "no_irm_policies": ["DE.CM-1", "DE.CM-3"],
+    "active_irm_alerts": ["DE.AE-2", "RS.AN-1"]
+  }
+}

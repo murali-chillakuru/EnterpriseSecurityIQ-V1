@@ -1,0 +1,534 @@
+{
+  "framework": "GDPR",
+  "version": "2016/679",
+  "mappings": {
+    "no_auth_required": [
+      "Art.32(1)"
+    ],
+    "non_aad_auth": [
+      "Art.32(1)"
+    ],
+    "stale_auth_config": [
+      "Art.32(1)"
+    ],
+    "cs_auth_no_sign_in_required": [
+      "Art.32(1)"
+    ],
+    "cs_auth_generic_oauth": [
+      "Art.32(1)"
+    ],
+    "unauthenticated_web_channel": [
+      "Art.32(1)"
+    ],
+    "teams_channel_no_sso": [
+      "Art.32(1)"
+    ],
+    "no_pp_dlp_policies": [
+      "Art.25(1)",
+      "Art.32(1)"
+    ],
+    "cs_dlp_no_auth_connector_allowed": [
+      "Art.25(1)",
+      "Art.32(1)"
+    ],
+    "cs_dlp_knowledge_source_unrestricted": [
+      "Art.25(1)",
+      "Art.32(1)"
+    ],
+    "cs_dlp_channel_unrestricted": [
+      "Art.25(1)",
+      "Art.32(1)"
+    ],
+    "cs_dlp_skills_unrestricted": [
+      "Art.25(1)",
+      "Art.32(1)"
+    ],
+    "cs_dlp_default_group_not_blocked": [
+      "Art.25(1)",
+      "Art.32(1)"
+    ],
+    "cs_dlp_no_tenant_policy": [
+      "Art.25(1)",
+      "Art.32(1)"
+    ],
+    "cs_dlp_http_unrestricted": [
+      "Art.32(1)"
+    ],
+    "cs_auth_dlp_not_enforcing": [
+      "Art.25(1)",
+      "Art.32(1)"
+    ],
+    "connector_no_dlp_coverage": [
+      "Art.25(1)",
+      "Art.32(1)"
+    ],
+    "unmanaged_environments": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "no_security_group": [
+      "Art.25(1)"
+    ],
+    "cs_env_bots_in_default": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "cs_env_bots_in_dev_env": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "cs_env_sandbox_for_production": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "cs_env_no_tenant_isolation": [
+      "Art.32(1)"
+    ],
+    "cs_env_gen_ai_unrestricted": [
+      "Art.25(1)"
+    ],
+    "no_conversation_logging": [
+      "Art.30"
+    ],
+    "environment_audit_disabled": [
+      "Art.30"
+    ],
+    "cs_audit_no_purview_integration": [
+      "Art.30"
+    ],
+    "cs_audit_no_dspm_for_ai": [
+      "Art.30"
+    ],
+    "cs_agent_shared_to_everyone": [
+      "Art.25(1)"
+    ],
+    "cs_agent_event_triggers_ungoverned": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "cs_agent_http_unrestricted": [
+      "Art.32(1)"
+    ],
+    "cs_compliance_cross_geo_data_movement": [
+      "Art.44",
+      "Art.46"
+    ],
+    "cs_compliance_env_region_mismatch": [
+      "Art.44",
+      "Art.46"
+    ],
+    "cs_dv_env_maker_in_prod": [
+      "Art.25(1)"
+    ],
+    "cs_dv_no_lockbox": [
+      "Art.32(1)"
+    ],
+    "cs_dv_no_cmk": [
+      "Art.32(1)"
+    ],
+    "pp_env_governance_for_readiness": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "pp_dlp_coverage_for_copilot": [
+      "Art.25(1)",
+      "Art.32(1)"
+    ],
+    "pp_cross_tenant_for_readiness": [
+      "Art.44",
+      "Art.46"
+    ],
+    "overshared_knowledge_source": [
+      "Art.25(1)",
+      "Art.32(1)"
+    ],
+    "external_knowledge_source": [
+      "Art.28"
+    ],
+    "public_website_source": [
+      "Art.32(1)"
+    ],
+    "generative_answers_no_guardrails": [
+      "Art.25(1)"
+    ],
+    "generative_orchestration_unrestricted": [
+      "Art.25(1)"
+    ],
+    "unpublished_bot_with_secrets": [
+      "Art.32(1)"
+    ],
+    "bot_not_solution_aware": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "draft_bot_stale": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "custom_connector_no_auth": [
+      "Art.32(1)"
+    ],
+    "premium_connector_uncontrolled": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "public_access_enabled": [
+      "Art.32(1)"
+    ],
+    "no_private_endpoints": [
+      "Art.32(1)"
+    ],
+    "workspace_no_isolation": [
+      "Art.32(1)"
+    ],
+    "workspace_no_managed_network": [
+      "Art.32(1)"
+    ],
+    "managed_network_no_outbound_rules": [
+      "Art.32(1)"
+    ],
+    "outbound_fqdn_unrestricted": [
+      "Art.32(1)"
+    ],
+    "local_auth_enabled": [
+      "Art.32(1)"
+    ],
+    "workspace_no_managed_identity": [
+      "Art.32(1)"
+    ],
+    "project_no_managed_identity": [
+      "Art.32(1)"
+    ],
+    "shared_project_identity": [
+      "Art.25(1)"
+    ],
+    "agent_permission_drift": [
+      "Art.25(1)"
+    ],
+    "no_content_filter": [
+      "Art.25(1)"
+    ],
+    "weak_content_filters": [
+      "Art.25(1)"
+    ],
+    "content_filter_gaps": [
+      "Art.25(1)"
+    ],
+    "no_prompt_shield": [
+      "Art.25(1)"
+    ],
+    "jailbreak_filter_disabled": [
+      "Art.25(1)"
+    ],
+    "blocklist_not_configured": [
+      "Art.25(1)"
+    ],
+    "no_prompt_injection_mitigation": [
+      "Art.25(1)"
+    ],
+    "no_groundedness_detection": [
+      "Art.25(1)"
+    ],
+    "no_pii_filter": [
+      "Art.25(1)",
+      "Art.32(1)"
+    ],
+    "agent_no_custom_guardrail": [
+      "Art.25(1)"
+    ],
+    "agent_account_no_content_safety": [
+      "Art.25(1)"
+    ],
+    "permissive_content_filters": [
+      "Art.25(1)"
+    ],
+    "serverless_no_content_safety": [
+      "Art.25(1)"
+    ],
+    "deployment_no_rai_policy": [
+      "Art.25(1)"
+    ],
+    "high_capacity_allocation": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "deployment_deprecated_model": [
+      "Art.28"
+    ],
+    "unapproved_model_deployed": [
+      "Art.28"
+    ],
+    "model_version_outdated": [
+      "Art.28"
+    ],
+    "outdated_model_version": [
+      "Art.28"
+    ],
+    "no_token_rate_limit": [
+      "Art.32(1)"
+    ],
+    "excessive_rate_limit": [
+      "Art.32(1)"
+    ],
+    "no_hub_structure": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "workspace_no_cmk": [
+      "Art.32(1)"
+    ],
+    "hub_no_project_isolation": [
+      "Art.32(1)"
+    ],
+    "compute_public_ip": [
+      "Art.32(1)"
+    ],
+    "compute_ssh_enabled": [
+      "Art.32(1)"
+    ],
+    "compute_idle_no_shutdown": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "compute_no_managed_identity": [
+      "Art.32(1)"
+    ],
+    "datastore_credential_in_config": [
+      "Art.32(1)"
+    ],
+    "datastore_no_encryption": [
+      "Art.32(1)"
+    ],
+    "online_endpoint_public": [
+      "Art.32(1)"
+    ],
+    "endpoint_no_auth": [
+      "Art.32(1)"
+    ],
+    "endpoint_key_auth_only": [
+      "Art.32(1)"
+    ],
+    "endpoint_no_logging": [
+      "Art.30"
+    ],
+    "public_endpoint_exposure": [
+      "Art.32(1)"
+    ],
+    "no_auth_policy": [
+      "Art.32(1)"
+    ],
+    "deployment_unhealthy": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "registry_public_access": [
+      "Art.32(1)"
+    ],
+    "registry_no_rbac": [
+      "Art.25(1)"
+    ],
+    "connection_static_credentials": [
+      "Art.32(1)"
+    ],
+    "connection_shared_to_all": [
+      "Art.25(1)"
+    ],
+    "connection_expired_credentials": [
+      "Art.32(1)"
+    ],
+    "connection_no_expiry": [
+      "Art.32(1)"
+    ],
+    "serverless_key_auth": [
+      "Art.32(1)"
+    ],
+    "serverless_key_not_rotated": [
+      "Art.32(1)"
+    ],
+    "ws_no_diagnostic_settings": [
+      "Art.30"
+    ],
+    "ws_no_log_analytics": [
+      "Art.30"
+    ],
+    "mcp_no_secure_auth": [
+      "Art.32(1)"
+    ],
+    "mcp_public_endpoint": [
+      "Art.32(1)"
+    ],
+    "mcp_shared_to_all": [
+      "Art.25(1)"
+    ],
+    "a2a_no_identity_auth": [
+      "Art.32(1)"
+    ],
+    "non_microsoft_tool_connection": [
+      "Art.28"
+    ],
+    "tool_credential_based_auth": [
+      "Art.32(1)"
+    ],
+    "hosted_no_vnet": [
+      "Art.32(1)"
+    ],
+    "hosted_no_acr": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "hosted_unhealthy": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "data_connection_no_managed_identity": [
+      "Art.32(1)"
+    ],
+    "no_customer_managed_key": [
+      "Art.32(1)"
+    ],
+    "data_connection_shared_to_all": [
+      "Art.25(1)"
+    ],
+    "workspace_no_diagnostics": [
+      "Art.30"
+    ],
+    "project_no_tracing": [
+      "Art.30"
+    ],
+    "workspace_limited_log_coverage": [
+      "Art.30"
+    ],
+    "shadow_agents_unpublished": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "excess_unpublished_agents": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "agent_no_rbac": [
+      "Art.25(1)"
+    ],
+    "sp_excessive_permissions": [
+      "Art.25(1)"
+    ],
+    "sp_credential_expiry": [
+      "Art.32(1)"
+    ],
+    "sp_no_credential_rotation": [
+      "Art.32(1)"
+    ],
+    "sp_multi_tenant_exposure": [
+      "Art.44",
+      "Art.46"
+    ],
+    "sp_no_managed_identity": [
+      "Art.32(1)"
+    ],
+    "sp_ai_api_over_scoped": [
+      "Art.25(1)"
+    ],
+    "sp_risky_identity_protection": [
+      "Art.25(1)"
+    ],
+    "sp_privileged_directory_roles": [
+      "Art.25(1)"
+    ],
+    "sp_owner_governance_weak": [
+      "Art.25(1)"
+    ],
+    "sp_stale_disabled": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "no_ca_for_ai_apps": [
+      "Art.32(1)"
+    ],
+    "no_token_lifetime_restriction": [
+      "Art.32(1)"
+    ],
+    "ca_weak_policy_quality": [
+      "Art.32(1)"
+    ],
+    "ca_no_session_controls": [
+      "Art.32(1)"
+    ],
+    "broad_user_consent_to_ai_apps": [
+      "Art.25(1)"
+    ],
+    "admin_consent_ai_high_privilege": [
+      "Art.25(1)"
+    ],
+    "ai_specific_consent_scopes": [
+      "Art.25(1)"
+    ],
+    "wif_missing_federation": [
+      "Art.32(1)"
+    ],
+    "cross_tenant_ai_exposure": [
+      "Art.44",
+      "Art.46"
+    ],
+    "pim_missing_for_ai_roles": [
+      "Art.25(1)"
+    ],
+    "no_defender_for_ai": [
+      "Art.32(1)"
+    ],
+    "defender_ai_alerts_suppressed": [
+      "Art.30"
+    ],
+    "no_ai_azure_policies": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "ai_policy_non_compliant": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "agent_no_auth_between_agents": [
+      "Art.32(1)"
+    ],
+    "agent_unrestricted_tool_access": [
+      "Art.25(1)"
+    ],
+    "agent_memory_no_encryption": [
+      "Art.32(1)"
+    ],
+    "no_agent_inventory": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "agent_no_human_in_loop": [
+      "Art.25(1)"
+    ],
+    "shadow_ai_agents": [
+      "Art.24",
+      "Art.25(1)"
+    ],
+    "no_diagnostic_settings": [
+      "Art.30"
+    ],
+    "no_audit_logging": [
+      "Art.30"
+    ],
+    "training_data_no_classification": [
+      "Art.5(1)(e)",
+      "Art.25(1)"
+    ],
+    "output_data_no_retention_policy": [
+      "Art.5(1)(e)",
+      "Art.17"
+    ],
+    "key_without_network_restriction": [
+      "Art.32(1)"
+    ],
+    "multi_region_sprawl": [
+      "Art.44",
+      "Art.46"
+    ],
+    "no_cmk_encryption": [
+      "Art.32(1)"
+    ]
+  }
+}

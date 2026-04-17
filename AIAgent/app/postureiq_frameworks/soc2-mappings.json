@@ -1,0 +1,627 @@
+{
+  "framework": "SOC 2 Type II",
+  "version": "1.0",
+  "controls": [
+    {
+      "control_id": "SOC2-CC6.1",
+      "title": "Logical Access Controls",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-user-lifecycle-summary",
+        "entra-role-assignment",
+        "azure-role-assignment"
+      ],
+      "evaluation_logic": "check_account_management",
+      "rationale": "Access to logical information assets must be restricted to authorized users",
+      "recommendation": "Implement identity management with MFA and privilege access management"
+    },
+    {
+      "control_id": "SOC2-CC6.2",
+      "title": "Prior to Issuance/Reissuance of Access",
+      "domain": "access",
+      "severity": "high",
+      "evidence_types": [
+        "entra-conditional-access-policy",
+        "azure-role-assignment"
+      ],
+      "evaluation_logic": "check_conditional_access",
+      "rationale": "Validate authorization before granting access",
+      "recommendation": "Implement approval workflows for access grants with business justification"
+    },
+    {
+      "control_id": "SOC2-CC6.3",
+      "title": "Removal or Modification of Access",
+      "domain": "access",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-user-lifecycle-summary",
+        "azure-activity-log"
+      ],
+      "evaluation_logic": "check_user_lifecycle",
+      "rationale": "Timely removal of access when roles change or employment ends",
+      "recommendation": "Automate access removal within 24 hours of termination"
+    },
+    {
+      "control_id": "SOC2-CC7.2",
+      "title": "Change Management",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-activity-log",
+        "azure-policy-compliance"
+      ],
+      "evaluation_logic": "check_activity_logs",
+      "rationale": "Systems changes must be authorized and documented",
+      "recommendation": "Require approval for all production changes with implementation records"
+    },
+    {
+      "control_id": "SOC2-CC1.5",
+      "title": "Security Training",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "entra-user-lifecycle-summary"
+      ],
+      "evaluation_logic": "check_user_lifecycle",
+      "rationale": "Personnel must understand their security responsibilities",
+      "recommendation": "Provide annual security training to all personnel"
+    },
+    {
+      "control_id": "SOC2-A1.1",
+      "title": "System Availability Objectives",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-alert-rule",
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_monitoring_alerts",
+      "rationale": "Define and monitor system availability requirements",
+      "recommendation": "Document SLAs and monitor uptime metrics continuously"
+    },
+    {
+      "control_id": "SOC2-A1.2",
+      "title": "Availability Threats and Risks",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-sql-advanced-threat",
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_defender_plans",
+      "rationale": "Identify risks to system availability",
+      "recommendation": "Conduct annual risk assessments for availability threats"
+    },
+    {
+      "control_id": "SOC2-C1.1",
+      "title": "Confidentiality Objectives",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-disk-encryption-set",
+        "azure-keyvault",
+        "azure-storage-queue",
+        "azure-storage-security"
+      ],
+      "evaluation_logic": "check_storage_security",
+      "rationale": "Define and maintain confidentiality controls",
+      "recommendation": "Implement encryption for all sensitive data at rest and in transit"
+    },
+    {
+      "control_id": "SOC2-C1.2",
+      "title": "Confidentiality Boundaries",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-nsg-rule",
+        "entra-conditional-access-policy",
+        "azure-app-service-network",
+        "azure-private-endpoint"
+      ],
+      "evaluation_logic": "check_nsg_rules",
+      "rationale": "Prevent unauthorized access to confidential data",
+      "recommendation": "Implement network segmentation and access restrictions",
+      "compensating_evidence": [
+        "azure-waf-policy",
+        "azure-firewall"
+      ]
+    },
+    {
+      "control_id": "SOC2-PI1.1",
+      "title": "Processing Integrity Objectives",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-compliance",
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_policy_compliance",
+      "rationale": "Ensure accurate and complete processing of data",
+      "recommendation": "Implement validation and error detection mechanisms"
+    },
+    {
+      "control_id": "SOC2-CC4.1",
+      "title": "Identifiable Personal Information",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-sql-server",
+        "azure-sql-database",
+        "azure-sql-auditing",
+        "azure-storage-security",
+        "azure-sql-tde",
+        "azure-sql-firewall",
+        "azure-sql-vulnerability",
+        "azure-sql-advanced-threat"
+      ],
+      "evaluation_logic": "check_sql_security",
+      "rationale": "Protect personally identifiable information",
+      "recommendation": "Implement data classification and protection controls",
+      "compensating_evidence": [
+        "azure-sql-advanced-threat"
+      ]
+    },
+    {
+      "control_id": "SOC2-CC8.1",
+      "title": "Logical Access Restriction",
+      "domain": "access",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-role-assignment",
+        "entra-pim-eligible-assignment",
+        "azure-role-assignment"
+      ],
+      "evaluation_logic": "check_pim_configuration",
+      "rationale": "Restrict access to information systems by user, transaction type, and time",
+      "recommendation": "Apply least privilege principles with privileged access management"
+    },
+    {
+      "control_id": "SOC2-CC9.2",
+      "title": "Monitoring and Alerting",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-alert-rule",
+        "azure-activity-log"
+      ],
+      "evaluation_logic": "check_monitoring_alerts",
+      "rationale": "Monitor and alert on security events",
+      "recommendation": "Configure alerts for unauthorized access attempts and anomalies"
+    },
+    {
+      "control_id": "SOC2-CC7.1",
+      "title": "Infrastructure Maintenance",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-container-registry",
+        "azure-aks-cluster",
+        "azure-policy-compliance",
+        "azure-vm-config"
+      ],
+      "evaluation_logic": "check_vm_security",
+      "rationale": "Maintain secure infrastructure configurations",
+      "recommendation": "Apply patches and updates within defined maintenance windows"
+    },
+    {
+      "control_id": "SOC2-CC8.2",
+      "title": "Sensitive Access Logging",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-activity-log",
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_activity_logs",
+      "rationale": "Log and review access to sensitive systems",
+      "recommendation": "Enable comprehensive audit logging for all privileged access"
+    },
+    {
+      "control_id": "SOC2-CC8.3",
+      "title": "Encryption of Sensitive Data",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-keyvault",
+        "azure-storage-security"
+      ],
+      "evaluation_logic": "check_key_vault_security",
+      "rationale": "Protect sensitive data through encryption",
+      "recommendation": "Encrypt all sensitive data using managed keys with access controls"
+    },
+    {
+      "control_id": "SOC2-CC6.5",
+      "title": "Access Credentials",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-conditional-access-policy",
+        "azure-keyvault"
+      ],
+      "evaluation_logic": "check_conditional_access",
+      "rationale": "Secure storage and handling of access credentials",
+      "recommendation": "Implement MFA, credential vaults, and password policies"
+    },
+    {
+      "control_id": "SOC2-CC9.1",
+      "title": "Detection of Anomalies and Irregularities",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-alert-rule"
+      ],
+      "evaluation_logic": "check_monitoring_alerts",
+      "rationale": "Detect security anomalies and investigate irregularities",
+      "recommendation": "Implement threat detection with behavioral analysis"
+    },
+    {
+      "control_id": "SOC2-CC1.4",
+      "title": "Operational Incident Response",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-activity-log",
+        "azure-alert-rule"
+      ],
+      "evaluation_logic": "check_monitoring_alerts",
+      "rationale": "Respond effectively to security incidents",
+      "recommendation": "Document and test incident response procedures quarterly"
+    },
+    {
+      "control_id": "SOC2-CC2.1",
+      "title": "Governance Oversight",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "entra-access-review"
+      ],
+      "evaluation_logic": "check_access_reviews",
+      "rationale": "Maintain governance over security and controls",
+      "recommendation": "Establish governance committees and conduct periodic compliance reviews"
+    },
+    {
+      "control_id": "SOC2-CC6.7",
+      "title": "AI Services Access Controls",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-cognitive-account"
+      ],
+      "evaluation_logic": "check_ai_services_security",
+      "rationale": "AI accounts must enforce network isolation and managed identity auth.",
+      "recommendation": "Disable public access, disable local auth, enable CMK on AI accounts."
+    },
+    {
+      "control_id": "SOC2-CC6.8",
+      "title": "ML Workspace Network Controls",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-ml-workspace"
+      ],
+      "evaluation_logic": "check_ml_network_security",
+      "rationale": "ML workspaces must use private endpoints and disable public access.",
+      "recommendation": "Disable public network access. Configure private endpoints."
+    },
+    {
+      "control_id": "SOC2-CC7.3",
+      "title": "AI Deployment Monitoring",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-ai-deployment"
+      ],
+      "evaluation_logic": "check_ai_governance",
+      "rationale": "AI deployments must have content filtering and rate limits for responsible AI.",
+      "recommendation": "Assign content filter policies and configure rate limits."
+    },
+    {
+      "control_id": "SOC2-CC3.4",
+      "title": "Resource Group Classification",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource-group"
+      ],
+      "evaluation_logic": "check_resource_group_governance",
+      "rationale": "Resource groups must be tagged for asset classification.",
+      "recommendation": "Apply mandatory tags to all resource groups."
+    },
+    {
+      "control_id": "SOC2-CC6.9",
+      "title": "Storage Account Data Integrity",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-account"
+      ],
+      "evaluation_logic": "check_storage_account_security",
+      "rationale": "Storage accounts must enforce encryption, soft delete, and TLS 1.2.",
+      "recommendation": "Enable HTTPS-only, soft delete, TLS 1.2, and configure firewall."
+    },
+    {
+      "control_id": "SOC2-CC6.10",
+      "title": "Container Registry Access Control",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-registry"
+      ],
+      "evaluation_logic": "check_container_registry_security",
+      "rationale": "Container registries must disable admin access and use content trust.",
+      "recommendation": "Disable admin user. Enable content trust. Use private endpoints."
+    },
+    {
+      "control_id": "SOC2-CC6.11",
+      "title": "Container App Communication Security",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-app"
+      ],
+      "evaluation_logic": "check_container_app_network",
+      "rationale": "Container Apps must enforce HTTPS ingress.",
+      "recommendation": "Disable insecure connections. Enable managed identity."
+    },
+    {
+      "control_id": "SOC2-CC6.12",
+      "title": "Cosmos DB Data Protection",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-cosmosdb-account"
+      ],
+      "evaluation_logic": "check_cosmosdb_security",
+      "rationale": "Cosmos DB must disable local auth and use CMK encryption.",
+      "recommendation": "Disable local auth. Enable CMK. Use private endpoints."
+    },
+    {
+      "control_id": "SOC2-CC6.13",
+      "title": "Database Server Availability",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-database-server"
+      ],
+      "evaluation_logic": "check_database_server_security",
+      "rationale": "Database servers must have HA and geo-redundant backups.",
+      "recommendation": "Disable public access. Enable HA. Enable geo-redundant backup."
+    },
+    {
+      "control_id": "SOC2-CC7.4",
+      "title": "Application Gateway WAF Monitoring",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-app-gateway",
+        "azure-waf-policy"
+      ],
+      "evaluation_logic": "check_app_gateway_security",
+      "rationale": "Application Gateways must enable WAF in Prevention mode.",
+      "recommendation": "Enable WAF. Set Prevention mode. Configure TLS 1.2."
+    },
+    {
+      "control_id": "SOC2-CC6.14",
+      "title": "API Management Secure Communication",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-apim-instance"
+      ],
+      "evaluation_logic": "check_apim_network_security",
+      "rationale": "APIM must disable legacy TLS and use VNet integration.",
+      "recommendation": "Disable TLS 1.0/1.1. Configure VNet. Enable managed identity."
+    },
+    {
+      "control_id": "SOC2-CC6.15",
+      "title": "Storage Container Logical Access",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-container"
+      ],
+      "evaluation_logic": "check_storage_container_security",
+      "rationale": "Storage containers must not allow anonymous access.",
+      "recommendation": "Set all containers to Private. Configure lifecycle and immutability policies."
+    },
+    {
+      "control_id": "SOC2-CC7.5",
+      "title": "SQL Server Threat Detection and Monitoring",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-sql-detailed"
+      ],
+      "evaluation_logic": "check_sql_detailed_security",
+      "rationale": "SQL Servers must enable ATP and per-database auditing.",
+      "recommendation": "Enable ATP and vulnerability assessment. Verify per-database auditing."
+    },
+    {
+      "control_id": "SOC2-CC6.16",
+      "title": "Web Application Access Restrictions",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-webapp-detailed"
+      ],
+      "evaluation_logic": "check_webapp_detailed_security",
+      "rationale": "Web Apps must enable authentication and restrict access.",
+      "recommendation": "Enable App Service Auth. Restrict CORS. Configure IP restrictions."
+    },
+    {
+      "control_id": "SOC2-CC7.6",
+      "title": "Database Server Audit Configuration",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-database-config"
+      ],
+      "evaluation_logic": "check_database_config_security",
+      "rationale": "Database servers must enforce secure transport and audit logging.",
+      "recommendation": "Enable require_secure_transport. Enable log_checkpoints and audit logging."
+    },
+    {
+      "control_id": "SOC2-CC8.2b",
+      "title": "Container Registry Change Management",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-acr-repository"
+      ],
+      "evaluation_logic": "check_acr_repository_security",
+      "rationale": "ACR repositories must enforce tag immutability.",
+      "recommendation": "Enable tag immutability. Clean up stale repositories."
+    },
+    {
+      "control_id": "SOC2-CC7.4b",
+      "title": "Incident Detection",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-alert-rule",
+        "entra-risk-summary"
+      ],
+      "evaluation_logic": "check_incident_detection",
+      "rationale": "SOC 2 requires procedures to detect security incidents.",
+      "recommendation": "Enable Defender for Cloud and configure alert rules."
+    },
+    {
+      "control_id": "SOC2-CC7.5b",
+      "title": "Incident Response and Notification",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-action-group",
+        "azure-alert-rule",
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_incident_alerting",
+      "rationale": "SOC 2 requires incident notification procedures.",
+      "recommendation": "Configure action groups with email and SMS receivers."
+    },
+    {
+      "control_id": "SOC2-CC7.6b",
+      "title": "Security Contact and Triage",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_security_contact_config",
+      "rationale": "Security contacts must be configured for incident triage.",
+      "recommendation": "Configure security contacts with alert notifications."
+    },
+    {
+      "control_id": "SOC2-CC7.7",
+      "title": "Incident Investigation Readiness",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-log-analytics",
+        "azure-diagnostic-setting",
+        "azure-activity-log"
+      ],
+      "evaluation_logic": "check_incident_investigation_readiness",
+      "rationale": "SOC 2 requires investigation capability for security events.",
+      "recommendation": "Deploy Log Analytics and configure diagnostic settings."
+    },
+    {
+      "control_id": "SOC2-CC8.3b",
+      "title": "Change Control Policies",
+      "domain": "change_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "azure-policy-definition"
+      ],
+      "evaluation_logic": "check_change_control_policies",
+      "rationale": "SOC 2 requires formal change management procedures.",
+      "recommendation": "Assign Azure policies with deny effects for unauthorized changes."
+    },
+    {
+      "control_id": "SOC2-CC8.4",
+      "title": "Change Tracking and Monitoring",
+      "domain": "change_management",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-activity-log",
+        "azure-activity-event",
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_configuration_change_tracking",
+      "rationale": "Configuration changes must be tracked and auditable.",
+      "recommendation": "Ensure activity logs capture Write and Delete events."
+    },
+    {
+      "control_id": "SOC2-A1.1b",
+      "title": "Backup and Recovery",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-recovery-vault",
+        "azure-vm-config",
+        "azure-sql-server"
+      ],
+      "evaluation_logic": "check_backup_configuration",
+      "rationale": "SOC 2 Availability criteria requires backup and recovery capabilities.",
+      "recommendation": "Deploy Recovery Services vaults with soft delete."
+    },
+    {
+      "control_id": "SOC2-A1.2b",
+      "title": "System Availability and Redundancy",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-account",
+        "azure-cosmosdb-account"
+      ],
+      "evaluation_logic": "check_geo_redundancy",
+      "rationale": "SOC 2 requires geo-redundant storage for availability.",
+      "recommendation": "Use GRS/RA-GRS replication for critical storage."
+    },
+    {
+      "control_id": "SOC2-CC6.8b",
+      "title": "Asset Inventory Management",
+      "domain": "asset_management",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource",
+        "azure-resource-group",
+        "azure-managed-identity"
+      ],
+      "evaluation_logic": "check_asset_inventory",
+      "rationale": "SOC 2 requires identification and management of system assets.",
+      "recommendation": "Maintain a comprehensive cloud asset inventory."
+    },
+    {
+      "control_id": "SOC2-CC6.9b",
+      "title": "Application Inventory",
+      "domain": "asset_management",
+      "severity": "medium",
+      "evidence_types": [
+        "entra-application",
+        "entra-service-principal"
+      ],
+      "evaluation_logic": "check_application_inventory",
+      "rationale": "SOC 2 requires inventory of authorized software and applications.",
+      "recommendation": "Review app registrations and ensure service principal ownership."
+    },
+    {
+      "control_id": "SOC2-CC6.10b",
+      "title": "Session Termination",
+      "domain": "access",
+      "severity": "medium",
+      "evidence_types": [
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_session_management",
+      "rationale": "SOC 2 requires session management and automatic termination.",
+      "recommendation": "Configure sign-in frequency and browser session controls."
+    }
+  ]
+}

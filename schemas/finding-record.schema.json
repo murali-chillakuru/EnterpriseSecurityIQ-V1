@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EnterpriseSecurityIQ Finding Record",
+  "description": "Schema for finding records produced by the Python evaluation engine (models.py → FindingRecord).",
+  "type": "object",
+  "required": ["FindingId", "ControlId", "Framework", "ControlTitle", "Status", "Severity", "Domain"],
+  "properties": {
+    "FindingId": { "type": "string", "format": "uuid" },
+    "ControlId": { "type": "string" },
+    "Framework": { "type": "string" },
+    "ControlTitle": { "type": "string" },
+    "Status": { "type": "string", "enum": ["compliant", "non_compliant", "not_assessed", "missing_evidence", "partial"] },
+    "Severity": { "type": "string", "enum": ["critical", "high", "medium", "low", "informational"] },
+    "Domain": {
+      "type": "string",
+      "enum": ["identity", "access", "governance", "logging", "network", "data_protection"]
+    },
+    "Description": { "type": "string" },
+    "Rationale": { "type": "string" },
+    "Recommendation": { "type": "string" },
+    "EvidenceIds": { "type": "array", "items": { "type": "string" } },
+    "SupportingEvidence": { "type": "array" },
+    "ResourceId": { "type": "string" },
+    "ResourceType": { "type": "string" },
+    "EvaluatedAt": { "type": "string", "format": "date-time" }
+  }
+}

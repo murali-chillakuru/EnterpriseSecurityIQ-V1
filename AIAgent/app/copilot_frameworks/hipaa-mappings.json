@@ -1,0 +1,306 @@
+{
+  "unable_to_assess": [
+    "164.308(a)(8)"
+  ],
+  "broad_site_membership": [
+    "164.312(a)(1)"
+  ],
+  "everyone_permissions": [
+    "164.312(a)(1)",
+    "164.308(a)(4)"
+  ],
+  "anonymous_link_exposure": [
+    "164.312(a)(1)",
+    "164.312(e)(1)"
+  ],
+  "external_sharing_posture": [
+    "164.312(e)(1)"
+  ],
+  "no_sharepoint_advanced_management": [
+    "164.308(a)(1)"
+  ],
+  "no_sam_restricted_access_control": [
+    "164.312(a)(1)"
+  ],
+  "no_sam_site_lifecycle_policy": [
+    "164.310(d)(2)(i)"
+  ],
+  "no_sam_dag_reports": [
+    "164.308(a)(1)"
+  ],
+  "high_permission_blast_radius": [
+    "164.312(a)(1)",
+    "164.308(a)(4)"
+  ],
+  "external_sharing_risk_score": [
+    "164.312(e)(1)"
+  ],
+  "label_api_inaccessible": [
+    "164.308(a)(8)"
+  ],
+  "no_labels_defined": [
+    "164.312(a)(2)(iv)",
+    "164.312(c)(1)"
+  ],
+  "insufficient_labels": [
+    "164.312(c)(1)"
+  ],
+  "no_mandatory_labeling": [
+    "164.312(c)(1)"
+  ],
+  "no_auto_labeling": [
+    "164.312(c)(1)"
+  ],
+  "low_site_label_coverage": [
+    "164.312(c)(1)"
+  ],
+  "no_default_label": [
+    "164.312(c)(1)"
+  ],
+  "mandatory_labeling_incomplete_scope": [
+    "164.312(c)(1)"
+  ],
+  "labels_without_encryption": [
+    "164.312(a)(2)(iv)"
+  ],
+  "labels_without_site_group_settings": [
+    "164.312(a)(1)"
+  ],
+  "no_dlp_policies": [
+    "164.312(e)(1)",
+    "164.312(c)(1)"
+  ],
+  "no_label_based_dlp": [
+    "164.312(e)(1)"
+  ],
+  "incomplete_workload_coverage": [
+    "164.312(e)(1)"
+  ],
+  "no_endpoint_dlp": [
+    "164.312(e)(1)"
+  ],
+  "rss_not_configured": [
+    "164.312(a)(1)"
+  ],
+  "rcd_not_configured": [
+    "164.312(a)(1)"
+  ],
+  "ca_unable_to_assess": [
+    "164.308(a)(8)"
+  ],
+  "no_copilot_ca_policy": [
+    "164.312(a)(1)",
+    "164.312(d)"
+  ],
+  "copilot_deployment_scope_denied": [
+    "164.308(a)(8)"
+  ],
+  "copilot_deployment_unknown": [
+    "164.308(a)(1)"
+  ],
+  "no_copilot_license": [
+    "164.308(a)(1)"
+  ],
+  "copilot_licenses_unassigned": [
+    "164.308(a)(1)"
+  ],
+  "low_copilot_license_utilization": [
+    "164.308(a)(1)"
+  ],
+  "no_access_reviews": [
+    "164.308(a)(3)(ii)(A)"
+  ],
+  "no_information_barriers": [
+    "164.312(a)(1)",
+    "164.308(a)(4)"
+  ],
+  "no_mfa_enforcement": [
+    "164.312(d)"
+  ],
+  "no_pim_configured": [
+    "164.312(a)(1)"
+  ],
+  "no_named_locations": [
+    "164.312(e)(1)"
+  ],
+  "no_signin_risk_policy": [
+    "164.308(a)(6)(ii)"
+  ],
+  "no_device_compliance": [
+    "164.310(d)(1)"
+  ],
+  "stale_accounts_detected": [
+    "164.308(a)(3)(ii)(C)"
+  ],
+  "excessive_global_admins": [
+    "164.312(a)(1)"
+  ],
+  "shared_accounts_detected": [
+    "164.312(a)(2)(i)"
+  ],
+  "no_group_based_licensing": [
+    "164.308(a)(4)"
+  ],
+  "no_session_signin_frequency": [
+    "164.312(a)(2)(iii)"
+  ],
+  "no_persistent_browser_control": [
+    "164.312(a)(2)(iii)"
+  ],
+  "mailbox_delegation_fullaccess": [
+    "164.312(a)(1)",
+    "164.308(a)(4)"
+  ],
+  "shared_mailbox_over_delegated": [
+    "164.312(a)(1)"
+  ],
+  "ib_segments_not_assigned": [
+    "164.312(a)(1)"
+  ],
+  "disabled_users_with_copilot_license": [
+    "164.308(a)(3)(ii)(C)"
+  ],
+  "no_app_protection_policies": [
+    "164.312(e)(1)",
+    "164.312(c)(1)"
+  ],
+  "app_protection_platform_gaps": [
+    "164.312(e)(1)"
+  ],
+  "hybrid_accounts_stale_sync": [
+    "164.308(a)(3)(ii)(A)"
+  ],
+  "no_copilot_license_segmentation": [
+    "164.308(a)(4)"
+  ],
+  "no_legal_hold_configured": [
+    "164.312(c)(1)",
+    "164.316(b)(2)(i)"
+  ],
+  "stale_content_exposure": [
+    "164.310(d)(2)(i)"
+  ],
+  "retention_assessment_needed": [
+    "164.316(b)(2)(i)"
+  ],
+  "no_m365_backup": [
+    "164.308(a)(7)(ii)(A)"
+  ],
+  "audit_logging_unknown": [
+    "164.312(b)"
+  ],
+  "copilot_interaction_audit": [
+    "164.312(b)"
+  ],
+  "no_alert_policies": [
+    "164.308(a)(6)(ii)"
+  ],
+  "no_defender_cloud_apps": [
+    "164.308(a)(6)(ii)"
+  ],
+  "no_copilot_usage_analytics": [
+    "164.312(b)"
+  ],
+  "copilot_audit_events_not_analyzed": [
+    "164.312(b)"
+  ],
+  "no_prompt_pattern_monitoring": [
+    "164.308(a)(6)(ii)"
+  ],
+  "copilot_security_incidents_detected": [
+    "164.308(a)(6)"
+  ],
+  "copilot_plugins_unrestricted": [
+    "164.308(a)(1)"
+  ],
+  "data_residency_unverified": [
+    "164.314(a)"
+  ],
+  "no_ediscovery_configured": [
+    "164.316(b)(2)(i)"
+  ],
+  "no_insider_risk_policies": [
+    "164.308(a)(3)(ii)(A)"
+  ],
+  "no_communication_compliance": [
+    "164.312(b)",
+    "164.308(a)(6)(ii)"
+  ],
+  "no_dspm_for_ai": [
+    "164.308(a)(1)"
+  ],
+  "dspm_oversharing_not_reviewed": [
+    "164.308(a)(1)"
+  ],
+  "unmanaged_copilot_agents": [
+    "164.308(a)(1)"
+  ],
+  "agent_over_permissioned": [
+    "164.312(a)(1)"
+  ],
+  "no_regulatory_framework_mapping": [
+    "164.308(a)(8)"
+  ],
+  "multi_geo_copilot_residency": [
+    "164.314(a)"
+  ],
+  "no_rai_policy": [
+    "164.308(a)(1)"
+  ],
+  "cross_tenant_access_not_assessed": [
+    "164.314(a)"
+  ],
+  "cross_tenant_access_permissive": [
+    "164.314(a)"
+  ],
+  "no_agent_approval_workflow": [
+    "164.308(a)(1)"
+  ],
+  "ungoverned_external_connectors": [
+    "164.314(a)"
+  ],
+  "external_connector_review_needed": [
+    "164.314(a)"
+  ],
+  "no_prompt_guardrails": [
+    "164.308(a)(1)"
+  ],
+  "no_continuous_access_evaluation": [
+    "164.312(d)"
+  ],
+  "no_token_protection": [
+    "164.312(d)",
+    "164.312(e)(1)"
+  ],
+  "no_phishing_resistant_mfa": [
+    "164.312(d)"
+  ],
+  "no_authentication_context": [
+    "164.312(a)(1)",
+    "164.312(d)"
+  ],
+  "workload_identity_unprotected": [
+    "164.312(d)"
+  ],
+  "no_compliant_network_check": [
+    "164.312(e)(1)"
+  ],
+  "unauthorized_ai_apps_detected": [
+    "164.308(a)(1)"
+  ],
+  "ai_consent_grants_detected": [
+    "164.312(a)(1)"
+  ],
+  "shadow_copilot_agents_detected": [
+    "164.308(a)(1)"
+  ],
+  "no_ai_app_governance": [
+    "164.308(a)(6)(ii)"
+  ],
+  "ai_apps_overpermissioned": [
+    "164.312(a)(1)"
+  ],
+  "no_ai_dlp_web_restrictions": [
+    "164.312(e)(1)"
+  ]
+}

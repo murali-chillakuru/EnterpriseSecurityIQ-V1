@@ -1,0 +1,29 @@
+{
+  "framework": "GDPR",
+  "version": "2016/679",
+  "mappings": {
+    "dormant_accounts": ["Art.5(1e)", "Art.25(2)"],
+    "overpermissioned_service_principals": ["Art.5(1f)", "Art.25(2)"],
+    "expired_credentials": ["Art.32(1)", "Art.5(1f)"],
+    "expiring_credentials": ["Art.32(1)", "Art.5(1f)"],
+    "mfa_gaps": ["Art.32(1)", "Art.5(1f)"],
+    "admin_proliferation": ["Art.5(1f)", "Art.32(1)"],
+    "guest_user_risk": ["Art.5(1f)", "Art.28(1)"],
+    "missing_guest_review": ["Art.5(1e)", "Art.28(1)"],
+    "high_risk_users": ["Art.32(1)", "Art.33(1)"],
+    "medium_risk_users": ["Art.32(1)", "Art.33(1)"],
+    "open_management_ports": ["Art.32(1)", "Art.25(1)"],
+    "public_storage": ["Art.25(1)", "Art.32(1)"],
+    "webapp_transport_security": ["Art.32(1)", "Art.5(1f)"],
+    "sql_firewall_exposure": ["Art.32(1)", "Art.25(1)"],
+    "disabled_plans": ["Art.32(1)", "Art.33(1)"],
+    "security_recommendations": ["Art.32(1)", "Art.35(1)"],
+    "low_secure_score": ["Art.32(1)", "Art.35(1)"],
+    "missing_diagnostics": ["Art.30(1)", "Art.5(2)"],
+    "policy_noncompliance": ["Art.5(2)", "Art.32(1)"],
+    "missing_tags": ["Art.30(1)", "Art.5(2)"],
+    "irm_not_assessed": ["Art.32(1)", "Art.35(1)"],
+    "no_irm_policies": ["Art.32(1)", "Art.35(1)"],
+    "active_irm_alerts": ["Art.33(1)", "Art.34(1)"]
+  }
+}

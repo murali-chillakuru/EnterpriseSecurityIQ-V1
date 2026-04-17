@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EnterpriseSecurityIQ Evidence Record",
+  "description": "Schema for evidence records produced by the Python AI-Agent collectors (models.py → EvidenceRecord).",
+  "type": "object",
+  "required": ["EvidenceId", "Source", "Collector", "CollectedAt", "EvidenceType", "Description", "Data"],
+  "properties": {
+    "EvidenceId": { "type": "string", "format": "uuid" },
+    "Source": { "type": "string", "enum": ["Azure", "Entra"] },
+    "Collector": { "type": "string" },
+    "CollectedAt": { "type": "string", "format": "date-time" },
+    "ResourceId": { "type": "string" },
+    "ResourceType": { "type": "string" },
+    "EvidenceType": {
+      "type": "string",
+      "description": "Extensible evidence type. Common values listed below.",
+      "examples": [
+        "azure-resource", "azure-policy-assignment", "azure-rbac-assignment",
+        "azure-diagnostic-setting", "azure-activity-log", "azure-resource-lock",
+        "azure-nsg-rule", "azure-virtual-network", "azure-private-endpoint",
+        "azure-storage-security", "azure-keyvault", "azure-keyvault-secret",
+        "azure-defender-plan", "azure-defender-recommendation",
+        "azure-policy-compliance", "azure-compute-vm", "azure-compute-disk",
+        "azure-log-analytics-workspace", "azure-action-group",
+        "azure-additional-service", "azure-cognitive-account",
+        "azure-ai-deployment", "azure-ml-workspace",
+        "entra-tenant-info", "entra-auth-method", "entra-directory-role",
+        "entra-role-assignment", "entra-conditional-access-policy",
+        "entra-app-registration", "entra-service-principal",
+        "entra-user-summary", "entra-group-summary", "entra-user-detail",
+        "entra-user-lifecycle-summary", "entra-oauth2-grant",
+        "entra-signin-log", "entra-audit-log", "entra-risk-detection",
+        "entra-named-location", "entra-security-policy",
+        "entra-access-review", "entra-identity-protection",
+        "access-denied"
+      ]
+    },
+    "Description": { "type": "string" },
+    "Data": { "type": "object" },
+    "RawReference": {},
+    "Context": {
+      "type": ["object", "null"],
+      "properties": {
+        "ResourceId": { "type": "string" },
+        "ResourceName": { "type": "string" },
+        "ResourceType": { "type": "string" },
+        "SubscriptionId": { "type": "string" },
+        "SubscriptionName": { "type": "string" },
+        "ResourceGroup": { "type": "string" },
+        "Location": { "type": "string" },
+        "Source": { "type": "string" }
+      }
+    }
+  }
+}

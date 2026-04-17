@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PostureIQ</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Vibrant light theme — Viva Learning-inspired with Fluent 2 tokens */
+  --bg:#ffffff;--bg2:#ffffff;--bg3:#ffffff;--bg4:#f5f5f5;
+  --tx:#242424;--tx2:#424242;--tx3:#616161;
+  --bd:#e0e0e0;
+  --blue:#0078d4;--blue-hover:#115ea3;--blue-press:#0f548c;
+  --purple:#5c2e91;--green:#107c10;--orange:#ca5010;--cyan:#038387;--red:#d13438;
+  --brand10:#061724;--brand80:#0078d4;--brand100:#479ef5;--brand140:#b4d6fa;--brand160:#ebf3fc;
+  --accent-assess:#0078d4;--accent-perm:#038387;--accent-explore:#5c2e91;
+  --shadow-2:0 1px 2px rgba(0,0,0,.12),0 0 2px rgba(0,0,0,.08);
+  --shadow-4:0 2px 4px rgba(0,0,0,.12),0 0 2px rgba(0,0,0,.08);
+  --shadow-8:0 4px 8px rgba(0,0,0,.14),0 0 2px rgba(0,0,0,.12);
+  --shadow-16:0 8px 16px rgba(0,0,0,.14),0 0 2px rgba(0,0,0,.12);
+  --r:8px;
+  --font:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --mono:'Cascadia Code','Fira Code',Consolas,monospace;
+  color-scheme:light;
+}
+[data-theme="dark"]{
+  /* Dark theme — vibrant accents */
+  --bg:#1b1a19;--bg2:#292827;--bg3:#252423;--bg4:#323130;
+  --tx:#f5f5f5;--tx2:#d1d1d1;--tx3:#a8a8a8;
+  --bd:#474747;
+  --blue:#479ef5;--blue-hover:#62abf5;--blue-press:#2886de;
+  --purple:#b4a0ff;--green:#6bb700;--orange:#f7894a;--cyan:#4db8b1;--red:#f1707b;
+  --brand10:#061724;--brand80:#479ef5;--brand100:#77b7f7;--brand140:#b4d6fa;--brand160:#ebf3fc;
+  --accent-assess:#479ef5;--accent-perm:#4db8b1;--accent-explore:#b4a0ff;
+  --shadow-2:0 1px 2px rgba(0,0,0,.48),0 0 2px rgba(0,0,0,.24);
+  --shadow-4:0 2px 4px rgba(0,0,0,.48),0 0 2px rgba(0,0,0,.24);
+  --shadow-8:0 4px 8px rgba(0,0,0,.48),0 0 2px rgba(0,0,0,.24);
+  --shadow-16:0 8px 16px rgba(0,0,0,.48),0 0 2px rgba(0,0,0,.24);
+  color-scheme:dark
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--tx);line-height:1.6;min-height:100vh}
+a{color:var(--blue)}
+code{font-family:var(--mono);font-size:.85em;background:var(--bg2);padding:2px 6px;border-radius:4px}
+button{font-family:inherit;cursor:pointer}
+
+/* ── Login Page ── */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#ffffff 0%,#ebf3fc 40%,#e8f0fe 70%,#f0eafa 100%);position:relative;overflow:hidden}
+.login-page::before{content:'';position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(0,120,212,.12),transparent 65%);top:-250px;right:-200px;pointer-events:none;border-radius:50%}
+.login-page::after{content:'';position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(92,46,145,.08),transparent 65%);bottom:-180px;left:-120px;pointer-events:none;border-radius:50%}
+.login-card{position:relative;z-index:1;background:#ffffff;border:none;border-radius:12px;padding:3rem 2.5rem;max-width:460px;width:90%;text-align:center;box-shadow:0 2px 4px rgba(0,0,0,.04),0 8px 32px rgba(0,0,0,.12)}
+[data-theme="dark"] .login-page{background:linear-gradient(160deg,#1b1a19 0%,#252423 50%,#1e2a36 100%)}
+[data-theme="dark"] .login-page::before{background:radial-gradient(circle,rgba(71,158,245,.08),transparent 65%)}
+[data-theme="dark"] .login-page::after{background:radial-gradient(circle,rgba(180,160,255,.06),transparent 65%)}
+[data-theme="dark"] .login-card{background:var(--bg3);border:1px solid var(--bd);box-shadow:var(--shadow-16)}
+.login-card .logo{font-size:3rem;margin-bottom:1rem}
+.login-card h1{font-size:1.6rem;font-weight:700;margin-bottom:.5rem;color:var(--blue)}
+.login-card .desc{color:var(--tx2);font-size:.92rem;margin-bottom:2rem;line-height:1.6}
+.login-btn{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:.85rem 1.5rem;font-size:1rem;font-weight:600;border:none;border-radius:8px;background:var(--blue);color:#fff;transition:background .2s}
+.login-btn:hover{background:var(--blue-hover)}
+.login-btn svg{width:20px;height:20px;fill:currentColor}
+.login-note{margin-top:1.5rem;font-size:.78rem;color:var(--tx3);line-height:1.5}
+.login-note strong{color:var(--tx2)}
+
+/* ── App Shell ── */
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* ── Header ── */
+.hdr{background:var(--bg);border-bottom:1px solid var(--bd);padding:0 1.5rem;display:flex;align-items:stretch;gap:0;flex-shrink:0;min-height:48px;box-shadow:0 1px 0 rgba(0,0,0,.06)}
+[data-theme="dark"] .hdr{background:var(--bg2);border-bottom-color:var(--bd);box-shadow:var(--shadow-2)}
+.hdr-logo{display:flex;align-items:center;gap:.5rem;text-decoration:none;cursor:pointer;padding:.5rem 0;margin-right:.8rem;background:none;border:none;font-family:inherit}
+.hdr-logo-icon{font-size:1.1rem}
+.hdr-title{font-size:.95rem;font-weight:700;color:var(--blue);white-space:nowrap}
+.hdr-sep{width:1px;align-self:center;height:24px;background:var(--bd);margin:0 .4rem;flex-shrink:0;display:none}
+.hdr-nav{display:none;align-items:stretch;gap:0}
+.hdr-sep.visible,.hdr-nav.visible{display:flex}
+.hdr-nav-link{display:flex;align-items:center;gap:.35rem;padding:0 .75rem;font-size:.82rem;font-weight:400;color:var(--tx2);border:none;background:none;cursor:pointer;transition:color .15s;white-space:nowrap;font-family:inherit;position:relative}
+.hdr-nav-link:hover{color:var(--tx)}
+.hdr-nav-link::after{content:'';position:absolute;bottom:0;left:.75rem;right:.75rem;height:3px;border-radius:3px 3px 0 0;background:transparent;transition:background .15s}
+.hdr-nav-link.active{color:var(--blue);font-weight:600}
+.hdr-nav-link.active::after{background:var(--blue)}
+.hdr-nav-link .nav-icon{font-size:.9rem}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:.6rem}
+.hdr-tenant{display:flex;align-items:center;gap:.5rem;padding:.3rem .7rem;background:var(--bg4);border:1px solid var(--bd);border-radius:6px;font-size:.75rem;color:var(--tx2)}
+.hdr-tenant .tenant-icon{font-size:.85rem}
+.hdr-tenant .tenant-info{display:flex;flex-direction:column;line-height:1.2}
+.hdr-tenant .tenant-name{color:var(--tx);font-weight:500;font-size:.75rem}
+.hdr-tenant .tenant-id{color:var(--tx3);font-size:.65rem;font-family:var(--mono)}
+.hdr-btn{padding:.3rem .7rem;border-radius:6px;font-size:.76rem;font-weight:500;border:1px solid var(--bd);background:var(--bg3);color:var(--tx);transition:all .18s}
+.hdr-btn:hover{border-color:var(--blue);background:var(--bg4)}
+
+/* User dropdown */
+.user-menu-wrap{position:relative}
+.user-menu-trigger{display:flex;align-items:center;gap:.45rem;padding:.3rem .7rem;background:transparent;border:1px solid transparent;border-radius:20px;font-size:.78rem;color:var(--tx2);cursor:pointer;transition:all .15s;user-select:none}
+.user-menu-trigger:hover{background:var(--bg4)}
+.user-menu-trigger .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0078d4,#479ef5);display:flex;align-items:center;justify-content:center;font-size:.72rem;color:#fff;font-weight:600;flex-shrink:0}
+.user-menu-trigger .chevron{font-size:.55rem;color:var(--tx3);transition:transform .2s}
+.user-menu-trigger.open .chevron{transform:rotate(180deg)}
+.user-dropdown{position:absolute;top:calc(100% + 6px);right:0;min-width:180px;background:var(--bg2);border:1px solid var(--bd);border-radius:8px;box-shadow:var(--shadow-16);z-index:200;overflow:hidden;opacity:0;transform:translateY(-4px);pointer-events:none;transition:opacity .15s,transform .15s}
+.user-dropdown.open{opacity:1;transform:translateY(0);pointer-events:auto}
+.user-dropdown-item{display:flex;align-items:center;gap:.5rem;padding:.55rem .9rem;font-size:.8rem;color:var(--tx);cursor:pointer;transition:background .12s;border:none;background:none;width:100%;text-align:left;font-family:inherit}
+.user-dropdown-item:hover{background:var(--bg4)}
+.user-dropdown-sep{height:1px;background:var(--bd);margin:.2rem 0}
+
+/* ── Session Context Bar (removed — nav handles context) ── */
+
+/* ── Chat Pane (full width, no sidebar) ── */
+.chat-pane{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.chat-scroll-wrap{flex:1;overflow-y:auto;overflow-x:hidden;position:relative}
+.chat-area{max-width:860px;width:100%;margin:0 auto;padding:.5rem 1.5rem;display:flex;flex-direction:column;gap:1rem;min-height:100%}
+.chat-area.wide{max-width:1200px}
+.chat-area.full{max-width:80%;padding:.5rem 2.5rem}
+.chat-input-wrap{flex-shrink:0;max-width:860px;width:100%;margin:0 auto;padding:0 1.5rem}
+.chat-input-wrap.wide{max-width:1200px}
+.chat-input-wrap.full{max-width:80%;padding:0 2.5rem}
+
+/* Width slider */
+.width-slider-wrap{display:flex;align-items:center;gap:.4rem;padding:.15rem 0}
+.width-slider-wrap .slider-icon{font-size:.75rem;color:var(--tx3);line-height:1}
+.width-slider{-webkit-appearance:none;appearance:none;width:60px;height:4px;border-radius:2px;background:var(--bd);outline:none;cursor:pointer;transition:background .15s}
+.width-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:var(--blue);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .12s}
+.width-slider::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.width-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--blue);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+
+/* Theme toggle button */
+.theme-toggle{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:1px solid var(--bd);background:var(--bg4);color:var(--tx2);cursor:pointer;font-size:.85rem;transition:all .18s;padding:0;line-height:1}
+.theme-toggle:hover{border-color:var(--blue);color:var(--blue);background:var(--bg3)}
+
+/* Tenant info inside dropdown */
+.user-dropdown-tenant{display:flex;align-items:center;gap:.5rem;padding:.6rem .9rem;font-size:.72rem;color:var(--tx2)}
+.user-dropdown-tenant .tenant-icon{font-size:.8rem}
+.user-dropdown-tenant .tenant-info{display:flex;flex-direction:column;line-height:1.2}
+.user-dropdown-tenant .tenant-name{color:var(--tx);font-weight:500;font-size:.72rem}
+.user-dropdown-tenant .tenant-id{color:var(--tx3);font-size:.62rem;font-family:var(--mono)}
+
+/* ── Cloud Explorer Welcome (centered) ── */
+.ce-welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem;gap:0}
+.ce-icon{font-size:2.6rem;margin-bottom:.5rem;background:linear-gradient(135deg,#5c2e91,#b4a0ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ce-title{font-size:1.1rem;font-weight:700;color:var(--tx);margin-bottom:.3rem;text-align:center}
+.ce-desc{font-size:.8rem;color:var(--tx2);text-align:center;max-width:440px;line-height:1.5}
+
+/* ── Cloud Explorer Floating Prompt Panel (3D Viva) ── */
+@keyframes cePanelIn{from{opacity:0;transform:translateX(-16px) scale(.97)}to{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes cePanelOut{from{opacity:1;transform:translateX(0) scale(1)}to{opacity:0;transform:translateX(-16px) scale(.97)}}
+.ce-panel{position:fixed;left:16px;top:64px;width:255px;max-height:62vh;z-index:95;display:none;flex-direction:column;overflow:hidden;border-radius:16px;background:rgba(255,255,255,.82);backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);border:none;box-shadow:0 2px 4px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.10),0 20px 48px rgba(0,0,0,.08)}
+.ce-panel.visible{display:flex;animation:cePanelIn .25s ease-out;border:1px solid rgba(255,255,255,.45)}
+.ce-panel.hiding{display:flex;animation:cePanelOut .18s ease-in forwards;border:1px solid rgba(255,255,255,.45)}
+[data-theme="dark"] .ce-panel{background:rgba(36,36,36,.78);box-shadow:0 2px 4px rgba(0,0,0,.12),0 8px 24px rgba(0,0,0,.28),0 20px 48px rgba(0,0,0,.22)}
+[data-theme="dark"] .ce-panel.visible,[data-theme="dark"] .ce-panel.hiding{border:1px solid rgba(255,255,255,.08)}
+.ce-panel-hdr{padding:.7rem .9rem .55rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:linear-gradient(135deg,#5c2e91,#0078d4);border-radius:16px 16px 0 0;color:#fff}
+.ce-panel-hdr-title{font-size:.78rem;font-weight:700;letter-spacing:.02em;display:inline-block;line-height:1.3}
+.ce-panel-close{background:rgba(255,255,255,.18);border:none;color:#fff;cursor:pointer;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .15s,transform .15s}
+.ce-panel-close:hover{background:rgba(255,255,255,.35);transform:scale(1.1)}
+.ce-panel-list{flex:1;overflow-y:auto;padding:.5rem 0;scrollbar-width:thin}
+.ce-panel-list::-webkit-scrollbar{width:4px}
+.ce-panel-list::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px}
+.ce-panel-group{padding:.55rem .85rem .2rem;font-size:.6rem;font-weight:700;color:var(--accent-explore);text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:.35rem}
+.ce-panel-group:not(:first-child){margin-top:.15rem;border-top:1px solid var(--bd);padding-top:.55rem}
+.ce-panel-item{display:flex;align-items:center;gap:.4rem;padding:.38rem .85rem;font-size:.73rem;color:var(--tx);cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:inherit;line-height:1.35;border-radius:8px;margin:1px 6px;width:calc(100% - 12px);transition:all .15s ease}
+.ce-panel-item:hover{background:var(--bg4);color:var(--accent-explore);transform:translateX(3px);box-shadow:0 1px 4px rgba(92,46,145,.12)}
+.ce-panel-item .pi-icon{font-size:.55rem;flex-shrink:0;opacity:.45;width:14px;text-align:center;color:var(--accent-explore)}
+/* ── CE Panel Collapsed Tab ── */
+.ce-tab{position:fixed;left:0;top:64px;z-index:94;display:none;align-items:center;justify-content:center;width:28px;height:auto;padding:.6rem .2rem;border-radius:0 10px 10px 0;background:linear-gradient(180deg,#5c2e91,#0078d4);color:#fff;cursor:pointer;font-size:.65rem;font-weight:600;letter-spacing:.04em;writing-mode:vertical-lr;text-orientation:mixed;transition:all .2s ease;box-shadow:2px 0 12px rgba(92,46,145,.18);border:none;font-family:inherit}
+.ce-tab:hover{width:34px;box-shadow:3px 0 16px rgba(92,46,145,.28)}
+.ce-tab.visible{display:flex}
+.ce-tab .tab-icon{font-size:.8rem;margin-bottom:.3rem;writing-mode:horizontal-tb}
+.ce-tab .tab-chevron{margin-bottom:.3rem;writing-mode:horizontal-tb;opacity:.7;transition:transform .2s ease}
+.ce-tab:hover .tab-chevron{transform:translateX(2px)}
+[data-theme="dark"] .ce-tab{box-shadow:2px 0 12px rgba(0,0,0,.3)}
+
+/* ── Assessment Floating Panel (3D Viva) ── */
+@keyframes assessPanelIn{from{opacity:0;transform:translateX(-16px) scale(.97)}to{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes assessPanelOut{from{opacity:1;transform:translateX(0) scale(1)}to{opacity:0;transform:translateX(-16px) scale(.97)}}
+.assess-panel{position:fixed;left:16px;top:64px;width:265px;max-height:72vh;z-index:95;display:none;flex-direction:column;overflow:hidden;border-radius:16px;background:rgba(255,255,255,.82);backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);border:none;box-shadow:0 2px 4px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.10),0 20px 48px rgba(0,0,0,.08)}
+.assess-panel.visible{display:flex;animation:assessPanelIn .25s ease-out;border:1px solid rgba(255,255,255,.45)}
+.assess-panel.hiding{display:flex;animation:assessPanelOut .18s ease-in forwards;border:1px solid rgba(255,255,255,.45)}
+[data-theme="dark"] .assess-panel{background:rgba(36,36,36,.78);box-shadow:0 2px 4px rgba(0,0,0,.12),0 8px 24px rgba(0,0,0,.28),0 20px 48px rgba(0,0,0,.22)}
+[data-theme="dark"] .assess-panel.visible,[data-theme="dark"] .assess-panel.hiding{border:1px solid rgba(255,255,255,.08)}
+.assess-panel-hdr{padding:.7rem .9rem .55rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:linear-gradient(135deg,#0078d4,#005a9e);border-radius:16px 16px 0 0;color:#fff}
+.assess-panel-hdr-title{font-size:.78rem;font-weight:700;letter-spacing:.02em;display:inline-block;line-height:1.3}
+.assess-panel-close{background:rgba(255,255,255,.18);border:none;color:#fff;cursor:pointer;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .15s,transform .15s}
+.assess-panel-close:hover{background:rgba(255,255,255,.35);transform:scale(1.1)}
+.assess-panel-body{flex:1;overflow-y:auto;padding:.6rem .8rem;scrollbar-width:thin;display:flex;flex-direction:column;gap:.6rem}
+.assess-panel-body::-webkit-scrollbar{width:4px}
+.assess-panel-body::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px}
+.assess-section-label{font-size:.62rem;font-weight:700;color:var(--accent-assess);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.15rem}
+.assess-fw-grid{display:flex;flex-direction:column;gap:.1rem}
+.assess-fw-item{display:flex;align-items:center;gap:.4rem;padding:.25rem .3rem;border-radius:6px;font-size:.73rem;color:var(--tx);cursor:pointer;transition:background .1s;user-select:none}
+.assess-fw-item:hover{background:var(--bg4)}
+.assess-fw-item input{accent-color:var(--blue);width:14px;height:14px;cursor:pointer;flex-shrink:0}
+.assess-fw-item.select-all{font-weight:600;border-bottom:1px solid var(--bd);padding-bottom:.35rem;margin-bottom:.1rem}
+.assess-sub-input{width:100%;padding:.45rem .65rem;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-family:var(--font);font-size:.76rem;outline:none;transition:border-color .15s}
+.assess-sub-input:focus{border-color:var(--blue)}
+.assess-sub-input::placeholder{color:var(--tx3)}
+.assess-sub-hint{font-size:.6rem;color:var(--tx3);margin-top:.15rem;line-height:1.3}
+.assess-run-btn{width:100%;padding:.55rem;border-radius:10px;border:none;background:var(--blue);color:#fff;font-size:.8rem;font-weight:600;cursor:pointer;transition:background .15s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:.2rem}
+.assess-run-btn:hover{background:var(--blue-hover)}
+.assess-run-btn:disabled{background:var(--bg4);color:var(--tx3);cursor:not-allowed}
+/* ── Assess Panel Collapsed Tab ── */
+.assess-tab{position:fixed;left:0;top:64px;z-index:94;display:none;align-items:center;justify-content:center;width:28px;height:auto;padding:.6rem .2rem;border-radius:0 10px 10px 0;background:linear-gradient(180deg,#0078d4,#005a9e);color:#fff;cursor:pointer;font-size:.65rem;font-weight:600;letter-spacing:.04em;writing-mode:vertical-lr;text-orientation:mixed;transition:all .2s ease;box-shadow:2px 0 12px rgba(0,120,212,.18);border:none;font-family:inherit}
+.assess-tab:hover{width:34px;box-shadow:3px 0 16px rgba(0,120,212,.28)}
+.assess-tab.visible{display:flex}
+.assess-tab .tab-icon{font-size:.8rem;margin-bottom:.3rem;writing-mode:horizontal-tb}
+.assess-tab .tab-chevron{margin-bottom:.3rem;writing-mode:horizontal-tb;opacity:.7;transition:transform .2s ease}
+.assess-tab:hover .tab-chevron{transform:translateX(2px)}
+[data-theme="dark"] .assess-tab{box-shadow:2px 0 12px rgba(0,0,0,.3)}
+
+/* ── Permissions Floating Panel (3D Viva) ── */
+@keyframes permPanelIn{from{opacity:0;transform:translateX(-16px) scale(.97)}to{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes permPanelOut{from{opacity:1;transform:translateX(0) scale(1)}to{opacity:0;transform:translateX(-16px) scale(.97)}}
+.perm-panel{position:fixed;left:16px;top:64px;width:255px;max-height:62vh;z-index:95;display:none;flex-direction:column;overflow:hidden;border-radius:16px;background:rgba(255,255,255,.82);backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);border:none;box-shadow:0 2px 4px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.10),0 20px 48px rgba(0,0,0,.08)}
+.perm-panel.visible{display:flex;animation:permPanelIn .25s ease-out;border:1px solid rgba(255,255,255,.45)}
+.perm-panel.hiding{display:flex;animation:permPanelOut .18s ease-in forwards;border:1px solid rgba(255,255,255,.45)}
+[data-theme="dark"] .perm-panel{background:rgba(36,36,36,.78);box-shadow:0 2px 4px rgba(0,0,0,.12),0 8px 24px rgba(0,0,0,.28),0 20px 48px rgba(0,0,0,.22)}
+[data-theme="dark"] .perm-panel.visible,[data-theme="dark"] .perm-panel.hiding{border:1px solid rgba(255,255,255,.08)}
+.perm-panel-hdr{padding:.7rem .9rem .55rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:linear-gradient(135deg,#038387,#005b70);border-radius:16px 16px 0 0;color:#fff}
+.perm-panel-hdr-title{font-size:.78rem;font-weight:700;letter-spacing:.02em;display:inline-block;line-height:1.3}
+.perm-panel-close{background:rgba(255,255,255,.18);border:none;color:#fff;cursor:pointer;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .15s,transform .15s}
+.perm-panel-close:hover{background:rgba(255,255,255,.35);transform:scale(1.1)}
+.perm-panel-list{flex:1;overflow-y:auto;padding:.5rem 0;scrollbar-width:thin}
+.perm-panel-list::-webkit-scrollbar{width:4px}
+.perm-panel-list::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px}
+.perm-panel-group{padding:.55rem .85rem .2rem;font-size:.6rem;font-weight:700;color:var(--accent-perm);text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:.35rem}
+.perm-panel-group:not(:first-child){margin-top:.15rem;border-top:1px solid var(--bd);padding-top:.55rem}
+.perm-panel-item{display:flex;align-items:center;gap:.4rem;padding:.38rem .85rem;font-size:.73rem;color:var(--tx);cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:inherit;line-height:1.35;border-radius:8px;margin:1px 6px;width:calc(100% - 12px);transition:all .15s ease}
+.perm-panel-item:hover{background:var(--bg4);color:var(--accent-perm);transform:translateX(3px);box-shadow:0 1px 4px rgba(3,131,135,.12)}
+.perm-panel-item .pi-icon{font-size:.55rem;flex-shrink:0;opacity:.45;width:14px;text-align:center;color:var(--accent-perm)}
+/* ── Perm Panel Collapsed Tab ── */
+.perm-tab{position:fixed;left:0;top:64px;z-index:94;display:none;align-items:center;justify-content:center;width:28px;height:auto;padding:.6rem .2rem;border-radius:0 10px 10px 0;background:linear-gradient(180deg,#038387,#005b70);color:#fff;cursor:pointer;font-size:.65rem;font-weight:600;letter-spacing:.04em;writing-mode:vertical-lr;text-orientation:mixed;transition:all .2s ease;box-shadow:2px 0 12px rgba(3,131,135,.18);border:none;font-family:inherit}
+.perm-tab:hover{width:34px;box-shadow:3px 0 16px rgba(3,131,135,.28)}
+.perm-tab.visible{display:flex}
+.perm-tab .tab-icon{font-size:.8rem;margin-bottom:.3rem;writing-mode:horizontal-tb}
+.perm-tab .tab-chevron{margin-bottom:.3rem;writing-mode:horizontal-tb;opacity:.7;transition:transform .2s ease}
+.perm-tab:hover .tab-chevron{transform:translateX(2px)}
+[data-theme="dark"] .perm-tab{box-shadow:2px 0 12px rgba(0,0,0,.3)}
+
+/* ── Landing / Welcome ── */
+.landing{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;gap:0;background:linear-gradient(180deg,#ebf3fc 0%,#ffffff 50%)}
+[data-theme="dark"] .landing{background:none}
+.landing-greeting{font-size:1.2rem;font-weight:700;color:var(--tx);margin-bottom:.4rem;text-align:center}
+.landing-sub{font-size:.85rem;color:var(--tx2);margin-bottom:2rem;text-align:center}
+.qs-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;max-width:740px;width:100%}
+.qs-card{background:#ffffff;border:none;border-radius:12px;padding:0;cursor:pointer;transition:all .25s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:0;position:relative;overflow:hidden;box-shadow:0 2px 4px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.06)}
+[data-theme="dark"] .qs-card{background:var(--bg3);border:1px solid var(--bd);box-shadow:var(--shadow-4)}
+.qs-card-accent{height:4px;width:100%}
+.qs-card:nth-child(1) .qs-card-accent{background:var(--accent-assess)}
+.qs-card:nth-child(2) .qs-card-accent{background:var(--accent-perm)}
+.qs-card:nth-child(3) .qs-card-accent{background:var(--accent-explore)}
+.qs-card-body{padding:1.5rem 1.2rem 1.4rem;display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.qs-card:hover{transform:translateY(-3px);box-shadow:0 4px 8px rgba(0,0,0,.08),0 12px 28px rgba(0,0,0,.12)}
+.qs-card-icon{font-size:2.2rem;margin-bottom:.1rem}
+.qs-card:nth-child(1) .qs-card-icon{background:linear-gradient(135deg,#0078d4,#479ef5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.qs-card:nth-child(2) .qs-card-icon{background:linear-gradient(135deg,#038387,#4db8b1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.qs-card:nth-child(3) .qs-card-icon{background:linear-gradient(135deg,#5c2e91,#b4a0ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.qs-card-title{font-size:.9rem;font-weight:600;color:var(--tx)}
+.qs-card-desc{font-size:.76rem;color:var(--tx3);line-height:1.5}
+
+/* ── Framework picker modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s ease}
+.modal-card{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:1.8rem;width:460px;max-width:90vw;box-shadow:var(--shadow-16)}
+.modal-card h3{font-size:1.05rem;font-weight:600;margin-bottom:.3rem;color:var(--tx)}
+.modal-card p{font-size:.82rem;color:var(--tx2);margin-bottom:1rem;line-height:1.5}
+.modal-input{width:100%;padding:.6rem .8rem;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:.82rem;outline:none;transition:border-color .15s}
+.modal-input:focus{border-color:var(--blue)}
+.modal-input::placeholder{color:var(--tx3)}
+.modal-actions{display:flex;gap:.5rem;margin-top:1.2rem;justify-content:flex-end}
+.modal-btn{padding:.5rem 1rem;border-radius:8px;font-size:.84rem;font-weight:500;border:1px solid var(--bd);background:var(--bg);color:var(--tx);cursor:pointer;transition:all .15s}
+.modal-btn:hover{border-color:var(--blue);background:var(--bg4)}
+.modal-btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.modal-btn-primary:hover{background:var(--blue-hover)}
+.modal-hint{font-size:.72rem;color:var(--tx3);margin-top:.5rem;line-height:1.4}
+
+/* Framework grid in modal */
+.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:.25rem .8rem}
+.fw-grid label{display:flex;align-items:center;gap:.45rem;padding:.35rem .4rem;border-radius:6px;font-size:.82rem;color:var(--tx);cursor:pointer;user-select:none;transition:background .1s}
+.fw-grid label:hover{background:var(--bg4)}
+.fw-grid input[type="checkbox"]{accent-color:var(--blue);width:15px;height:15px;cursor:pointer}
+.fw-grid .select-all{grid-column:1/-1;font-weight:600;border-bottom:1px solid var(--bd);padding-bottom:.4rem;margin-bottom:.2rem}
+
+/* ── Stop button ── */
+.stop-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .7rem;border-radius:6px;font-size:.76rem;font-weight:500;border:1px solid var(--red);background:transparent;color:var(--red);cursor:pointer;transition:all .15s;margin-left:.5rem}
+.stop-btn:hover{background:var(--red);color:#fff}
+
+/* ── Messages ── */
+.msg{display:flex;gap:.6rem;max-width:100%;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.msg-user{justify-content:flex-end}
+.msg-user .msg-bubble{background:var(--blue);color:#fff;border-radius:var(--r) var(--r) 4px var(--r)}
+.msg-agent .msg-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0078d4,#479ef5);display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;margin-top:.2rem;color:#fff}
+.msg-agent .msg-bubble{background:var(--bg2);border:1px solid var(--bd);border-radius:4px var(--r) var(--r) var(--r);position:relative;box-shadow:var(--shadow-2)}
+.msg-bubble{padding:.75rem 1rem;font-size:.88rem;line-height:1.65;max-width:85%;white-space:pre-wrap;word-break:break-word}
+.msg-bubble p{margin:.4rem 0}
+.msg-bubble strong{color:var(--blue);font-weight:600}
+.msg-tools{font-size:.72rem;color:var(--tx3);padding:.3rem 0 0 2.5rem;display:flex;align-items:center;gap:.3rem}
+.msg-tools span{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:.15rem .5rem;font-size:.7rem}
+
+/* Copy button */
+.msg-copy-btn{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:4px;border:1px solid var(--bd);background:var(--bg2);color:var(--tx3);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;font-size:.7rem;padding:0}
+.msg-agent .msg-bubble:hover .msg-copy-btn{opacity:1}
+.msg-copy-btn:hover{background:var(--bg4);color:var(--tx)}
+.msg-copy-btn.copied{color:var(--green);border-color:var(--green)}
+
+/* ── Progress panel ── */
+.progress-panel{background:transparent;border:none;border-radius:0;padding:.3rem 0;margin:.2rem 0;animation:fadeIn .25s ease;box-shadow:none}
+.progress-header{display:flex;align-items:center;justify-content:space-between}
+.progress-title{font-size:.78rem;font-weight:600;color:var(--tx2)}
+.progress-elapsed{font-size:.72rem;color:var(--tx3);font-family:var(--mono)}
+.progress-phases{display:flex;flex-direction:column;gap:.2rem;margin-top:.3rem}
+.progress-phase{display:flex;align-items:center;gap:.4rem;font-size:.74rem;color:var(--tx2)}
+.progress-phase-icon{width:16px;text-align:center;font-size:.7rem}
+.progress-phase.done .progress-phase-icon{color:var(--green)}
+.progress-phase.active .progress-phase-icon{color:var(--blue)}
+.progress-phase.active{color:var(--tx);font-weight:500}
+
+/* ── Report table ── */
+.report-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .9rem;border-radius:8px;font-size:.8rem;font-weight:600;text-decoration:none;cursor:pointer;margin:.3rem .4rem .3rem 0;transition:background .15s,transform .1s}
+.report-btn:hover{transform:translateY(-1px)}
+.report-btn-view{background:var(--blue);color:#fff}
+.report-btn-view:hover{background:var(--blue-hover)}
+.report-btn-download{background:var(--bg2);color:var(--tx);border:1px solid var(--bd)}
+.report-btn-download:hover{background:var(--bg3)}
+.report-links{margin:.5rem 0;display:flex;flex-wrap:wrap;align-items:center}
+.report-table-wrap{margin-top:.8rem;overflow-x:auto}
+.report-table{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--bg2);border-radius:10px;overflow:hidden;border:1px solid var(--bd)}
+.report-table th{background:var(--bg4);color:var(--blue);font-weight:700;text-align:left;padding:.55rem .7rem;border-bottom:2px solid var(--bd);white-space:nowrap}
+.report-table td{padding:.45rem .7rem;border-bottom:1px solid var(--bd);vertical-align:middle}
+.report-table tr:last-child td{border-bottom:none}
+.report-table tr:hover td{background:var(--brand160)}
+.report-table .rt-fw{font-weight:600;color:var(--tx);white-space:nowrap}
+.report-table .rt-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .65rem;border-radius:6px;font-size:.75rem;font-weight:600;text-decoration:none;cursor:pointer;transition:background .15s,transform .1s}
+.report-table .rt-btn:hover{transform:translateY(-1px)}
+.report-table .rt-btn-view{background:var(--blue);color:#fff}
+.report-table .rt-btn-view:hover{background:var(--blue-hover)}
+.report-table .rt-btn-dl{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}
+.report-table .rt-btn-dl:hover{background:var(--bg3)}
+.report-table .rt-zip-row td{background:var(--brand160);border-top:2px solid var(--bd)}
+.report-table .rt-shared td{font-size:.78rem;color:var(--tx2)}
+
+/* Token badge */
+.token-badge{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin-top:.3rem;padding:.25rem 0;background:transparent;border:none;border-radius:0;font-size:.68rem;color:var(--tx3);font-family:var(--font);width:100%;position:relative}
+.token-badge .tb-icon{font-size:.75rem;cursor:help}
+.token-badge .tb-label{font-weight:500;color:var(--tx3)}
+.token-badge .tb-val{color:var(--tx2);font-weight:600}
+.token-badge .tb-cost{color:var(--tx2);font-weight:600}
+.token-badge .tb-model{color:var(--tx3);font-style:italic}
+.token-badge .tb-sep{color:var(--tx3);margin:0 .1rem}
+.token-badge .tb-disclaimer{display:none;position:absolute;bottom:calc(100% + 6px);left:0;right:0;padding:.5rem .75rem;background:var(--bg2);border:1px solid var(--bd);border-radius:8px;font-size:.62rem;color:var(--tx3);font-style:italic;line-height:1.4;box-shadow:var(--shadow-8);z-index:50;pointer-events:none}
+.token-badge:hover .tb-disclaimer{display:block}
+
+/* ── Follow-up Suggestion Chips ── */
+.followup-chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.4rem;padding:.2rem 0;animation:chipsFadeIn .3s ease}
+.followup-chip{display:inline-flex;align-items:center;gap:.3rem;padding:.35rem .7rem;background:var(--bg2);border:1px solid var(--bd);border-radius:16px;font-size:.72rem;color:var(--tx2);cursor:pointer;transition:all .2s;font-family:var(--font);white-space:nowrap}
+.followup-chip:hover{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:var(--shadow-4)}
+.followup-chip:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+@keyframes chipsFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── New Chat Button ── */
+.new-chat-btn{display:none;position:absolute;top:8px;right:16px;z-index:10;align-items:center;gap:.3rem;padding:.3rem .7rem;background:var(--bg2);border:1px solid var(--bd);border-radius:16px;font-size:.7rem;color:var(--tx3);cursor:pointer;transition:all .2s;font-family:var(--font)}
+.new-chat-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:var(--shadow-4)}
+.new-chat-btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.new-chat-btn.visible{display:inline-flex}
+
+/* ── Chat Input ── */
+.chat-input-area{flex-shrink:0;padding:.8rem 0 1.2rem;border-top:1px solid var(--bd)}
+.chat-input-box{display:flex;align-items:flex-end;gap:.5rem;background:var(--bg2);border:2px solid var(--bd);border-radius:12px;padding:.6rem .8rem;transition:border-color .2s;box-shadow:var(--shadow-4)}
+.chat-input-box:focus-within{border-color:var(--blue);box-shadow:0 0 0 2px rgba(15,108,189,.2)}
+.chat-input-box textarea{flex:1;border:none;background:transparent;color:var(--tx);font-family:var(--font);font-size:.9rem;resize:none;outline:none;line-height:1.5;max-height:150px;min-height:24px}
+.chat-input-box textarea::placeholder{color:var(--tx3)}
+.send-btn{width:36px;height:36px;border-radius:8px;border:none;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}
+.send-btn:hover{background:var(--blue-hover)}
+.send-btn:disabled{background:var(--bg4);color:var(--tx3);cursor:not-allowed}
+.send-btn svg{width:18px;height:18px}
+.chat-footer{text-align:center;padding:.4rem 0 0;font-size:.68rem;color:var(--tx3);line-height:1.5}
+.chat-footer .tm-note{display:block;margin-top:.25rem;font-size:.65rem;color:var(--tx3);opacity:.7}
+
+/* ── Typing indicator ── */
+.typing-indicator{display:flex;align-items:center;gap:4px;padding:4px 0}
+.typing-indicator span{width:6px;height:6px;border-radius:50%;background:var(--tx3);animation:typingPulse 1.4s ease-in-out infinite}
+.typing-indicator span:nth-child(2){animation-delay:.2s}
+.typing-indicator span:nth-child(3){animation-delay:.4s}
+@keyframes typingPulse{0%,60%,100%{opacity:.3;transform:scale(.8)}30%{opacity:1;transform:scale(1)}}
+
+/* ── Focus visible (R14) ── */
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+button:focus-visible,.hdr-nav-link:focus-visible,.ce-panel-item:focus-visible,.ce-tab:focus-visible,.send-btn:focus-visible,.theme-toggle:focus-visible,.user-menu-trigger:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .chat-area{padding:0 .8rem}
+  .msg-bubble{max-width:95%}
+  .width-slider-wrap{display:none!important}
+  .theme-toggle{display:none!important}
+  .hdr-nav-link span:not(.nav-icon){display:none}
+  .hdr-nav-link{padding:.35rem .5rem}
+  .qs-cards{grid-template-columns:1fr}
+  .fw-grid{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+  .qs-cards{gap:.6rem}
+  .qs-card{padding:1.2rem .8rem 1rem}
+}
+@media(prefers-reduced-motion:reduce){*{transition-duration:0s!important;animation-duration:0s!important}}
+</style>
+</head>
+<body>
+
+<!-- ═════════ LOGIN PAGE ═════════ -->
+<div id="loginPage" class="login-page">
+  <div class="login-card">
+    <div class="logo">🛡️</div>
+    <h1>PostureIQ</h1>
+    <p class="desc">AI-powered security posture intelligence for Microsoft cloud services. Risk-weighted scoring, attack path analysis, priority ranking, AI fix recommendations, and 11 compliance frameworks.</p>
+    <button class="login-btn" onclick="signIn()">
+      <svg viewBox="0 0 21 21"><path d="M0 0h10v10H0zM11 0h10v10H11zM0 11h10v10H0zM11 11h10v10H11z"/></svg>
+      Sign in with Microsoft
+    </button>
+    <div class="login-note">
+      Your credentials are used to run assessments against <strong>your Microsoft cloud environment</strong>.
+      The agent reads Azure resources and service configurations using your permissions.<br/>
+      Required roles: <strong>Reader</strong> + <strong>Security Reader</strong> on target subscriptions.
+    </div>
+  </div>
+</div>
+
+<!-- ═════════ APP ═════════ -->
+<div id="app" class="app" style="display:none">
+
+  <!-- Header -->
+  <header class="hdr">
+    <button class="hdr-logo" onclick="resetChat()" title="Home" aria-label="PostureIQ Home">
+      <span class="hdr-logo-icon">🛡️</span>
+      <span class="hdr-title">PostureIQ</span>
+    </button>
+    <div class="hdr-sep"></div>
+    <nav class="hdr-nav" aria-label="Main navigation">
+      <button class="hdr-nav-link" id="navAssessment" onclick="showAssessPanel()">
+        <span class="nav-icon">🔍</span> Run Assessment
+      </button>
+      <button class="hdr-nav-link" id="navPermissions" onclick="showPermPanel()">
+        <span class="nav-icon">🔑</span> Check Permissions
+      </button>
+      <button class="hdr-nav-link" id="navExplorer" onclick="startCloudExplorer()">
+        <span class="nav-icon">☁️</span> Cloud Explorer
+      </button>
+    </nav>
+    <div class="hdr-right">
+      <div class="width-slider-wrap" title="Chat area width">
+        <span class="slider-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></span>
+        <input type="range" class="width-slider" id="widthSlider" min="0" max="2" step="1" value="0" oninput="setWidthFromSlider(this.value)" aria-label="Chat area width">
+      </div>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle dark mode">☀️</button>
+      <div class="user-menu-wrap" id="userMenuWrap">
+        <div class="user-menu-trigger" id="userMenuTrigger" onclick="toggleUserMenu()">
+          <div class="avatar" id="userAvatar">?</div>
+          <span id="userName" style="font-weight:500;color:var(--tx)" title="">—</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="user-dropdown" id="userDropdown">
+          <div class="user-dropdown-tenant" id="tenantBadgeDropdown">
+            <span class="tenant-icon">🏢</span>
+            <div class="tenant-info">
+              <span class="tenant-name" id="tenantName">—</span>
+              <span class="tenant-id" id="tenantId">—</span>
+            </div>
+          </div>
+          <div class="user-dropdown-sep"></div>
+          <button class="user-dropdown-item" onclick="switchTenant();toggleUserMenu()">🏢 Switch Tenant</button>
+          <div class="user-dropdown-sep"></div>
+          <button class="user-dropdown-item" onclick="signOut()">🚪 Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cloud Explorer Floating Prompt Panel (3D Viva) -->
+  <div class="ce-panel" id="cePanel" role="region" aria-label="Sample prompts for Cloud Explorer">
+    <div class="ce-panel-hdr">
+      <span class="ce-panel-hdr-title">Sample Prompts<br><span style="font-size:.6rem;font-weight:500;opacity:.8">Cloud Explorer</span></span>
+      <button class="ce-panel-close" onclick="hideCePanel()" title="Collapse" aria-label="Collapse prompts panel"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 1 3 5 7 9"/></svg></button>
+    </div>
+    <div class="ce-panel-list">
+      <div class="ce-panel-group">🖥️ Resources</div>
+      <button class="ce-panel-item" onclick="cePrompt('list all virtual machines')"><span class="pi-icon">›</span> list all virtual machines</button>
+      <button class="ce-panel-item" onclick="cePrompt('show all storage accounts')"><span class="pi-icon">›</span> show all storage accounts</button>
+      <button class="ce-panel-item" onclick="cePrompt('list all web apps')"><span class="pi-icon">›</span> list all web apps</button>
+      <button class="ce-panel-item" onclick="cePrompt('show all AKS clusters')"><span class="pi-icon">›</span> show all AKS clusters</button>
+      <button class="ce-panel-item" onclick="cePrompt('list all databases')"><span class="pi-icon">›</span> list all databases</button>
+      <div class="ce-panel-group">🛡️ Security</div>
+      <button class="ce-panel-item" onclick="cePrompt('show Defender plans and secure score')"><span class="pi-icon">›</span> Defender plans &amp; secure score</button>
+      <button class="ce-panel-item" onclick="cePrompt('list security recommendations')"><span class="pi-icon">›</span> security recommendations</button>
+      <button class="ce-panel-item" onclick="cePrompt('show policy compliance status')"><span class="pi-icon">›</span> policy compliance status</button>
+      <button class="ce-panel-item" onclick="cePrompt('list resource locks')"><span class="pi-icon">›</span> list resource locks</button>
+      <div class="ce-panel-group">👥 Identities</div>
+      <button class="ce-panel-item" onclick="cePrompt('list admin users')"><span class="pi-icon">›</span> list admin users</button>
+      <button class="ce-panel-item" onclick="cePrompt('show risky users')"><span class="pi-icon">›</span> show risky users</button>
+      <button class="ce-panel-item" onclick="cePrompt('list service principals')"><span class="pi-icon">›</span> list service principals</button>
+      <button class="ce-panel-item" onclick="cePrompt('show conditional access policies')"><span class="pi-icon">›</span> conditional access policies</button>
+      <button class="ce-panel-item" onclick="cePrompt('list app registrations')"><span class="pi-icon">›</span> list app registrations</button>
+      <div class="ce-panel-group">🌐 Networking</div>
+      <button class="ce-panel-item" onclick="cePrompt('show all VNets and subnets')"><span class="pi-icon">›</span> VNets and subnets</button>
+      <button class="ce-panel-item" onclick="cePrompt('list NSG rules allowing any source')"><span class="pi-icon">›</span> NSG rules allowing any source</button>
+      <button class="ce-panel-item" onclick="cePrompt('show public IPs')"><span class="pi-icon">›</span> show public IPs</button>
+      <button class="ce-panel-item" onclick="cePrompt('list load balancers')"><span class="pi-icon">›</span> list load balancers</button>
+      <button class="ce-panel-item" onclick="cePrompt('Key Vaults without private endpoints')"><span class="pi-icon">›</span> Key Vaults without private endpoints</button>
+      <div class="ce-panel-group">🤖 AI &amp; ML</div>
+      <button class="ce-panel-item" onclick="cePrompt('list Azure OpenAI resources')"><span class="pi-icon">›</span> Azure OpenAI resources</button>
+      <button class="ce-panel-item" onclick="cePrompt('show ML workspaces')"><span class="pi-icon">›</span> ML workspaces</button>
+      <button class="ce-panel-item" onclick="cePrompt('list cognitive services')"><span class="pi-icon">›</span> cognitive services</button>
+      <div class="ce-panel-group">🏗️ Infrastructure</div>
+      <button class="ce-panel-item" onclick="cePrompt('show all subscriptions')"><span class="pi-icon">›</span> show all subscriptions</button>
+      <button class="ce-panel-item" onclick="cePrompt('list resource groups')"><span class="pi-icon">›</span> list resource groups</button>
+      <button class="ce-panel-item" onclick="cePrompt('show management groups')"><span class="pi-icon">›</span> management groups</button>
+      <button class="ce-panel-item" onclick="cePrompt('storage accounts with public access')"><span class="pi-icon">›</span> storage with public access</button>
+      <button class="ce-panel-item" onclick="cePrompt('list all tags in use')"><span class="pi-icon">›</span> list all tags in use</button>
+    </div>
+  </div>
+  <button class="ce-tab" id="ceTab" onclick="expandCePanel()" aria-label="Expand Cloud Explorer prompts"><span class="tab-chevron"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 1 7 5 3 9"/></svg></span><span class="tab-icon">☁️</span>Prompts</button>
+
+  <!-- Assessment Floating Panel (3D Viva) -->
+  <div class="assess-panel" id="assessPanel" role="region" aria-label="Assessment options">
+    <div class="assess-panel-hdr">
+      <span class="assess-panel-hdr-title">Assessment Options<br><span style="font-size:.6rem;font-weight:500;opacity:.8">Run Assessment</span></span>
+      <button class="assess-panel-close" onclick="hideAssessPanel()" title="Collapse" aria-label="Collapse assessment panel"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 1 3 5 7 9"/></svg></button>
+    </div>
+    <div class="assess-panel-body">
+      <div>
+        <div class="assess-section-label">🛡️ Compliance Frameworks</div>
+        <div class="assess-fw-grid">
+          <label class="assess-fw-item select-all"><input type="checkbox" id="apFwSelectAll" onchange="toggleAllApFw(this)" checked/> Select All</label>
+          <label class="assess-fw-item"><input type="checkbox" class="ap-fw-cb" value="FedRAMP" checked/> FedRAMP</label>
+          <label class="assess-fw-item"><input type="checkbox" class="ap-fw-cb" value="CIS" checked/> CIS Benchmarks</label>
+          <label class="assess-fw-item"><input type="checkbox" class="ap-fw-cb" value="ISO-27001" checked/> ISO 27001</label>
+          <label class="assess-fw-item"><input type="checkbox" class="ap-fw-cb" value="NIST-800-53" checked/> NIST 800-53</label>
+          <label class="assess-fw-item"><input type="checkbox" class="ap-fw-cb" value="PCI-DSS" checked/> PCI-DSS</label>
+          <label class="assess-fw-item"><input type="checkbox" class="ap-fw-cb" value="MCSB" checked/> MCSB</label>
+          <label class="assess-fw-item"><input type="checkbox" class="ap-fw-cb" value="HIPAA" checked/> HIPAA</label>
+          <label class="assess-fw-item"><input type="checkbox" class="ap-fw-cb" value="SOC2" checked/> SOC 2</label>
+          <label class="assess-fw-item"><input type="checkbox" class="ap-fw-cb" value="GDPR" checked/> GDPR</label>
+          <label class="assess-fw-item"><input type="checkbox" class="ap-fw-cb" value="NIST-CSF" checked/> NIST CSF</label>
+          <label class="assess-fw-item"><input type="checkbox" class="ap-fw-cb" value="CSA-CCM" checked/> CSA CCM</label>
+        </div>
+      </div>
+      <div>
+        <div class="assess-section-label">🌐 Subscription Scope</div>
+        <input type="text" class="assess-sub-input" id="apSubInput" placeholder="All subscriptions (leave empty)" aria-label="Subscription name filter"/>
+        <div class="assess-sub-hint">Leave empty to assess all subscriptions in your tenant.</div>
+      </div>
+      <button class="assess-run-btn" id="apRunBtn" onclick="runAssessFromPanel()">▶ Run All Frameworks</button>
+    </div>
+  </div>
+  <button class="assess-tab" id="assessTab" onclick="expandAssessPanel()" aria-label="Expand assessment options"><span class="tab-chevron"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 1 7 5 3 9"/></svg></span><span class="tab-icon">🔍</span>Options</button>
+
+  <!-- Check Permissions Floating Panel (3D Viva) -->
+  <div class="perm-panel" id="permPanel" role="region" aria-label="Permission check prompts">
+    <div class="perm-panel-hdr">
+      <span class="perm-panel-hdr-title">Sample Prompts<br><span style="font-size:.6rem;font-weight:500;opacity:.8">Check Permissions</span></span>
+      <button class="perm-panel-close" onclick="hidePermPanel()" title="Collapse" aria-label="Collapse permissions panel"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 1 3 5 7 9"/></svg></button>
+    </div>
+    <div class="perm-panel-list">
+      <div class="perm-panel-group">� Assessment Readiness</div>
+      <button class="perm-panel-item" onclick="permPrompt('Check if I have the required permissions to run a full PostureIQ assessment')"><span class="pi-icon">›</span> do I have assessment permissions?</button>
+      <button class="perm-panel-item" onclick="permPrompt('What permissions am I missing to run a PostureIQ assessment')"><span class="pi-icon">›</span> what permissions am I missing?</button>
+      <button class="perm-panel-item" onclick="permPrompt('Check if I have the required Microsoft Graph API permissions')"><span class="pi-icon">›</span> my Graph API permissions</button>
+      <button class="perm-panel-item" onclick="permPrompt('Summarize my permission level and access across all Azure services')"><span class="pi-icon">›</span> summarize my access level</button>
+      <div class="perm-panel-group">🔑 Role Assignments</div>
+      <button class="perm-panel-item" onclick="permPrompt('Check my permissions before running an assessment')"><span class="pi-icon">›</span> check my assessment permissions</button>
+      <button class="perm-panel-item" onclick="permPrompt('List all my Azure role assignments')"><span class="pi-icon">›</span> list all my role assignments</button>
+      <button class="perm-panel-item" onclick="permPrompt('What roles do I have on each subscription')"><span class="pi-icon">›</span> roles per subscription</button>
+      <button class="perm-panel-item" onclick="permPrompt('Do I have Security Reader role')"><span class="pi-icon">›</span> do I have Security Reader?</button>
+      <button class="perm-panel-item" onclick="permPrompt('Do I have Reader role on all subscriptions')"><span class="pi-icon">›</span> Reader on all subscriptions?</button>
+      <div class="perm-panel-group">🛡️ Security Roles</div>
+      <button class="perm-panel-item" onclick="permPrompt('Am I a Security Admin')"><span class="pi-icon">›</span> am I a Security Admin?</button>
+      <button class="perm-panel-item" onclick="permPrompt('Do I have Defender access')"><span class="pi-icon">›</span> do I have Defender access?</button>
+      <button class="perm-panel-item" onclick="permPrompt('Check if I can read security alerts')"><span class="pi-icon">›</span> can I read security alerts?</button>
+      <button class="perm-panel-item" onclick="permPrompt('Check my Purview compliance roles')"><span class="pi-icon">›</span> Purview compliance roles</button>
+      <div class="perm-panel-group">👥 Directory Roles</div>
+      <button class="perm-panel-item" onclick="permPrompt('List my Entra ID directory roles')"><span class="pi-icon">›</span> my Entra directory roles</button>
+      <button class="perm-panel-item" onclick="permPrompt('Am I a Global Administrator')"><span class="pi-icon">›</span> am I a Global Admin?</button>
+      <button class="perm-panel-item" onclick="permPrompt('Check if I have Privileged Role Administrator')"><span class="pi-icon">›</span> Privileged Role Admin?</button>
+      <button class="perm-panel-item" onclick="permPrompt('What Entra groups am I a member of')"><span class="pi-icon">›</span> my Entra group memberships</button>
+    </div>
+  </div>
+  <button class="perm-tab" id="permTab" onclick="expandPermPanel()" aria-label="Expand permission prompts"><span class="tab-chevron"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 1 7 5 3 9"/></svg></span><span class="tab-icon">🔑</span>Prompts</button>
+
+  <!-- Chat Pane (full width) -->
+  <div class="chat-pane">
+    <div class="chat-scroll-wrap">
+      <button class="new-chat-btn" id="newChatBtn" onclick="newChatForTool()" aria-label="Start new chat for current tool">↻ New Chat</button>
+      <div class="chat-area" id="chatArea">
+        <div id="chatScroll">
+          <div class="landing" id="chatWelcome">
+          <div class="landing-greeting">Welcome to PostureIQ</div>
+          <div class="landing-sub">AI-powered security posture intelligence for your Microsoft cloud</div>
+          <div class="qs-cards">
+            <div class="qs-card" onclick="showAssessPanel()">
+              <div class="qs-card-accent"></div>
+              <div class="qs-card-body">
+                <div class="qs-card-icon">🔍</div>
+                <div class="qs-card-title">Run Assessment</div>
+                <div class="qs-card-desc">Risk-weighted posture assessment across 11 compliance frameworks</div>
+              </div>
+            </div>
+            <div class="qs-card" onclick="showPermPanel()">
+              <div class="qs-card-accent"></div>
+              <div class="qs-card-body">
+                <div class="qs-card-icon">🔑</div>
+                <div class="qs-card-title">Check Permissions</div>
+                <div class="qs-card-desc">Verify your access levels before running assessments</div>
+              </div>
+            </div>
+            <div class="qs-card" onclick="startCloudExplorer()">
+              <div class="qs-card-accent"></div>
+              <div class="qs-card-body">
+                <div class="qs-card-icon">☁️</div>
+                <div class="qs-card-title">Cloud Explorer</div>
+                <div class="qs-card-desc">Query Azure resources, identities &amp; security settings</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- Input (pinned at bottom) -->
+    <div class="chat-input-wrap" id="chatInputWrap">
+      <div class="chat-input-area">
+        <div class="chat-input-box">
+          <textarea id="chatInput" rows="1" placeholder="Ask the agent anything…" onkeydown="handleKey(event)" oninput="autoGrow(this);removeFollowupChips()" aria-label="Type your message"></textarea>
+          <button class="send-btn" id="sendBtn" onclick="sendChat()" aria-label="Send message">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+          </button>
+        </div>
+        <div class="chat-footer">PostureIQ uses your signed-in credentials to query Microsoft cloud services. Results reflect your permission level.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Framework Picker Modal -->
+<div class="modal-overlay" id="fwModalOverlay" style="display:none" onclick="if(event.target===this)closeFwModal()">
+  <div class="modal-card">
+    <h3>Select Compliance Frameworks</h3>
+    <p>Choose which frameworks to include in your assessment.</p>
+    <div class="fw-grid">
+      <label class="select-all"><input type="checkbox" id="fwSelectAll" onchange="toggleAllFw(this)" checked/> Select All</label>
+      <label><input type="checkbox" class="fw-cb" value="FedRAMP" checked/> FedRAMP</label>
+      <label><input type="checkbox" class="fw-cb" value="CIS" checked/> CIS Benchmarks</label>
+      <label><input type="checkbox" class="fw-cb" value="ISO-27001" checked/> ISO 27001</label>
+      <label><input type="checkbox" class="fw-cb" value="NIST-800-53" checked/> NIST 800-53</label>
+      <label><input type="checkbox" class="fw-cb" value="PCI-DSS" checked/> PCI-DSS</label>
+      <label><input type="checkbox" class="fw-cb" value="MCSB" checked/> MCSB</label>
+      <label><input type="checkbox" class="fw-cb" value="HIPAA" checked/> HIPAA</label>
+      <label><input type="checkbox" class="fw-cb" value="SOC2" checked/> SOC 2</label>
+      <label><input type="checkbox" class="fw-cb" value="GDPR" checked/> GDPR</label>
+      <label><input type="checkbox" class="fw-cb" value="NIST-CSF" checked/> NIST CSF</label>
+      <label><input type="checkbox" class="fw-cb" value="CSA-CCM" checked/> CSA CCM</label>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn" onclick="closeFwModal()">Cancel</button>
+      <button class="modal-btn modal-btn-primary" id="fwRunBtn" onclick="runSelectedFrameworks(event)">Run Assessment</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═════════ MSAL.js (self-hosted v5.6.3) ═════════ -->
+<script src="/msal-browser.min.js"></script>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// CONFIGURATION
+// ─────────────────────────────────────────────────────────────
+const MSAL_CONFIG = {
+  auth: {
+    clientId: "ffb6f10d-6991-430e-b3d6-23a0101a92b1",
+    authority: "https://login.microsoftonline.com/common",
+    redirectUri: window.location.origin,
+    navigateToLoginRequestUrl: false,
+  },
+  cache: { cacheLocation: "localStorage" }
+};
+
+// Scopes the SPA needs — delegated (on behalf of signed-in user)
+const GRAPH_SCOPES = [
+  "User.Read",
+  "Directory.Read.All",
+  "Policy.Read.All",
+  "RoleManagement.Read.All",
+  "AuditLog.Read.All",
+  "UserAuthenticationMethod.Read.All",
+  "IdentityRiskyUser.Read.All",
+];
+const ARM_SCOPES = ["https://management.azure.com/user_impersonation"];
+
+const AGENT_URL = "";   // Same origin when served from Container App
+
+// ─────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────
+let msalInstance = null;
+let currentAccount = null;
+let chatHistory = [];
+let isSending = false;
+let activeItem = null;  // currently active tool label
+let currentAbortController = null;  // for cancelling SSE requests
+let currentReader = null;           // active SSE reader for stop
+let switchingSession = false;       // true when switching tools (suppress abort message)
+let conversationId = null;          // per-session ID for server state isolation
+const sessionSnapshots = new Map(); // saved sessions keyed by tool label
+const usedChips = new Set();        // track clicked follow-up prompts
+let pendingDynamicChips = [];       // dynamic follow-ups queued for next response
+
+// Dynamic follow-up suggestions keyed by base chip prompt
+const FOLLOWUP_MAP = {
+  'Explain the top risks from the assessment': [
+    {icon:'🎯', label:'How to fix the #1 risk?', prompt:'How do I remediate the highest risk finding from the assessment'},
+    {icon:'📊', label:'Compare risks across frameworks', prompt:'Compare the risk findings across all assessed compliance frameworks'},
+    {icon:'⚡', label:'Quick wins for risk reduction', prompt:'What are the quick wins to reduce overall risk score'}
+  ],
+  'Show remediation steps for the highest-risk findings': [
+    {icon:'📋', label:'Prioritize by effort', prompt:'Prioritize remediation steps by implementation effort from easiest to hardest'},
+    {icon:'💡', label:'Highest impact fixes', prompt:'Which remediation steps would have the most impact on the overall score'},
+    {icon:'📝', label:'Generate remediation plan', prompt:'Generate a detailed remediation action plan with owners and timelines'}
+  ],
+  'Which compliance frameworks scored lowest and why': [
+    {icon:'🔍', label:'Deep dive on worst framework', prompt:'Do a deep dive analysis on the lowest scoring compliance framework'},
+    {icon:'📈', label:'How to improve lowest scores', prompt:'What specific changes would improve the lowest scoring frameworks'},
+    {icon:'🔗', label:'Control overlap across frameworks', prompt:'Show which controls overlap across the lowest scoring frameworks'}
+  ],
+  'Generate an executive summary of the assessment': [
+    {icon:'📊', label:'Add risk trends', prompt:'Add risk trend analysis and direction indicators to the executive summary'},
+    {icon:'🎯', label:'Top 5 action items', prompt:'List the top 5 prioritized action items for leadership'},
+    {icon:'💰', label:'Business impact analysis', prompt:'Provide business impact analysis for the key findings'}
+  ],
+  'Re-run the assessment for a specific subscription': [
+    {icon:'📊', label:'Compare with full tenant', prompt:'Compare this subscription assessment with the full tenant results'},
+    {icon:'🔍', label:'Subscription-specific risks', prompt:'What risks are unique to this subscription versus the broader tenant'}
+  ],
+  'Export the assessment report': [
+    {icon:'📊', label:'Explain top risks', prompt:'Explain the top risks from the assessment'},
+    {icon:'🔧', label:'Show remediation steps', prompt:'Show remediation steps for the highest-risk findings'}
+  ]
+};
+
+function generateConversationId() {
+  // crypto.randomUUID() with fallback
+  if (crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
+// AUTH  (redirect flow — works in InPrivate / popup-blocked)
+// ─────────────────────────────────────────────────────────────
+async function initMsal() {
+  if (MSAL_CONFIG.auth.clientId === "YOUR-CLIENT-ID-HERE") {
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("app").style.display = "flex";
+    document.getElementById("userName").textContent = "Demo Mode";
+    document.getElementById("tenantName").textContent = "Demo Tenant";
+    document.getElementById("tenantId").textContent = "not-configured";
+    document.getElementById("userAvatar").textContent = "D";
+    return;
+  }
+
+  // Check MSAL library loaded
+  if (typeof msal === "undefined") {
+    document.querySelector(".login-note").innerHTML =
+      '<strong style="color:var(--red)">MSAL library failed to load. Check network / ad-blocker.</strong>';
+    return;
+  }
+
+  try {
+    // Clear any stuck MSAL interaction-in-progress flags from localStorage
+    Object.keys(localStorage).filter(k => k.includes("interaction.status")).forEach(k => localStorage.removeItem(k));
+    msalInstance = new msal.PublicClientApplication(MSAL_CONFIG);
+    await msalInstance.initialize();
+
+    // Process redirect response (when returning from login redirect)
+    const resp = await msalInstance.handleRedirectPromise();
+    if (resp && resp.account) {
+      currentAccount = resp.account;
+      msalInstance.setActiveAccount(currentAccount);
+      showApp();
+      return;
+    }
+
+    // Check for existing session
+    const accounts = msalInstance.getAllAccounts();
+    if (accounts.length > 0) {
+      currentAccount = accounts[0];
+      msalInstance.setActiveAccount(currentAccount);
+      showApp();
+    }
+  } catch (err) {
+    console.error("MSAL init error:", err);
+    document.querySelector(".login-note").innerHTML =
+      '<strong style="color:var(--red)">Authentication init failed: ' + escHtml(String(err)) + '</strong>';
+  }
+}
+
+function signIn() {
+  if (!msalInstance) {
+    alert("Authentication library not loaded. Please refresh the page.");
+    return;
+  }
+  // Redirect to Microsoft login — no popup needed
+  localStorage.setItem("esiq_return_page", window.location.pathname);
+  msalInstance.loginRedirect({
+    scopes: GRAPH_SCOPES,
+    prompt: "select_account",
+  });
+}
+
+function signOut() {
+  if (msalInstance && currentAccount) {
+    msalInstance.logoutRedirect({ account: currentAccount });
+  } else {
+    sessionStorage.clear();
+    location.reload();
+  }
+}
+
+function switchTenant() {
+  if (!msalInstance) return;
+  showTenantModal();
+}
+
+function showTenantModal() {
+  // Remove existing modal if any
+  var existing = document.getElementById('tenantModal');
+  if (existing) existing.remove();
+
+  var overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'tenantModal';
+  overlay.innerHTML =
+    '<div class="modal-card">' +
+      '<h3>🏢 Switch Tenant</h3>' +
+      '<p>Enter a Tenant ID (GUID) to sign in to a specific tenant, or leave blank to pick any account.</p>' +
+      '<input class="modal-input" id="tenantIdInput" type="text" placeholder="e.g. 72f988bf-86f1-41af-91ab-2d7cd011db47" maxlength="36" spellcheck="false" autocomplete="off"/>' +
+      '<div class="modal-hint">Find your Tenant ID in Azure Portal → Microsoft Entra ID → Overview</div>' +
+      '<div class="modal-actions">' +
+        '<button class="modal-btn" onclick="closeTenantModal()">Cancel</button>' +
+        '<button class="modal-btn modal-btn-primary" onclick="submitTenantSwitch()">Sign In</button>' +
+      '</div>' +
+    '</div>';
+
+  // Close on backdrop click
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closeTenantModal();
+  });
+
+  document.body.appendChild(overlay);
+  setTimeout(function() { document.getElementById('tenantIdInput').focus(); }, 100);
+
+  // Allow Enter key to submit
+  document.getElementById('tenantIdInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); submitTenantSwitch(); }
+    if (e.key === 'Escape') { e.preventDefault(); closeTenantModal(); }
+  });
+}
+
+function closeTenantModal() {
+  var modal = document.getElementById('tenantModal');
+  if (modal) modal.remove();
+}
+
+function submitTenantSwitch() {
+  var input = document.getElementById('tenantIdInput');
+  var tenantId = input ? input.value.trim() : '';
+
+  // Validate tenant ID format if provided (GUID)
+  if (tenantId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(tenantId)) {
+    input.style.borderColor = 'var(--red)';
+    input.focus();
+    return;
+  }
+
+  closeTenantModal();
+
+  var loginRequest = {
+    scopes: GRAPH_SCOPES,
+    prompt: 'select_account',
+  };
+
+  // If tenant ID provided, set authority to that specific tenant
+  if (tenantId) {
+    loginRequest.authority = 'https://login.microsoftonline.com/' + tenantId;
+  }
+
+  localStorage.setItem("esiq_return_page", window.location.pathname);
+  msalInstance.loginRedirect(loginRequest);
+}
+
+function showApp() {
+  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("app").style.display = "flex";
+  if (currentAccount) {
+    const name = currentAccount.name || currentAccount.username || "User";
+    document.getElementById("userName").textContent = name;
+    document.getElementById("userAvatar").textContent = name.charAt(0).toUpperCase();
+    const tid = currentAccount.tenantId || "";
+    const upn = currentAccount.username || "";
+    const domain = upn.includes("@") ? upn.split("@")[1] : "Tenant";
+    document.getElementById("tenantName").textContent = domain;
+    document.getElementById("tenantId").textContent = tid ? tid.slice(0, 8) + "…" : "—";
+    document.getElementById("tenantBadgeDropdown").title = "Tenant ID: " + tid;
+    document.getElementById("userName").title = upn;
+  }
+}
+
+/**
+ * Acquire a Graph API token (delegated) for the signed-in user.
+ * Silent first, then redirect if needed.
+ */
+async function getGraphToken() {
+  if (!msalInstance || !currentAccount) return null;
+  try {
+    const resp = await msalInstance.acquireTokenSilent({ scopes: GRAPH_SCOPES, account: currentAccount });
+    return resp.accessToken;
+  } catch {
+    // Token expired or consent needed — redirect to re-auth
+    msalInstance.acquireTokenRedirect({ scopes: GRAPH_SCOPES, account: currentAccount });
+    return null;  // page will redirect
+  }
+}
+
+/**
+ * Acquire an ARM token (delegated) for Azure Resource Manager.
+ * Silent first, then redirect if needed.
+ */
+async function getArmToken() {
+  if (!msalInstance || !currentAccount) return null;
+  try {
+    const resp = await msalInstance.acquireTokenSilent({ scopes: ARM_SCOPES, account: currentAccount });
+    return resp.accessToken;
+  } catch {
+    msalInstance.acquireTokenRedirect({ scopes: ARM_SCOPES, account: currentAccount });
+    return null;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// CHAT WIDTH TOGGLE
+// ─────────────────────────────────────────────────────────────
+const WIDTH_MODES = [
+  { cls: '',     label: 'Compact' },
+  { cls: 'wide', label: 'Wide' },
+  { cls: 'full', label: 'Full' }
+];
+let currentWidthIdx = 0;
+
+function syncWidth(mode) {
+  var area = document.querySelector('.chat-area');
+  var inputWrap = document.getElementById('chatInputWrap');
+  if (area) { area.classList.remove('wide', 'full'); if (mode.cls) area.classList.add(mode.cls); }
+  if (inputWrap) { inputWrap.classList.remove('wide', 'full'); if (mode.cls) inputWrap.classList.add(mode.cls); }
+}
+
+function setWidthFromSlider(val) {
+  currentWidthIdx = parseInt(val, 10) || 0;
+  if (currentWidthIdx >= WIDTH_MODES.length) currentWidthIdx = 0;
+  var mode = WIDTH_MODES[currentWidthIdx];
+  syncWidth(mode);
+  localStorage.setItem('esiq-chat-width', currentWidthIdx);
+}
+
+(function(){
+  var saved = localStorage.getItem('esiq-chat-width');
+  if (saved !== null) {
+    currentWidthIdx = parseInt(saved, 10) || 0;
+    if (currentWidthIdx >= WIDTH_MODES.length) currentWidthIdx = 0;
+  }
+})();
+
+// Apply saved width after DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  var mode = WIDTH_MODES[currentWidthIdx];
+  syncWidth(mode);
+  var slider = document.getElementById('widthSlider');
+  if (slider) slider.value = currentWidthIdx;
+});
+
+// ─────────────────────────────────────────────────────────────
+// THEME
+// ─────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const curr = document.documentElement.getAttribute("data-theme");
+  const btn = document.getElementById('themeToggle');
+  if (curr === "dark") { document.documentElement.removeAttribute("data-theme"); localStorage.setItem("esiq-theme", "light"); if(btn) btn.textContent='☀️'; }
+  else { document.documentElement.setAttribute("data-theme", "dark"); localStorage.setItem("esiq-theme", "dark"); if(btn) btn.textContent='🌙'; }
+}
+(function(){
+  const s = localStorage.getItem("esiq-theme");
+  if (s === "dark") document.documentElement.setAttribute("data-theme", "dark");
+})();
+document.addEventListener('DOMContentLoaded', function() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const btn = document.getElementById('themeToggle');
+  if (btn) btn.textContent = isDark ? '🌙' : '☀️';
+});
+
+// ─────────────────────────────────────────────────────────────
+// FRAMEWORK PICKER MODAL
+// ─────────────────────────────────────────────────────────────
+function showFwModal() {
+  document.getElementById('fwModalOverlay').style.display = 'flex';
+}
+function closeFwModal() {
+  document.getElementById('fwModalOverlay').style.display = 'none';
+}
+
+function toggleAllFw(master) {
+  document.querySelectorAll(".fw-cb").forEach(function(cb) { cb.checked = master.checked; });
+  updateFwRunBtn();
+}
+
+function updateFwRunBtn() {
+  var cbs = document.querySelectorAll(".fw-cb");
+  var checked = Array.prototype.filter.call(cbs, function(c) { return c.checked; });
+  var btn = document.getElementById("fwRunBtn");
+  var allCb = document.getElementById("fwSelectAll");
+  allCb.checked = checked.length === cbs.length;
+  btn.disabled = checked.length === 0;
+  btn.textContent = checked.length === cbs.length
+    ? "Run All Frameworks"
+    : "Run " + checked.length + " Framework" + (checked.length !== 1 ? "s" : "");
+}
+
+// Attach change listeners to individual checkboxes
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll(".fw-cb").forEach(function(cb) {
+    cb.addEventListener("change", updateFwRunBtn);
+  });
+});
+
+function runSelectedFrameworks(event) {
+  if (event) event.stopPropagation();
+  var checked = Array.prototype.filter.call(
+    document.querySelectorAll(".fw-cb"),
+    function(c) { return c.checked; }
+  );
+  if (checked.length === 0) return;
+  var names = checked.map(function(c) { return c.value; });
+  var allCount = document.querySelectorAll(".fw-cb").length;
+  var fwArg = names.length === allCount ? "all" : names.join(", ");
+  var label = names.length === allCount
+    ? "PostureIQ Assessment (All Frameworks)"
+    : "PostureIQ Assessment (" + names.join(", ") + ")";
+  var prompt = names.length === allCount
+    ? "Run a PostureIQ security posture assessment on my tenant using all frameworks"
+    : "Run a PostureIQ security posture assessment on my tenant using these frameworks: " + fwArg;
+  // Set structured frameworks for the backend
+  pendingFrameworks = names;
+  closeFwModal();
+  startSession(label, "🔍", prompt);
+}
+
+// ─────────────────────────────────────────────────────────────
+// USER DROPDOWN MENU
+// ─────────────────────────────────────────────────────────────
+function toggleUserMenu() {
+  var trigger = document.getElementById('userMenuTrigger');
+  var dropdown = document.getElementById('userDropdown');
+  var isOpen = dropdown.classList.toggle('open');
+  trigger.classList.toggle('open', isOpen);
+}
+// Close dropdown on outside click
+document.addEventListener('click', function(e) {
+  var wrap = document.getElementById('userMenuWrap');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('userDropdown').classList.remove('open');
+    document.getElementById('userMenuTrigger').classList.remove('open');
+  }
+});
+
+// ─────────────────────────────────────────────────────────────
+// SESSION / CHAT
+// ─────────────────────────────────────────────────────────────
+function setActiveNav(label) {
+  document.querySelectorAll('.hdr-nav-link').forEach(function(el) { el.classList.remove('active'); });
+  var nav = document.querySelector('.hdr-nav');
+  var sep = document.querySelector('.hdr-sep');
+  if (label) {
+    nav.classList.add('visible');
+    sep.classList.add('visible');
+    if (label.includes('Assessment')) document.getElementById('navAssessment').classList.add('active');
+    else if (label.includes('Permissions')) document.getElementById('navPermissions').classList.add('active');
+    else if (label.includes('Cloud Explorer')) document.getElementById('navExplorer').classList.add('active');
+  } else {
+    nav.classList.remove('visible');
+    sep.classList.remove('visible');
+  }
+}
+
+function showCePanel() {
+  var p = document.getElementById('cePanel');
+  var t = document.getElementById('ceTab');
+  if (p) { p.classList.remove('hiding'); p.classList.add('visible'); }
+  if (t) t.classList.remove('visible');
+}
+function expandCePanel() {
+  showCePanel();
+  var snap = sessionSnapshots.get('Cloud Explorer');
+  if (snap) snap.panelCollapsed = false;
+}
+function hideCePanel() {
+  var p = document.getElementById('cePanel');
+  var t = document.getElementById('ceTab');
+  if (p && p.classList.contains('visible')) {
+    p.classList.remove('visible'); p.classList.add('hiding');
+    p.addEventListener('animationend', function onEnd() { p.classList.remove('hiding'); p.removeEventListener('animationend', onEnd); }, { once: true });
+  }
+  if (t && activeItem === 'Cloud Explorer') t.classList.add('visible');
+}
+function destroyCePanel() {
+  var p = document.getElementById('cePanel');
+  var t = document.getElementById('ceTab');
+  if (p) { p.classList.remove('visible','hiding'); }
+  if (t) t.classList.remove('visible');
+}
+
+// ── Assessment Panel show/hide ──
+function showAssessPanel() {
+  var result = startSession('Run Assessment', '🔍', '');
+  if (result !== 'restored') {
+    // Show assessment welcome in center (fresh session only)
+    var html = '<div class="ce-welcome">';
+    html += '<div class="ce-icon">🔍</div>';
+    html += '<div class="ce-title">Run Assessment</div>';
+    html += '<div class="ce-desc">Select compliance frameworks and subscription scope from the panel, then click <strong>Run</strong> to start your security posture assessment.</div>';
+    html += '</div>';
+    document.getElementById('chatScroll').innerHTML = html;
+  }
+  document.getElementById('chatInput').placeholder = 'Or type a custom assessment query…';
+  // Show panel or tab based on saved collapsed state
+  var snap = sessionSnapshots.get('Run Assessment');
+  var p = document.getElementById('assessPanel');
+  var t = document.getElementById('assessTab');
+  if (result === 'restored' && snap && snap.panelCollapsed) {
+    if (p) p.classList.remove('visible','hiding');
+    if (t) t.classList.add('visible');
+  } else {
+    if (p) { p.classList.remove('hiding'); p.classList.add('visible'); }
+    if (t) t.classList.remove('visible');
+  }
+  updateNewChatBtn();
+}
+function hideAssessPanel() {
+  var p = document.getElementById('assessPanel');
+  var t = document.getElementById('assessTab');
+  if (p && p.classList.contains('visible')) {
+    p.classList.remove('visible'); p.classList.add('hiding');
+    p.addEventListener('animationend', function onEnd() { p.classList.remove('hiding'); p.removeEventListener('animationend', onEnd); }, { once: true });
+  }
+  if (t && activeItem && activeItem.includes('Assessment')) t.classList.add('visible');
+}
+function destroyAssessPanel() {
+  var p = document.getElementById('assessPanel');
+  var t = document.getElementById('assessTab');
+  if (p) { p.classList.remove('visible','hiding'); }
+  if (t) t.classList.remove('visible');
+}
+function expandAssessPanel() {
+  var p = document.getElementById('assessPanel');
+  var t = document.getElementById('assessTab');
+  if (p) { p.classList.remove('hiding'); p.classList.add('visible'); }
+  if (t) t.classList.remove('visible');
+  var snap = sessionSnapshots.get('Run Assessment');
+  if (snap) snap.panelCollapsed = false;
+}
+
+// ── Permissions Panel show/hide ──
+function showPermPanel() {
+  var result = startSession('Check Permissions', '🔑', '');
+  if (result !== 'restored') {
+    // Show welcome in center (fresh session only)
+    var html = '<div class="ce-welcome">';
+    html += '<div class="ce-icon">🔑</div>';
+    html += '<div class="ce-title">Check Permissions</div>';
+    html += '<div class="ce-desc">Verify your Azure RBAC roles, Entra directory roles, and security permissions.<br>Choose a prompt from the panel or type your own query.</div>';
+    html += '</div>';
+    document.getElementById('chatScroll').innerHTML = html;
+  }
+  document.getElementById('chatInput').placeholder = 'Ask about your permissions — e.g., "what roles do I have", "can I run an assessment"...';
+  // Show panel or tab based on saved collapsed state
+  var snap = sessionSnapshots.get('Check Permissions');
+  var p = document.getElementById('permPanel');
+  var t = document.getElementById('permTab');
+  if (result === 'restored' && snap && snap.panelCollapsed) {
+    if (p) p.classList.remove('visible','hiding');
+    if (t) t.classList.add('visible');
+  } else {
+    if (p) { p.classList.remove('hiding'); p.classList.add('visible'); }
+    if (t) t.classList.remove('visible');
+  }
+  updateNewChatBtn();
+}
+function hidePermPanel() {
+  var p = document.getElementById('permPanel');
+  var t = document.getElementById('permTab');
+  if (p && p.classList.contains('visible')) {
+    p.classList.remove('visible'); p.classList.add('hiding');
+    p.addEventListener('animationend', function onEnd() { p.classList.remove('hiding'); p.removeEventListener('animationend', onEnd); }, { once: true });
+  }
+  if (t && activeItem === 'Check Permissions') t.classList.add('visible');
+}
+function destroyPermPanel() {
+  var p = document.getElementById('permPanel');
+  var t = document.getElementById('permTab');
+  if (p) { p.classList.remove('visible','hiding'); }
+  if (t) t.classList.remove('visible');
+}
+function expandPermPanel() {
+  var p = document.getElementById('permPanel');
+  var t = document.getElementById('permTab');
+  if (p) { p.classList.remove('hiding'); p.classList.add('visible'); }
+  if (t) t.classList.remove('visible');
+  var snap = sessionSnapshots.get('Check Permissions');
+  if (snap) snap.panelCollapsed = false;
+}
+function permPrompt(text) {
+  document.getElementById('chatInput').value = text + '. Present results in a clear, easily readable format using markdown tables where applicable.';
+  document.getElementById('chatInput').focus();
+  sendChat();
+}
+function removeFollowupChips() {
+  document.querySelectorAll('.followup-chips').forEach(function(el){ el.remove(); });
+}
+function followupSend(prompt) {
+  removeFollowupChips();
+  usedChips.add(prompt);
+  pendingDynamicChips = (FOLLOWUP_MAP[prompt] || []).filter(function(s){ return !usedChips.has(s.prompt); });
+  document.getElementById('chatInput').value = prompt + '. Present results in a clear, easily readable format using markdown tables where applicable.';
+  sendChat();
+}
+function toggleAllApFw(master) {
+  document.querySelectorAll('.ap-fw-cb').forEach(function(cb) { cb.checked = master.checked; });
+  updateApRunBtn();
+}
+function updateApRunBtn() {
+  var cbs = document.querySelectorAll('.ap-fw-cb');
+  var checked = Array.prototype.filter.call(cbs, function(c) { return c.checked; });
+  var btn = document.getElementById('apRunBtn');
+  var allCb = document.getElementById('apFwSelectAll');
+  allCb.checked = checked.length === cbs.length;
+  btn.disabled = checked.length === 0;
+  btn.textContent = checked.length === 0 ? '\u25b6 Select frameworks' : checked.length === cbs.length ? '\u25b6 Run All Frameworks' : '\u25b6 Run ' + checked.length + ' Framework' + (checked.length !== 1 ? 's' : '');
+}
+function runAssessFromPanel() {
+  var checked = Array.prototype.filter.call(document.querySelectorAll('.ap-fw-cb'), function(c) { return c.checked; });
+  if (checked.length === 0) return;
+  var names = checked.map(function(c) { return c.value; });
+  var allCount = document.querySelectorAll('.ap-fw-cb').length;
+  var sub = (document.getElementById('apSubInput').value || '').trim();
+  var fwArg = names.length === allCount ? 'all' : names.join(', ');
+  var label = names.length === allCount ? 'PostureIQ Assessment (All Frameworks)' : 'PostureIQ Assessment (' + names.join(', ') + ')';
+  var prompt = names.length === allCount
+    ? 'Run a PostureIQ security posture assessment on my tenant using all frameworks'
+    : 'Run a PostureIQ security posture assessment on my tenant using these frameworks: ' + fwArg;
+  if (sub) prompt += ' for subscription: ' + sub;
+  pendingFrameworks = names;
+  destroyAssessPanel();
+  startSession('Run Assessment', '\ud83d\udd0d', prompt);
+}
+// Attach change listeners to panel checkboxes
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.ap-fw-cb').forEach(function(cb) { cb.addEventListener('change', updateApRunBtn); });
+});
+
+function startSession(label, icon, prompt) {
+  // Capture panel collapsed state BEFORE destroying panels
+  var panelCollapsed = false;
+  if (activeItem) {
+    var ceT = document.getElementById('ceTab');
+    var asT = document.getElementById('assessTab');
+    var pmT = document.getElementById('permTab');
+    if ((ceT && ceT.classList.contains('visible')) ||
+        (asT && asT.classList.contains('visible')) ||
+        (pmT && pmT.classList.contains('visible'))) {
+      panelCollapsed = true;
+    }
+  }
+
+  destroyCePanel();
+  destroyAssessPanel();
+  destroyPermPanel();
+
+  // Save current session snapshot before switching away
+  var wasProcessing = isSending;
+  if (activeItem && document.getElementById("chatScroll").innerHTML.trim()) {
+    var snapData = {
+      html: document.getElementById("chatScroll").innerHTML,
+      history: chatHistory.slice(),
+      conversationId: conversationId,
+      processing: wasProcessing,
+      panelCollapsed: panelCollapsed
+    };
+    if (wasProcessing) {
+      snapData.abortController = currentAbortController;
+      snapData.progressPhases = progressPhases.slice();
+      snapData.progressStartTime = progressStartTime;
+    }
+    sessionSnapshots.set(activeItem, snapData);
+  }
+
+  // If processing, DON'T abort — let the background fetch continue.
+  // Just clear global state so the new session can send.
+  if (wasProcessing) {
+    if (progressTimer) { clearInterval(progressTimer); progressTimer = null; }
+    progressEl = null;
+    isSending = false;
+    document.getElementById("sendBtn").disabled = false;
+    currentAbortController = null;
+    currentReader = null;
+  } else {
+    switchingSession = true;
+    stopChat();
+    isSending = false;
+    document.getElementById("sendBtn").disabled = false;
+  }
+
+  // Check for a saved snapshot for the target tool
+  var saved = sessionSnapshots.get(label);
+  if (saved && !prompt) {
+    // Restore saved session — no server reset needed, conversationId is preserved
+    chatHistory = saved.history;
+    conversationId = saved.conversationId;
+    document.getElementById("chatScroll").innerHTML = saved.html;
+    activeItem = label;
+    setActiveNav(label);
+    var welcome = document.getElementById("chatWelcome");
+    if (welcome) welcome.style.display = "none";
+    // If this session is still processing in the background, reconnect live state
+    if (saved.processing) {
+      isSending = true;
+      document.getElementById("sendBtn").disabled = true;
+      currentAbortController = saved.abortController || null;
+      progressPhases = saved.progressPhases || [];
+      progressStartTime = saved.progressStartTime || Date.now();
+      progressEl = document.getElementById('progressPanel');
+      if (progressTimer) clearInterval(progressTimer);
+      progressTimer = setInterval(function() {
+        if (!progressEl) return;
+        var elapsed = Math.floor((Date.now() - progressStartTime) / 1000);
+        var el = progressEl.querySelector('.progress-elapsed');
+        if (el) el.textContent = formatElapsed(elapsed);
+      }, 1000);
+    }
+    document.getElementById("chatInput").focus();
+    scrollToBottom();
+    updateNewChatBtn();
+    return 'restored';
+  }
+
+  // No saved snapshot (or prompt forces fresh) — start fresh session
+  // Reset server-side session state for the old conversation
+  if (conversationId && !(saved && prompt)) {
+    fetch(AGENT_URL + "/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ conversation_id: conversationId })
+    }).catch(function() {}); // fire-and-forget
+  }
+  // If re-running (prompt provided), remove stale snapshot
+  if (prompt && saved) {
+    sessionSnapshots.delete(label);
+  }
+  conversationId = generateConversationId();
+
+  // Reset chat state for a fresh session
+  chatHistory = [];
+  document.getElementById("chatScroll").innerHTML = "";
+
+  // Hide welcome
+  var welcome = document.getElementById("chatWelcome");
+  if (welcome) welcome.style.display = "none";
+
+  // Show session context
+  activeItem = label;
+  setActiveNav(label);
+
+  // Auto-send the prompt (if not free chat)
+  if (prompt) {
+    document.getElementById("chatInput").value = prompt;
+    sendChat();
+  } else {
+    document.getElementById("chatInput").focus();
+  }
+  return 'fresh';
+}
+
+function cePrompt(text) {
+  document.getElementById('chatInput').value = text + '. Present results in a clear, easily readable format using markdown tables where applicable.';
+  document.getElementById('chatInput').focus();
+  sendChat();
+}
+
+function startCloudExplorer() {
+  var result = startSession('Cloud Explorer', '☁️', '');
+  // Show panel or tab based on saved collapsed state
+  var snap = sessionSnapshots.get('Cloud Explorer');
+  if (result === 'restored' && snap && snap.panelCollapsed) {
+    var cp = document.getElementById('cePanel');
+    var ct = document.getElementById('ceTab');
+    if (cp) cp.classList.remove('visible','hiding');
+    if (ct) ct.classList.add('visible');
+  } else {
+    showCePanel();
+  }
+  if (result !== 'restored') {
+    var html = '<div class="ce-welcome">';
+    html += '<div class="ce-icon">☁️</div>';
+    html += '<div class="ce-title">Cloud Explorer</div>';
+    html += '<div class="ce-desc">Explore your Microsoft cloud environment in real time.<br>Try a sample prompt from the panel or type your own query.</div>';
+    html += '</div>';
+    document.getElementById('chatScroll').innerHTML = html;
+  }
+  document.getElementById('chatInput').placeholder = 'Ask anything — e.g., "list all VMs", "show admin users", "storage accounts with public access"...';
+  document.getElementById('chatInput').focus();
+  updateNewChatBtn();
+}
+
+function newChatForTool() {
+  if (!activeItem) return;
+  // Remove snapshot for the current tool only
+  sessionSnapshots.delete(activeItem);
+  usedChips.clear();
+  pendingDynamicChips = [];
+  // Reset server-side session
+  if (conversationId) {
+    fetch(AGENT_URL + "/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ conversation_id: conversationId })
+    }).catch(function() {});
+  }
+  // Re-launch the current tool fresh
+  var tool = activeItem;
+  activeItem = null; // clear so startSession doesn't save empty state
+  if (tool.includes('Cloud Explorer')) { startCloudExplorer(); }
+  else if (tool.includes('Assessment')) { showAssessPanel(); }
+  else if (tool.includes('Permissions')) { showPermPanel(); }
+}
+
+function updateNewChatBtn() {
+  var btn = document.getElementById('newChatBtn');
+  if (!btn) return;
+  // Show only when a tool is active and chatScroll has real chat content (not just welcome)
+  var scroll = document.getElementById('chatScroll');
+  var hasChat = activeItem && scroll && scroll.querySelector('.msg');
+  btn.classList.toggle('visible', !!hasChat);
+}
+
+function resetChat() {
+  destroyCePanel();
+  destroyAssessPanel();
+  destroyPermPanel();
+  // Preserve session snapshots so returning to a tool restores its state
+  // Reset server-side session state
+  if (conversationId) {
+    fetch(AGENT_URL + "/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ conversation_id: conversationId })
+    }).catch(function() {});
+  }
+  conversationId = null;
+
+  chatHistory = [];
+  usedChips.clear();
+  pendingDynamicChips = [];
+  document.getElementById("chatScroll").innerHTML = "";
+  document.getElementById("chatInput").value = "";
+  document.getElementById("chatInput").placeholder = "Ask the agent anything…";
+  activeItem = null;
+  setActiveNav(null);
+
+  // Re-show landing with action cards
+  var scroll = document.getElementById("chatScroll");
+  scroll.innerHTML = '<div class="landing" id="chatWelcome">'
+    + '<div class="landing-greeting">Welcome to PostureIQ</div>'
+    + '<div class="landing-sub">AI-powered security posture intelligence for your Microsoft cloud</div>'
+    + '<div class="qs-cards">'
+    + '<div class="qs-card" onclick="showAssessPanel()"><div class="qs-card-accent"></div><div class="qs-card-body"><div class="qs-card-icon">🔍</div><div class="qs-card-title">Run Assessment</div><div class="qs-card-desc">Risk-weighted posture assessment across 11 compliance frameworks</div></div></div>'
+    + '<div class="qs-card" onclick="showPermPanel()"><div class="qs-card-accent"></div><div class="qs-card-body"><div class="qs-card-icon">🔑</div><div class="qs-card-title">Check Permissions</div><div class="qs-card-desc">Verify your access levels before running assessments</div></div></div>'
+    + '<div class="qs-card" onclick="startCloudExplorer()"><div class="qs-card-accent"></div><div class="qs-card-body"><div class="qs-card-icon">☁️</div><div class="qs-card-title">Cloud Explorer</div><div class="qs-card-desc">Query Azure resources, identities &amp; security settings</div></div></div>'
+    + '</div></div>';
+  document.getElementById("chatInput").focus();
+  updateNewChatBtn();
+}
+
+// ─────────────────────────────────────────────────────────────
+// CHAT
+// ─────────────────────────────────────────────────────────────
+function handleKey(e) {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); }
+}
+
+function autoGrow(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 150) + "px";
+}
+
+function scrollToBottom() {
+  var wrap = document.querySelector('.chat-scroll-wrap');
+  if (wrap) wrap.scrollTop = wrap.scrollHeight;
+}
+
+// ─────────────────────────────────────────────────────────────
+// PROGRESS INDICATOR
+// ─────────────────────────────────────────────────────────────
+let progressEl = null;
+let progressStartTime = null;
+let progressTimer = null;
+let progressPhases = [];
+
+// Friendly names for known tools
+const TOOL_LABELS = {
+  check_permissions: "Checking permissions",
+  run_assessment: "Running compliance assessment",
+  run_full_assessment: "Running full assessment",
+  run_risk_analysis: "Analyzing security risks",
+  run_data_security_assessment: "Assessing data security",
+  run_copilot_readiness_assessment: "Evaluating Copilot readiness",
+  run_ai_agent_security_assessment: "Auditing AI agent security",
+  generate_rbac_tree_report: "Generating RBAC report",
+  generate_report: "Generating reports",
+  generate_custom_report: "Generating custom report",
+  run_postureiq_assessment: "Running Assessment",
+  search_exposure: "Searching exposure",
+  query_azure: "Querying Azure resources",
+  query_graph: "Querying Microsoft Graph",
+  search_tenant: "Exploring cloud resources",
+};
+
+function formatElapsed(totalSeconds) {
+  var h = Math.floor(totalSeconds / 3600);
+  var m = Math.floor((totalSeconds % 3600) / 60);
+  var s = totalSeconds % 60;
+  if (h > 0) return h + 'h ' + m + 'm ' + s + 's';
+  if (m > 0) return m + 'm ' + s + 's';
+  return '0m ' + s + 's';
+}
+
+
+function createProgressPanel() {
+  progressPhases = [];
+  progressStartTime = Date.now();
+
+  var panel = document.createElement("div");
+  panel.className = "progress-panel";
+  panel.id = "progressPanel";
+  panel.innerHTML =
+    '<div class="progress-header">' +
+      '<span class="progress-title"><span class="typing-indicator"><span></span><span></span><span></span></span> Working\u2026</span>' +
+      '<span style="display:flex;align-items:center;gap:.4rem">' +
+        '<button class="stop-btn" id="stopBtn" onclick="stopChat()">\u25a0 Stop</button>' +
+        '<span class="progress-elapsed" id="progressElapsed">0m 0s</span>' +
+      '</span>' +
+    '</div>' +
+    '<div class="progress-phases" id="progressPhases"></div>';
+
+  var scroll = document.getElementById("chatScroll");
+  scroll.appendChild(panel);
+  scrollToBottom();
+  progressEl = panel;
+
+  progressTimer = setInterval(function() {
+    if (!progressEl) return;
+    var elapsed = Math.floor((Date.now() - progressStartTime) / 1000);
+    var el = progressEl.querySelector(".progress-elapsed");
+    if (el) el.textContent = formatElapsed(elapsed);
+  }, 1000);
+
+  return panel;
+}
+
+
+
+var _lastActiveTool = null;
+
+function updateProgress(toolName, status) {
+  // Remove typing indicator when real progress starts
+  var typing = document.getElementById("typingIndicator");
+  if (typing) typing.remove();
+
+  if (!progressEl) createProgressPanel();
+
+  var label = TOOL_LABELS[toolName] || toolName.replace(/_/g, " ");
+
+  if (status === "running") {
+    // Mark all previous phases as done
+    progressPhases.forEach(function(p) { p.status = "done"; });
+    // Skip if this phase already exists (avoid duplicates)
+    var existing = progressPhases.find(function(ph) { return ph.name === label; });
+    if (!existing) {
+      progressPhases.push({ name: label, status: "active" });
+    } else {
+      existing.status = "active";
+    }
+    _lastActiveTool = toolName;
+  } else {
+    // Mark matching phase as done
+    var p = progressPhases.find(function(ph) { return ph.name === label; });
+    if (p) p.status = "done";
+  }
+
+  // Render phases list (only show completed phases — active one is shown in the title)
+  var container = progressEl.querySelector(".progress-phases");
+  if (container) {
+    container.innerHTML = progressPhases.filter(function(p) { return p.status === "done"; }).map(function(p) {
+      return '<div class="progress-phase done"><span class="progress-phase-icon">\u2705</span> ' + escHtml(p.name) + '</div>';
+    }).join("");
+  }
+
+  // Update title
+  var title = progressEl.querySelector(".progress-title");
+  if (title) {
+    var active = progressPhases.find(function(p) { return p.status === "active"; });
+    title.innerHTML = active
+      ? '<span class="typing-indicator"><span></span><span></span><span></span></span> ' + escHtml(active.name) + '\u2026'
+      : '<span class="typing-indicator"><span></span><span></span><span></span></span> Working\u2026';
+  }
+
+  // Update progress bar — removed (no bar)
+
+  var scroll = document.getElementById("chatScroll");
+  scrollToBottom();
+}
+
+function removeProgress() {
+  // Remove typing indicator if still showing
+  var typing = document.getElementById("typingIndicator");
+  if (typing) typing.remove();
+
+  if (progressTimer) { clearInterval(progressTimer); progressTimer = null; }
+  if (progressEl) {
+    // Capture final elapsed time
+    var finalElapsed = progressStartTime ? Math.floor((Date.now() - progressStartTime) / 1000) : 0;
+    var finalTimeStr = formatElapsed(finalElapsed);
+    // Store for injection into token badge
+    window._lastElapsedTime = finalTimeStr;
+    _lastActiveTool = null;
+    // Remove progress panel entirely
+    progressEl.remove();
+    progressEl = null;
+    progressPhases = [];
+    progressStartTime = null;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// SEND CHAT
+// ─────────────────────────────────────────────────────────────
+// Track pending frameworks from sidebar selection
+let pendingFrameworks = null;
+
+async function sendChat() {
+  const input = document.getElementById("chatInput");
+  const msg = input.value.trim();
+  if (!msg || isSending) return;
+  input.value = "";
+  input.style.height = "auto";
+
+  // Capture session identity so background completion knows where to save
+  const myLabel = activeItem;
+
+  // Hide welcome if visible
+  var welcome = document.getElementById("chatWelcome");
+  if (welcome) welcome.style.display = "none";
+
+  // Show session bar if not already visible (free-form chat without selecting a tool)
+  if (!activeItem) {
+    activeItem = "Chat";
+    setActiveNav(null);
+    var nav = document.querySelector('.hdr-nav');
+    var sep = document.querySelector('.hdr-sep');
+    nav.classList.add('visible');
+    sep.classList.add('visible');
+  }
+
+  appendMsg("user", msg);
+  chatHistory.push({role: "user", content: msg});
+
+  isSending = true;
+  document.getElementById("sendBtn").disabled = true;
+  var myAbort = new AbortController();
+  currentAbortController = myAbort;
+
+  // Show typing indicator immediately for perceived responsiveness
+  var typingEl = document.createElement("div");
+  typingEl.className = "msg msg-agent";
+  typingEl.id = "typingIndicator";
+  typingEl.innerHTML = '<div class="msg-avatar">🛡</div><div class="msg-bubble" style="padding:.6rem 1rem"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
+  var scroll = document.getElementById("chatScroll");
+  scroll.appendChild(typingEl);
+  scrollToBottom();
+
+  try {
+    const headers = { "Content-Type": "application/json" };
+
+    // Acquire Graph + ARM tokens so the backend tools run as the signed-in user
+    const [graphToken, armToken] = await Promise.all([getGraphToken(), getArmToken()]);
+
+    const body = {
+      message: msg,
+      history: chatHistory.slice(0, -1),
+    };
+    if (graphToken) body.graph_token = graphToken;
+    if (armToken) body.arm_token = armToken;
+    if (!conversationId) conversationId = generateConversationId();
+    body.conversation_id = conversationId;
+    body.page = "PostureIQ";
+
+    // Pass structured frameworks list when triggered from sidebar
+    if (pendingFrameworks) {
+      body.frameworks = pendingFrameworks;
+      pendingFrameworks = null;
+    }
+
+    // Cloud Explorer mode: force direct API execution (bypass LLM routing)
+    if (activeItem && activeItem.includes("Cloud Explorer")) {
+      body.mode = "tenant_search";
+    }
+
+    // Check Permissions mode: restrict to permission-checking tools only
+    if (activeItem && activeItem.includes("Check Permissions")) {
+      body.mode = "permissions_check";
+    }
+
+    const resp = await fetch(AGENT_URL + "/chat", {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+      signal: myAbort.signal
+    });
+
+    if (!resp.ok) {
+      throw new Error("Agent returned HTTP " + resp.status);
+    }
+
+    // Read SSE stream — extract tool events, report links, and final result
+    var myReader = resp.body.getReader();
+    currentReader = myReader;
+    const decoder = new TextDecoder();
+    let finalData = null;
+    let buf = "";
+    const reportLinks = [];
+    let reportTable = null;
+    let tokenUsage = null;
+
+    while (true) {
+      const { done, value } = await myReader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      // Process complete SSE lines
+      const lines = buf.split("\n");
+      buf = lines.pop(); // keep incomplete line in buffer
+      for (const line of lines) {
+        if (line.startsWith("data: ")) {
+          try {
+            const evt = JSON.parse(line.slice(6));
+            if (evt.type === "tool") {
+              if (activeItem === myLabel) updateProgress(evt.name, evt.status);
+            } else if (evt.type === "report_table") {
+              reportTable = evt;
+            } else if (evt.type === "token_usage") {
+              tokenUsage = evt;
+            } else if (evt.type === "report") {
+              reportLinks.push(evt);
+            } else {
+              finalData = evt;
+            }
+          } catch (_) { /* ignore malformed lines */ }
+        }
+      }
+    }
+
+    if (!finalData) throw new Error("No response from agent");
+    if (finalData.error) throw new Error(finalData.error);
+    const reply = finalData.response || finalData.message || JSON.stringify(finalData);
+
+    if (activeItem === myLabel) {
+      // Still on the same session — update DOM directly
+      removeProgress();
+      appendMsg("agent", reply, finalData.tools_used, reportLinks, reportTable, tokenUsage);
+      chatHistory.push({role: "assistant", content: reply});
+    } else {
+      // Session switched — save results into the background snapshot
+      saveBackgroundResult(myLabel, reply, finalData.tools_used, reportLinks, reportTable, tokenUsage);
+    }
+
+  } catch (e) {
+    if (activeItem === myLabel) {
+      removeProgress();
+      if (e.name === 'AbortError') {
+        if (!switchingSession) {
+          appendMsg("agent", "⏹ Process stopped by user.");
+        }
+      } else {
+        appendMsg("agent", "Error: " + e.message);
+      }
+    }
+  } finally {
+    if (activeItem === myLabel) {
+      isSending = false;
+      currentAbortController = null;
+      currentReader = null;
+      switchingSession = false;
+      document.getElementById("sendBtn").disabled = false;
+      input.focus();
+    }
+  }
+}
+
+function stopChat() {
+  if (currentAbortController) {
+    currentAbortController.abort();
+  }
+}
+
+// Save completed background response into a saved session snapshot.
+// Uses a synchronous DOM swap trick: temporarily replace chatScroll
+// with the snapshot HTML, render the response using appendMsg, then
+// restore the current session's content. No visual flash because the
+// browser won't repaint between synchronous DOM mutations.
+function saveBackgroundResult(label, reply, toolsUsed, reportLinks, reportTable, tokenUsage) {
+  var snap = sessionSnapshots.get(label);
+  if (!snap) return;
+  snap.history.push({role: "assistant", content: reply});
+  snap.processing = false;
+  snap.abortController = null;
+
+  var scroll = document.getElementById("chatScroll");
+  var currentHTML = scroll.innerHTML;
+  scroll.innerHTML = snap.html;
+
+  // Remove typing indicator and progress from the snapshot DOM
+  var typing = document.getElementById("typingIndicator");
+  if (typing) typing.remove();
+  removeProgress();
+
+  // Render the agent response into the snapshot
+  appendMsg("agent", reply, toolsUsed, reportLinks, reportTable, tokenUsage);
+
+  // Save updated HTML back to the snapshot
+  snap.html = scroll.innerHTML;
+
+  // Restore current session's content
+  scroll.innerHTML = currentHTML;
+}
+
+function appendMsg(role, text, toolsUsed, reportLinks, reportTable, tokenUsage) {
+  const scroll = document.getElementById("chatScroll");
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "msg msg-" + role;
+
+  if (role === "agent") {
+    const avatar = document.createElement("div");
+    avatar.className = "msg-avatar";
+    avatar.textContent = "🛡";
+    wrapper.appendChild(avatar);
+  }
+
+  const bubble = document.createElement("div");
+  bubble.className = "msg-bubble";
+  // Render simple markdown-like formatting
+  bubble.innerHTML = renderText(text);
+
+  // Copy button for agent messages
+  if (role === "agent") {
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "msg-copy-btn";
+    copyBtn.title = "Copy to clipboard";
+    copyBtn.innerHTML = "📋";
+    copyBtn.onclick = function() {
+      navigator.clipboard.writeText(text).then(function() {
+        copyBtn.innerHTML = "✓";
+        copyBtn.classList.add("copied");
+        setTimeout(function(){ copyBtn.innerHTML = "📋"; copyBtn.classList.remove("copied"); }, 1500);
+      });
+    };
+    bubble.appendChild(copyBtn);
+  }
+
+  // Render structured report table if available
+  if (reportTable && reportTable.rows && reportTable.rows.length > 0) {
+    const wrap = document.createElement("div");
+    wrap.className = "report-table-wrap";
+    let html = '<table class="report-table"><thead><tr>';
+    html += '<th>Framework</th><th>📄 HTML</th><th>📕 PDF</th><th>📊 Excel</th><th>{} JSON</th>';
+    html += '</tr></thead><tbody>';
+
+    reportTable.rows.forEach(function(row) {
+      html += '<tr>';
+      html += '<td class="rt-fw">' + escHtml(row.framework) + '</td>';
+      // HTML column
+      if (row.html) {
+        html += '<td><a class="rt-btn rt-btn-view" href="' + escHtml(row.html) + '" target="_blank" rel="noopener">View</a> '
+              + '<a class="rt-btn rt-btn-dl" href="' + escHtml(row.html) + '" download="' + escHtml(row.html_name || 'report.html') + '">⬇</a></td>';
+      } else { html += '<td>—</td>'; }
+      // PDF column
+      if (row.pdf) {
+        html += '<td><a class="rt-btn rt-btn-view" href="' + escHtml(row.pdf) + '" target="_blank" rel="noopener">View</a> '
+              + '<a class="rt-btn rt-btn-dl" href="' + escHtml(row.pdf) + '" download="' + escHtml(row.pdf_name || 'report.pdf') + '">⬇</a></td>';
+      } else { html += '<td>—</td>'; }
+      // Excel column
+      if (row.xlsx) {
+        html += '<td><a class="rt-btn rt-btn-dl" href="' + escHtml(row.xlsx) + '" download="' + escHtml(row.xlsx_name || 'report.xlsx') + '">⬇ Download</a></td>';
+      } else { html += '<td>—</td>'; }
+      // JSON column
+      if (row.json) {
+        html += '<td><a class="rt-btn rt-btn-dl" href="' + escHtml(row.json) + '" download="' + escHtml(row.json_name || 'data.json') + '">⬇ Download</a></td>';
+      } else { html += '<td>—</td>'; }
+      html += '</tr>';
+    });
+
+    // Shared files row(s)
+    if (reportTable.shared && reportTable.shared.length > 0) {
+      html += '<tr class="rt-shared"><td colspan="5" style="padding-top:.6rem"><strong>Additional Files:</strong> ';
+      reportTable.shared.forEach(function(sf, i) {
+        if (i > 0) html += ' &nbsp;|&nbsp; ';
+        html += '<a class="rt-btn rt-btn-dl" href="' + escHtml(sf.url) + '" download="' + escHtml(sf.name) + '">⬇ ' + escHtml(sf.name) + '</a>';
+      });
+      html += '</td></tr>';
+    }
+
+    // ZIP download row
+    if (reportTable.zip) {
+      html += '<tr class="rt-zip-row"><td colspan="5">';
+      html += '<a class="rt-btn rt-btn-view" href="' + escHtml(reportTable.zip) + '" download="all-compliance-reports.zip" style="font-size:.85rem;padding:.5rem 1.2rem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:.4rem"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download All Reports (ZIP)</a>';
+      html += '</td></tr>';
+    }
+
+    html += '</tbody></table>';
+    wrap.innerHTML = html;
+    bubble.appendChild(wrap);
+  }
+  // Fallback: flat button list from individual report SSE events
+  else if (reportLinks && reportLinks.length > 0) {
+    const container = document.createElement("div");
+    container.style.marginTop = ".6rem";
+    reportLinks.forEach(function(r) {
+      const ext = r.url.split('.').pop().toLowerCase();
+      const icon = ext === 'html' ? '📄' : ext === 'xlsx' ? '📊' : ext === 'pdf' ? '📕' : ext === 'csv' ? '📋' : '📁';
+      let btns = '';
+      if (ext === 'html' || ext === 'pdf') {
+        btns += '<a class="report-btn report-btn-view" href="' + escHtml(r.url) + '" target="_blank" rel="noopener">' + icon + ' View Report</a>';
+      }
+      btns += '<a class="report-btn report-btn-download" href="' + escHtml(r.url) + '" download="' + escHtml(r.name) + '">⬇ Download ' + escHtml(r.name) + '</a>';
+      container.innerHTML += '<span class="report-links">' + btns + '</span>';
+    });
+    bubble.appendChild(container);
+  }
+
+  wrapper.appendChild(bubble);
+  scroll.appendChild(wrapper);
+
+  // Show tools used
+  if (toolsUsed && toolsUsed.length > 0) {
+    const tools = document.createElement("div");
+    tools.className = "msg-tools";
+    tools.innerHTML = "🛠️ " + toolsUsed.map(t => "<span>" + escHtml(t) + "</span>").join("");
+    scroll.appendChild(tools);
+  }
+
+  // Show token usage as informational badge with disclaimer
+  if (tokenUsage && tokenUsage.total_tokens > 0) {
+    const badge = document.createElement("div");
+    badge.className = "token-badge";
+    const costStr = tokenUsage.estimated_cost_usd < 0.01
+      ? '< $0.01'
+      : '$' + tokenUsage.estimated_cost_usd.toFixed(4);
+    badge.innerHTML = '<span class="tb-icon">ℹ️</span>'
+      + '<span class="tb-label">Tokens used:</span>'
+      + '<span class="tb-val">' + tokenUsage.total_tokens.toLocaleString() + '</span>'
+      + '<span class="tb-label">(in: ' + tokenUsage.prompt_tokens.toLocaleString()
+      + ' / out: ' + tokenUsage.completion_tokens.toLocaleString() + ')</span>'
+      + '<span class="tb-sep">|</span>'
+      + '<span class="tb-label">Est. cost:</span>'
+      + '<span class="tb-cost">' + costStr + '</span>'
+      + '<span class="tb-model">' + escHtml(tokenUsage.model || '') + '</span>'
+      + (window._lastElapsedTime ? '<span class="tb-sep">|</span><span class="tb-label">Time taken:</span><span class="tb-val">' + window._lastElapsedTime + '</span>' : '')
+      + '<div class="tb-disclaimer">Token counts are approximate. Cost estimates are indicative based on published model pricing and may not reflect your actual Azure billing.</div>';
+    scroll.appendChild(badge);
+  }
+
+  // Show follow-up suggestion chips after assessment responses
+  var assessTools = ['run_postureiq_assessment','analyze_risk','assess_data_security','assess_copilot_readiness','assess_ai_agent_security'];
+  if (toolsUsed && toolsUsed.some(function(t){ return assessTools.indexOf(t) !== -1; })) {
+    removeFollowupChips();
+    var chips = document.createElement('div');
+    chips.className = 'followup-chips';
+    var suggestions = [
+      {icon:'📊', label:'Explain top risks', prompt:'Explain the top risks from the assessment'},
+      {icon:'🔧', label:'Show remediation steps', prompt:'Show remediation steps for the highest-risk findings'},
+      {icon:'📉', label:'Which frameworks scored lowest?', prompt:'Which compliance frameworks scored lowest and why'},
+      {icon:'📋', label:'Generate executive summary', prompt:'Generate an executive summary of the assessment'},
+      {icon:'🔄', label:'Re-run for specific subscription', prompt:'Re-run the assessment for a specific subscription'},
+      {icon:'📥', label:'Export report', prompt:'Export the assessment report'}
+    ];
+    suggestions.forEach(function(s){
+      var btn = document.createElement('button');
+      btn.className = 'followup-chip';
+      btn.innerHTML = s.icon + ' ' + escHtml(s.label);
+      btn.onclick = function(){ followupSend(s.prompt); };
+      chips.appendChild(btn);
+    });
+    scroll.appendChild(chips);
+  }
+
+  scrollToBottom();
+  updateNewChatBtn();
+}
+
+// ─────────────────────────────────────────────────────────────
+// TEXT RENDERING — simple markdown support
+// ─────────────────────────────────────────────────────────────
+function renderText(text) {
+  let html = escHtml(text);
+
+  // Headers: ## and ###
+  html = html.replace(/^### (.+)$/gm, '<strong style="font-size:.95em;color:var(--cyan)">$1</strong>');
+  html = html.replace(/^## (.+)$/gm, '<strong style="font-size:1.05em;display:block;margin:.6rem 0 .3rem;color:var(--cyan)">$1</strong>');
+
+  // Bold: **text**
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+  // Inline code: `text`
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // Tables: | col | col |
+  if (html.includes("|---")) {
+    const lines = html.split("\n");
+    let inTable = false;
+    let tableHtml = "";
+    const out = [];
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed.startsWith("|") && trimmed.endsWith("|")) {
+        if (trimmed.includes("|---")) continue; // skip separator
+        if (!inTable) { inTable = true; tableHtml = '<table style="width:100%;border-collapse:collapse;margin:.5rem 0;font-size:.82rem">'; }
+        const cells = trimmed.slice(1, -1).split("|").map(c => c.trim());
+        const tag = inTable && tableHtml.includes("<tr>") ? "td" : "th";
+        tableHtml += "<tr>" + cells.map(c => `<${tag} style="padding:.4rem .6rem;border:1px solid var(--bd);text-align:left">${c}</${tag}>`).join("") + "</tr>";
+      } else {
+        if (inTable) { tableHtml += "</table>"; out.push(tableHtml); inTable = false; tableHtml = ""; }
+        out.push(line);
+      }
+    }
+    if (inTable) { tableHtml += "</table>"; out.push(tableHtml); }
+    html = out.join("\n");
+  }
+
+  // List items: - text
+  html = html.replace(/^- (.+)$/gm, '<div style="padding-left:1rem;margin:.15rem 0">• $1</div>');
+
+  // Report download links: suppress inline links — the structured report table handles downloads
+  html = html.replace(/\[([^\]]+)\]\((?:sandbox:)?\/reports\/[^)]+\)/g, '');
+  // Clean up leftover bullet markers and blank lines from stripped links
+  html = html.replace(/^[•\-\*]\s*$/gm, '');
+
+  // Newlines to <br>
+  html = html.replace(/\n/g, "<br>");
+
+  return html;
+}
+
+function escHtml(s) {
+  const el = document.createElement("span");
+  el.textContent = s;
+  return el.innerHTML;
+}
+
+// ─────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────
+window.addEventListener("DOMContentLoaded", initMsal);
+</script>
+</body>
+</html>

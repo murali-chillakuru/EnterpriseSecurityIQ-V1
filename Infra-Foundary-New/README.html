@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>New Foundry Infrastructure — EnterpriseSecurityIQ</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-hover:#252D38;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --border-primary:#30363D;--border-accent:#1F6FEB33;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.5);
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',Consolas,monospace;
+  --transition-fast:.18s ease;--transition-med:.3s ease;
+  color-scheme:dark;--max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-hover:#F0F3F6;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;
+  --border-primary:#D0D7DE;--border-accent:#0969DA22;
+  --accent-blue:#0969DA;--accent-purple:#8250DF;--accent-green:#1A7F37;
+  --accent-orange:#BF8700;--accent-cyan:#1B7C83;--accent-red:#CF222E;
+  --shadow-sm:0 1px 3px rgba(31,35,40,.08);--shadow-md:0 4px 12px rgba(31,35,40,.1);
+  --shadow-lg:0 8px 24px rgba(31,35,40,.12);
+  color-scheme:light
+}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none;transition:color var(--transition-fast)}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--bg-secondary);padding:2px 6px;border-radius:4px}
+pre{background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.7rem .9rem;border:1px solid var(--border-primary);text-align:left;font-size:.88rem}
+th{background:var(--bg-secondary);color:var(--text-primary);font-weight:600;white-space:nowrap}
+tr:nth-child(even){background:var(--bg-secondary)}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-purple),var(--accent-blue),var(--accent-cyan));z-index:10001;transition:width .1s linear;width:0}
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:500px;height:500px;background:radial-gradient(circle,var(--accent-purple),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-blue),transparent 70%);bottom:-150px;left:-80px}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-purple),var(--accent-blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{color:var(--text-secondary);font-size:1.05rem;max-width:680px;margin:0 auto .8rem}
+.hero .author{color:var(--text-muted);font-size:.85rem}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;max-width:960px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);position:relative;z-index:10}
+.stat{text-align:center}.stat .num{font-size:1.6rem;font-weight:700;display:block}.stat .lbl{color:var(--text-secondary);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.nav-wrap{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);backdrop-filter:blur(12px)}
+.nav-inner{display:flex;align-items:center;gap:.5rem;max-width:1200px;margin:0 auto;padding:.6rem 1rem;overflow-x:auto;scrollbar-width:thin}
+.nav-pill{padding:.35rem .75rem;border-radius:20px;font-size:.78rem;font-weight:500;color:var(--text-secondary);white-space:nowrap;transition:all var(--transition-fast);border:1px solid transparent;cursor:pointer;text-decoration:none}
+.nav-pill:hover{color:var(--text-primary);background:var(--bg-hover);text-decoration:none}
+.nav-pill.active{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:20px;padding:.35rem .75rem;font-size:.78rem;cursor:pointer;color:var(--text-secondary);transition:all var(--transition-fast);white-space:nowrap}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--text-primary)}
+.content{max-width:var(--max-width);margin:0 auto;padding:2rem 1.5rem 4rem}
+.section{margin-bottom:3.5rem;scroll-margin-top:80px}
+.section h2{font-size:1.5rem;font-weight:700;margin-bottom:.3rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent-purple);display:inline-block}
+.section h3{font-size:1.15rem;font-weight:600;margin:1.8rem 0 .8rem;color:var(--accent-blue)}
+.section p,.section li{color:var(--text-secondary);font-size:.92rem}
+.section ul,.section ol{padding-left:1.4rem;margin:.6rem 0}.section li{margin-bottom:.3rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin:1rem 0}
+.card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;transition:all var(--transition-fast)}
+.card:hover{border-color:var(--accent-purple);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.card .card-title{font-weight:600;font-size:.95rem;margin-bottom:.3rem}
+.card .card-desc{color:var(--text-secondary);font-size:.82rem;margin-top:.3rem}
+.card .card-meta{color:var(--text-muted);font-size:.78rem;margin-top:.4rem;font-family:var(--font-mono)}
+.config-block{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;margin:1rem 0}
+.safety-banner{background:linear-gradient(135deg,rgba(163,113,247,.08),rgba(31,111,235,.08));border:1px solid var(--border-accent);border-radius:var(--radius-lg);padding:1.5rem;margin:2rem 0}
+.safety-banner h3{color:var(--accent-purple);margin-bottom:.8rem}
+.accent-blue .num{color:var(--accent-blue)}.accent-purple .num{color:var(--accent-purple)}.accent-green .num{color:var(--accent-green)}.accent-orange .num{color:var(--accent-orange)}.accent-cyan .num{color:var(--accent-cyan)}.accent-red .num{color:var(--accent-red)}
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.8rem;border-top:1px solid var(--border-primary)}
+.back-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;border-radius:50%;background:var(--accent-purple);color:#fff;border:none;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all var(--transition-med);box-shadow:var(--shadow-md);z-index:999}
+.back-top.show{opacity:1;pointer-events:auto}.back-top:hover{transform:scale(1.1)}
+@media print{.nav-wrap,.theme-toggle,.back-top,.progress-bar{display:none!important}.hero{padding:2rem 1rem}.content{max-width:100%}}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+
+<header class="hero">
+  <h1>New Foundry Infrastructure</h1>
+  <p class="subtitle">Azure AI Foundry deployment for EnterpriseSecurityIQ — Foundry Resource + Project architecture visible in ai.azure.com.</p>
+  <p class="author">Author: Murali Chillakuru — April 12, 2026</p>
+</header>
+
+<div class="stats-bar">
+  <div class="stat accent-purple"><span class="num" data-target="14">0</span><span class="lbl">Resources</span></div>
+  <div class="stat accent-blue"><span class="num" data-target="16">0</span><span class="lbl">Deploy Steps</span></div>
+  <div class="stat accent-green"><span class="num" data-target="5">0</span><span class="lbl">RBAC Roles</span></div>
+  <div class="stat accent-orange"><span class="num" data-target="2">0</span><span class="lbl">AI Models</span></div>
+</div>
+
+<nav class="nav-wrap">
+  <div class="nav-inner">
+    <a class="nav-pill" href="#why">Why New Foundry</a>
+    <a class="nav-pill" href="#architecture">Architecture</a>
+    <a class="nav-pill" href="#resources">Resources</a>
+    <a class="nav-pill" href="#scripts">Scripts</a>
+    <a class="nav-pill" href="#usage">Usage</a>
+    <a class="nav-pill" href="#params">Parameters</a>
+    <a class="nav-pill" href="#optionab">Option A+B</a>
+    <button class="theme-toggle" id="themeToggle">☀️ Light</button>
+  </div>
+</nav>
+
+<main class="content">
+
+<section class="section" id="why">
+  <h2>Why New Foundry?</h2>
+  <div class="safety-banner">
+    <h3>Classic vs. New Foundry</h3>
+    <p style="color:var(--text-secondary);font-size:.9rem">The classic deployment used <code>Microsoft.MachineLearningServices/workspaces</code> (ML Hub + ML Project). While functional, it only appeared in the <strong>Foundry (classic)</strong> portal. The new architecture uses <code>Microsoft.CognitiveServices/accounts</code> with <code>allowProjectManagement</code> and child <code>CognitiveServices/accounts/projects</code>, making it visible in the <strong>New Foundry</strong> portal.</p>
+  </div>
+  <table>
+    <tr><th>Feature</th><th>Classic (old infra/)</th><th>New Foundry</th></tr>
+    <tr><td>Visible in ai.azure.com</td><td>❌ No</td><td>✅ Yes</td></tr>
+    <tr><td>Foundry Resource + Project</td><td>❌ ML Workspace only</td><td>✅ CognitiveServices/accounts/projects</td></tr>
+    <tr><td>Model Management UI</td><td>❌ Portal only</td><td>✅ Foundry + Portal</td></tr>
+    <tr><td>Agent Hosting</td><td>Container App only</td><td>Container App + Foundry Agents</td></tr>
+    <tr><td>Evaluation & Tracing</td><td>❌ Manual</td><td>✅ Built-in via App Insights</td></tr>
+    <tr><td>Storage & Key Vault</td><td>❌ None</td><td>✅ Integrated</td></tr>
+  </table>
+</section>
+
+<section class="section" id="architecture">
+  <h2>Architecture</h2>
+  <div class="config-block">
+    <pre><code>┌──────────────────────────────────────────────────────────────────┐
+│  Resource Group: ESIQNew-RG  (swedencentral)                    │
+│                                                                  │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │  Foundry Resource: ESIQNew-AI                             │  │
+│  │  (CognitiveServices/accounts, kind: AIServices)           │  │
+│  │  custom domain: esiqnew-ai                                │  │
+│  │  allowProjectManagement: true                             │  │
+│  │  ├── model: gpt-4.1 (Standard 30K TPM)                   │  │
+│  │  ├── model: gpt-5.1 (Standard 30K TPM)                   │  │
+│  │  │                                                        │  │
+│  │  └── Foundry Project: ESIQNew-project  ← visible in      │  │
+│  │       New Foundry portal (ai.azure.com)                   │  │
+│  │       (CognitiveServices/accounts/projects)               │  │
+│  └────────────────────────────────────────────────────────────┘  │
+│                                                                  │
+│  ┌─────────────────────────────────────┐                        │
+│  │  ESIQNew-env (Container Apps Env)   │                        │
+│  │  ┌───────────────────────────────┐  │                        │
+│  │  │  esiqnew-agent                │  │                        │
+│  │  │  1 vCPU / 2 GiB, port 8088   │  │                        │
+│  │  └───────────────────────────────┘  │                        │
+│  └─────────────────────────────────────┘                        │
+│                                                                  │
+│  ESIQNew-identity (MI) ─── AcrPull, Reader, Security Reader,    │
+│       Cognitive Services OpenAI User, Azure AI Developer         │
+└──────────────────────────────────────────────────────────────────┘</code></pre>
+  </div>
+</section>
+
+<section class="section" id="resources">
+  <h2>Resources Created (12)</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-title">🧠 ESIQNew-AI</div><p class="card-desc">Foundry Resource (CognitiveServices/accounts)</p><p class="card-meta">S0, custom domain, allowProjectManagement</p></div>
+    <div class="card"><div class="card-title">🗂️ esiqnewstorage</div><p class="card-desc">Storage Account</p><p class="card-meta">Standard_LRS, TLS 1.2</p></div>
+    <div class="card"><div class="card-title">🔑 ESIQNew-kv</div><p class="card-desc">Key Vault</p><p class="card-meta">RBAC authorization enabled</p></div>
+    <div class="card"><div class="card-title">📊 ESIQNew-law</div><p class="card-desc">Log Analytics</p><p class="card-meta">PerGB2018, 30-day retention</p></div>
+    <div class="card"><div class="card-title">📈 ESIQNew-appinsights</div><p class="card-desc">Application Insights</p><p class="card-meta">Workspace-based</p></div>
+    <div class="card"><div class="card-title">📦 esiqnewacr</div><p class="card-desc">Container Registry</p><p class="card-meta">Basic SKU</p></div>
+    <div class="card"><div class="card-title">� ESIQNew-AI/ESIQNew-project</div><p class="card-desc">Foundry Project</p><p class="card-meta">CognitiveServices/accounts/projects</p></div>
+    <div class="card"><div class="card-title">🔐 ESIQNew-identity</div><p class="card-desc">Managed Identity</p><p class="card-meta">5 RBAC roles</p></div>
+    <div class="card"><div class="card-title">🌐 ESIQNew-env</div><p class="card-desc">Container Apps Env</p><p class="card-meta">Consumption plan</p></div>
+    <div class="card"><div class="card-title">🐳 esiqnew-agent</div><p class="card-desc">Container App</p><p class="card-meta">1 vCPU / 2 GiB</p></div>
+  </div>
+</section>
+
+<section class="section" id="scripts">
+  <h2>Scripts</h2>
+  <table>
+    <tr><th>Script</th><th>Purpose</th></tr>
+    <tr><td><code>deploy.ps1</code></td><td>Full 14-step deployment — RG → Foundry Resource → Models → Storage → Key Vault → LAW → App Insights → ACR → Foundry Project → Identity → RBAC → Container Env → Container App</td></tr>
+    <tr><td><code>redeploy-image.ps1</code></td><td>Quick ACR rebuild + container restart after code changes</td></tr>
+  </table>
+</section>
+
+<section class="section" id="usage">
+  <h2>Usage</h2>
+  <h3>Full Deployment</h3>
+  <div class="config-block">
+    <pre><code>.\Infra-Foundary-New\deploy.ps1</code></pre>
+  </div>
+  <h3>Custom Parameters</h3>
+  <div class="config-block">
+    <pre><code>.\Infra-Foundary-New\deploy.ps1 -BaseName "MyApp" -Location "eastus2" -SubscriptionName "MySubscription"</code></pre>
+  </div>
+  <h3>Rebuild After Code Changes</h3>
+  <div class="config-block">
+    <pre><code>.\Infra-Foundary-New\redeploy-image.ps1</code></pre>
+  </div>
+</section>
+
+<section class="section" id="params">
+  <h2>Parameters</h2>
+  <table>
+    <tr><th>Parameter</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>-BaseName</code></td><td><code>ESIQNew</code></td><td>Prefix for all resource names</td></tr>
+    <tr><td><code>-Location</code></td><td><code>swedencentral</code></td><td>Azure region</td></tr>
+    <tr><td><code>-SubscriptionName</code></td><td><code>AI</code></td><td>Subscription name</td></tr>
+    <tr><td><code>-PrimaryModel</code></td><td><code>gpt-4.1</code></td><td>Primary model deployment</td></tr>
+    <tr><td><code>-FallbackModel</code></td><td><code>gpt-5.1</code></td><td>Fallback model deployment</td></tr>
+    <tr><td><code>-ModelSku</code></td><td><code>Standard</code></td><td>Model SKU</td></tr>
+    <tr><td><code>-ModelCapacity</code></td><td><code>30</code></td><td>Tokens-per-minute (thousands)</td></tr>
+    <tr><td><code>-TenantId</code></td><td>(auto-detect)</td><td>Azure AD tenant ID</td></tr>
+  </table>
+</section>
+
+<section class="section" id="optionab">
+  <h2>Option A+B: SPA + Foundry Agent</h2>
+  <div class="safety-banner">
+    <h3>Dual Delivery Model</h3>
+    <p style="color:var(--text-secondary);font-size:.9rem">The deployment now supports a combined <strong>Option A+B</strong> architecture. A single Container App serves both a <strong>SPA web dashboard</strong> (Option A, MSAL.js SSO) and registers as a <strong>Foundry Agent</strong> (Option B, Assistants API) on startup. Both paths share the same 12 agent tools and Azure OpenAI backend.</p>
+  </div>
+
+  <h3>Updated Architecture</h3>
+  <div class="config-block">
+    <pre><code>┌──────────────────────────────────────────────────────────────────────────┐
+│  Resource Group: ESIQNew-RG                                              │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────────┐ │
+│  │  Foundry Resource: ESIQNew-AI (CognitiveServices/accounts)         │ │
+│  │  ├── gpt-4.1 (Standard 30K TPM)                                    │ │
+│  │  ├── gpt-5.1 (Standard 30K TPM)                                    │ │
+│  │  └── Foundry Project: ESIQNew-project                              │ │
+│  │       └── Foundry Agent: asst_N4hpInCl30eZHaim3vtJTZiT            │ │
+│  └─────────────────────────────────────────────────────────────────────┘ │
+│                                                                          │
+│  ┌─────────────────────────────────────────────────────────────────────┐ │
+│  │  Container App: esiqnew-agent (1 vCPU / 2 GiB, port 8088)         │ │
+│  │                                                                     │ │
+│  │  Option A Path:                  Option B Path:                     │ │
+│  │  Browser → MSAL.js → SPA        ai.azure.com → Foundry Agent      │ │
+│  │   └→ GET / (dashboard)           └→ Assistants API                 │ │
+│  │   └→ POST /chat (agent)           └→ Same 12 tools                 │ │
+│  │   └→ POST /assessments                                             │ │
+│  │   └→ GET /assessments/{id}                                         │ │
+│  │   └→ GET /health                                                   │ │
+│  │                                                                     │ │
+│  │  On Startup: Registers Foundry Agent via Assistants API            │ │
+│  └─────────────────────────────────────────────────────────────────────┘ │
+│                                                                          │
+│  ESIQNew-identity (MI) → AcrPull, Reader, Security Reader,              │
+│       Cognitive Services OpenAI User, Azure AI Developer                 │
+│                                                                          │
+│  App Registration: ESIQNew-Dashboard (PENDING — requires Directory admin)│
+└──────────────────────────────────────────────────────────────────────────┘</code></pre>
+  </div>
+
+  <h3>Additional Resources (+2)</h3>
+  <div class="card-grid">
+    <div class="card"><div class="card-title">🔑 ESIQNew-Dashboard</div><p class="card-desc">Entra App Registration (SPA)</p><p class="card-meta">PENDING — requires Directory admin</p></div>
+    <div class="card"><div class="card-title">🤖 EnterpriseSecurityIQ</div><p class="card-desc">Foundry Agent (Assistants API)</p><p class="card-meta">asst_N4hpInCl30eZHaim3vtJTZiT · 12 tools</p></div>
+  </div>
+
+  <h3>Updated Deploy Steps (16)</h3>
+  <p><code>deploy.ps1</code> now has <strong>16 steps</strong> (was 14):</p>
+  <table>
+    <tr><th>Step</th><th>Action</th></tr>
+    <tr><td>1–14</td><td><em>(original steps — see above)</em></td></tr>
+    <tr><td>15</td><td>Create Container App (serves SPA + API)</td></tr>
+    <tr><td>16</td><td>Register Foundry Agent (Assistants API)</td></tr>
+  </table>
+</section>
+
+</main>
+
+<footer>
+  <p>EnterpriseSecurityIQ — New Foundry Infrastructure · 14 Resources · 16 Steps · Author: Murali Chillakuru · April 12, 2026</p>
+</footer>
+
+<button class="back-top" id="backTop">↑</button>
+
+<script>
+const toggle=document.getElementById('themeToggle'),root=document.documentElement;
+function setTheme(t){root.dataset.theme=t;toggle.textContent=t==='dark'?'☀️ Light':'🌙 Dark';localStorage.setItem('esiq-theme',t)}
+toggle.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark'));
+setTheme(localStorage.getItem('esiq-theme')||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const el=e.target,t=+el.dataset.target;let c=0;const d=Math.max(1,Math.floor(30/(t||1)));const iv=setInterval(()=>{c+=d;if(c>=t){el.textContent=t;clearInterval(iv)}else{el.textContent=c}},16);io.unobserve(el)}})},{threshold:.5});
+document.querySelectorAll('.num[data-target]').forEach(el=>io.observe(el));
+const pills=document.querySelectorAll('.nav-pill[href]'),sections=[];
+pills.forEach(p=>{const id=p.getAttribute('href')?.slice(1);if(id){const s=document.getElementById(id);if(s)sections.push({el:s,pill:p})}});
+const spy=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const m=sections.find(s=>s.el===e.target);if(m)m.pill.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px',threshold:0});
+sections.forEach(s=>spy.observe(s.el));
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('progressBar').style.width=(window.scrollY/h*100)+'%'});
+const btn=document.getElementById('backTop');
+window.addEventListener('scroll',()=>{btn.classList.toggle('show',window.scrollY>400)});
+btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>

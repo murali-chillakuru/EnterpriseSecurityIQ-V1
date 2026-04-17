@@ -1,0 +1,6 @@
+output/
+!output/.gitkeep
+
+# Local dev symlink (junction for local testing)
+AIAgent/webapp/
+AIAgent/.env

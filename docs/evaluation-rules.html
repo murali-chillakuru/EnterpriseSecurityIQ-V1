@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Evaluation Rules — PostureIQ</title>
+<style>
+/* ── Reset & Base ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-hover:#252D38;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --border-primary:#30363D;--border-accent:#1F6FEB33;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --accent-pink:#DB61A2;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.5);
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',Consolas,monospace;
+  --transition-fast:.18s ease;--transition-med:.3s ease;
+  color-scheme:dark;
+  --max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-hover:#F0F3F6;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;
+  --border-primary:#D0D7DE;--border-accent:#0969DA22;
+  --accent-blue:#0969DA;--accent-purple:#8250DF;--accent-green:#1A7F37;
+  --accent-orange:#BF8700;--accent-cyan:#1B7C83;--accent-red:#CF222E;
+  --accent-pink:#BF3989;
+  --shadow-sm:0 1px 3px rgba(31,35,40,.08);--shadow-md:0 4px 12px rgba(31,35,40,.1);
+  --shadow-lg:0 8px 24px rgba(31,35,40,.12);
+  color-scheme:light
+}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none;transition:color var(--transition-fast)}
+a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--bg-secondary);padding:2px 6px;border-radius:4px}
+pre{background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.7rem .9rem;border:1px solid var(--border-primary);text-align:left;font-size:.88rem}
+th{background:var(--bg-secondary);color:var(--text-primary);font-weight:600;white-space:nowrap}
+tr:nth-child(even){background:var(--bg-secondary)}
+/* ── Skip Nav ── */
+.skip-nav{position:absolute;top:-100%;left:1rem;background:var(--accent-blue);color:#fff;padding:.5rem 1rem;border-radius:var(--radius-sm);z-index:9999;font-weight:600}
+.skip-nav:focus{top:1rem}
+/* ── Progress Bar ── */
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple),var(--accent-cyan));z-index:10001;transition:width .1s linear;width:0}
+/* ── Hero ── */
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:500px;height:500px;background:radial-gradient(circle,var(--accent-blue),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-purple),transparent 70%);bottom:-150px;left:-80px}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{color:var(--text-secondary);font-size:1.05rem;max-width:680px;margin:0 auto .8rem}
+.hero .author{color:var(--text-muted);font-size:.85rem}
+/* ── Stats Bar ── */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;max-width:960px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);position:relative;z-index:10}
+.stat{text-align:center}
+.stat .num{font-size:1.6rem;font-weight:700;display:block}
+.stat .lbl{color:var(--text-secondary);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+/* ── Nav ── */
+.nav-wrap{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.nav-inner{display:flex;align-items:center;gap:.5rem;max-width:1200px;margin:0 auto;padding:.6rem 1rem;overflow-x:auto;scrollbar-width:thin}
+.nav-pill{padding:.35rem .75rem;border-radius:20px;font-size:.78rem;font-weight:500;color:var(--text-secondary);white-space:nowrap;transition:all var(--transition-fast);border:1px solid transparent;cursor:pointer;text-decoration:none}
+.nav-pill:hover{color:var(--text-primary);background:var(--bg-hover);text-decoration:none}
+.nav-pill.active{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:20px;padding:.35rem .75rem;font-size:.78rem;cursor:pointer;color:var(--text-secondary);transition:all var(--transition-fast);white-space:nowrap}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--text-primary)}
+/* ── Content ── */
+.content{max-width:var(--max-width);margin:0 auto;padding:2rem 1.5rem 4rem}
+.section{margin-bottom:3.5rem;scroll-margin-top:80px}
+.section h2{font-size:1.5rem;font-weight:700;margin-bottom:.3rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent-blue);display:inline-block}
+.section h3{font-size:1.15rem;font-weight:600;margin:1.8rem 0 .8rem;color:var(--accent-purple)}
+.section p,.section li{color:var(--text-secondary);font-size:.92rem}
+.section ul,.section ol{padding-left:1.4rem;margin:.6rem 0}
+.section li{margin-bottom:.3rem}
+/* ── Cards / Grids ── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin:1rem 0}
+.card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;transition:all var(--transition-fast)}
+.card:hover{border-color:var(--accent-blue);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.card .card-title{font-weight:600;font-size:.95rem;margin-bottom:.3rem}
+.card .card-count{font-size:1.3rem;font-weight:700;color:var(--accent-blue)}
+.card .card-desc{color:var(--text-secondary);font-size:.82rem;margin-top:.3rem}
+.card-wide{grid-column:1/-1}
+/* ── Accent Colors ── */
+.accent-blue .card-count,.accent-blue .num{color:var(--accent-blue)}
+.accent-purple .card-count,.accent-purple .num{color:var(--accent-purple)}
+.accent-green .card-count,.accent-green .num{color:var(--accent-green)}
+.accent-orange .card-count,.accent-orange .num{color:var(--accent-orange)}
+.accent-cyan .card-count,.accent-cyan .num{color:var(--accent-cyan)}
+.accent-red .card-count,.accent-red .num{color:var(--accent-red)}
+.accent-pink .card-count,.accent-pink .num{color:var(--accent-pink)}
+/* ── Detail blocks ── */
+details{margin:1rem 0;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);overflow:hidden}
+details>summary{padding:.8rem 1rem;font-weight:600;cursor:pointer;color:var(--text-primary);transition:background var(--transition-fast);font-size:.92rem}
+details>summary:hover{background:var(--bg-hover)}
+details[open]>summary{border-bottom:1px solid var(--border-primary)}
+details .detail-body{padding:1rem}
+/* ── Mermaid ── */
+.mermaid-wrap{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.5rem;margin:1.5rem 0;overflow-x:auto}
+.mermaid{display:flex;justify-content:center}
+.diagram-explanation{margin-top:1rem;padding:1rem;background:var(--bg-secondary);border-radius:var(--radius-sm);border-left:3px solid var(--accent-purple)}
+.diagram-explanation h4{font-size:.9rem;color:var(--accent-purple);margin-bottom:.5rem}
+.diagram-explanation p,.diagram-explanation li{font-size:.84rem;color:var(--text-secondary)}
+/* ── Flow Pipeline (ASCII) ── */
+.pipeline-flow{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin:1.2rem 0;justify-content:center}
+.pipeline-step{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-sm);padding:.6rem 1rem;font-size:.82rem;font-weight:600;white-space:nowrap;text-align:center}
+.pipeline-arrow{color:var(--accent-blue);font-size:1.3rem;font-weight:700}
+/* ── Safety Banner ── */
+.safety-banner{background:linear-gradient(135deg,rgba(31,111,235,.08),rgba(163,113,247,.08));border:1px solid var(--border-accent);border-radius:var(--radius-lg);padding:1.5rem;margin:2rem 0}
+.safety-banner h3{color:var(--accent-blue);margin-bottom:.8rem}
+.safety-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.6rem}
+.safety-item{display:flex;align-items:flex-start;gap:.4rem;font-size:.82rem;color:var(--text-secondary)}
+.safety-item .check{color:var(--accent-green);font-weight:700;flex-shrink:0}
+/* ── Footer ── */
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.8rem;border-top:1px solid var(--border-primary)}
+/* ── Back-to-top ── */
+.back-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;border-radius:50%;background:var(--accent-blue);color:#fff;border:none;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all var(--transition-med);box-shadow:var(--shadow-md);z-index:999}
+.back-top.show{opacity:1;pointer-events:auto}
+.back-top:hover{transform:scale(1.1)}
+/* ── Status badges ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.75rem;font-weight:600}
+.badge-green{background:rgba(63,185,80,.15);color:var(--accent-green)}
+.badge-orange{background:rgba(210,153,34,.15);color:var(--accent-orange)}
+.badge-red{background:rgba(248,81,73,.15);color:var(--accent-red)}
+.badge-gray{background:rgba(139,148,158,.15);color:var(--text-secondary)}
+.badge-blue{background:rgba(31,111,235,.15);color:var(--accent-blue)}
+/* ── Print ── */
+@media print{.nav-wrap,.theme-toggle,.back-top,.progress-bar{display:none!important}.hero{padding:2rem 1rem}.content{max-width:100%}}
+/* ── Accessibility ── */
+@media(prefers-reduced-motion:reduce){*{transition-duration:0s!important;animation-duration:0s!important}}
+@media(forced-colors:active){.nav-pill.active{border:2px solid ButtonText}.card{border:1px solid ButtonText}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<a class="skip-nav" href="#main">Skip to content</a>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<header class="hero">
+  <h1>Evaluation Rules Reference</h1>
+  <p class="subtitle">10 domain evaluators · 113 check functions · severity-weighted scoring · cross-domain dispatch · suppressions · plugins · 8 standalone engines</p>
+  <p class="author">Author: Murali Chillakuru — PostureIQ</p>
+</header>
+
+<!-- ════════════════════ STATS BAR ════════════════════ -->
+<div class="stats-bar">
+  <div class="stat accent-blue"><span class="num" data-target="10">0</span><span class="lbl">Domains</span></div>
+  <div class="stat accent-purple"><span class="num" data-target="113">0</span><span class="lbl">~Check Functions</span></div>
+  <div class="stat accent-green"><span class="num" data-target="17">0</span><span class="lbl">Thresholds</span></div>
+  <div class="stat accent-orange"><span class="num" data-target="28">0</span><span class="lbl">Fallback Routes</span></div>
+  <div class="stat accent-cyan"><span class="num" data-target="8">0</span><span class="lbl">Engines</span></div>
+  <div class="stat accent-red"><span class="num" data-target="5">0</span><span class="lbl">Statuses</span></div>
+  <div class="stat accent-pink"><span class="num" data-target="4">0</span><span class="lbl">Severity Levels</span></div>
+</div>
+
+<!-- ════════════════════ NAV ════════════════════ -->
+<nav class="nav-wrap" aria-label="Section navigation">
+  <div class="nav-inner">
+    <a class="nav-pill" href="#overview">Overview</a>
+    <a class="nav-pill" href="#scoring">Scoring</a>
+    <a class="nav-pill" href="#thresholds">Thresholds</a>
+    <a class="nav-pill" href="#domains">Domains</a>
+    <a class="nav-pill" href="#fallback">Fallback</a>
+    <a class="nav-pill" href="#suppressions">Suppressions</a>
+    <a class="nav-pill" href="#plugins">Plugins</a>
+    <a class="nav-pill" href="#engines">Engines</a>
+    <a class="nav-pill" href="#evidence">Evidence</a>
+    <a class="nav-pill" href="#severity">Severity</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀️ Light</button>
+  </div>
+</nav>
+
+<!-- ════════════════════ MAIN CONTENT ════════════════════ -->
+<main class="content" id="main">
+
+<!-- EXEC SUMMARY -->
+<div style="background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.25);border-radius:8px;padding:16px 20px;margin:0 0 24px;font-size:.9rem;color:var(--text-secondary)">
+<strong>📋 Executive Summary</strong> — Complete evaluation rule reference: 10 domains, 113 check functions, severity-weighted scoring, cross-domain fallback (28 routes), suppressions, plugins, and 17 configurable thresholds.
+<div style="margin-top:8px;font-size:.82rem"><strong>Audience:</strong> Security engineers, compliance analysts · <strong>Prerequisites:</strong> <a href="architecture.html">Architecture</a> · <strong>Related:</strong> <a href="extending-frameworks.html">Extending Frameworks</a> · <a href="configuration-guide.html">Configuration Guide</a> · <a href="suppressions-guide.html">Suppressions Guide</a></div>
+</div>
+
+<!-- ── Overview ── -->
+<section class="section" id="overview">
+<h2>Evaluation Overview</h2>
+<p>The evaluation engine maps collected evidence to 525 compliance controls across 11 frameworks. For each control it routes through domain evaluators, applies suppressions, runs plugins, and calculates severity-weighted scores.</p>
+
+<div class="pipeline-flow">
+  <div class="pipeline-step" style="border-color:var(--accent-blue)">Framework Control</div>
+  <span class="pipeline-arrow">→</span>
+  <div class="pipeline-step" style="border-color:var(--accent-purple)">evaluation_logic</div>
+  <span class="pipeline-arrow">→</span>
+  <div class="pipeline-step" style="border-color:var(--accent-green)">Domain Evaluator</div>
+  <span class="pipeline-arrow">→</span>
+  <div class="pipeline-step" style="border-color:var(--accent-orange)">Suppressions</div>
+  <span class="pipeline-arrow">→</span>
+  <div class="pipeline-step" style="border-color:var(--accent-cyan)">Plugins</div>
+  <span class="pipeline-arrow">→</span>
+  <div class="pipeline-step" style="border-color:var(--accent-red)">Weighted Score</div>
+</div>
+
+<h3>Compliance Statuses</h3>
+<table>
+<thead><tr><th>Status</th><th>Badge</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>compliant</code></td><td><span class="badge badge-green">COMPLIANT</span></td><td>Evidence meets all requirements</td></tr>
+<tr><td><code>non_compliant</code></td><td><span class="badge badge-red">NON-COMPLIANT</span></td><td>Evidence shows a clear violation</td></tr>
+<tr><td><code>partial</code></td><td><span class="badge badge-orange">PARTIAL</span></td><td>Some requirements met, others not</td></tr>
+<tr><td><code>missing_evidence</code></td><td><span class="badge badge-gray">MISSING</span></td><td>Required evidence not collected (e.g., 403 denied)</td></tr>
+<tr><td><code>not_assessed</code></td><td><span class="badge badge-blue">NOT ASSESSED</span></td><td>No handler or no applicable resources</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ── Evaluation Dispatch Sequence Diagram ── -->
+<section class="section" id="scoring">
+<h2>Scoring Algorithm &amp; Dispatch</h2>
+<p>The engine uses <strong>severity-weighted scoring</strong> to aggregate compliance results. Each assessed control contributes based on its severity weight.</p>
+
+<div class="mermaid-wrap">
+<div class="mermaid" data-seq-details='[
+{"overview":"A compliance framework sends a control definition with its evaluation_logic configuration to the evaluation engine for processing.","dataFlow":"The control object (control_id, domain, evidence_types, thresholds, evaluation_logic) is passed from the framework JSON to engine.py.","keyPoints":["Each control carries metadata specifying how it should be evaluated","evaluation_logic can reference domain-specific check functions","Controls are processed one at a time within their framework loop"],"whyItMatters":"Declarative control definitions in JSON mean framework updates never require Python code changes — compliance teams can modify rules independently.","output":"A single control ready for domain-based routing."},
+{"overview":"The engine routes the control to its primary domain evaluator based on the domain field in the control definition.","dataFlow":"The control and indexed evidence are dispatched to the matching domain evaluator (e.g., identity_evaluator, network_evaluator).","keyPoints":["10 domain evaluators handle identity, network, encryption, logging, governance, and more","Domain routing uses a registry pattern for clean separation","Unknown domains trigger a warning rather than a hard failure"],"whyItMatters":"Domain-based routing ensures each evaluator is focused and expert in its area — maintainability scales linearly as new controls are added.","output":"The control dispatched to the appropriate domain evaluator."},
+{"overview":"The primary domain evaluator returns its assessment: a compliance status and any associated findings.","dataFlow":"A tuple of (status, findings) flows back — status is compliant, non_compliant, or not_assessed; findings include evidence references and remediation.","keyPoints":["Every evaluation produces a deterministic result for the same input","Findings include specific evidence references for auditability","not_assessed status triggers further fallback mechanisms"],"whyItMatters":"Transparent status reporting ensures every control has a clear disposition — nothing silently falls through the cracks.","output":"Primary evaluation result returned to the engine."},
+{"overview":"If the primary domain returns not_assessed, the engine consults the _CROSS_DOMAIN_MAP containing 28 fallback routes to find an alternative evaluator.","dataFlow":"The engine looks up the control in a 28-entry dictionary mapping controls to alternative domain evaluators that might have relevant evidence.","keyPoints":["28 cross-domain routes cover controls at the intersection of multiple security areas","The map is pre-defined based on evidence type overlap analysis","Lookup is O(1) by control identifier"],"whyItMatters":"Cross-domain mapping increases assessment coverage by 5-10%, catching controls that one domain cannot fully evaluate but another can.","output":"A redirected domain evaluator identified for fallback evaluation."},
+{"overview":"The cross-domain map returns the identity of the fallback domain evaluator to handle the re-dispatched control.","dataFlow":"The fallback evaluator reference flows back, enabling the engine to re-route the control to a different security domain.","keyPoints":["The fallback evaluator may use different evidence types than the primary","Redirection metadata is recorded for audit trail purposes","If no map entry exists, the control remains not_assessed"],"whyItMatters":"Having a defined fallback path is better than silent failure — it maximizes assessment coverage while maintaining full traceability.","output":"Fallback domain evaluator identified and ready for dispatch."},
+{"overview":"The engine re-dispatches the control to the fallback domain evaluator for a second assessment attempt.","dataFlow":"The same control definition is sent to the alternative domain evaluator along with the evidence index.","keyPoints":["The fallback evaluator checks its own evidence types for the control","The re-dispatch is logged as a cross-domain fallback in the finding metadata","Fallback evaluation uses the same threshold logic as primary"],"whyItMatters":"Transparent re-dispatch ensures auditors know exactly which path produced each finding — primary domain, compensating evidence, or cross-domain fallback.","output":"The control being evaluated by the fallback domain."},
+{"overview":"The fallback domain evaluator returns its assessment result — potentially upgrading a not_assessed to a definitive status.","dataFlow":"A (status, findings) tuple flows back from the fallback evaluator, which may now have enough evidence to produce compliant or non_compliant.","keyPoints":["If the fallback also returns not_assessed, the control is permanently marked as such","Successful fallback results carry a cross_domain_fallback flag","Both primary and fallback evidence references are preserved"],"whyItMatters":"Every attempt to resolve not_assessed controls reduces blind spots in the assessment — maximizing the actionability of results.","output":"Fallback evaluation result returned to the engine."},
+{"overview":"The engine checks the finding against configured suppression rules before finalizing it.","dataFlow":"The finding is passed to the suppressions module along with the loaded suppression rules (control_id, resource pattern, expiry date).","keyPoints":["Suppressions allow known-acceptable risks to be excluded from scoring","Rules can target specific controls, resources, or both","Expired suppression rules are ignored and logged as warnings"],"whyItMatters":"Suppression support is essential for real-world compliance — some findings represent accepted risks or in-progress remediations that should not inflate the non-compliance count.","output":"The finding sent to suppression checking."},
+{"overview":"If a suppression rule matches but has expired, the finding is skipped from suppression and a warning is logged.","dataFlow":"The suppressions module detects an expired rule, logs a warning about the lapsed suppression, and returns the finding without suppression.","keyPoints":["Expired rules serve as reminders that accepted risks need re-evaluation","The warning is visible in assessment logs for compliance review","The finding proceeds unsuppressed to final scoring"],"whyItMatters":"Time-bounded suppressions prevent permanent blanket exceptions — every accepted risk must be periodically re-justified or it resurfaces.","output":"Finding passes through unsuppressed with an expiry warning logged."},
+{"overview":"If no suppression rules match or the finding is explicitly allowed through, it passes to the next processing stage.","dataFlow":"The un-suppressed finding continues through the pipeline toward custom evaluator checking and final scoring.","keyPoints":["Unsuppressed findings represent actionable compliance gaps","The suppression check result (not_suppressed) is recorded in metadata","This is the normal path for most findings"],"whyItMatters":"Clear pass-through ensures genuine compliance gaps are never accidentally hidden — only explicitly suppressed findings are excluded.","output":"Finding confirmed as unsuppressed and continuing to scoring."},
+{"overview":"The engine checks if the control definition has a custom_evaluator tag, enabling plugin-based evaluation logic.","dataFlow":"If the control includes a custom_evaluator field, the engine loads and invokes the specified plugin module instead of the built-in domain evaluator.","keyPoints":["Custom evaluators extend the engine without modifying core code","Plugins follow the same interface as domain evaluators","Custom evaluator results are merged with standard findings"],"whyItMatters":"Plugin extensibility means organizations can add proprietary evaluation logic for custom controls without forking the core engine.","output":"The control dispatched to the custom evaluator plugin."},
+{"overview":"The custom evaluator plugin returns its assessment result, which is merged into the standard findings pipeline.","dataFlow":"A finding result with the same structure as domain evaluator output flows back from the plugin.","keyPoints":["Plugin results are validated against the same schema as built-in results","Custom evaluator metadata is tagged for identification in reports","Plugin errors are caught and logged without blocking the pipeline"],"whyItMatters":"Consistent result schema ensures custom evaluator findings are treated identically to built-in findings in scoring and reporting.","output":"Plugin finding merged into the results pipeline."},
+{"overview":"The finalized finding is passed to the scoring engine with its severity weight for aggregate compliance calculation.","dataFlow":"The FindingRecord with severity (critical=4, high=3, medium=2, low=1) is added to the running score tally for the current domain and framework.","keyPoints":["Severity weighting ensures critical findings impact scores far more than low findings","Each finding contributes to both domain-level and framework-level scores","Suppressed findings are excluded from the scoring denominator"],"whyItMatters":"Weighted scoring reflects actual risk — a tenant with one critical gap and 50 low findings gets a worse score than one with 5 medium findings.","output":"Finding added to the weighted scoring calculation."},
+{"overview":"The scoring engine returns the updated per-domain and overall compliance scores after incorporating the new finding.","dataFlow":"Updated percentage scores for the affected domain and the overall framework score flow back to the engine.","keyPoints":["Scores update incrementally as each finding is processed","Per-domain breakdown reveals which security areas are weakest","Overall score provides the executive summary metric"],"whyItMatters":"Incremental scoring means final results are available immediately after the last finding is processed — no separate post-processing pass required.","output":"Updated domain and overall compliance scores."}
+]'>
+sequenceDiagram
+    participant FW as Framework JSON
+    participant ENG as engine.py
+    participant DOM as Domain Evaluator
+    participant XD as Cross-Domain Map
+    participant SUP as Suppressions
+    participant PLG as Plugins
+    participant SC as Score Aggregator
+
+    FW->>ENG: Control with evaluation_logic
+    ENG->>DOM: Route to primary domain
+    alt Domain handles it
+        DOM-->>ENG: (status, findings)
+    else Not handled
+        ENG->>XD: Lookup _CROSS_DOMAIN_MAP (28 routes)
+        XD-->>ENG: Redirected domain evaluator
+        ENG->>DOM: Route to fallback domain
+        DOM-->>ENG: (status, findings)
+    end
+    ENG->>SUP: Check suppression rules
+    alt Suppressed
+        SUP-->>ENG: Skip finding (logged)
+    else Not suppressed
+        SUP-->>ENG: Finding passes through
+    end
+    ENG->>PLG: Check custom_evaluator tag
+    alt Plugin exists
+        PLG-->>ENG: Plugin result
+    end
+    ENG->>SC: Add weighted result
+    Note over SC: critical=4, high=3, medium=2, low=1
+    SC-->>ENG: Updated domain &amp; overall scores
+</div>
+<div class="diagram-explanation">
+<h4>Sequence Walkthrough</h4>
+<ol>
+<li><strong>Framework JSON</strong> provides each control's <code>evaluation_logic</code> function name and required <code>evidence_types</code></li>
+<li><strong>engine.py</strong> routes to the primary domain evaluator (access, identity, data_protection, etc.)</li>
+<li>If the domain doesn't handle the function, the <strong>Cross-Domain Map</strong> redirects to one of 28 pre-configured fallback routes</li>
+<li><strong>Suppressions</strong> are checked — matching rules (control_id glob + resource regex) skip findings</li>
+<li><strong>Plugins</strong> run for controls tagged <code>custom_evaluator</code>, injecting external evaluation logic</li>
+<li><strong>Score Aggregator</strong> applies severity weights: compliant contributes full weight, partial contributes half, non-compliant contributes zero. <code>missing_evidence</code> and <code>not_assessed</code> are excluded from the denominator</li>
+</ol>
+</div>
+</div>
+
+<h3>Severity Weights</h3>
+<table>
+<thead><tr><th>Severity</th><th>Weight</th><th>Score Impact</th></tr></thead>
+<tbody>
+<tr><td>Critical</td><td><strong>4</strong></td><td>Heaviest impact on compliance percentage</td></tr>
+<tr><td>High</td><td><strong>3</strong></td><td>Significant impact</td></tr>
+<tr><td>Medium</td><td><strong>2</strong></td><td>Moderate impact</td></tr>
+<tr><td>Low</td><td><strong>1</strong></td><td>Minimal impact</td></tr>
+</tbody>
+</table>
+
+<h3>Score Formula</h3>
+<pre>weighted_pass  = Σ weight[severity]  for each compliant control
+weighted_total = Σ weight[severity]  for each assessed control
+compliance_pct = (weighted_pass / weighted_total) × 100</pre>
+<p><code>partial</code> status contributes half the severity weight. <code>missing_evidence</code> / <code>not_assessed</code> are excluded from the denominator.</p>
+</section>
+
+<!-- ── Thresholds ── -->
+<section class="section" id="thresholds">
+<h2>Configurable Thresholds (18)</h2>
+<p>All numeric thresholds are configurable via <code>config/enterprisesecurityiq.config.json</code>. Defaults shown.</p>
+<table>
+<thead><tr><th>Key</th><th>Default</th><th>Domain</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_subscription_owners</code></td><td>3</td><td>Access</td><td>Max Owner role assignments per subscription</td></tr>
+<tr><td><code>max_privileged_percent</code></td><td>0.20</td><td>Access</td><td>Max ratio of privileged to total assignments</td></tr>
+<tr><td><code>max_global_admins</code></td><td>5</td><td>Access</td><td>Max Global Administrator members</td></tr>
+<tr><td><code>max_subscription_contributors</code></td><td>10</td><td>Access</td><td>Max Contributor assignments per subscription</td></tr>
+<tr><td><code>max_entra_privileged_roles</code></td><td>10</td><td>Access</td><td>Max privileged Entra role assignments</td></tr>
+<tr><td><code>min_mfa_percent</code></td><td>90.0</td><td>Identity</td><td>Min MFA-registered users percentage</td></tr>
+<tr><td><code>max_no_default_mfa_percent</code></td><td>30.0</td><td>Identity</td><td>Max users without default MFA method</td></tr>
+<tr><td><code>max_stale_percent</code></td><td>20.0</td><td>Identity</td><td>Max stale/inactive account percentage</td></tr>
+<tr><td><code>max_stale_guests</code></td><td>10</td><td>Identity</td><td>Max stale guest accounts</td></tr>
+<tr><td><code>max_high_priv_oauth</code></td><td>5</td><td>Identity</td><td>Max high-privilege OAuth apps</td></tr>
+<tr><td><code>max_admin_grants</code></td><td>20</td><td>Identity</td><td>Max admin-consented OAuth grants</td></tr>
+<tr><td><code>max_not_mfa_registered</code></td><td>10</td><td>Identity</td><td>Max users not registered for MFA</td></tr>
+<tr><td><code>diagnostic_coverage_target</code></td><td>80.0</td><td>Logging</td><td>Target diagnostic settings coverage (%)</td></tr>
+<tr><td><code>diagnostic_coverage_minimum</code></td><td>50.0</td><td>Logging</td><td>Minimum diagnostic coverage for partial (%)</td></tr>
+<tr><td><code>min_policies_for_baseline</code></td><td>5</td><td>Governance</td><td>Min policy assignments for baseline</td></tr>
+<tr><td><code>min_tagging_percent</code></td><td>80.0</td><td>Governance</td><td>Min resource tagging percentage</td></tr>
+<tr><td><code>policy_compliance_target</code></td><td>80.0</td><td>Governance</td><td>Target policy compliance rate (%)</td></tr>
+<tr><td><code>max_open_incidents</code></td><td>50</td><td>Incident Resp.</td><td>Threshold for alert fatigue detection</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ── Domain Evaluators ── -->
+<section class="section" id="domains">
+<h2>Domain Evaluators (10)</h2>
+<p>Each domain evaluator is a Python module under <code>evaluators/</code> with specialized check functions.</p>
+
+<div class="card-grid">
+  <div class="card accent-blue"><div class="card-count">8</div><div class="card-title">Access</div><div class="card-desc">RBAC limits, owner count, privileged ratio, Global Admin cap, JIT/PIM</div></div>
+  <div class="card accent-purple"><div class="card-count">22</div><div class="card-title">Identity</div><div class="card-desc">MFA, stale accounts, OAuth hygiene, workload identity, auth methods, lifecycle</div></div>
+  <div class="card accent-green"><div class="card-count">22</div><div class="card-title">Data Protection</div><div class="card-desc">Encryption, TLS, CMK, classification, service-specific security checks</div></div>
+  <div class="card accent-cyan"><div class="card-count">16</div><div class="card-title">Network</div><div class="card-desc">NSG rules, DNS, AKS, APIM, Front Door, WAF, private endpoints, DDoS</div></div>
+  <div class="card accent-orange"><div class="card-count">13</div><div class="card-title">Logging</div><div class="card-desc">Diagnostic coverage, retention, activity logs, flow logs, Sentinel</div></div>
+  <div class="card accent-pink"><div class="card-count">21</div><div class="card-title">Governance</div><div class="card-desc">Policy enforcement, tagging, Defender, AI safety, regulatory compliance</div></div>
+  <div class="card accent-red"><div class="card-count">6</div><div class="card-title">Incident Response</div><div class="card-desc">Security contacts, detection, alerting, investigation, Sentinel, alert fatigue</div></div>
+  <div class="card accent-blue"><div class="card-count">4</div><div class="card-title">Change Management</div><div class="card-desc">Change control policies, resource locks, change tracking, enforcement</div></div>
+  <div class="card accent-green"><div class="card-count">4</div><div class="card-title">Business Continuity</div><div class="card-desc">Backup config, geo-redundancy, VM availability, database resilience</div></div>
+  <div class="card accent-orange"><div class="card-count">4</div><div class="card-title">Asset Management</div><div class="card-desc">Asset inventory, classification tags, authorized software, app inventory</div></div>
+</div>
+
+<!-- Access -->
+<details>
+<summary>Access — 8 check functions (evaluators/access.py)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Rule</th><th>Threshold</th><th>Logic</th></tr></thead>
+<tbody>
+<tr><td>Subscription owners</td><td><code>max_subscription_owners</code> (3)</td><td>Non-compliant if &gt; 3 Owner role assignments per subscription</td></tr>
+<tr><td>Privileged ratio</td><td><code>max_privileged_percent</code> (20%)</td><td>Non-compliant if privileged assignments exceed 20% of total</td></tr>
+<tr><td>Global Admins</td><td><code>max_global_admins</code> (5)</td><td>Non-compliant if &gt; 5 Global Administrator role members</td></tr>
+<tr><td>Contributors</td><td><code>max_subscription_contributors</code> (10)</td><td>Non-compliant if &gt; 10 Contributor assignments per subscription</td></tr>
+<tr><td>Entra privileged roles</td><td><code>max_entra_privileged_roles</code> (10)</td><td>Non-compliant if &gt; 10 privileged Entra role assignments</td></tr>
+<tr><td>Custom owner roles</td><td>N/A</td><td>Non-compliant if custom roles with Owner-equivalent permissions exist</td></tr>
+<tr><td>Access enforcement</td><td>N/A</td><td>Evaluates Conditional Access policy presence and enforcement</td></tr>
+<tr><td>JIT / PIM access</td><td>N/A</td><td>Checks for JIT access configuration and PIM eligibility</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<!-- Identity -->
+<details>
+<summary>Identity — 22 check functions (evaluators/identity.py)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Rule</th><th>Threshold</th><th>Logic</th></tr></thead>
+<tbody>
+<tr><td>MFA enrollment</td><td><code>min_mfa_percent</code> (90%)</td><td>Non-compliant if MFA-registered users &lt; 90%</td></tr>
+<tr><td>MFA not registered</td><td><code>max_not_mfa_registered</code> (10)</td><td>Non-compliant if &gt; 10 users not registered for MFA</td></tr>
+<tr><td>No default MFA</td><td><code>max_no_default_mfa_percent</code> (30%)</td><td>Non-compliant if &gt; 30% without default MFA method</td></tr>
+<tr><td>Stale accounts</td><td><code>max_stale_percent</code> (20%)</td><td>Non-compliant if stale accounts exceed 20%</td></tr>
+<tr><td>Guest users</td><td><code>max_stale_guests</code> (10)</td><td>Non-compliant if &gt; 10 stale guest accounts</td></tr>
+<tr><td>High-privilege OAuth</td><td><code>max_high_priv_oauth</code> (5)</td><td>Non-compliant if &gt; 5 OAuth apps with high-privilege grants</td></tr>
+<tr><td>Admin consent grants</td><td><code>max_admin_grants</code> (20)</td><td>Non-compliant if &gt; 20 admin-consented OAuth grants</td></tr>
+<tr><td>Centralized identity</td><td>N/A</td><td>Checks CA policies exist AND enforce MFA</td></tr>
+<tr><td>Workload identity</td><td>N/A</td><td>Federated credentials, managed identity, password-based vs federation</td></tr>
+<tr><td>Auth methods</td><td>N/A</td><td>Auth methods policy, strength policies, insecure methods disabled</td></tr>
+<tr><td>Managed identity hygiene</td><td>N/A</td><td>Managed identity adoption rate and unused identity cleanup</td></tr>
+<tr><td>Credential lifecycle</td><td>N/A</td><td>App registration credential expiry, rotation policies</td></tr>
+<tr><td>Service principal hygiene</td><td>N/A</td><td>SP ownership, credential types, unused SPs</td></tr>
+<tr><td>User lifecycle</td><td>N/A</td><td>Provisioning, deprovisioning, access reviews</td></tr>
+<tr><td>Password policy</td><td>N/A</td><td>Ban lists, complexity, self-service reset</td></tr>
+<tr><td>Risk-based access</td><td>N/A</td><td>CA policies with sign-in / user risk conditions</td></tr>
+<tr><td>Session management</td><td>N/A</td><td>Sign-in frequency, persistent browser controls</td></tr>
+<tr><td>B2B collaboration</td><td>N/A</td><td>Cross-tenant access settings, external collaboration</td></tr>
+<tr><td>Emergency access</td><td>N/A</td><td>Break-glass account configuration</td></tr>
+<tr><td>Named locations</td><td>N/A</td><td>Location-based CA policies</td></tr>
+<tr><td>Auth strength</td><td>N/A</td><td>Phishing-resistant auth strength policies</td></tr>
+<tr><td>Token protection</td><td>N/A</td><td>Token lifetime and token protection settings</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<!-- Data Protection -->
+<details>
+<summary>Data Protection — 22 check functions (evaluators/data_protection.py)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Rule</th><th>Evidence</th><th>Logic</th></tr></thead>
+<tbody>
+<tr><td>Encryption at rest</td><td><code>azure-compute-disk</code>, <code>azure-keyvault</code></td><td>Disk encryption and Key Vault presence</td></tr>
+<tr><td>Encryption in transit</td><td><code>azure-storage-security</code></td><td>HTTPS-only and minimum TLS 1.2</td></tr>
+<tr><td>Key management (CMK)</td><td><code>azure-keyvault</code>, <code>azure-storage-security</code></td><td>Storage <code>EncryptionKeySource</code> for customer-managed keys</td></tr>
+<tr><td>Data classification</td><td><code>azure-resource</code></td><td>Tagging and classification policies</td></tr>
+<tr><td>Function app security</td><td><code>azure-function-app</code></td><td>HTTPS, TLS, managed identity, CORS</td></tr>
+<tr><td>Messaging security</td><td><code>azure-servicebus</code>, <code>azure-eventhub</code></td><td>TLS, local auth disabled, public access</td></tr>
+<tr><td>Redis security</td><td><code>azure-redis-cache</code></td><td>SSL enforcement, TLS version, public access</td></tr>
+<tr><td>CosmosDB advanced</td><td><code>azure-cosmosdb-account</code></td><td>Local auth, public network, VNet, RBAC mode</td></tr>
+<tr><td>Data analytics</td><td><code>azure-synapse</code>, <code>azure-data-factory</code>, <code>azure-databricks</code></td><td>Managed VNet, CMK, public access</td></tr>
+<tr><td>Purview classification</td><td><code>azure-purview</code>, <code>m365-sensitivity-label</code></td><td>Purview deployment, label coverage</td></tr>
+<tr><td>SQL detailed security</td><td><code>azure-sql-detailed</code></td><td>Per-database auditing, TDE, ATP, vulnerability</td></tr>
+<tr><td>Storage advanced</td><td><code>azure-storage-account</code>, <code>azure-storage-container</code></td><td>Soft delete, immutability, lifecycle, versioning</td></tr>
+<tr><td>Key Vault security</td><td><code>azure-keyvault</code></td><td>Soft delete, purge protection, RBAC, network ACLs</td></tr>
+<tr><td>Web app advanced</td><td><code>azure-webapp-detailed</code></td><td>Auth, IP restrictions, CORS, diagnostics</td></tr>
+<tr><td>Container security</td><td><code>azure-container-registry</code>, <code>azure-container-app</code></td><td>Image scanning, admin access, isolation</td></tr>
+<tr><td>AKS data protection</td><td><code>azure-aks-cluster-config</code></td><td>Secrets encryption, disk encryption, KV integration</td></tr>
+<tr><td>RDBMS security</td><td><code>azure-rdbms-detailed</code></td><td>SSL enforcement, parameters, firewall</td></tr>
+<tr><td>ACR data protection</td><td><code>azure-acr-repository</code></td><td>Tag mutability, content trust, quarantine</td></tr>
+<tr><td>APIM data protection</td><td><code>azure-apim-service</code></td><td>Backend certs, named value encryption</td></tr>
+<tr><td>Disk encryption sets</td><td><code>azure-disk-encryption-set</code></td><td>CMK rotation, platform vs. customer encryption</td></tr>
+<tr><td>Backup encryption</td><td><code>azure-backup-item</code></td><td>Vault encryption, immutability</td></tr>
+<tr><td>Storage data plane</td><td><code>azure-storage-data-plane</code></td><td>Per-container public access, immutability</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<!-- Network -->
+<details>
+<summary>Network — 16 check functions (evaluators/network.py)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Rule</th><th>Evidence</th><th>Logic</th></tr></thead>
+<tbody>
+<tr><td>Network segmentation</td><td><code>azure-nsg-rule</code>, <code>azure-virtual-network</code></td><td>NSG presence, rule quality (detects allow-all-inbound)</td></tr>
+<tr><td>Boundary protection</td><td><code>azure-nsg-rule</code>, <code>azure-virtual-network</code></td><td>Perimeter controls evaluation</td></tr>
+<tr><td>TLS enforcement</td><td><code>azure-storage-security</code></td><td>Minimum TLS version checks</td></tr>
+<tr><td>DNS security</td><td><code>azure-dns-zone</code>, <code>azure-private-dns-zone</code></td><td>Private DNS, DNSSEC, zone transfer</td></tr>
+<tr><td>AKS network security</td><td><code>azure-aks-cluster-config</code></td><td>Network policy, private cluster, authorized IPs</td></tr>
+<tr><td>APIM network</td><td><code>azure-apim-service</code></td><td>VNet integration, client certificates</td></tr>
+<tr><td>Front Door / CDN</td><td><code>azure-front-door</code>, <code>azure-waf-policy</code></td><td>WAF Prevention mode, managed rules, HTTPS</td></tr>
+<tr><td>App Gateway / WAF</td><td><code>azure-application-gateway</code></td><td>WAF enabled, backend health, HTTPS listeners</td></tr>
+<tr><td>Private endpoints</td><td><code>azure-private-endpoint</code></td><td>PE adoption for storage, SQL, KV, CosmosDB</td></tr>
+<tr><td>Public IP exposure</td><td><code>azure-public-ip</code></td><td>Unused public IPs, missing DDoS protection</td></tr>
+<tr><td>NSG risky ports</td><td><code>azure-nsg-rule</code></td><td>Flags inbound: 22, 3389, 3306, 1433, 5432</td></tr>
+<tr><td>VNet peering</td><td><code>azure-vnet-peering</code></td><td>Topology, transit routing, cross-sub peering</td></tr>
+<tr><td>Network Watcher</td><td><code>azure-network-watcher</code></td><td>Enabled per region, flow logs</td></tr>
+<tr><td>DDoS protection</td><td><code>azure-ddos-protection-plan</code></td><td>DDoS Standard plan coverage</td></tr>
+<tr><td>SSL/TLS posture</td><td><code>azure-sql-server</code>, <code>azure-webapp-config</code></td><td>TLS 1.2+ across services</td></tr>
+<tr><td>Firewall rules</td><td><code>azure-sql-firewall-rule</code></td><td>Overly permissive (0.0.0.0/0), Allow Azure</td></tr>
+</tbody>
+</table>
+<p style="margin-top:.8rem;font-size:.85rem;color:var(--text-secondary)"><strong>NSG Rule Quality:</strong> Flags rules with <code>Source: *</code>, <code>Destination: *</code>, <code>DestinationPort: *</code>, <code>Access: Allow</code> as weak.</p>
+</div>
+</details>
+
+<!-- Logging -->
+<details>
+<summary>Logging — 13 check functions (evaluators/logging_eval.py)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Rule</th><th>Threshold</th><th>Logic</th></tr></thead>
+<tbody>
+<tr><td>Diagnostic coverage</td><td><code>diagnostic_coverage_target</code> (80%)</td><td>Compliant if ≥ 80% resources have diagnostic settings</td></tr>
+<tr><td>Diagnostic minimum</td><td><code>diagnostic_coverage_minimum</code> (50%)</td><td>Partial if ≥ 50% but &lt; 80%</td></tr>
+<tr><td>Log retention</td><td>N/A</td><td>Workspace retention policies</td></tr>
+<tr><td>Activity logs</td><td>N/A</td><td>Activity log collection and routing</td></tr>
+<tr><td>Sign-in log monitoring</td><td>N/A</td><td>Entra sign-in logs collected and reviewed</td></tr>
+<tr><td>Directory audit logs</td><td>N/A</td><td>Entra directory audit log collection</td></tr>
+<tr><td>Log Analytics workspace</td><td>N/A</td><td>Workspace presence, retention, data caps</td></tr>
+<tr><td>Resource-specific logging</td><td>N/A</td><td>Per-service diagnostic categories</td></tr>
+<tr><td>Flow logs</td><td>N/A</td><td>NSG flow log enablement and storage</td></tr>
+<tr><td>Alert rule coverage</td><td>N/A</td><td>Alert rules for critical operations</td></tr>
+<tr><td>Log export</td><td>N/A</td><td>Logs exported to external SIEM/storage</td></tr>
+<tr><td>Sentinel integration</td><td>N/A</td><td>Data connector status for log ingestion</td></tr>
+<tr><td>Audit log completeness</td><td>N/A</td><td>Collected vs expected log categories</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<!-- Governance -->
+<details>
+<summary>Governance — 21 check functions (evaluators/governance.py)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Rule</th><th>Threshold</th><th>Logic</th></tr></thead>
+<tbody>
+<tr><td>Baseline policy count</td><td><code>min_policies_for_baseline</code> (5)</td><td>Non-compliant if &lt; 5 policy assignments</td></tr>
+<tr><td>Tagging compliance</td><td><code>min_tagging_percent</code> (80%)</td><td>Non-compliant if &lt; 80% tagged</td></tr>
+<tr><td>Policy compliance</td><td><code>policy_compliance_target</code> (80%)</td><td>Non-compliant if compliance &lt; 80%</td></tr>
+<tr><td>Continuous monitoring</td><td>N/A</td><td>Monitoring and alerting configuration</td></tr>
+<tr><td>Defender posture</td><td>N/A</td><td>Secure score, unhealthy assessments, JIT access</td></tr>
+<tr><td>AI content safety</td><td>N/A</td><td>Content filters per deployment, public access, local auth</td></tr>
+<tr><td>Regulatory compliance</td><td>N/A</td><td>Standard pass rates, failed controls</td></tr>
+<tr><td>Resource lock governance</td><td>N/A</td><td>Critical resource lock coverage</td></tr>
+<tr><td>Budget management</td><td>N/A</td><td>Budget alerts and cost thresholds</td></tr>
+<tr><td>Naming conventions</td><td>N/A</td><td>Resource naming compliance patterns</td></tr>
+<tr><td>Lifecycle management</td><td>N/A</td><td>Resource lifecycle policies and automation</td></tr>
+<tr><td>Configuration management</td><td>N/A</td><td>Policy assignment enforcement modes</td></tr>
+<tr><td>Risk assessment</td><td>N/A</td><td>Overall security posture evaluation</td></tr>
+<tr><td>Access governance</td><td>N/A</td><td>Access review configuration and completion</td></tr>
+<tr><td>Defender for Cloud plans</td><td>N/A</td><td>Plan enablement across resource types</td></tr>
+<tr><td>Security recommendations</td><td>N/A</td><td>Outstanding recommendations and remediation</td></tr>
+<tr><td>Compliance reporting</td><td>N/A</td><td>Automated evidence generation</td></tr>
+<tr><td>Architecture governance</td><td>N/A</td><td>WAF alignment checks</td></tr>
+<tr><td>Cost governance</td><td>N/A</td><td>Advisor cost optimization recommendations</td></tr>
+<tr><td>Operational excellence</td><td>N/A</td><td>Health probes, diagnostics, readiness</td></tr>
+<tr><td>Security awareness</td><td>N/A</td><td>Training and awareness program indicators</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<!-- Incident Response -->
+<details>
+<summary>Incident Response — 6 check functions (evaluators/incident_response.py)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Rule</th><th>Evidence</th><th>Logic</th></tr></thead>
+<tbody>
+<tr><td>Security contact config</td><td><code>azure-security-contact</code></td><td>Security contacts have email and alert notifications enabled</td></tr>
+<tr><td>Incident detection</td><td><code>azure-defender-pricing</code>, <code>azure-alert-rule</code>, <code>entra-risk-summary</code></td><td>Defender plans enabled for VMs, SQL, App Services, Storage, KV, ARM, Containers; identity risk monitored</td></tr>
+<tr><td>Incident alerting</td><td><code>azure-action-group</code>, <code>azure-alert-rule</code></td><td>Action groups have receivers, alert rules linked</td></tr>
+<tr><td>Investigation readiness</td><td><code>azure-diagnostic-setting</code>, <code>azure-log-analytics</code></td><td>Log Analytics present, diagnostic coverage ≥ 80%, activity logs collected</td></tr>
+<tr><td>Sentinel monitoring</td><td><code>azure-sentinel-*</code></td><td>Sentinel deployed, connectors active, analytics rules enabled, automation configured</td></tr>
+<tr><td>Alert response coverage</td><td><code>azure-security-alert</code>, <code>azure-sentinel-incident</code></td><td>High/critical alerts have action groups; &gt; 50 open incidents = alert fatigue</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<!-- Change Management -->
+<details>
+<summary>Change Management — 4 check functions (evaluators/change_management.py)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Rule</th><th>Evidence</th><th>Logic</th></tr></thead>
+<tbody>
+<tr><td>Change control policies</td><td><code>azure-policy-assignment</code>, <code>azure-policy-definition</code></td><td>Policies with deny/audit effects enforce change governance; custom policy definitions checked</td></tr>
+<tr><td>Resource lock governance</td><td><code>azure-resource-lock</code>, <code>azure-resource-group</code></td><td>CanNotDelete/ReadOnly locks; locks ≥ resource group count</td></tr>
+<tr><td>Change tracking</td><td><code>azure-activity-log</code>, <code>azure-diagnostic-setting</code></td><td>Activity logs track write/delete; diagnostics route to Log Analytics</td></tr>
+<tr><td>Policy enforcement</td><td><code>azure-policy-compliance</code></td><td>≥ 80% = pass, 50–79% = needs improvement, &lt; 50% = weak</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<!-- Business Continuity -->
+<details>
+<summary>Business Continuity — 4 check functions (evaluators/business_continuity.py)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Rule</th><th>Evidence</th><th>Logic</th></tr></thead>
+<tbody>
+<tr><td>Backup configuration</td><td><code>azure-recovery-vault</code>, <code>azure-vm-config</code></td><td>Recovery vaults with soft-delete; immutability state checked</td></tr>
+<tr><td>Geo-redundancy</td><td><code>azure-storage-account</code>, <code>azure-cosmosdb-account</code></td><td>Storage: GRS/RAGRS/GZRS; Cosmos: multi-region writes</td></tr>
+<tr><td>VM availability</td><td><code>azure-vm-config</code></td><td>VMs in availability zones or availability sets</td></tr>
+<tr><td>Database resilience</td><td><code>azure-sql-server</code>, <code>azure-sql-detailed</code></td><td>HA, geo-replication, network isolation; SQL ≥ 12.0</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<!-- Asset Management -->
+<details>
+<summary>Asset Management — 4 check functions (evaluators/asset_management.py)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Rule</th><th>Evidence</th><th>Logic</th></tr></thead>
+<tbody>
+<tr><td>Asset inventory</td><td><code>azure-resource</code>, <code>azure-resource-group</code></td><td>Completeness; low type diversity (&lt; 3) flagged when &gt; 10 resources</td></tr>
+<tr><td>Classification tagging</td><td><code>azure-resource</code></td><td>Tags present; classification keys checked. ≥ 80% = pass, 50–79% = needs improvement</td></tr>
+<tr><td>Authorized software</td><td><code>azure-policy-assignment</code></td><td>Policies restrict resource types/locations; initiatives checked</td></tr>
+<tr><td>Application inventory</td><td><code>entra-application</code>, <code>entra-service-principal</code></td><td>Apps and SPs inventoried; flags SPs without owners</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+</section>
+
+<!-- ── Cross-Domain Fallback ── -->
+<section class="section" id="fallback">
+<h2>Cross-Domain Fallback Dispatch</h2>
+<p><code>engine.py</code> uses <code>_CROSS_DOMAIN_MAP</code> with 28 routing entries to redirect evaluation functions to the correct domain when the primary domain doesn't handle them.</p>
+
+<div class="mermaid-wrap">
+<div class="mermaid">
+graph LR
+    subgraph "Primary Domain Evaluators"
+        A[access.py]
+        I[identity.py]
+        DP[data_protection.py]
+        N[network.py]
+        L[logging_eval.py]
+        G[governance.py]
+    end
+    subgraph "Fallback Domains"
+        IR[incident_response.py]
+        CM[change_management.py]
+        BC[business_continuity.py]
+        AM[asset_management.py]
+    end
+    E{engine.py<br/>_CROSS_DOMAIN_MAP}
+    E -->|check_sentinel_monitoring| IR
+    E -->|check_alert_response| IR
+    E -->|check_security_contact| IR
+    E -->|check_network_segmentation| N
+    E -->|check_nsg_rules| N
+    E -->|check_aks_security| DP
+    E -->|check_backup_config| BC
+    E -->|check_geo_redundancy| BC
+    E -->|check_resource_locks| CM
+    E -->|check_change_tracking| CM
+    E -->|check_asset_inventory| AM
+    E -->|check_tagging_compliance| AM
+
+    style E fill:#1F6FEB,stroke:#1F6FEB,color:#fff
+    style IR fill:#F85149,stroke:#F85149,color:#fff
+    style CM fill:#1F6FEB,stroke:#1F6FEB,color:#fff
+    style BC fill:#3FB950,stroke:#3FB950,color:#fff
+    style AM fill:#D29922,stroke:#D29922,color:#fff
+</div>
+<div class="diagram-explanation">
+<h4>Fallback Dispatch Explained</h4>
+<ol>
+<li><strong>engine.py</strong> first tries the domain specified in the control's <code>evaluation_logic</code> field</li>
+<li>If that domain evaluator doesn't have a handler for the function, the engine consults <code>_CROSS_DOMAIN_MAP</code></li>
+<li>The map contains 28 redirects — for example, <code>check_sentinel_monitoring</code> routes to Incident Response even when invoked from a Logging-domain control</li>
+<li>If no route matches and no domain handles it, a <strong>generic fallback</strong> checks evidence presence → <code>partial</code> if present, <code>missing_evidence</code> if absent</li>
+</ol>
+</div>
+</div>
+</section>
+
+<!-- ── Suppressions ── -->
+<section class="section" id="suppressions">
+<h2>Suppression Rules</h2>
+<p>The suppression engine (<code>evaluators/suppressions.py</code>) allows administrators to skip or downgrade specific findings.</p>
+
+<h3>Rule Structure</h3>
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>control_id</code></td><td><code>str | null</code></td><td>Exact match or glob pattern on control ID (e.g., <code>"AC-*"</code>)</td></tr>
+<tr><td><code>resource</code></td><td><code>str | null</code></td><td>Regex pattern matching resource name/ID</td></tr>
+<tr><td><code>reason</code></td><td><code>str</code></td><td>Required justification for suppression</td></tr>
+<tr><td><code>expires</code></td><td><code>str | null</code></td><td>ISO date (YYYY-MM-DD); suppression ignored after expiry</td></tr>
+</tbody>
+</table>
+
+<h3>Matching Logic</h3>
+<ol>
+<li>Rules are tested in order of definition</li>
+<li>A rule matches when <strong>both</strong> <code>control_id</code> (exact/glob) AND <code>resource</code> (regex) match</li>
+<li>Expired rules (past <code>expires</code> date) are skipped with a warning log</li>
+<li>Rules expiring within <strong>7 days</strong> trigger a warning about upcoming expiration</li>
+<li>Matched rules suppress the finding from the final report but are tracked in metadata</li>
+</ol>
+
+<h3>Suppression Flow</h3>
+<div class="mermaid-wrap">
+<div class="mermaid" data-seq-details='[
+{"overview":"A finding generated by the evaluation engine is sent to the suppressions module to check if it matches any configured suppression rules.","dataFlow":"The FindingRecord (control_id, resource_id, severity, status) is passed to suppressions.py along with the loaded suppression rules list.","keyPoints":["Every finding passes through suppression checking before final output","Suppression happens post-evaluation to preserve audit completeness","Unsuppressed findings continue to reports and scoring unmodified"],"whyItMatters":"Post-evaluation suppression ensures the assessment always evaluates everything first, then filters — maintaining full audit transparency even for suppressed items.","output":"The finding dispatched to the suppression rule matcher."},
+{"overview":"The suppressions module loads each configured rule and checks its parameters: control_id pattern, resource pattern, and expiry date.","dataFlow":"Each rule object (control_id regex, resource regex, expires date, justification) is loaded from the suppression configuration.","keyPoints":["Rules support regex patterns for flexible control and resource matching","Each rule must include a justification explaining why the suppression exists","Expiry dates enforce time-bounded risk acceptance"],"whyItMatters":"Structured rules with justification and expiry dates turn suppressions from silent exceptions into documented, time-bounded risk acceptance decisions.","output":"Rule parameters loaded for matching against the finding."},
+{"overview":"If a suppression rule has expired, it is skipped and a warning is logged indicating the lapsed suppression.","dataFlow":"The expired rule is identified, a warning entry is written to the assessment log, and the rule is not applied to the current finding.","keyPoints":["Expired rules are not deleted — they remain as historical records","The warning helps compliance teams identify rules needing renewal","Multiple expired rules for the same control generate multiple warnings"],"whyItMatters":"Expiration enforcement prevents permanent risk acceptance — teams must actively renew suppressions, ensuring ongoing justification for accepted risks.","output":"Rule skipped; warning logged for compliance review."},
+{"overview":"If a rule is approaching its expiry date (within warning threshold), it is applied to the finding but a warning is generated.","dataFlow":"The near-expiry rule suppresses the finding as normal, but an additional warning is added to the assessment output flagging the upcoming expiration.","keyPoints":["Warning threshold is configurable (default: 30 days before expiry)","The finding IS suppressed — the warning is informational","Upcoming expirations appear in the assessment summary for visibility"],"whyItMatters":"Early warnings give teams time to evaluate whether to renew the suppression, remediate the underlying issue, or let the finding resurface.","output":"Finding suppressed with an approaching-expiry warning."},
+{"overview":"When a rule fully matches the finding (control_id, resource pattern, and valid expiry), the finding is suppressed.","dataFlow":"The rule match is confirmed, and the finding is flagged as suppressed with the rule ID, justification, and expiry date recorded in the finding metadata.","keyPoints":["Full match requires both control_id and resource patterns to match","The suppression justification is embedded in the finding metadata","Suppressed findings are excluded from compliance scoring but remain in raw output"],"whyItMatters":"Recording the full suppression context (who, why, when it expires) in each finding ensures complete auditability — auditors can see exactly why a finding was suppressed.","output":"Finding flagged as suppressed with full rule metadata."},
+{"overview":"A suppressed finding is sent to the output with its suppressed status and full suppression metadata recorded.","dataFlow":"The finding with status=suppressed, the matching rule ID, justification text, and expiry date flows to the output collection.","keyPoints":["Suppressed findings appear in detailed reports with their justification","They are excluded from compliance score calculations","The suppression count is tracked as a separate metric in summaries"],"whyItMatters":"Including suppressed findings in output (but not scoring) provides a complete picture — auditors see what was found AND what was intentionally accepted.","output":"Suppressed finding recorded in output with metadata."},
+{"overview":"If the current rule does not match, the module continues checking the next rule in the suppression list.","dataFlow":"The non-matching rule is passed over and the next rule in the ordered list is loaded for comparison.","keyPoints":["Rules are checked in order — first match wins","Non-matching rules incur minimal overhead (simple regex comparison)","If no rules match, the finding passes through unsuppressed"],"whyItMatters":"Ordered rule checking with first-match-wins semantics keeps suppression behavior predictable and easy to reason about.","output":"Current rule skipped; next rule loaded for comparison."},
+{"overview":"After all rules are checked with no matches, the finding passes through to output unsuppressed.","dataFlow":"The finding with its original status (compliant/non_compliant/not_assessed) flows to the output collection without any suppression flags.","keyPoints":["Unsuppressed findings are the normal case — most findings are not suppressed","The suppression check adds negligible overhead to the pipeline","The finding retains all original evaluation metadata intact"],"whyItMatters":"Clean pass-through ensures that genuine compliance gaps are never accidentally hidden — only explicitly matched suppression rules can hide findings.","output":"Unsuppressed finding delivered to output for scoring and reporting."}
+]'>
+sequenceDiagram
+    participant F as Finding
+    participant S as suppressions.py
+    participant R as Rules List
+    participant O as Output
+
+    F->>S: Check finding against rules
+    loop Each suppression rule
+        S->>R: Load rule (control_id, resource, expires)
+        alt Expired
+            R-->>S: Skip rule (log warning)
+        else Expiring within 7 days
+            R-->>S: Apply rule + warn
+        else Active
+            alt control_id glob matches AND resource regex matches
+                R-->>S: MATCH — suppress finding
+                S-->>O: Finding suppressed (logged in metadata)
+            else No match
+                R-->>S: Continue to next rule
+            end
+        end
+    end
+    S-->>O: Finding passes through (not suppressed)
+</div>
+<div class="diagram-explanation">
+<h4>Suppression Flow Explained</h4>
+<ol>
+<li>Each finding is checked against the ordered list of suppression rules</li>
+<li>Expired rules are skipped and logged as warnings</li>
+<li>Rules nearing expiry (within 7 days) still apply but emit a warning</li>
+<li>Both <code>control_id</code> (glob match) and <code>resource</code> (regex match) must match for suppression</li>
+<li>Suppressed findings are excluded from reports but tracked in metadata for audit purposes</li>
+</ol>
+</div>
+</div>
+
+<h3>Example Rule</h3>
+<pre>{
+  "control_id": "AC-6",
+  "resource": ".*-dev-.*",
+  "reason": "Dev subscription excluded from least-privilege audit",
+  "expires": "2025-12-31"
+}</pre>
+</section>
+
+<!-- ── Plugins ── -->
+<section class="section" id="plugins">
+<h2>Plugin System</h2>
+<p>The plugin engine (<code>evaluators/plugins.py</code>) allows custom evaluation functions to be injected at runtime.</p>
+
+<h3>How It Works</h3>
+<ol>
+<li><code>load_plugins(plugin_dir)</code> scans a directory for <code>.py</code> files (skipping <code>_</code>-prefixed), dynamically imports each via <code>importlib.util</code></li>
+<li>Each module must expose an <code>evaluate()</code> callable at module level</li>
+<li><code>run_plugins()</code> iterates all controls tagged with <code>custom_evaluator</code> matching a plugin name</li>
+</ol>
+
+<h3>Plugin Signature</h3>
+<pre>def evaluate(control: dict, evidence_index: dict[str, list]) -> tuple[str, list[dict]]:
+    """
+    Args:
+        control: Framework control definition dict
+        evidence_index: Dict mapping evidence_type → list of evidence records
+    Returns:
+        (status, findings) — status is one of the 5 compliance statuses
+    """</pre>
+</section>
+
+<!-- ── Engines ── -->
+<section class="section" id="engines">
+<h2>Standalone Analysis Engines (8)</h2>
+<p>Beyond framework-based compliance evaluation, these engines perform deep specialized analysis. Each is available as an agent tool and a CLI script.</p>
+
+<div class="card-grid">
+  <div class="card accent-red">
+    <div class="card-title">Risk Analysis</div>
+    <div class="card-desc"><code>risk_engine.py</code> — 1,124 lines</div>
+    <div class="card-desc" style="margin-top:.4rem">5 categories: Identity, Network, Defender, Config, Data. Severity: critical=10, high=7.5, medium=5, low=2.5, informational=1</div>
+  </div>
+  <div class="card accent-blue">
+    <div class="card-title">Data Security</div>
+    <div class="card-desc"><code>data_security_engine.py</code> — 9,085 lines</div>
+    <div class="card-desc" style="margin-top:.4rem">7 categories: Storage Exposure, Database Security, Key/Secret Hygiene, Encryption, Classification, Lifecycle, DLP Posture</div>
+  </div>
+  <div class="card accent-purple">
+    <div class="card-title">Copilot Readiness</div>
+    <div class="card-desc"><code>copilot_readiness_engine.py</code> — 5,090 lines</div>
+    <div class="card-desc" style="margin-top:.4rem">7 categories: Oversharing, Sensitivity Labels, DLP, Retention, Access Governance, Lifecycle, Audit Readiness</div>
+  </div>
+  <div class="card accent-green">
+    <div class="card-title">AI Agent Security</div>
+    <div class="card-desc"><code>ai_agent_security_engine.py</code> — 5,968 lines</div>
+    <div class="card-desc" style="margin-top:.4rem">4 areas: Copilot Studio (5), Foundry (20+), Custom Agents (3), Entra AI Identity (3+)</div>
+  </div>
+  <div class="card accent-orange">
+    <div class="card-title">Data Residency</div>
+    <div class="card-desc"><code>data_residency_engine.py</code> — 296 lines</div>
+    <div class="card-desc" style="margin-top:.4rem">5 analyzers: Region Compliance, Replication, Data Transfer, Backup Location, Network Egress</div>
+  </div>
+  <div class="card accent-cyan">
+    <div class="card-title">Continuous Monitor</div>
+    <div class="card-desc"><code>continuous_monitor.py</code> — 196 lines</div>
+    <div class="card-desc" style="margin-top:.4rem">Scheduled runs, trend tracking, selective collection, regression alerts</div>
+  </div>
+  <div class="card accent-pink">
+    <div class="card-title">Remediation</div>
+    <div class="card-desc"><code>remediation_engine.py</code> — 299 lines</div>
+    <div class="card-desc" style="margin-top:.4rem">Generates Azure CLI commands for encryption, TLS, network, MFA, diagnostics, database, Key Vault</div>
+  </div>
+  <div class="card accent-red">
+    <div class="card-title">SIEM Integration</div>
+    <div class="card-desc"><code>siem_integration.py</code> — 156 lines</div>
+    <div class="card-desc" style="margin-top:.4rem">Targets: Azure Sentinel (DCR), Splunk (HEC), Generic Webhook (HTTPS POST)</div>
+  </div>
+</div>
+
+<!-- Engine detail tables -->
+<details>
+<summary>Risk Engine — Category Details</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Category</th><th>Key Checks</th></tr></thead>
+<tbody>
+<tr><td>Identity</td><td>Dormant accounts, over-permissioned SPs, credential hygiene, MFA gaps, admin proliferation, guest risks, risky users</td></tr>
+<tr><td>Network</td><td>Open management ports (22, 3389), public storage, web-app transport, SQL firewall exposure</td></tr>
+<tr><td>Defender</td><td>Disabled Defender plans, security recommendations, secure score</td></tr>
+<tr><td>Config</td><td>Missing diagnostics, Azure Policy violations, tag governance</td></tr>
+<tr><td>Data</td><td>Unencrypted storage, public blob access, missing Key Vault security features</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<details>
+<summary>Data Security Engine — Category Details</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Category</th><th>Key Checks</th></tr></thead>
+<tbody>
+<tr><td>Storage Exposure</td><td>Blob public access, HTTPS enforcement, network rules, soft-delete</td></tr>
+<tr><td>Database Security</td><td>SQL TDE, auditing, threat protection, firewall rules</td></tr>
+<tr><td>Key/Secret Hygiene</td><td>Key Vault access policies, expiring items, purge protection</td></tr>
+<tr><td>Encryption Posture</td><td>Disk encryption, storage encryption, CMK usage</td></tr>
+<tr><td>Data Classification</td><td>Sensitive-data indicators from tags / Purview metadata</td></tr>
+<tr><td>Data Lifecycle</td><td>Retention policies, soft delete, lifecycle management rules</td></tr>
+<tr><td>DLP Posture</td><td>Sensitivity labels, DLP policies, auto-labeling rules</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<details>
+<summary>Copilot Readiness Engine — Category Details</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Category</th><th>Key Checks</th></tr></thead>
+<tbody>
+<tr><td>Oversharing</td><td>SharePoint site permissions, sharing links, external access, anyone links</td></tr>
+<tr><td>Sensitivity Labels</td><td>Label definitions, auto-labeling rules, label usage coverage</td></tr>
+<tr><td>DLP Policies</td><td>DLP rule coverage, endpoint DLP, policy enforcement modes</td></tr>
+<tr><td>Retention / RSS</td><td>Retention policies, labels, records management, information governance</td></tr>
+<tr><td>Access Governance</td><td>Access reviews, entitlement management, CA for Copilot</td></tr>
+<tr><td>Lifecycle Management</td><td>Site lifecycle, inactive site policies, guest expiration</td></tr>
+<tr><td>Audit Readiness</td><td>Unified audit log, search enabled, retention period, export</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<details>
+<summary>AI Agent Security Engine — Area Details</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Area</th><th>Checks</th><th>Key Evaluations</th></tr></thead>
+<tbody>
+<tr><td>Copilot Studio</td><td>5</td><td>Bot authentication, DLP policy, connector restrictions, data loss prevention, channel security</td></tr>
+<tr><td>Microsoft Foundry</td><td>20+</td><td>Model deployments, content safety filters, network isolation, identity config, API key management, responsible AI, throughput limits</td></tr>
+<tr><td>Custom Agents</td><td>3</td><td>Service principal security, API authentication, data handling practices</td></tr>
+<tr><td>Entra AI Identity</td><td>3+</td><td>AI service principal hygiene, OAuth consent grants for AI, cross-tenant policies</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<details>
+<summary>SIEM Integration — Target Details</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Target</th><th>Protocol</th><th>Authentication</th></tr></thead>
+<tbody>
+<tr><td>Azure Sentinel</td><td>Data Collection Rules (DCR)</td><td>DefaultAzureCredential</td></tr>
+<tr><td>Splunk</td><td>HTTP Event Collector (HEC)</td><td><code>SPLUNK_HEC_TOKEN</code> env var</td></tr>
+<tr><td>Generic Webhook</td><td>HTTPS POST</td><td><code>SIEM_WEBHOOK_TOKEN</code> env var</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+</section>
+
+<!-- ── Evidence ── -->
+<section class="section" id="evidence">
+<h2>Evidence Types</h2>
+<p>Each control specifies required <code>evidence_types[]</code> in its framework mapping JSON. Missing types result in <code>missing_evidence</code> status. Controls may also specify <code>compensating_evidence</code> — alternative evidence types that satisfy the requirement if primary evidence is unavailable (e.g., due to 403 permissions).</p>
+<p>See <a href="architecture.html">Architecture</a> for the full collector → evidence type mapping covering 200+ evidence types across 68 collectors.</p>
+</section>
+
+<!-- ── Severity ── -->
+<section class="section" id="severity">
+<h2>Severity Levels</h2>
+<table>
+<thead><tr><th>Level</th><th>Score Weight</th><th>Risk Weight</th><th>Description</th><th>Timeline</th></tr></thead>
+<tbody>
+<tr><td><span class="badge badge-red">CRITICAL</span></td><td>4</td><td>10</td><td>Direct security impact, immediate exploitation risk</td><td>0–14 days</td></tr>
+<tr><td><span class="badge badge-orange">HIGH</span></td><td>3</td><td>7.5</td><td>Significant security gap</td><td>0–30 days</td></tr>
+<tr><td><span class="badge badge-blue">MEDIUM</span></td><td>2</td><td>5</td><td>Configuration gap, exploitable under conditions</td><td>30–90 days</td></tr>
+<tr><td><span class="badge badge-gray">LOW</span></td><td>1</td><td>2.5</td><td>Best-practice deviation, minimal direct impact</td><td>90–180 days</td></tr>
+</tbody>
+</table>
+<p style="margin-top:.6rem;font-size:.85rem;color:var(--text-secondary)"><strong>Score Weight</strong> is used by the compliance evaluator. <strong>Risk Weight</strong> is used by the standalone Risk Analysis engine. <code>informational</code> items in the risk engine use weight 1.</p>
+</section>
+
+<!-- ── Safety Banner ── -->
+<div class="safety-banner">
+<h3>Evaluation Engine Guarantees</h3>
+<div class="safety-grid">
+  <div class="safety-item"><span class="check">✓</span> Severity-weighted scoring (critical=4 down to low=1)</div>
+  <div class="safety-item"><span class="check">✓</span> 28-route cross-domain fallback dispatch</div>
+  <div class="safety-item"><span class="check">✓</span> Suppression rules with glob + regex matching</div>
+  <div class="safety-item"><span class="check">✓</span> Automatic suppression expiry with 7-day warnings</div>
+  <div class="safety-item"><span class="check">✓</span> Plugin extensibility via evaluate() interface</div>
+  <div class="safety-item"><span class="check">✓</span> All 10 domains cover 113 check functions</div>
+  <div class="safety-item"><span class="check">✓</span> 17 configurable thresholds, all overrideable</div>
+  <div class="safety-item"><span class="check">✓</span> 8 standalone engines for deep analysis</div>
+</div>
+</div>
+
+</main>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>PostureIQ — Evaluation Rules Reference · Author: Murali Chillakuru</p>
+  <p style="margin-top:.3rem">10 domains · 113 check functions · 17 thresholds · 28 fallback routes · 8 engines</p>
+</footer>
+
+<!-- ── Back to Top ── -->
+<button class="back-top" id="backTop" aria-label="Back to top">↑</button>
+
+<script>
+// ── Theme Toggle ──
+const toggle=document.getElementById('themeToggle'),root=document.documentElement;
+function setTheme(t){root.dataset.theme=t;toggle.textContent=t==='dark'?'☀️ Light':'🌙 Dark';localStorage.setItem('esiq-theme',t)}
+toggle.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark'));
+setTheme(localStorage.getItem('esiq-theme')||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+
+// ── Animated Counters ──
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const el=e.target,t=+el.dataset.target;let c=0;const d=Math.max(1,Math.floor(30/(t||1)));const iv=setInterval(()=>{c+=d;if(c>=t){el.textContent=(t>100?'~':'')+t;clearInterval(iv)}else{el.textContent=c}},16);io.unobserve(el)}})},{threshold:.5});
+document.querySelectorAll('.num[data-target]').forEach(el=>io.observe(el));
+
+// ── Scroll Spy ──
+const pills=document.querySelectorAll('.nav-pill[href]'),sections=[];
+pills.forEach(p=>{const id=p.getAttribute('href')?.slice(1);if(id){const s=document.getElementById(id);if(s)sections.push({el:s,pill:p})}});
+const spy=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const m=sections.find(s=>s.el===e.target);if(m)m.pill.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px',threshold:0});
+sections.forEach(s=>spy.observe(s.el));
+
+// ── Progress Bar ──
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('progressBar').style.width=(window.scrollY/h*100)+'%'});
+
+// ── Back to Top ──
+const btn=document.getElementById('backTop');
+window.addEventListener('scroll',()=>{btn.classList.toggle('show',window.scrollY>400)});
+btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+// ── Mermaid ──
+mermaid.initialize({startOnLoad:true,theme:root.dataset.theme==='light'?'default':'dark',securityLevel:'loose',sequence:{mirrorActors:false,messageMargin:40},flowchart:{htmlLabels:true,curve:'basis'}});
+</script>
+<script src="seq-engine.js"></script>
+</body>
+</html>

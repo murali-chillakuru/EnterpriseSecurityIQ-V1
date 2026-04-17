@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Infrastructure Blueprint — PostureIQ</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-hover:#252D38;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --border-primary:#30363D;--border-accent:#1F6FEB33;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --accent-pink:#DB61A2;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.5);
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',Consolas,monospace;
+  --transition-fast:.18s ease;--transition-med:.3s ease;
+  color-scheme:dark;
+  --max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-hover:#F0F3F6;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;
+  --border-primary:#D0D7DE;--border-accent:#0969DA22;
+  --accent-blue:#0969DA;--accent-purple:#8250DF;--accent-green:#1A7F37;
+  --accent-orange:#BF8700;--accent-cyan:#1B7C83;--accent-red:#CF222E;
+  --accent-pink:#BF3989;
+  --shadow-sm:0 1px 3px rgba(31,35,40,.08);--shadow-md:0 4px 12px rgba(31,35,40,.1);
+  --shadow-lg:0 8px 24px rgba(31,35,40,.12);
+  color-scheme:light
+}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none;transition:color var(--transition-fast)}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--bg-secondary);padding:2px 6px;border-radius:4px}
+pre{background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.7rem .9rem;border:1px solid var(--border-primary);text-align:left;font-size:.88rem}
+th{background:var(--bg-secondary);color:var(--text-primary);font-weight:600;white-space:nowrap}
+tr:nth-child(even){background:var(--bg-secondary)}
+.skip-nav{position:absolute;top:-100%;left:1rem;background:var(--accent-blue);color:#fff;padding:.5rem 1rem;border-radius:var(--radius-sm);z-index:9999;font-weight:600}.skip-nav:focus{top:1rem}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple),var(--accent-cyan));z-index:10001;transition:width .1s linear;width:0}
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:500px;height:500px;background:radial-gradient(circle,var(--accent-blue),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-purple),transparent 70%);bottom:-150px;left:-80px}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{color:var(--text-secondary);font-size:1.05rem;max-width:680px;margin:0 auto .8rem}
+.hero .author{color:var(--text-muted);font-size:.85rem}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;max-width:960px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);position:relative;z-index:10}
+.stat{text-align:center}.stat .num{font-size:1.6rem;font-weight:700;display:block}.stat .lbl{color:var(--text-secondary);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.nav-wrap{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);backdrop-filter:blur(12px)}
+.nav-inner{display:flex;align-items:center;gap:.5rem;max-width:1200px;margin:0 auto;padding:.6rem 1rem;overflow-x:auto;scrollbar-width:thin}
+.nav-pill{padding:.35rem .75rem;border-radius:20px;font-size:.78rem;font-weight:500;color:var(--text-secondary);white-space:nowrap;transition:all var(--transition-fast);border:1px solid transparent;cursor:pointer;text-decoration:none}
+.nav-pill:hover{color:var(--text-primary);background:var(--bg-hover);text-decoration:none}
+.nav-pill.active{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:20px;padding:.35rem .75rem;font-size:.78rem;cursor:pointer;color:var(--text-secondary);transition:all var(--transition-fast);white-space:nowrap}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--text-primary)}
+.content{max-width:var(--max-width);margin:0 auto;padding:2rem 1.5rem 4rem}
+.section{margin-bottom:3.5rem;scroll-margin-top:80px}
+.section h2{font-size:1.5rem;font-weight:700;margin-bottom:.3rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent-blue);display:inline-block}
+.section h3{font-size:1.15rem;font-weight:600;margin:1.8rem 0 .8rem;color:var(--accent-purple)}
+.section h4{font-size:1rem;font-weight:600;margin:1.2rem 0 .6rem;color:var(--accent-cyan)}
+.section p,.section li{color:var(--text-secondary);font-size:.92rem}
+.section ul,.section ol{padding-left:1.4rem;margin:.6rem 0}.section li{margin-bottom:.3rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin:1rem 0}
+.card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;transition:all var(--transition-fast)}
+.card:hover{border-color:var(--accent-blue);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.card .card-title{font-weight:600;font-size:.95rem;margin-bottom:.3rem}
+.card .card-count{font-size:1.3rem;font-weight:700;color:var(--accent-blue)}
+.card .card-desc{color:var(--text-secondary);font-size:.82rem;margin-top:.3rem}
+.accent-blue .card-count,.accent-blue .num{color:var(--accent-blue)}
+.accent-purple .card-count,.accent-purple .num{color:var(--accent-purple)}
+.accent-green .card-count,.accent-green .num{color:var(--accent-green)}
+.accent-orange .card-count,.accent-orange .num{color:var(--accent-orange)}
+.accent-cyan .card-count,.accent-cyan .num{color:var(--accent-cyan)}
+.accent-red .card-count,.accent-red .num{color:var(--accent-red)}
+.accent-pink .card-count,.accent-pink .num{color:var(--accent-pink)}
+details{margin:1rem 0;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);overflow:hidden}
+details>summary{padding:.8rem 1rem;font-weight:600;cursor:pointer;color:var(--text-primary);transition:background var(--transition-fast);font-size:.92rem}
+details>summary:hover{background:var(--bg-hover)}
+details[open]>summary{border-bottom:1px solid var(--border-primary)}
+details .detail-body{padding:1rem}
+.config-block{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;margin:1rem 0}
+.config-block h4{font-size:.95rem;margin-bottom:.8rem;color:var(--accent-cyan)}
+.config-block pre{background:var(--bg-secondary);margin-bottom:.8rem}
+.priority-box{display:flex;align-items:center;gap:.8rem;padding:1rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);margin:.8rem 0}
+.priority-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0}
+.priority-1{background:rgba(248,81,73,.15);color:var(--accent-red)}
+.priority-2{background:rgba(210,153,34,.15);color:var(--accent-orange)}
+.priority-3{background:rgba(139,148,158,.15);color:var(--text-secondary)}
+.safety-banner{background:linear-gradient(135deg,rgba(31,111,235,.08),rgba(163,113,247,.08));border:1px solid var(--border-accent);border-radius:var(--radius-lg);padding:1.5rem;margin:2rem 0}
+.safety-banner h3{color:var(--accent-blue);margin-bottom:.8rem}
+.step-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.8rem;margin:1rem 0}
+.step-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1rem;text-align:center;transition:all var(--transition-fast)}
+.step-card:hover{border-color:var(--accent-blue);transform:translateY(-2px)}
+.step-card .step-num{font-size:1.8rem;font-weight:700;display:block;margin-bottom:.3rem}
+.step-card .step-title{font-weight:600;font-size:.9rem;margin-bottom:.2rem}
+.step-card .step-desc{font-size:.78rem;color:var(--text-secondary)}
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.8rem;border-top:1px solid var(--border-primary)}
+.back-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;border-radius:50%;background:var(--accent-blue);color:#fff;border:none;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all var(--transition-med);box-shadow:var(--shadow-md);z-index:999}
+.back-top.show{opacity:1;pointer-events:auto}.back-top:hover{transform:scale(1.1)}
+.data-table{width:100%;border-collapse:collapse;margin:1rem 0}
+.data-table th,.data-table td{padding:.7rem .9rem;border:1px solid var(--border-primary);text-align:left;font-size:.88rem}
+.data-table th{background:var(--bg-secondary);color:var(--text-primary);font-weight:600;white-space:nowrap}
+.data-table tr:nth-child(even){background:var(--bg-secondary)}
+@media print{.nav-wrap,.theme-toggle,.back-top,.progress-bar{display:none!important}.hero{padding:2rem 1rem}.content{max-width:100%}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:0s!important;animation-duration:0s!important}}
+@media(forced-colors:active){.nav-pill.active{border:2px solid ButtonText}.card{border:1px solid ButtonText}}
+</style>
+</head>
+<body>
+<a class="skip-nav" href="#main">Skip to content</a>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ════════ HERO ════════ -->
+<header class="hero">
+  <h1>Infrastructure Blueprint &amp; Repeatable Deployment</h1>
+  <p class="subtitle">Complete reference for replicating the PostureIQ infrastructure on any Azure tenant — every resource, configuration, RBAC role, environment variable, and automated provisioning script</p>
+  <p class="author">Author: Murali Chillakuru — Last updated: April 13, 2026</p>
+</header>
+
+<!-- ════════ STATS BAR ════════ -->
+<div class="stats-bar">
+  <div class="stat accent-blue"><span class="num" data-target="14">0</span><span class="lbl">Resources</span></div>
+  <div class="stat accent-purple"><span class="num" data-target="16">0</span><span class="lbl">Deploy Steps</span></div>
+  <div class="stat accent-green"><span class="num" data-target="14">0</span><span class="lbl">Tools</span></div>
+  <div class="stat accent-orange"><span class="num" data-target="11">0</span><span class="lbl">Frameworks</span></div>
+  <div class="stat accent-cyan"><span class="num" data-target="20">0</span><span class="lbl">Sections</span></div>
+</div>
+
+<!-- ════════ NAV ════════ -->
+<nav class="nav-wrap" aria-label="Section navigation">
+  <div class="nav-inner">
+    <a class="nav-pill" href="#quick-start">Quick Start</a>
+    <a class="nav-pill" href="#architecture">Architecture</a>
+    <a class="nav-pill" href="#resource-inventory">Resources</a>
+    <a class="nav-pill" href="#deploy-script">Deploy Script</a>
+    <a class="nav-pill" href="#app-registration">App Reg</a>
+    <a class="nav-pill" href="#managed-identity">Identity</a>
+    <a class="nav-pill" href="#openai-foundry">OpenAI</a>
+    <a class="nav-pill" href="#storage">Storage</a>
+    <a class="nav-pill" href="#container-app">Container</a>
+    <a class="nav-pill" href="#env-vars">Env Vars</a>
+    <a class="nav-pill" href="#msal">MSAL</a>
+    <a class="nav-pill" href="#agent-tools">Tools</a>
+    <a class="nav-pill" href="#frameworks">Frameworks</a>
+    <a class="nav-pill" href="#reports">Reports</a>
+    <a class="nav-pill" href="#tokens">Tokens</a>
+    <a class="nav-pill" href="#monitoring">Monitoring</a>
+    <a class="nav-pill" href="#build-deploy">Build</a>
+    <a class="nav-pill" href="#post-deploy">Post-Deploy</a>
+    <a class="nav-pill" href="#cost">Cost</a>
+    <a class="nav-pill" href="#troubleshooting">Troubleshoot</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀️ Light</button>
+  </div>
+</nav>
+
+<!-- ════════ CONTENT ════════ -->
+<main class="content" id="main">
+
+<!-- ──── 1. Quick Start ──── -->
+<section class="section" id="quick-start">
+  <h2>🚀 1. Quick Start</h2>
+  <p>Clone, authenticate, and deploy everything with a single script.</p>
+
+  <div class="config-block">
+    <pre><code># Clone the repository
+git clone https://github.com/&lt;org&gt;/EnterpriseSecurityIQ.git
+cd EnterpriseSecurityIQ
+
+# Login to Azure
+az login
+az account set --subscription "&lt;your-subscription&gt;"
+
+# Deploy everything (16 idempotent steps)
+.\Infra-Foundary-New\deploy.ps1 `
+    -BaseName "MyESIQ" `
+    -Location "eastus2" `
+    -SubscriptionName "Production"</code></pre>
+  </div>
+
+  <p>The script creates <strong>all 14 Azure resources</strong>, builds the Docker image, deploys the container app, creates the Entra app registration, and patches the SPA config.</p>
+
+  <div class="safety-banner">
+    <h3>⚠️ Manual Step Required</h3>
+    <p style="color:var(--text-secondary);font-size:.9rem">The only manual step is assigning Entra directory roles (requires Global Admin) — see <a href="#post-deploy">Section 18</a>.</p>
+  </div>
+</section>
+
+<!-- ──── 2. Architecture Diagram ──── -->
+<section class="section" id="architecture">
+  <h2>🏗️ 2. Architecture Diagram</h2>
+  <p>End-to-end architecture showing all Azure resources, data flows, and identity relationships.</p>
+
+  <div class="card-grid">
+    <div class="card accent-blue">
+      <div class="card-title">User Browser</div>
+      <p class="card-desc">SPA — MSAL.js (Redirect Flow), Framework Selection, Theme Toggle</p>
+    </div>
+    <div class="card accent-purple">
+      <div class="card-title">Azure Container Apps</div>
+      <p class="card-desc">Container App + FastAPI/Uvicorn + AI Agent Engine (14 tools)</p>
+    </div>
+    <div class="card accent-green">
+      <div class="card-title">Azure AI / Foundry</div>
+      <p class="card-desc">Azure OpenAI (gpt-4.1 + gpt-5.1) + Foundry Project</p>
+    </div>
+    <div class="card accent-orange">
+      <div class="card-title">Identity &amp; Security</div>
+      <p class="card-desc">Managed Identity, App Registration, Entra ID Directory</p>
+    </div>
+    <div class="card accent-cyan">
+      <div class="card-title">Data &amp; Storage</div>
+      <p class="card-desc">Blob Storage (reports) + Key Vault (RBAC auth)</p>
+    </div>
+    <div class="card accent-red">
+      <div class="card-title">Monitoring</div>
+      <p class="card-desc">Application Insights + Log Analytics Workspace</p>
+    </div>
+    <div class="card accent-pink">
+      <div class="card-title">Compute Infrastructure</div>
+      <p class="card-desc">Container Registry (Basic) + Container Apps Environment</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Target Tenant APIs</div>
+      <p class="card-desc">Microsoft Graph API (v1.0 + Beta) + Azure Resource Manager</p>
+    </div>
+  </div>
+
+  <h3>Data Flow</h3>
+  <ol>
+    <li>SPA sends MSAL access tokens (Graph + ARM) to Container App</li>
+    <li>Container App → FastAPI → AI Agent Engine</li>
+    <li>Agent calls Azure OpenAI for chat completions / function calling</li>
+    <li>Agent calls Graph API &amp; ARM API using delegated tokens</li>
+    <li>Agent uploads reports to Blob Storage</li>
+    <li>Container App pulls image from ACR, sends logs to App Insights</li>
+    <li>Managed Identity provides AcrPull, OpenAI User, Reader, Security Reader roles</li>
+  </ol>
+</section>
+
+<!-- ──── 3. Azure Resource Inventory ──── -->
+<section class="section" id="resource-inventory">
+  <h2>📦 3. Azure Resource Inventory</h2>
+  <p>All resources use the <code>{BaseName}</code> prefix (default: <code>ESIQNew</code>).</p>
+
+  <table class="data-table">
+    <tr><th>#</th><th>Resource</th><th>Azure Type</th><th>Name Pattern</th><th>SKU / Tier</th><th>Purpose</th></tr>
+    <tr><td>1</td><td>Resource Group</td><td><code>Microsoft.Resources/resourceGroups</code></td><td><code>{BaseName}-RG</code></td><td>—</td><td>Logical container</td></tr>
+    <tr><td>2</td><td>Foundry Resource</td><td><code>Microsoft.CognitiveServices/accounts</code> (kind: AIServices)</td><td><code>{BaseName}-AI</code></td><td>S0</td><td>Azure OpenAI + Foundry hub</td></tr>
+    <tr><td>3</td><td>Foundry Project</td><td><code>Microsoft.CognitiveServices/accounts/projects</code></td><td><code>{BaseName}-AI/{BaseName}-project</code></td><td>—</td><td>ai.azure.com project</td></tr>
+    <tr><td>4</td><td>Primary Model</td><td>Model Deployment</td><td><code>gpt-4.1</code></td><td>Standard 30K TPM</td><td>Agent reasoning + tool calls</td></tr>
+    <tr><td>5</td><td>Fallback Model</td><td>Model Deployment</td><td><code>gpt-5.1</code></td><td>Standard 30K TPM</td><td>Complex tasks</td></tr>
+    <tr><td>6</td><td>Storage Account</td><td><code>Microsoft.Storage/storageAccounts</code></td><td><code>{basename}storage</code></td><td>Standard_LRS</td><td>Report blob persistence</td></tr>
+    <tr><td>7</td><td>Key Vault</td><td><code>Microsoft.KeyVault/vaults</code></td><td><code>{BaseName}-kv</code></td><td>Standard (RBAC)</td><td>Secrets management</td></tr>
+    <tr><td>8</td><td>Log Analytics</td><td><code>Microsoft.OperationalInsights/workspaces</code></td><td><code>{BaseName}-law</code></td><td>PerGB2018</td><td>Log aggregation</td></tr>
+    <tr><td>9</td><td>App Insights</td><td><code>Microsoft.Insights/components</code></td><td><code>{BaseName}-appinsights</code></td><td>Workspace-based</td><td>Telemetry</td></tr>
+    <tr><td>10</td><td>Container Registry</td><td><code>Microsoft.ContainerRegistry/registries</code></td><td><code>{basename}acr</code></td><td>Basic</td><td>Docker image hosting</td></tr>
+    <tr><td>11</td><td>Managed Identity</td><td><code>Microsoft.ManagedIdentity/userAssignedIdentities</code></td><td><code>{BaseName}-identity</code></td><td>—</td><td>Passwordless auth to Azure</td></tr>
+    <tr><td>12</td><td>Container Apps Env</td><td><code>Microsoft.App/managedEnvironments</code></td><td><code>{BaseName}-env</code></td><td>Consumption</td><td>Serverless hosting</td></tr>
+    <tr><td>13</td><td>Container App</td><td><code>Microsoft.App/containerApps</code></td><td><code>{basename}-agent</code></td><td>1 vCPU / 2 GiB</td><td>Runs agent + SPA</td></tr>
+    <tr><td>14</td><td>App Registration</td><td><code>Microsoft.Graph/applications</code></td><td><code>{BaseName}-Dashboard</code></td><td>—</td><td>MSAL SPA auth</td></tr>
+  </table>
+</section>
+
+<!-- ──── 4. Automated Deployment Script ──── -->
+<section class="section" id="deploy-script">
+  <h2>⚙️ 4. Automated Deployment Script</h2>
+  <p><strong>File:</strong> <code>Infra-Foundary-New/deploy.ps1</code></p>
+
+  <h3>Parameters</h3>
+  <table class="data-table">
+    <tr><th>Parameter</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>-BaseName</code></td><td><code>ESIQNew</code></td><td>Prefix for all resource names (must be globally unique for ACR/Storage)</td></tr>
+    <tr><td><code>-Location</code></td><td><code>swedencentral</code></td><td>Azure region (must support OpenAI models)</td></tr>
+    <tr><td><code>-SubscriptionName</code></td><td><code>AI</code></td><td>Azure subscription name</td></tr>
+    <tr><td><code>-PrimaryModel</code></td><td><code>gpt-4.1</code></td><td>Primary model deployment name</td></tr>
+    <tr><td><code>-FallbackModel</code></td><td><code>gpt-5.1</code></td><td>Fallback model deployment name</td></tr>
+    <tr><td><code>-ModelSku</code></td><td><code>Standard</code></td><td>Model SKU (Standard, GlobalStandard, ProvisionedManaged)</td></tr>
+    <tr><td><code>-ModelCapacity</code></td><td><code>30</code></td><td>TPM capacity in thousands</td></tr>
+    <tr><td><code>-TenantId</code></td><td>auto-detect</td><td>Entra tenant ID (auto from <code>az account show</code>)</td></tr>
+  </table>
+
+  <h3>16 Steps (Idempotent)</h3>
+  <div class="step-grid">
+    <div class="step-card accent-blue">
+      <span class="step-num" style="color:var(--accent-blue)">1</span>
+      <div class="step-title">Resource Group</div>
+      <p class="step-desc">{BaseName}-RG</p>
+    </div>
+    <div class="step-card accent-blue">
+      <span class="step-num" style="color:var(--accent-blue)">2</span>
+      <div class="step-title">Foundry Resource</div>
+      <p class="step-desc">{BaseName}-AI + custom domain</p>
+    </div>
+    <div class="step-card accent-blue">
+      <span class="step-num" style="color:var(--accent-blue)">3</span>
+      <div class="step-title">Foundry Project</div>
+      <p class="step-desc">{BaseName}-project (ARM REST)</p>
+    </div>
+    <div class="step-card accent-purple">
+      <span class="step-num" style="color:var(--accent-purple)">4</span>
+      <div class="step-title">Primary Model</div>
+      <p class="step-desc">gpt-4.1 deployment</p>
+    </div>
+    <div class="step-card accent-purple">
+      <span class="step-num" style="color:var(--accent-purple)">5</span>
+      <div class="step-title">Fallback Model</div>
+      <p class="step-desc">gpt-5.1 deployment</p>
+    </div>
+    <div class="step-card accent-green">
+      <span class="step-num" style="color:var(--accent-green)">6</span>
+      <div class="step-title">Storage Account</div>
+      <p class="step-desc">{basename}storage</p>
+    </div>
+    <div class="step-card accent-green">
+      <span class="step-num" style="color:var(--accent-green)">7</span>
+      <div class="step-title">Key Vault</div>
+      <p class="step-desc">{BaseName}-kv (RBAC auth)</p>
+    </div>
+    <div class="step-card accent-green">
+      <span class="step-num" style="color:var(--accent-green)">8</span>
+      <div class="step-title">Log Analytics</div>
+      <p class="step-desc">{BaseName}-law</p>
+    </div>
+    <div class="step-card accent-orange">
+      <span class="step-num" style="color:var(--accent-orange)">9</span>
+      <div class="step-title">App Insights</div>
+      <p class="step-desc">{BaseName}-appinsights</p>
+    </div>
+    <div class="step-card accent-orange">
+      <span class="step-num" style="color:var(--accent-orange)">10</span>
+      <div class="step-title">Container Registry</div>
+      <p class="step-desc">{basename}acr</p>
+    </div>
+    <div class="step-card accent-orange">
+      <span class="step-num" style="color:var(--accent-orange)">11</span>
+      <div class="step-title">Managed Identity</div>
+      <p class="step-desc">{BaseName}-identity</p>
+    </div>
+    <div class="step-card accent-cyan">
+      <span class="step-num" style="color:var(--accent-cyan)">12</span>
+      <div class="step-title">RBAC Roles (5)</div>
+      <p class="step-desc">AcrPull, Reader, Security Reader, OpenAI User, AI Developer</p>
+    </div>
+    <div class="step-card accent-cyan">
+      <span class="step-num" style="color:var(--accent-cyan)">13</span>
+      <div class="step-title">Container Env</div>
+      <p class="step-desc">{BaseName}-env</p>
+    </div>
+    <div class="step-card accent-red">
+      <span class="step-num" style="color:var(--accent-red)">14</span>
+      <div class="step-title">Build + Deploy</div>
+      <p class="step-desc">Docker image → {basename}-agent</p>
+    </div>
+    <div class="step-card accent-red">
+      <span class="step-num" style="color:var(--accent-red)">15</span>
+      <div class="step-title">App Registration</div>
+      <p class="step-desc">{BaseName}-Dashboard + redirect URIs</p>
+    </div>
+    <div class="step-card accent-pink">
+      <span class="step-num" style="color:var(--accent-pink)">16</span>
+      <div class="step-title">Patch SPA</div>
+      <p class="step-desc">Inject client ID → rebuild image</p>
+    </div>
+  </div>
+
+  <h3>Example: Deploy to Another Tenant</h3>
+  <div class="config-block">
+    <pre><code># New deployment for a different client
+.\Infra-Foundary-New\deploy.ps1 `
+    -BaseName "ClientABC" `
+    -Location "westeurope" `
+    -SubscriptionName "Client ABC Subscription" `
+    -TenantId "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"</code></pre>
+  </div>
+  <p>This creates: <code>ClientABC-RG</code>, <code>ClientABC-AI</code>, <code>clientabcstorage</code>, <code>clientabcacr</code>, <code>clientabc-agent</code>, etc. — fully isolated from other deployments.</p>
+
+  <h3>Quick Rebuild (Image Only)</h3>
+  <div class="config-block">
+    <pre><code>.\Infra-Foundary-New\redeploy-image.ps1</code></pre>
+  </div>
+</section>
+
+<!-- ──── 5. App Registration ──── -->
+<section class="section" id="app-registration">
+  <h2>🔐 5. App Registration (Entra ID)</h2>
+  <p>Created automatically by <code>deploy.ps1</code> Step 15. Manual setup if needed:</p>
+
+  <h3>Configuration</h3>
+  <table class="data-table">
+    <tr><th>Setting</th><th>Value</th></tr>
+    <tr><td>Display Name</td><td><code>{BaseName}-Dashboard</code></td></tr>
+    <tr><td>Supported Account Types</td><td>Single tenant (<code>AzureADMyOrg</code>)</td></tr>
+    <tr><td>Platform</td><td>Single-Page Application (SPA)</td></tr>
+    <tr><td>Redirect URIs</td><td><code>https://{container-app-fqdn}</code>, <code>http://localhost:8080</code></td></tr>
+    <tr><td>ID Tokens</td><td>Enabled</td></tr>
+    <tr><td>Access Tokens</td><td>Enabled</td></tr>
+  </table>
+
+  <h3>Delegated API Permissions</h3>
+  <table class="data-table">
+    <tr><th>Permission</th><th>Type</th><th>Requires Admin Consent</th></tr>
+    <tr><td><code>User.Read</code></td><td>Delegated</td><td>No</td></tr>
+    <tr><td><code>Directory.Read.All</code></td><td>Delegated</td><td><strong>Yes</strong></td></tr>
+    <tr><td><code>Policy.Read.All</code></td><td>Delegated</td><td><strong>Yes</strong></td></tr>
+    <tr><td><code>RoleManagement.Read.All</code></td><td>Delegated</td><td><strong>Yes</strong></td></tr>
+  </table>
+
+  <div class="safety-banner">
+    <h3>⚠️ Important</h3>
+    <p style="color:var(--text-secondary);font-size:.9rem">An Entra admin must grant admin consent via the portal.</p>
+  </div>
+
+  <h3>Output Values</h3>
+  <table class="data-table">
+    <tr><th>Value</th><th>Usage</th></tr>
+    <tr><td><strong>Application (client) ID</strong></td><td><code>MSAL_CONFIG.auth.clientId</code> in <code>webapp/index.html</code></td></tr>
+  </table>
+</section>
+
+<!-- ──── 6. Managed Identity & RBAC ──── -->
+<section class="section" id="managed-identity">
+  <h2>🛡️ 6. Managed Identity &amp; RBAC Roles</h2>
+
+  <h3>Managed Identity</h3>
+  <table class="data-table">
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Type</td><td>User-Assigned</td></tr>
+    <tr><td>Name</td><td><code>{BaseName}-identity</code></td></tr>
+    <tr><td>Assigned to</td><td>Container App (<code>{basename}-agent</code>)</td></tr>
+  </table>
+
+  <h3>Azure RBAC Roles (Assigned by deploy.ps1 Step 12)</h3>
+  <table class="data-table">
+    <tr><th>#</th><th>Role</th><th>Scope</th><th>Purpose</th></tr>
+    <tr><td>1</td><td><code>AcrPull</code></td><td>Container Registry</td><td>Pull Docker images</td></tr>
+    <tr><td>2</td><td><code>Reader</code></td><td>Subscription</td><td>Read Azure resources for compliance checks</td></tr>
+    <tr><td>3</td><td><code>Security Reader</code></td><td>Subscription</td><td>Read Microsoft Defender posture data</td></tr>
+    <tr><td>4</td><td><code>Cognitive Services OpenAI User</code></td><td>Foundry Resource</td><td>Call Azure OpenAI API</td></tr>
+    <tr><td>5</td><td><code>Azure AI Developer</code></td><td>Foundry Resource</td><td>Register/manage Foundry agents</td></tr>
+  </table>
+
+  <h3>Additional Roles for Full Functionality</h3>
+  <table class="data-table">
+    <tr><th>Role</th><th>Scope</th><th>Purpose</th></tr>
+    <tr><td><code>Storage Blob Data Contributor</code></td><td>Storage Account</td><td>Upload/read report blobs</td></tr>
+    <tr><td><code>Key Vault Secrets User</code></td><td>Key Vault</td><td>Read secrets (if used)</td></tr>
+  </table>
+</section>
+
+<!-- ──── 7. Azure OpenAI & Foundry ──── -->
+<section class="section" id="openai-foundry">
+  <h2>🤖 7. Azure OpenAI &amp; Foundry</h2>
+
+  <h3>Model Deployments</h3>
+  <table class="data-table">
+    <tr><th>Deployment Name</th><th>Model</th><th>API Version</th><th>SKU</th><th>Capacity</th><th>Purpose</th></tr>
+    <tr><td><code>gpt-4.1</code></td><td>gpt-4.1</td><td>2025-04-14</td><td>Standard</td><td>30K TPM</td><td>Primary — agent reasoning, tool calls, summarization</td></tr>
+    <tr><td><code>gpt-5.1</code></td><td>gpt-5.1</td><td>2025-11-13</td><td>Standard</td><td>30K TPM</td><td>Fallback — higher complexity</td></tr>
+  </table>
+
+  <h3>Foundry Integration</h3>
+  <p>The agent auto-registers with Foundry on startup using the Assistants API:</p>
+  <ul>
+    <li>Scans existing assistants for name <code>EnterpriseSecurityIQ</code></li>
+    <li>Creates one if not found</li>
+    <li>Registers all 14 tool schemas</li>
+    <li>Visible in <a href="https://ai.azure.com">ai.azure.com</a> under the project</li>
+  </ul>
+</section>
+
+<!-- ──── 8. Storage Configuration ──── -->
+<section class="section" id="storage">
+  <h2>💾 8. Storage Configuration</h2>
+
+  <table class="data-table">
+    <tr><th>Setting</th><th>Value</th></tr>
+    <tr><td>Account Name</td><td><code>{basename}storage</code></td></tr>
+    <tr><td>Container</td><td><code>reports</code></td></tr>
+    <tr><td>Tier</td><td>Standard_LRS</td></tr>
+    <tr><td>Access</td><td>Managed Identity (DefaultAzureCredential)</td></tr>
+    <tr><td>TLS</td><td>1.2 minimum</td></tr>
+  </table>
+
+  <h3>Report Flow</h3>
+  <ol>
+    <li>Agent generates reports to <code>/agent/output/{timestamp}/{type}/</code></li>
+    <li>Uploaded to <code>reports</code> blob container immediately after generation</li>
+    <li><code>/reports/{path}</code> API endpoint serves from local cache</li>
+    <li>Falls back to blob download if local file doesn't exist (e.g., after container restart)</li>
+  </ol>
+</section>
+
+<!-- ──── 9. Container App Configuration ──── -->
+<section class="section" id="container-app">
+  <h2>🐳 9. Container App Configuration</h2>
+
+  <table class="data-table">
+    <tr><th>Setting</th><th>Value</th></tr>
+    <tr><td>Image</td><td><code>{basename}acr.azurecr.io/{basename}-agent:v{N}</code></td></tr>
+    <tr><td>CPU / Memory</td><td>1 vCPU / 2 GiB</td></tr>
+    <tr><td>Port</td><td>8088 (HTTP)</td></tr>
+    <tr><td>Ingress</td><td>External (auto HTTPS)</td></tr>
+    <tr><td>Min Replicas</td><td>0 (scale to zero for cost savings)</td></tr>
+    <tr><td>Max Replicas</td><td>3</td></tr>
+    <tr><td>Registry Auth</td><td>Managed Identity (AcrPull role)</td></tr>
+    <tr><td>FQDN</td><td><code>{basename}-agent.{hash}.{region}.azurecontainerapps.io</code></td></tr>
+  </table>
+
+  <h3>Dockerfile</h3>
+  <div class="config-block">
+    <pre><code>FROM python:3.12-slim
+WORKDIR /agent
+COPY AIAgent/requirements.txt .
+RUN pip install --no-cache-dir --pre -r requirements.txt
+RUN playwright install --with-deps chromium   # PDF generation
+COPY AIAgent/app/ app/
+COPY AIAgent/main.py .
+COPY webapp/ webapp/
+EXPOSE 8088
+CMD ["uvicorn", "app.api:app", "--host", "0.0.0.0", "--port", "8088"]</code></pre>
+  </div>
+
+  <h3>API Endpoints</h3>
+  <table class="data-table">
+    <tr><th>Method</th><th>Path</th><th>Purpose</th></tr>
+    <tr><td>GET</td><td><code>/</code></td><td>Serve SPA (<code>webapp/index.html</code>)</td></tr>
+    <tr><td>POST</td><td><code>/chat</code></td><td>Agent chat with function calling → SSE stream</td></tr>
+    <tr><td>POST</td><td><code>/assessments</code></td><td>Start background assessment (returns task_id)</td></tr>
+    <tr><td>GET</td><td><code>/assessments/{id}</code></td><td>Poll assessment status</td></tr>
+    <tr><td>GET</td><td><code>/health</code></td><td>Health check + agent registration status</td></tr>
+    <tr><td>GET</td><td><code>/reports</code></td><td>List all generated report files</td></tr>
+    <tr><td>GET</td><td><code>/reports/{path}</code></td><td>Download specific report file</td></tr>
+  </table>
+</section>
+
+<!-- ──── 10. Environment Variables Reference ──── -->
+<section class="section" id="env-vars">
+  <h2>🔧 10. Environment Variables Reference</h2>
+
+  <h3>Required (Set by deploy.ps1)</h3>
+  <table class="data-table">
+    <tr><th>Variable</th><th>Example</th><th>Description</th></tr>
+    <tr><td><code>AZURE_OPENAI_ENDPOINT</code></td><td><code>https://esiqnew-ai.cognitiveservices.azure.com/</code></td><td>Azure OpenAI endpoint URL</td></tr>
+    <tr><td><code>AZURE_OPENAI_DEPLOYMENT</code></td><td><code>gpt-4.1</code></td><td>Primary model deployment name</td></tr>
+    <tr><td><code>AZURE_OPENAI_API_VERSION</code></td><td><code>2025-01-01-preview</code></td><td>OpenAI API version</td></tr>
+    <tr><td><code>AZURE_CLIENT_ID</code></td><td><code>d5d10273-4a8b-...</code></td><td>Managed identity client ID</td></tr>
+    <tr><td><code>AZURE_TENANT_ID</code></td><td><code>4a3eb5f4-1ec6-...</code></td><td>Target Entra tenant ID</td></tr>
+  </table>
+
+  <h3>Optional</h3>
+  <table class="data-table">
+    <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>AZURE_OPENAI_FALLBACK_DEPLOYMENT</code></td><td><code>gpt-5.1</code></td><td>Fallback model</td></tr>
+    <tr><td><code>FOUNDRY_PROJECT_ENDPOINT</code></td><td>—</td><td>Foundry project endpoint</td></tr>
+    <tr><td><code>REPORT_STORAGE_ACCOUNT</code></td><td><code>esiqnewstorage</code></td><td>Blob storage account</td></tr>
+    <tr><td><code>REPORT_STORAGE_CONTAINER</code></td><td><code>reports</code></td><td>Blob container name</td></tr>
+    <tr><td><code>ENTERPRISESECURITYIQ_CONFIG</code></td><td>—</td><td>Path to config JSON</td></tr>
+    <tr><td><code>ENTERPRISESECURITYIQ_AUTH_MODE</code></td><td><code>auto</code></td><td>Auth mode: auto / serviceprincipal / appregistration / azurecli</td></tr>
+    <tr><td><code>ENTERPRISESECURITYIQ_FRAMEWORKS</code></td><td>(all)</td><td>Comma-separated framework list</td></tr>
+    <tr><td><code>ENTERPRISESECURITYIQ_LOG_LEVEL</code></td><td><code>INFO</code></td><td>Log verbosity</td></tr>
+    <tr><td><code>AZURE_SUBSCRIPTION_FILTER</code></td><td>—</td><td>Comma-separated subscription IDs</td></tr>
+    <tr><td><code>TOKEN_COST_INPUT_PER_M</code></td><td><code>2.00</code></td><td>Cost per 1M input tokens (USD)</td></tr>
+    <tr><td><code>TOKEN_COST_OUTPUT_PER_M</code></td><td><code>8.00</code></td><td>Cost per 1M output tokens (USD)</td></tr>
+  </table>
+</section>
+
+<!-- ──── 11. SPA / MSAL Configuration ──── -->
+<section class="section" id="msal">
+  <h2>🌐 11. SPA / MSAL Configuration</h2>
+
+  <h3>MSAL Config (in <code>webapp/index.html</code>)</h3>
+  <div class="config-block">
+    <pre><code>const MSAL_CONFIG = {
+  auth: {
+    clientId: "&lt;app-registration-client-id&gt;",
+    authority: "https://login.microsoftonline.com/common",
+    redirectUri: window.location.origin,
+  },
+  cache: { cacheLocation: "sessionStorage" }
+};</code></pre>
+  </div>
+
+  <h3>Scopes</h3>
+  <table class="data-table">
+    <tr><th>Scope</th><th>Purpose</th></tr>
+    <tr><td><code>User.Read</code></td><td>Read signed-in user profile</td></tr>
+    <tr><td><code>Directory.Read.All</code></td><td>Enumerate users, groups, directory roles</td></tr>
+    <tr><td><code>Policy.Read.All</code></td><td>Read conditional access policies</td></tr>
+    <tr><td><code>RoleManagement.Read.All</code></td><td>Read Entra role assignments</td></tr>
+    <tr><td><code>https://management.azure.com/user_impersonation</code></td><td>Azure Resource Manager access</td></tr>
+  </table>
+
+  <h3>SPA Features</h3>
+  <table class="data-table">
+    <tr><th>Feature</th><th>Description</th></tr>
+    <tr><td>Dark/Light theme</td><td>Toggle in header, CSS variables</td></tr>
+    <tr><td>Framework sidebar</td><td>11 checkboxes, "Run Selected" button</td></tr>
+    <tr><td>Tenant switch</td><td>Modal to enter tenant GUID</td></tr>
+    <tr><td>Page width</td><td>Compact (860px) / Wide (1200px) / Full</td></tr>
+    <tr><td>Stop button</td><td>Abort in-progress requests</td></tr>
+    <tr><td>Report table</td><td>Framework × Format grid with View/Download</td></tr>
+    <tr><td>ZIP download</td><td>All reports bundled</td></tr>
+    <tr><td>Token badge</td><td>Shows prompt/completion tokens + estimated cost</td></tr>
+  </table>
+</section>
+
+<!-- ──── 12. Agent Capabilities (14 Tools) ──── -->
+<section class="section" id="agent-tools">
+  <h2>🔨 12. Agent Capabilities (14 Tools)</h2>
+
+  <table class="data-table">
+    <tr><th>#</th><th>Tool Function</th><th>Description</th><th>Output Formats</th></tr>
+    <tr><td>1</td><td><code>run_postureiq_assessment</code></td><td>Multi-framework compliance assessment</td><td>HTML, PDF, Excel, JSON, SARIF</td></tr>
+    <tr><td>2</td><td><code>query_results</code></td><td>Natural language Q&amp;A over cached results</td><td>Text</td></tr>
+    <tr><td>3</td><td><code>search_tenant</code></td><td>KQL + NL resource/Entra search</td><td>Text</td></tr>
+    <tr><td>4</td><td><code>analyze_risk</code></td><td>Security risk gap analysis (5 categories)</td><td>HTML, PDF, Excel, JSON</td></tr>
+    <tr><td>5</td><td><code>assess_data_security</code></td><td>Data-layer security audit (7 categories)</td><td>HTML, PDF, Excel, JSON</td></tr>
+    <tr><td>6</td><td><code>generate_rbac_report</code></td><td>RBAC tree with PIM &amp; risk analysis</td><td>HTML, JSON</td></tr>
+    <tr><td>7</td><td><code>generate_report</code></td><td>HTML/JSON compliance report generation</td><td>HTML, JSON</td></tr>
+    <tr><td>8</td><td><code>assess_copilot_readiness</code></td><td>M365 Copilot Premium readiness assessment</td><td>HTML, PDF, Excel, JSON</td></tr>
+    <tr><td>9</td><td><code>assess_ai_agent_security</code></td><td>Copilot Studio + Foundry security audit</td><td>HTML, PDF, Excel, JSON</td></tr>
+    <tr><td>10</td><td><code>check_permissions</code></td><td>Pre-flight permission validation</td><td>Text</td></tr>
+    <tr><td>11</td><td><code>compare_runs</code></td><td>Delta analysis across assessment runs</td><td>Text</td></tr>
+    <tr><td>12</td><td><code>search_exposure</code></td><td>Public storage, open NSGs, unencrypted resources</td><td>Text</td></tr>
+    <tr><td>13</td><td><code>generate_custom_report</code></td><td>Custom-scoped compliance report generation</td><td>HTML, PDF, Excel, JSON</td></tr>
+    <tr><td>14</td><td><code>query_assessment_history</code></td><td>Query historical assessment runs &amp; trends</td><td>Text</td></tr>
+  </table>
+
+  <h3>Authentication Modes</h3>
+  <table class="data-table">
+    <tr><th>Mode</th><th>Credential</th><th>When Used</th></tr>
+    <tr><td>User-delegated</td><td>Graph + ARM tokens from SPA MSAL</td><td>SPA <code>/chat</code> endpoint</td></tr>
+    <tr><td>Managed Identity</td><td>DefaultAzureCredential</td><td>Background tasks, Foundry registration</td></tr>
+    <tr><td>Service Principal</td><td>ClientSecretCredential</td><td>CI/CD automation</td></tr>
+    <tr><td>Azure CLI</td><td>AzureCliCredential</td><td>Local development</td></tr>
+  </table>
+</section>
+
+<!-- ──── 13. Compliance Frameworks (11) ──── -->
+<section class="section" id="frameworks">
+  <h2>📋 13. Compliance Frameworks (11)</h2>
+
+  <table class="data-table">
+    <tr><th>Code</th><th>Full Name</th></tr>
+    <tr><td><code>FedRAMP</code></td><td>Federal Risk and Authorization Management Program</td></tr>
+    <tr><td><code>CIS</code></td><td>Center for Internet Security Benchmarks</td></tr>
+    <tr><td><code>ISO-27001</code></td><td>Information Security Management Systems</td></tr>
+    <tr><td><code>NIST-800-53</code></td><td>Security and Privacy Controls for Information Systems</td></tr>
+    <tr><td><code>PCI-DSS</code></td><td>Payment Card Industry Data Security Standard</td></tr>
+    <tr><td><code>MCSB</code></td><td>Microsoft Cloud Security Benchmark</td></tr>
+    <tr><td><code>HIPAA</code></td><td>Health Insurance Portability and Accountability Act</td></tr>
+    <tr><td><code>SOC2</code></td><td>System and Organization Controls 2</td></tr>
+    <tr><td><code>GDPR</code></td><td>General Data Protection Regulation</td></tr>
+    <tr><td><code>NIST-CSF</code></td><td>NIST Cybersecurity Framework</td></tr>
+    <tr><td><code>CSA-CCM</code></td><td>Cloud Security Alliance Cloud Controls Matrix</td></tr>
+  </table>
+
+  <p>Framework control mappings: <code>AIAgent/app/postureiq_frameworks/{framework}-mappings.json</code></p>
+</section>
+
+<!-- ──── 14. Report Outputs & File Naming ──── -->
+<section class="section" id="reports">
+  <h2>📄 14. Report Outputs &amp; File Naming</h2>
+
+  <h3>Compliance Assessment Reports</h3>
+  <table class="data-table">
+    <tr><th>Framework</th><th>Subfolder</th><th>HTML</th><th>PDF</th><th>Excel</th><th>JSON</th></tr>
+    <tr><td>FedRAMP</td><td><code>FedRAMP/</code></td><td><code>fedramp-compliance-report.html</code></td><td><code>fedramp-compliance-report.pdf</code></td><td><code>fedramp-report.xlsx</code></td><td>(in data exports)</td></tr>
+    <tr><td>CIS</td><td><code>CIS/</code></td><td><code>cis-compliance-report.html</code></td><td><code>cis-compliance-report.pdf</code></td><td><code>cis-report.xlsx</code></td><td></td></tr>
+    <tr><td>(pattern)</td><td><code>{fw}/</code></td><td><code>{fw}-compliance-report.html</code></td><td><code>{fw}-compliance-report.pdf</code></td><td><code>{fw}-report.xlsx</code></td><td></td></tr>
+  </table>
+
+  <h3>Other Assessment Reports</h3>
+  <table class="data-table">
+    <tr><th>Assessment</th><th>Folder</th><th>Files</th></tr>
+    <tr><td>Risk Analysis</td><td><code>Risk-Analysis/</code></td><td><code>risk-analysis.{html,pdf,xlsx,json}</code></td></tr>
+    <tr><td>Data Security</td><td><code>Data-Security/</code></td><td><code>data-security-assessment.{html,pdf,xlsx,json}</code></td></tr>
+    <tr><td>Copilot Readiness</td><td><code>Copilot-Readiness/</code></td><td><code>copilot-readiness-assessment.{html,pdf,xlsx,json}</code></td></tr>
+    <tr><td>AI Agent Security</td><td><code>AI-Agent-Security/</code></td><td><code>ai-agent-security-assessment.{html,pdf,xlsx,json}</code></td></tr>
+    <tr><td>RBAC Report</td><td><code>RBAC-Report/</code></td><td><code>rbac-tree.{html,json}</code></td></tr>
+  </table>
+
+  <h3>Shared Files (Root)</h3>
+  <table class="data-table">
+    <tr><th>File</th><th>Purpose</th></tr>
+    <tr><td><code>compliance-data.json</code></td><td>Raw assessment data export</td></tr>
+    <tr><td><code>findings.json</code></td><td>All findings in structured JSON</td></tr>
+    <tr><td><code>sarif-report.sarif</code></td><td>SARIF format for IDE integration</td></tr>
+    <tr><td><code>remediation-playbooks.json</code></td><td>Auto-generated remediation steps</td></tr>
+    <tr><td><code>all-compliance-reports.zip</code></td><td>ZIP bundle of all files</td></tr>
+  </table>
+</section>
+
+<!-- ──── 15. Token Usage & Cost Tracking ──── -->
+<section class="section" id="tokens">
+  <h2>💰 15. Token Usage &amp; Cost Tracking</h2>
+  <p>Each chat request shows token consumption and estimated cost in the SPA.</p>
+
+  <h3>How It Works</h3>
+  <ol>
+    <li>Backend (<code>api.py</code>) accumulates <code>response.usage</code> across all LLM round-trips per chat</li>
+    <li>Emits <code>{type: "token_usage", prompt_tokens, completion_tokens, total_tokens, estimated_cost_usd, model}</code> SSE event</li>
+    <li>SPA renders a token badge below the agent's response</li>
+  </ol>
+
+  <h3>Pricing (Configurable)</h3>
+  <table class="data-table">
+    <tr><th>Model</th><th>Input Cost (per 1M tokens)</th><th>Output Cost (per 1M tokens)</th></tr>
+    <tr><td>gpt-4.1</td><td>$2.00</td><td>$8.00</td></tr>
+    <tr><td>gpt-5.1</td><td>$2.00</td><td>$10.00</td></tr>
+  </table>
+  <p>Override via environment variables: <code>TOKEN_COST_INPUT_PER_M</code>, <code>TOKEN_COST_OUTPUT_PER_M</code>.</p>
+
+  <h3>Typical Token Usage</h3>
+  <table class="data-table">
+    <tr><th>Action</th><th>Tokens</th><th>Estimated Cost</th></tr>
+    <tr><td>Simple question</td><td>500–2,000</td><td>&lt; $0.01</td></tr>
+    <tr><td>Single-framework assessment</td><td>5,000–10,000</td><td>$0.01–$0.05</td></tr>
+    <tr><td>All-frameworks assessment</td><td>10,000–20,000</td><td>$0.05–$0.15</td></tr>
+    <tr><td>Risk + Data Security + Copilot</td><td>15,000–30,000</td><td>$0.10–$0.25</td></tr>
+  </table>
+</section>
+
+<!-- ──── 16. Monitoring & Observability ──── -->
+<section class="section" id="monitoring">
+  <h2>📊 16. Monitoring &amp; Observability</h2>
+
+  <h3>Application Insights</h3>
+  <table class="data-table">
+    <tr><th>Metric</th><th>What's Tracked</th></tr>
+    <tr><td>Request duration</td><td>Time per <code>/chat</code> SSE session</td></tr>
+    <tr><td>Dependency calls</td><td>Azure OpenAI, Graph API, ARM API</td></tr>
+    <tr><td>Exceptions</td><td>Tool errors, authentication failures</td></tr>
+    <tr><td>Custom events</td><td>Tool invocations, assessment completions</td></tr>
+  </table>
+
+  <h3>Log Analytics (KQL)</h3>
+  <div class="config-block">
+    <pre><code>// Find slow tool invocations
+ContainerAppConsoleLogs_CL
+| where Log_s contains "Phase 2 complete"
+| project TimeGenerated, Log_s
+| order by TimeGenerated desc
+| take 20</code></pre>
+  </div>
+
+  <h3>Container Logs (CLI)</h3>
+  <div class="config-block">
+    <pre><code>az containerapp logs show --name esiqnew-agent --resource-group ESIQNew-RG --type console --tail 50</code></pre>
+  </div>
+</section>
+
+<!-- ──── 17. Build & Deploy Commands ──── -->
+<section class="section" id="build-deploy">
+  <h2>🚢 17. Build &amp; Deploy Commands</h2>
+
+  <h3>Build Image</h3>
+  <div class="config-block">
+    <pre><code>cd EnterpriseSecurityIQ
+az acr build --registry {basename}acr `
+    --image {basename}-agent:v{N} `
+    --file AIAgent/Dockerfile . `
+    --no-logs `
+    --build-arg CACHEBUST=$(Get-Date -Format 'yyyyMMddHHmmss')</code></pre>
+  </div>
+
+  <h3>Deploy Image</h3>
+  <div class="config-block">
+    <pre><code>az containerapp update `
+    --name {basename}-agent `
+    --resource-group {BaseName}-RG `
+    --image {basename}acr.azurecr.io/{basename}-agent:v{N} `
+    -o table</code></pre>
+  </div>
+
+  <h3>Health Check</h3>
+  <div class="config-block">
+    <pre><code>curl -s "https://{fqdn}/health" | python -m json.tool
+# {"status": "ok", "agent_registered": true, "agent_id": "asst_..."}</code></pre>
+  </div>
+
+  <h3>Git Workflow</h3>
+  <div class="config-block">
+    <pre><code>git add -A
+git commit -m "v{N}: &lt;description&gt;"
+git push</code></pre>
+  </div>
+</section>
+
+<!-- ──── 18. Post-Deployment: Manual Entra Roles ──── -->
+<section class="section" id="post-deploy">
+  <h2>👤 18. Post-Deployment: Manual Entra Roles</h2>
+  <p>After <code>deploy.ps1</code> completes, a <strong>Global Administrator</strong> must assign these directory roles to the managed identity.</p>
+
+  <h3>Steps</h3>
+  <ol>
+    <li>Go to <a href="https://entra.microsoft.com">entra.microsoft.com</a></li>
+    <li>Navigate to <strong>Identity → Roles &amp; admins</strong></li>
+    <li>For each role below, click the role → <strong>Add assignments</strong> → search for <code>{BaseName}-identity</code></li>
+  </ol>
+
+  <table class="data-table">
+    <tr><th>Role</th><th>Purpose</th><th>Required</th></tr>
+    <tr><td><code>Directory Readers</code></td><td>Read users, groups, service principals</td><td><strong>Yes</strong></td></tr>
+    <tr><td><code>Global Reader</code></td><td>Read all Entra configuration (CA policies, etc.)</td><td>Recommended</td></tr>
+    <tr><td><code>Security Reader</code></td><td>Read security-related Entra data</td><td>Recommended</td></tr>
+  </table>
+
+  <div class="safety-banner">
+    <h3>ℹ️ Note</h3>
+    <p style="color:var(--text-secondary);font-size:.9rem">Without these roles, the agent can still assess Azure resources via ARM, but Entra ID compliance checks will return partial/empty results.</p>
+  </div>
+</section>
+
+<!-- ──── 19. Monthly Cost Estimate ──── -->
+<section class="section" id="cost">
+  <h2>💲 19. Monthly Cost Estimate</h2>
+  <p>For a lightly-used deployment (&lt; 50 assessments/month):</p>
+
+  <table class="data-table">
+    <tr><th>Resource</th><th>SKU</th><th>Est. Monthly (USD)</th></tr>
+    <tr><td>Azure OpenAI (gpt-4.1)</td><td>Standard 30K TPM</td><td>$5–30 (pay-per-token)</td></tr>
+    <tr><td>Container App</td><td>Consumption (scale to zero)</td><td>$0–15</td></tr>
+    <tr><td>Container Registry</td><td>Basic</td><td>~$5</td></tr>
+    <tr><td>Storage Account</td><td>Standard LRS</td><td>&lt; $1</td></tr>
+    <tr><td>Key Vault</td><td>Standard</td><td>&lt; $1</td></tr>
+    <tr><td>Application Insights</td><td>Per-GB ingestion</td><td>$2–5</td></tr>
+    <tr><td>Log Analytics</td><td>PerGB2018</td><td>$2–5</td></tr>
+    <tr><td>Managed Identity</td><td>—</td><td><strong>Free</strong></td></tr>
+    <tr><td>App Registration</td><td>—</td><td><strong>Free</strong></td></tr>
+    <tr><td><strong>Total</strong></td><td></td><td><strong>~$15–60/month</strong></td></tr>
+  </table>
+
+  <div class="safety-banner">
+    <h3>💡 Cost Tip</h3>
+    <p style="color:var(--text-secondary);font-size:.9rem">With scale-to-zero on the container app and pay-per-token on OpenAI, inactive periods cost near $0.</p>
+  </div>
+</section>
+
+<!-- ──── 20. Troubleshooting ──── -->
+<section class="section" id="troubleshooting">
+  <h2>🔍 20. Troubleshooting</h2>
+
+  <table class="data-table">
+    <tr><th>Problem</th><th>Diagnosis</th><th>Fix</th></tr>
+    <tr><td>Container won't start</td><td><code>az containerapp logs show --tail 100</code></td><td>Check env vars, image tag</td></tr>
+    <tr><td>Agent not registered</td><td><code>/health</code> shows <code>agent_registered: false</code></td><td>Verify <code>AZURE_OPENAI_ENDPOINT</code> and MI roles</td></tr>
+    <tr><td>Assessment returns partial results</td><td>Missing Entra roles</td><td>Assign Directory Readers + Global Reader</td></tr>
+    <tr><td>SPA login fails</td><td>MSAL error in browser console</td><td>Check clientId, redirect URIs, admin consent</td></tr>
+    <tr><td>Reports lost after restart</td><td>Missing blob storage config</td><td>Set <code>REPORT_STORAGE_ACCOUNT</code> env var</td></tr>
+    <tr><td>504 gateway timeout</td><td>Long assessment with Envoy timeout</td><td>Keepalives already configured (15s)</td></tr>
+    <tr><td>Token usage shows 0</td><td>Older API version</td><td>Ensure <code>AZURE_OPENAI_API_VERSION=2025-01-01-preview</code></td></tr>
+    <tr><td>Permission denied on Graph</td><td>User hasn't consented</td><td>Admin consent for Directory.Read.All</td></tr>
+  </table>
+</section>
+
+</main>
+
+<!-- ════════ FOOTER ════════ -->
+<footer>
+  <p>PostureIQ — Infrastructure Blueprint &amp; Repeatable Deployment · Author: Murali Chillakuru</p>
+  <p style="margin-top:.3rem">14 resources · 16 deploy steps · 14 tools · 11 frameworks · 20 sections</p>
+</footer>
+
+<button class="back-top" id="backTop" aria-label="Back to top">↑</button>
+
+<script>
+const toggle=document.getElementById('themeToggle'),root=document.documentElement;
+function setTheme(t){root.dataset.theme=t;toggle.textContent=t==='dark'?'☀️ Light':'🌙 Dark';localStorage.setItem('esiq-theme',t)}
+toggle.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark'));
+setTheme(localStorage.getItem('esiq-theme')||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const el=e.target,t=+el.dataset.target;let c=0;const d=Math.max(1,Math.floor(30/(t||1)));const iv=setInterval(()=>{c+=d;if(c>=t){el.textContent=(t>100?'~':'')+t;clearInterval(iv)}else{el.textContent=c}},16);io.unobserve(el)}})},{threshold:.5});
+document.querySelectorAll('.num[data-target]').forEach(el=>io.observe(el));
+const pills=document.querySelectorAll('.nav-pill[href]'),sections=[];
+pills.forEach(p=>{const id=p.getAttribute('href')?.slice(1);if(id){const s=document.getElementById(id);if(s)sections.push({el:s,pill:p})}});
+const spy=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const m=sections.find(s=>s.el===e.target);if(m)m.pill.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px',threshold:0});
+sections.forEach(s=>spy.observe(s.el));
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('progressBar').style.width=(window.scrollY/h*100)+'%'});
+const btn=document.getElementById('backTop');
+window.addEventListener('scroll',()=>{btn.classList.toggle('show',window.scrollY>400)});
+btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+<script src="seq-engine.js"></script>
+</body>
+</html>

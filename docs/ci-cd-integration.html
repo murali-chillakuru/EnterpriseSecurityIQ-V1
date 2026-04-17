@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostureIQ — CI/CD Integration Guide</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-code:#0D1117;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#484F58;
+  --border-primary:#30363D;--border-subtle:#21262D;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --shadow-lg:0 8px 32px rgba(0,0,0,.4);--shadow-md:0 4px 16px rgba(0,0,0,.3);
+  --radius-lg:16px;--radius-md:12px;--radius-sm:8px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',monospace;
+  --max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-code:#F6F8FA;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8B949E;
+  --border-primary:#D0D7DE;--border-subtle:#E8EBEF;
+  --shadow-lg:0 8px 32px rgba(0,0,0,.08);--shadow-md:0 4px 16px rgba(0,0,0,.06);
+}
+.skip-nav{position:absolute;top:-100%;left:1rem;padding:.5rem 1rem;background:var(--accent-blue);color:#fff;border-radius:var(--radius-sm);z-index:9999;font-weight:600}.skip-nav:focus{top:1rem}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.85em;background:var(--bg-code);padding:2px 6px;border-radius:4px;border:1px solid var(--border-subtle)}
+.reading-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),var(--accent-cyan),var(--accent-purple));z-index:10001;transition:width .15s}
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,#0D1117 0%,#161B22 50%,#1C2128 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+[data-theme="light"] .hero{background:linear-gradient(135deg,#eff6ff 0%,#e0f2fe 50%,#dbeafe 100%)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:600px;height:600px;background:radial-gradient(circle,var(--accent-blue),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-purple),transparent 70%);bottom:-150px;left:-50px}
+.hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-blue),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{font-size:1.15rem;color:var(--text-secondary);max-width:800px;margin:0 auto 1rem}
+.author-tag{display:inline-block;padding:6px 16px;border-radius:20px;font-size:.85rem;font-weight:600;border:1px solid var(--accent-purple);color:var(--accent-purple);margin-top:1rem}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;max-width:1200px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);position:relative;z-index:10}
+.stat{text-align:center}.stat-value{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent-blue),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.stat-label{font-size:.72rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}
+.container{max-width:var(--max-width);margin:0 auto;padding:2rem}
+.sticky-nav{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);padding:.6rem 1rem;backdrop-filter:blur(12px)}
+.nav-inner{display:flex;gap:.5rem;max-width:1200px;margin:0 auto;overflow-x:auto;scrollbar-width:none;align-items:center}.nav-inner::-webkit-scrollbar{display:none}
+.nav-pill{padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:600;white-space:nowrap;border:1px solid var(--border-primary);background:transparent;color:var(--text-secondary);cursor:pointer;transition:all .2s}
+.nav-pill:hover,.nav-pill.active{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue);text-decoration:none}
+.theme-toggle{margin-left:auto;background:transparent;border:1px solid var(--border-primary);color:var(--text-secondary);padding:6px 12px;border-radius:20px;cursor:pointer;font-size:.85rem;white-space:nowrap;transition:all .2s}.theme-toggle:hover{color:var(--accent-orange);border-color:var(--accent-orange)}
+section{margin-bottom:3rem;scroll-margin-top:80px}
+section h2{font-size:1.8rem;font-weight:700;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--border-primary);display:flex;align-items:center;gap:.5rem}
+section h2 .icon{font-size:1.4rem}
+section h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .75rem;color:var(--accent-cyan)}
+.info-box{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.25rem 1.5rem;margin:1rem 0}
+.info-box.tip{border-left:4px solid var(--accent-green)}.info-box.warn{border-left:4px solid var(--accent-orange)}.info-box.info{border-left:4px solid var(--accent-blue)}.info-box.danger{border-left:4px solid var(--accent-red)}
+.info-box strong{display:block;margin-bottom:.4rem}
+pre{background:var(--bg-code);border:1px solid var(--border-primary);border-radius:var(--radius-sm);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;line-height:1.6;margin:1rem 0;color:var(--text-primary)}
+.table-wrap{overflow-x:auto;margin:1rem 0;border-radius:var(--radius-md);border:1px solid var(--border-primary)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{background:var(--bg-secondary);padding:.7rem 1rem;text-align:left;font-weight:600;color:var(--text-primary);border-bottom:2px solid var(--border-primary);position:sticky;top:0}
+td{padding:.6rem 1rem;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary)}
+tr:hover td{background:rgba(31,111,235,.04)}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin:1rem 0}
+.card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.25rem;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.card-icon{font-size:1.6rem;margin-bottom:.5rem}.card h4{font-size:1rem;font-weight:700;margin-bottom:.5rem;color:var(--text-primary)}.card p{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:600}
+.badge-green{background:rgba(63,185,80,.15);color:var(--accent-green)}.badge-blue{background:rgba(31,111,235,.15);color:var(--accent-blue)}.badge-purple{background:rgba(163,113,247,.15);color:var(--accent-purple)}.badge-cyan{background:rgba(57,210,192,.15);color:var(--accent-cyan)}.badge-orange{background:rgba(210,153,34,.15);color:var(--accent-orange)}.badge-red{background:rgba(248,81,73,.15);color:var(--accent-red)}
+details{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-sm);margin:.75rem 0}
+details>summary{padding:.8rem 1rem;cursor:pointer;font-weight:600;color:var(--text-primary);list-style:none;display:flex;align-items:center;gap:.5rem}
+details>summary::before{content:'▸';font-size:.85rem;color:var(--accent-blue);transition:transform .2s}
+details[open]>summary::before{transform:rotate(90deg)}
+details>summary::-webkit-details-marker{display:none}
+details>.detail-body{padding:0 1rem 1rem}
+.diagram-container{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.5rem;margin:1.5rem 0;overflow-x:auto}
+.diagram-container h4{margin-bottom:1rem;color:var(--accent-purple)}
+.diagram-explanation{background:var(--bg-secondary);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:1rem 1.25rem;margin-top:1rem;font-size:.88rem;color:var(--text-secondary);line-height:1.7}
+.diagram-explanation ol{padding-left:1.25rem}.diagram-explanation li{margin:.4rem 0}
+/* ── Interactive Sequence Diagram ── */
+.seq-viewer{display:grid;grid-template-columns:1fr 340px;gap:1.5rem;margin:1.5rem 0}
+@media(max-width:900px){.seq-viewer{grid-template-columns:1fr;}}
+.seq-diagram-wrap{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.5rem;overflow-x:auto;min-height:300px}
+.seq-steps-panel{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1rem;max-height:600px;overflow-y:auto}
+.seq-controls{display:flex;gap:.5rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap}
+.seq-btn{padding:5px 14px;border-radius:6px;font-size:.78rem;font-weight:600;border:1px solid var(--border-primary);background:var(--bg-secondary);color:var(--text-primary);cursor:pointer;transition:all .15s}
+.seq-btn:hover{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue)}
+.seq-btn.active{background:var(--accent-green);color:#fff;border-color:var(--accent-green)}
+.seq-step-counter{font-size:.82rem;color:var(--text-secondary);margin-left:auto}
+.seq-step-card{background:var(--bg-secondary);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-bottom:.6rem;transition:all .2s;opacity:.5}
+.seq-step-card.active{opacity:1;border-color:var(--accent-blue);box-shadow:inset 3px 0 0 var(--accent-blue)}
+.seq-step-card .step-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent-blue);font-weight:700;margin-bottom:.25rem}
+.seq-step-card h5{font-size:.9rem;font-weight:600;margin-bottom:.3rem;color:var(--text-primary)}
+.seq-step-card p{font-size:.8rem;color:var(--text-secondary);line-height:1.5}
+.seq-step-card .step-actors{font-size:.72rem;color:var(--text-muted);margin-top:.3rem}
+.back-top{position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--accent-blue);color:#fff;border:none;font-size:1.2rem;cursor:pointer;opacity:0;transition:opacity .3s,transform .3s;transform:translateY(20px);z-index:999;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md)}.back-top.visible{opacity:1;transform:translateY(0)}.back-top:hover{background:var(--accent-cyan)}
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.82rem;border-top:1px solid var(--border-primary);margin-top:3rem}
+@media print{.sticky-nav,.back-top,.theme-toggle,.reading-progress,.seq-controls{display:none!important}body{background:#fff;color:#000}.hero{background:#f5f5f5!important;padding:2rem}.card,.info-box,details,.diagram-container,.seq-viewer{break-inside:avoid}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(forced-colors:active){.nav-pill,.badge,.card,.seq-btn{border:1px solid CanvasText}}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-nav">Skip to main content</a>
+<div class="reading-progress" id="readingProgress"></div>
+
+<header class="hero">
+  <h1>CI/CD Integration Guide</h1>
+  <p class="subtitle">Run PostureIQ headlessly in GitHub Actions and Azure DevOps pipelines — compliance gates, determinism checks, delta tracking, and artifact management.</p>
+  <div class="author-tag">Author: Murali Chillakuru</div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-value" data-target="4">0</div><div class="stat-label">Auth Modes</div></div>
+  <div class="stat"><div class="stat-value" data-target="8">0</div><div class="stat-label">CLI Scripts</div></div>
+  <div class="stat"><div class="stat-value" data-target="2">0</div><div class="stat-label">Determinism Checks</div></div>
+  <div class="stat"><div class="stat-value" data-target="11">0</div><div class="stat-label">Env Vars</div></div>
+  <div class="stat"><div class="stat-value" data-target="5">0</div><div class="stat-label">Determinism Phases</div></div>
+</div>
+
+<nav class="sticky-nav" aria-label="Section navigation">
+  <div class="nav-inner">
+    <a href="#prerequisites" class="nav-pill">Prerequisites</a>
+    <a href="#auth" class="nav-pill">Auth</a>
+    <a href="#env-vars" class="nav-pill">Env Vars</a>
+    <a href="#cli" class="nav-pill">CLI Scripts</a>
+    <a href="#github" class="nav-pill">GitHub Actions</a>
+    <a href="#azdo" class="nav-pill">Azure DevOps</a>
+    <a href="#gate" class="nav-pill">Gates</a>
+    <a href="#determinism" class="nav-pill">Determinism</a>
+    <a href="#delta" class="nav-pill">Delta</a>
+    <a href="#config" class="nav-pill">Config</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">☀ / ☾</button>
+  </div>
+</nav>
+
+<main id="main" class="container">
+
+<!-- EXEC SUMMARY -->
+<div style="background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.25);border-radius:8px;padding:16px 20px;margin:0 0 24px;font-size:.9rem;color:var(--text-secondary)">
+<strong>📋 Executive Summary</strong> — How to run PostureIQ in CI/CD pipelines: GitHub Actions (OIDC), Azure DevOps, compliance gates with <code>--fail-on-severity</code>, determinism verification, delta tracking, and config tuning.
+<div style="margin-top:8px;font-size:.82rem"><strong>Audience:</strong> DevOps engineers, CI/CD pipeline authors · <strong>Prerequisites:</strong> <a href="configuration-guide.html">Configuration Guide</a> · <strong>Related:</strong> <a href="suppressions-guide.html">Suppressions Guide</a> · <a href="prompts.html">Usage Guide</a></div>
+</div>
+
+<!-- ══════ Prerequisites ══════ -->
+<section id="prerequisites">
+  <h2><span class="icon">📋</span> Prerequisites</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🔑</div><h4>Service Principal</h4><p>Reader + Security Reader on target subscriptions. Global Reader on Entra ID.</p></div>
+    <div class="card"><div class="card-icon">🐍</div><h4>Python 3.10+</h4><p>3.12 recommended. Install deps from <code>AIAgent/requirements.txt</code>.</p></div>
+    <div class="card"><div class="card-icon">⚙️</div><h4>Config (Optional)</h4><p><code>config/enterprisesecurityiq.config.json</code> — set via <code>ENTERPRISESECURITYIQ_CONFIG</code> env var.</p></div>
+    <div class="card"><div class="card-icon">🛡️</div><h4>RBAC Roles</h4><p>Any one: Global Admin, Global Reader, Security Admin/Reader, Compliance Admin.</p></div>
+  </div>
+</section>
+
+<!-- ══════ Auth ══════ -->
+<section id="auth">
+  <h2><span class="icon">🔐</span> Authentication Modes</h2>
+  <p>Set via <code>ENTERPRISESECURITYIQ_AUTH_MODE</code> env var or <code>auth_mode</code> in config.</p>
+  <div class="card-grid">
+    <div class="card" style="border-top:3px solid var(--accent-green)">
+      <h4>auto <span class="badge badge-green">Default</span></h4>
+      <p><code>DefaultAzureCredential</code> — chains az CLI, managed identity, OIDC, env vars. Best for GitHub Actions OIDC and Azure Managed Identity.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--accent-blue)">
+      <h4>serviceprincipal</h4>
+      <p><code>ClientSecretCredential</code> — requires <code>AZURE_CLIENT_ID</code>, <code>AZURE_CLIENT_SECRET</code>, <code>AZURE_TENANT_ID</code>. Traditional CI/CD pattern.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--accent-purple)">
+      <h4>appregistration</h4>
+      <p><code>ClientSecretCredential</code> — uses <code>ENTERPRISESECURITYIQ_APP_CLIENT_ID</code> / <code>APP_CLIENT_SECRET</code> (falls back to AZURE_ equivalents).</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--accent-orange)">
+      <h4>azurecli</h4>
+      <p><code>AzureCliCredential</code> — uses active <code>az login</code> session. For local dev and manual pipeline runs.</p>
+    </div>
+  </div>
+
+  <!-- Interactive Sequence: Preflight Check -->
+  <div class="seq-viewer" id="seqPreflight">
+    <div class="seq-diagram-wrap">
+      <div class="seq-controls">
+        <button class="seq-btn" onclick="seqPlay('preflight')">▶ Play</button>
+        <button class="seq-btn" onclick="seqPrev('preflight')">← Prev</button>
+        <button class="seq-btn" onclick="seqNext('preflight')">Next →</button>
+        <button class="seq-btn" onclick="seqReset('preflight')">Reset</button>
+        <button class="seq-btn" onclick="seqShowAll('preflight')">Show All</button>
+        <span class="seq-step-counter" id="preflight-counter">Step 0 of 7</span>
+      </div>
+      <div class="mermaid" id="preflight-diagram" data-seq-details='[
+{"overview":"The CI/CD pipeline initiates authentication by creating a ComplianceCredentials object, which provides unified Azure ARM and Microsoft Graph API access.","dataFlow":"The pipeline runner calls ComplianceCredentials() which wraps the Azure Identity SDK credential chain for both ARM and Graph endpoints.","keyPoints":["ComplianceCredentials is the single entry point for all authentication","Supports multiple auth modes: managed identity, service principal, app registration, and Azure CLI","The credential object is validated before any collectors run"],"whyItMatters":"Centralized credential initialization catches authentication failures early — before spending minutes on evidence collection that would ultimately fail.","output":"Authentication initialization request sent to the auth module."},
+{"overview":"The auth module selects the appropriate credential type based on configuration (auto-detect, service principal, app registration, or CLI).","dataFlow":"The auth module reads the config to determine which credential type to use, then initializes the matching Azure Identity credential class.","keyPoints":["auto mode uses DefaultAzureCredential which tries multiple methods in priority order","Service principal mode uses ClientSecretCredential with tenant/client/secret","CLI mode uses AzureCliCredential for developer environments"],"whyItMatters":"Flexible credential selection means the same assessment code runs in CI/CD (service principal), Azure (managed identity), and developer machines (CLI) without changes.","output":"Credential type selected and initialized."},
+{"overview":"The auth module tests Azure ARM connectivity by listing available subscriptions.","dataFlow":"A GET request to the Azure Resource Manager subscriptions API validates that the credential has ARM access and discovers the assessment scope.","keyPoints":["Subscription listing serves dual purpose: auth validation and scope discovery","The returned subscriptions define which Azure resources will be assessed","A failure here blocks the assessment with a clear ARM authentication error"],"whyItMatters":"Testing ARM access first prevents wasting time on a full assessment that would fail when collectors try to query Azure resources.","output":"ARM connectivity test request sent."},
+{"overview":"Azure ARM responds with the list of accessible subscriptions, confirming ARM authentication is working.","dataFlow":"A JSON array of subscription objects (id, displayName, state) flows back, confirming both authentication and authorization.","keyPoints":["The subscription list determines which resources are in scope for the assessment","Empty subscription list warns that no resources will be assessed","Subscription state (enabled vs. disabled) is checked"],"whyItMatters":"Successful subscription listing confirms the credential has Reader access to Azure resources — the minimum permission level for evidence collection.","output":"Subscription list received; ARM access confirmed."},
+{"overview":"The auth module tests Microsoft Graph connectivity by calling the /me and /organization endpoints.","dataFlow":"Two Graph API calls verify identity (/me returns the authenticated principal) and organization context (/organization returns tenant metadata).","keyPoints":["/me confirms the credential identity and display name","/organization returns tenant ID, display name, and verified domains","Both must succeed for Entra ID collectors to function"],"whyItMatters":"Graph API access is required for all 17 Entra collectors — failing preflight here saves 2-3 minutes of failed Graph API calls during collection.","output":"Graph connectivity test requests sent."},
+{"overview":"Microsoft Graph confirms the identity, returning the authenticated principal and organization metadata.","dataFlow":"The authenticated user/service principal identity and tenant organization details flow back, confirming Graph API access.","keyPoints":["Identity confirmation ensures the credential is recognized by Entra ID","Organization metadata provides the tenant context for the assessment","Any Graph API error here indicates insufficient API permissions"],"whyItMatters":"Confirmed Graph identity means Entra collectors can safely proceed — identity verification prevents running an assessment against the wrong tenant.","output":"Identity confirmed; Graph access validated."},
+{"overview":"The auth module probes specific Entra ID endpoints (Users, Conditional Access, Directory Roles) to check fine-grained permissions.","dataFlow":"Three targeted Graph API calls test read access to the critical Entra evidence domains that collectors will need.","keyPoints":["Users endpoint tests Directory.Read.All permission","Conditional Access tests Policy.Read.All permission","Directory Roles tests RoleManagement.Read.Directory permission"],"whyItMatters":"Fine-grained permission probing catches partial authorization issues — the credential might have Graph access but lack specific directory permissions needed by collectors.","output":"Permission probe requests sent to three Entra endpoints."},
+{"overview":"Each probe returns its status: 200 means full access, 403 means a permission warning, and 401 means the assessment for that domain is blocked.","dataFlow":"HTTP status codes from each probe are analyzed: 200=OK (full collection), 403=warn (limited collection), 401=block (domain disabled).","keyPoints":["200 responses enable full evidence collection for that domain","403 responses trigger warnings and limit collection to available data","401 responses disable collectors for that domain entirely"],"whyItMatters":"Graduated response handling (OK/warn/block) gives operators clear visibility into what the assessment CAN and CANNOT evaluate before it starts.","output":"Permission probe results: per-domain access levels determined."}
+]'>
+sequenceDiagram
+    participant P as Pipeline
+    participant A as Auth Module
+    participant ARM as Azure ARM
+    participant G as Microsoft Graph
+    participant E as Entra ID
+
+    P->>A: Initialize ComplianceCredentials
+    A->>A: Select credential (auto/sp/app/cli)
+    A->>ARM: List subscriptions
+    ARM-->>A: Subscriptions ✅
+    A->>G: GET /me + /organization
+    G-->>A: Identity confirmed
+    A->>E: Probe Users, CA, DirectoryRoles
+    E-->>A: 200=OK, 403=warn, 401=block
+      </div>
+    </div>
+    <div class="seq-steps-panel" id="preflight-steps">
+      <div class="seq-step-card" data-step="1">
+        <div class="step-label">Step 1 of 7</div>
+        <h5>Initialize Credentials</h5>
+        <p>Pipeline calls <code>ComplianceCredentials(auth_mode)</code>. The mode is read from <code>ENTERPRISESECURITYIQ_AUTH_MODE</code> env var.</p>
+        <div class="step-actors">Pipeline → Auth Module</div>
+      </div>
+      <div class="seq-step-card" data-step="2">
+        <div class="step-label">Step 2 of 7</div>
+        <h5>Select Credential Strategy</h5>
+        <p>Auth module selects <code>DefaultAzureCredential</code>, <code>ClientSecretCredential</code>, or <code>AzureCliCredential</code> based on the configured mode.</p>
+        <div class="step-actors">Auth Module (internal)</div>
+      </div>
+      <div class="seq-step-card" data-step="3">
+        <div class="step-label">Step 3 of 7</div>
+        <h5>ARM Subscription Probe</h5>
+        <p>Lists all subscriptions the credential can access. This validates ARM-level permissions.</p>
+        <div class="step-actors">Auth Module → Azure ARM</div>
+      </div>
+      <div class="seq-step-card" data-step="4">
+        <div class="step-label">Step 4 of 7</div>
+        <h5>ARM Response</h5>
+        <p>ARM returns the subscription list. <code>AZURE_SUBSCRIPTION_FILTER</code> limits which subscriptions are collected.</p>
+        <div class="step-actors">Azure ARM → Auth Module</div>
+      </div>
+      <div class="seq-step-card" data-step="5">
+        <div class="step-label">Step 5 of 7</div>
+        <h5>Graph Identity Check</h5>
+        <p>Calls <code>/me</code> + <code>/organization</code> to confirm Graph access and tenant identity.</p>
+        <div class="step-actors">Auth Module → Microsoft Graph</div>
+      </div>
+      <div class="seq-step-card" data-step="6">
+        <div class="step-label">Step 6 of 7</div>
+        <h5>Entra Endpoint Probes</h5>
+        <p>Probes 3 endpoints: Users (top=1), Conditional Access policies, Directory Roles. Detects permission boundaries.</p>
+        <div class="step-actors">Auth Module → Entra ID</div>
+      </div>
+      <div class="seq-step-card" data-step="7">
+        <div class="step-label">Step 7 of 7</div>
+        <h5>Permission Verdict</h5>
+        <p><strong>200</strong> = full access. <strong>403</strong> = warning (pipeline continues with reduced evidence). <strong>401</strong> = blocking (pipeline fails).</p>
+        <div class="step-actors">Entra ID → Auth Module</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ Env Vars ══════ -->
+<section id="env-vars">
+  <h2><span class="icon">🔧</span> Environment Variables</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Variable</th><th>Purpose</th><th>Default</th></tr></thead>
+      <tbody>
+        <tr><td><code>AZURE_TENANT_ID</code></td><td>Target Azure AD tenant</td><td>(required)</td></tr>
+        <tr><td><code>ENTERPRISESECURITYIQ_AUTH_MODE</code></td><td>Auth strategy</td><td><code>auto</code></td></tr>
+        <tr><td><code>AZURE_CLIENT_ID</code></td><td>Service principal client ID</td><td>—</td></tr>
+        <tr><td><code>AZURE_CLIENT_SECRET</code></td><td>Service principal secret</td><td>—</td></tr>
+        <tr><td><code>ENTERPRISESECURITYIQ_APP_CLIENT_ID</code></td><td>App registration override</td><td>Falls back to <code>AZURE_CLIENT_ID</code></td></tr>
+        <tr><td><code>ENTERPRISESECURITYIQ_APP_CLIENT_SECRET</code></td><td>App registration secret override</td><td>Falls back to <code>AZURE_CLIENT_SECRET</code></td></tr>
+        <tr><td><code>ENTERPRISESECURITYIQ_CONFIG</code></td><td>Config file path</td><td><code>config/enterprisesecurityiq.config.json</code></td></tr>
+        <tr><td><code>ENTERPRISESECURITYIQ_FRAMEWORKS</code></td><td>Comma-separated framework list</td><td>All 11</td></tr>
+        <tr><td><code>AZURE_SUBSCRIPTION_FILTER</code></td><td>Limit to specific subscription IDs</td><td>All</td></tr>
+        <tr><td><code>ENTERPRISESECURITYIQ_LOG_LEVEL</code></td><td>Logging verbosity</td><td><code>INFO</code></td></tr>
+        <tr><td><code>ENTERPRISESECURITYIQ_LOG_FORMAT</code></td><td>Set to <code>json</code> for structured logs</td><td>text</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════ CLI Scripts ══════ -->
+<section id="cli">
+  <h2><span class="icon">⌨️</span> CLI Scripts Reference</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Script</th><th>Key Args</th><th>CI/CD Gate</th></tr></thead>
+      <tbody>
+        <tr><td><code>run_copilot_readiness.py</code></td><td><code>--tenant</code>, <code>--category</code>, <code>--suppressions</code>, <code>--previous-run</code></td><td><code>--fail-on-severity</code></td></tr>
+        <tr><td><code>run_data_security.py</code></td><td><code>--tenant</code>, <code>--category</code>, <code>--output-dir</code>, <code>--format</code>, <code>--quiet</code></td><td><code>--fail-on-severity</code></td></tr>
+        <tr><td><code>run_ai_agent_security.py</code></td><td><code>--tenant</code>, <code>--category</code>, <code>--suppressions</code></td><td><code>--fail-on-severity</code></td></tr>
+        <tr><td><code>run_risk_analysis.py</code></td><td><code>--tenant</code>, <code>--category</code>, <code>--evidence</code></td><td>No</td></tr>
+        <tr><td><code>run_rbac_report.py</code></td><td><code>--tenant</code>, <code>--output-dir</code>, <code>--subscriptions</code></td><td>No</td></tr>
+        <tr><td><code>run_query.py</code></td><td><code>--query</code>, <code>--arg-kql</code>, <code>--findings</code></td><td>No</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="info-box warn">
+    <strong>⚠️ Config Loading</strong>
+    CLI scripts do <strong>not</strong> accept a <code>--config</code> argument. Config is loaded via <code>AssessmentConfig.from_env()</code> which reads the <code>ENTERPRISESECURITYIQ_CONFIG</code> env var.
+  </div>
+</section>
+
+<!-- ══════ GitHub Actions ══════ -->
+<section id="github">
+  <h2><span class="icon">🐙</span> GitHub Actions</h2>
+
+  <details open>
+    <summary>Full Assessment with OIDC + Compliance Gate</summary>
+    <div class="detail-body">
+<pre>name: Compliance Assessment
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly Monday 6am UTC
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  assess:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r AIAgent/requirements.txt
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Run Copilot Readiness Assessment
+        working-directory: AIAgent
+        run: python run_copilot_readiness.py --tenant ${{ secrets.AZURE_TENANT_ID }} --fail-on-severity high
+        env:
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ENTERPRISESECURITYIQ_AUTH_MODE: auto
+
+      - name: Compliance Gate
+        run: |
+          OUTDIR=$(ls -td AIAgent/output/*/ | head -1)
+          SCORE=$(python -c "
+          import json, glob, pathlib
+          files = glob.glob(str(pathlib.Path('${OUTDIR}') / 'data_exports' / '*.json'))
+          r = json.load(open(files[0])) if files else {}
+          print(r.get('CompliancePercentage', 0))
+          ")
+          echo "Compliance Score: $SCORE%"
+          if (( $(echo "$SCORE &lt; 70" | bc -l) )); then
+            echo "::error::Compliance score $SCORE% below 70%"
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: compliance-report-${{ github.run_number }}
+          path: AIAgent/output/
+          retention-days: 90</pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Specialized Assessment with --fail-on-severity</summary>
+    <div class="detail-body">
+<pre>      - name: Data Security Assessment
+        working-directory: AIAgent
+        run: |
+          python run_data_security.py \
+            --tenant ${{ secrets.AZURE_TENANT_ID }} \
+            --fail-on-severity critical \
+            --quiet
+        # Exit code 1 if any critical-severity finding exists</pre>
+    </div>
+  </details>
+</section>
+
+<!-- ══════ Azure DevOps ══════ -->
+<section id="azdo">
+  <h2><span class="icon">🔷</span> Azure DevOps Pipeline</h2>
+  <details open>
+    <summary>Full Pipeline — Assessment + Copilot Readiness</summary>
+    <div class="detail-body">
+<pre>trigger: none
+schedules:
+  - cron: '0 6 * * 1'
+    displayName: Weekly Compliance Check
+    branches:
+      include: [main]
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: EnterpriseSecurityIQ-Secrets
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.12'
+
+  - script: pip install -r AIAgent/requirements.txt
+    displayName: Install Dependencies
+
+  - task: AzureCLI@2
+    displayName: Run Copilot Readiness Assessment
+    inputs:
+      azureSubscription: 'EnterpriseSecurityIQ-SPN'
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        cd AIAgent
+        export ENTERPRISESECURITYIQ_AUTH_MODE=auto
+        python run_copilot_readiness.py --tenant $(AZURE_TENANT_ID) --fail-on-severity high
+
+  - task: AzureCLI@2
+    displayName: Copilot Readiness Gate
+    inputs:
+      azureSubscription: 'EnterpriseSecurityIQ-SPN'
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        cd AIAgent
+        python run_copilot_readiness.py \
+          --tenant $(AZURE_TENANT_ID) \
+          --fail-on-severity high
+
+  - publish: $(System.DefaultWorkingDirectory)/AIAgent/output
+    artifact: compliance-report
+    displayName: Publish Reports</pre>
+    </div>
+  </details>
+</section>
+
+<!-- ══════ Gate ══════ -->
+<section id="gate">
+  <h2><span class="icon">🚦</span> Compliance Gate Strategy</h2>
+  <div class="card-grid">
+    <div class="card" style="border-top:3px solid var(--accent-green)">
+      <h4>90–100% <span class="badge badge-green">PASS</span></h4>
+      <p>No action needed. Pipeline completes successfully.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--accent-orange)">
+      <h4>70–89% <span class="badge badge-orange">WARN</span></h4>
+      <p>Create tracking ticket. Pipeline continues with warning annotation.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--accent-red)">
+      <h4>&lt; 70% <span class="badge badge-red">FAIL</span></h4>
+      <p>Block deployment. Pipeline exits with code 1.</p>
+    </div>
+  </div>
+  <div class="info-box info">
+    <strong>💡 --fail-on-severity</strong>
+    For specialized assessments (<code>run_data_security.py</code>, <code>run_copilot_readiness.py</code>, <code>run_ai_agent_security.py</code>), use <code>--fail-on-severity &lt;level&gt;</code>. Exits with code 1 if any finding meets or exceeds that severity.
+  </div>
+</section>
+
+<!-- ══════ Determinism ══════ -->
+<section id="determinism">
+  <h2><span class="icon">🔁</span> Determinism Checks</h2>
+  <p>Verify that evaluation is reproducible given identical evidence. Run in CI/CD to catch non-deterministic regressions.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Script</th><th>Default Runs</th><th>Configurable</th><th>Extra Args</th></tr></thead>
+      <tbody>
+        <tr><td><code>run_cr_determinism_check.py</code></td><td>3</td><td>No</td><td><code>--tenant</code>, <code>--evidence</code></td></tr>
+        <tr><td><code>run_rbac_determinism_check.py</code></td><td>3</td><td>No</td><td><code>--tenant</code>, <code>--data</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Interactive Sequence: Determinism Pipeline -->
+  <div class="seq-viewer" id="seqDeterminism">
+    <div class="seq-diagram-wrap">
+      <div class="seq-controls">
+        <button class="seq-btn" onclick="seqPlay('determinism')">▶ Play</button>
+        <button class="seq-btn" onclick="seqPrev('determinism')">← Prev</button>
+        <button class="seq-btn" onclick="seqNext('determinism')">Next →</button>
+        <button class="seq-btn" onclick="seqReset('determinism')">Reset</button>
+        <button class="seq-btn" onclick="seqShowAll('determinism')">Show All</button>
+        <span class="seq-step-counter" id="determinism-counter">Step 0 of 6</span>
+      </div>
+      <div class="mermaid" id="determinism-diagram" data-seq-details='[
+{"overview":"The CI pipeline launches the determinism verification script, which will prove that the evaluation engine produces identical results regardless of input ordering.","dataFlow":"The CI pipeline runner invokes the determinism check script with the assessment configuration and a set of random seeds.","keyPoints":["Determinism checks are a standard CI gate — failures block the pipeline","The script runs multiple evaluation passes with different random seeds","This validates that evaluation results are independent of evidence ordering"],"whyItMatters":"Deterministic evaluation is critical for compliance — the same evidence must always produce the same findings, or audit results become unreliable.","output":"Determinism check script launched with configuration."},
+{"overview":"The determinism script runs Phase A: collecting evidence once to create a baseline snapshot that will be used for all evaluation passes.","dataFlow":"All 68 collectors run once, and the complete evidence set is captured and frozen as the baseline for repeated evaluation.","keyPoints":["Evidence is collected only once to eliminate collection variability","The snapshot is immutable — evaluation passes cannot modify it","Collection timing is excluded from determinism testing"],"whyItMatters":"Collecting once and evaluating many times isolates the evaluation engine for testing — any non-determinism must come from evaluation logic, not collection variability.","output":"Evidence collection request dispatched to all collectors."},
+{"overview":"All collectors return their evidence, creating a complete snapshot that serves as the fixed input for all evaluation passes.","dataFlow":"The full evidence corpus (200+ types from 68 collectors) flows back and is frozen as the determinism test baseline.","keyPoints":["The snapshot includes all evidence types across Azure and Entra domains","Frozen evidence ensures every evaluation pass sees identical input","The snapshot is stored in memory for fast repeated access"],"whyItMatters":"A frozen evidence snapshot eliminates any time-dependent variability — each evaluation pass operates on bit-identical input data.","output":"Complete evidence snapshot captured and frozen."},
+{"overview":"The script runs the first evaluation pass using the standard evidence ordering and captures the complete results.","dataFlow":"The frozen evidence snapshot and all selected frameworks are passed to evaluate_all(), which produces FindingRecords and scores.","keyPoints":["This first pass establishes the reference results for comparison","All frameworks and controls are evaluated with standard ordering","Results include both individual findings and aggregate scores"],"whyItMatters":"The reference pass produces the expected output that all subsequent shuffled passes must exactly match — it is the ground truth for determinism.","output":"Reference evaluation results captured (findings + scores)."},
+{"overview":"The evaluation engine returns the reference findings and scores from the first (standard-ordered) pass.","dataFlow":"Complete FindingRecord arrays plus per-framework and per-domain scores flow back as the reference result set.","keyPoints":["Every finding includes control_id, status, severity, and evidence references","Scores are computed with the standard severity weighting","These results become the comparison baseline for shuffled passes"],"whyItMatters":"Reference results must be complete and correct — any bug in the reference pass would make the determinism test meaningless.","output":"Reference findings and scores stored for comparison."},
+{"overview":"The script runs additional evaluation passes with shuffled evidence ordering using deterministic seeds (formula: i*42+7).","dataFlow":"The same frozen evidence is re-ordered using a seeded random shuffle, then passed to evaluate_all() again.","keyPoints":["Seeds follow the formula i*42+7 for reproducible shuffling","Multiple passes (typically 3-5) test different orderings","Each pass must produce bit-identical results to the reference"],"whyItMatters":"Testing with shuffled input proves the evaluation engine does not depend on evidence ordering — a critical property for systems processing data from parallel collectors.","output":"Shuffled evaluation pass dispatched."},
+{"overview":"The evaluation engine returns findings and scores from the shuffled-evidence pass.","dataFlow":"FindingRecord arrays and scores from the shuffled pass flow back for comparison against the reference results.","keyPoints":["Results should be identical to the reference pass despite different evidence ordering","Any difference indicates a non-deterministic evaluation bug","Timing differences are expected and ignored — only output matters"],"whyItMatters":"Matching results from shuffled input conclusively proves evaluation determinism — the engine produces the same output regardless of how evidence arrives.","output":"Shuffled pass results ready for hash comparison."},
+{"overview":"The script strips volatile fields (timestamps, run IDs) from both result sets and computes SHA-256 hashes for comparison.","dataFlow":"Volatile fields are removed from all FindingRecords, the cleaned results are serialized to canonical JSON, and SHA-256 hashes are computed.","keyPoints":["Volatile fields (run_timestamp, execution_id) are excluded from hashing","Canonical JSON ensures consistent serialization (sorted keys, no extra whitespace)","SHA-256 provides cryptographic certainty of equality"],"whyItMatters":"SHA-256 hash comparison is definitive — if hashes match, the results are bit-identical. No need for expensive field-by-field comparison of thousands of findings.","output":"SHA-256 hashes computed from cleaned result sets."},
+{"overview":"The hasher returns the final verdict: PASS if all hashes match across all shuffled passes, FAIL if any hash differs.","dataFlow":"A boolean result (all hashes match = PASS, any mismatch = FAIL) plus the specific hash values flow back to the determinism script.","keyPoints":["PASS means the evaluation engine is fully deterministic","FAIL triggers pipeline failure with details of which pass diverged","Hash values are logged for debugging non-determinism issues"],"whyItMatters":"A determinism PASS gives confidence that assessment results are reproducible and auditable — a fundamental requirement for compliance tooling.","output":"Determinism verdict: PASS (all hashes match) or FAIL (with divergence details)."}
+]'>
+sequenceDiagram
+    participant CI as CI Pipeline
+    participant S as Determinism Script
+    participant C as Collectors
+    participant E as Evaluators
+    participant H as SHA-256 Hasher
+
+    CI->>S: Launch determinism check
+    S->>C: Phase A: Collect evidence (once)
+    C-->>S: Evidence snapshot
+    loop Phase B: N identical-order runs
+        S->>E: Evaluate all controls
+        E-->>S: Findings + scores
+    end
+    loop Phase C: N shuffled-order runs
+        S->>E: Evaluate (shuffled seed: i*42+7)
+        E-->>S: Findings + scores
+    end
+    S->>H: Strip volatile fields → SHA-256
+    H-->>S: All hashes match? PASS / FAIL
+      </div>
+    </div>
+    <div class="seq-steps-panel" id="determinism-steps">
+      <div class="seq-step-card" data-step="1">
+        <div class="step-label">Step 1 of 6</div>
+        <h5>Launch Check</h5>
+        <p>CI pipeline triggers the determinism script with <code>--tenant</code> and optionally <code>--runs N</code> (default 3).</p>
+        <div class="step-actors">CI Pipeline → Determinism Script</div>
+      </div>
+      <div class="seq-step-card" data-step="2">
+        <div class="step-label">Step 2 of 6</div>
+        <h5>Phase A: Collect Once</h5>
+        <p>Evidence is collected exactly once. All subsequent evaluation runs reuse this identical evidence snapshot.</p>
+        <div class="step-actors">Script → Collectors</div>
+      </div>
+      <div class="seq-step-card" data-step="3">
+        <div class="step-label">Step 3 of 6</div>
+        <h5>Phase B: Identical Order</h5>
+        <p>N evaluation passes run with controls in their original order. Each produces findings, scores, and a summary.</p>
+        <div class="step-actors">Script → Evaluators (N times)</div>
+      </div>
+      <div class="seq-step-card" data-step="4">
+        <div class="step-label">Step 4 of 6</div>
+        <h5>Phase C: Shuffled Order</h5>
+        <p>N more passes with controls shuffled using seed <code>i * 42 + 7</code>. Ensures order-independence.</p>
+        <div class="step-actors">Script → Evaluators (N times, shuffled)</div>
+      </div>
+      <div class="seq-step-card" data-step="5">
+        <div class="step-label">Step 5 of 6</div>
+        <h5>Phase D: Hash Comparison</h5>
+        <p>Volatile fields (<code>FindingId</code>, <code>EvaluatedAt</code>, <code>Timestamp</code>, etc.) stripped. SHA-256 computed for <code>summary</code>, <code>control_results</code>, <code>findings</code>, <code>missing_evidence</code>.</p>
+        <div class="step-actors">Script → SHA-256 Hasher</div>
+      </div>
+      <div class="seq-step-card" data-step="6">
+        <div class="step-label">Step 6 of 6</div>
+        <h5>Verdict</h5>
+        <p>If all hashes match across all runs: exit <strong>0</strong> (PASS). Any mismatch: exit <strong>1</strong> (FAIL). Phase E also checks report generation determinism.</p>
+        <div class="step-actors">Hasher → Script → CI Pipeline</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Volatile Fields Stripped Before Comparison</h3>
+  <p style="font-size:.85rem;color:var(--text-secondary)"><code>FindingId</code>, <code>EvaluatedAt</code>, <code>RecordId</code>, <code>RecordedAt</code>, <code>EvidenceId</code>, <code>CollectedAt</code>, <code>AssessmentId</code>, <code>StartedAt</code>, <code>CompletedAt</code>, <code>DurationSeconds</code>, <code>OutputDirectory</code>, <code>Timestamp</code></p>
+
+  <h3>CI/CD Integration</h3>
+<pre>      - name: Determinism Gate
+        working-directory: AIAgent
+        run: |
+          python run_cr_determinism_check.py \
+            --tenant ${{ secrets.AZURE_TENANT_ID }}
+          echo "Determinism check passed"</pre>
+</section>
+
+<!-- ══════ Delta ══════ -->
+<section id="delta">
+  <h2><span class="icon">📊</span> Delta Tracking</h2>
+  <div class="info-box info">
+    <strong>📈 Automatic Drift Detection</strong>
+    When <code>.last_run.json</code> exists (saved after every run), the next assessment generates a drift report showing: new findings, resolved findings, and score change (+/−%).
+  </div>
+  <p>Store output directories as pipeline artifacts to maintain history. The <code>drift_html/</code> subfolder appears in the output only when prior-run data is available.</p>
+
+  <h3>Checkpoint / Resume</h3>
+  <p>Collection uses <code>.checkpoint.json</code> for fault tolerance:</p>
+  <ul style="padding-left:1.5rem;color:var(--text-secondary);font-size:.9rem">
+    <li>Stores <code>{completed, failed, evidence}</code> during collection</li>
+    <li>On resume, completed collectors are skipped</li>
+    <li>Corrupt checkpoint file → fresh start</li>
+    <li>Auto-deleted after successful collection</li>
+  </ul>
+</section>
+
+<!-- ══════ Config ══════ -->
+<section id="config">
+  <h2><span class="icon">⚙️</span> Config Tuning for CI/CD</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Setting</th><th>JSON Default</th><th>Code Default</th><th>CI/CD Recommendation</th></tr></thead>
+      <tbody>
+        <tr><td><code>azureBatchSize</code></td><td>4</td><td>8</td><td>4–8 depending on rate limits</td></tr>
+        <tr><td><code>entraBatchSize</code></td><td>3</td><td>6</td><td>3–6 depending on tenant size</td></tr>
+        <tr><td><code>collectorTimeout</code></td><td>300s</td><td>600s</td><td>600s for large tenants</td></tr>
+        <tr><td><code>checkpointEnabled</code></td><td>true</td><td>true</td><td>Keep enabled</td></tr>
+        <tr><td><code>outputFormats</code></td><td><code>["json","html","md"]</code></td><td><code>["json","html"]</code></td><td><code>["json"]</code> for minimal CI/CD</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0})" aria-label="Back to top">↑</button>
+<footer>
+  <p>PostureIQ — CI/CD Integration Guide — Author: Murali Chillakuru</p>
+  <p style="margin-top:.25rem">4 Auth Modes · 8 CLI Scripts · 2 Determinism Checks · 5 Phases</p>
+</footer>
+
+<script>
+function toggleTheme(){const t=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';if(t==='light')document.documentElement.setAttribute('data-theme','light');else document.documentElement.removeAttribute('data-theme');localStorage.setItem('esiq-theme',t)}
+(function(){if(localStorage.getItem('esiq-theme')==='light')document.documentElement.setAttribute('data-theme','light')})();
+mermaid.initialize({startOnLoad:true,theme:document.documentElement.getAttribute('data-theme')==='light'?'default':'dark',securityLevel:'loose',sequence:{mirrorActors:false,actorMargin:50}});
+
+/* Animated counters */
+document.querySelectorAll('.stat-value[data-target]').forEach(el=>{const t=+el.dataset.target;let c=0;const s=Math.max(1,Math.ceil(t/40));const i=setInterval(()=>{c+=s;if(c>=t){c=t;clearInterval(i)}el.textContent=c},30)});
+
+/* Scroll spy */
+const pills=document.querySelectorAll('.nav-pill[href^="#"]');const secs=document.querySelectorAll('section[id]');
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const a=document.querySelector('.nav-pill[href="#'+e.target.id+'"]');if(a)a.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px'});
+secs.forEach(s=>obs.observe(s));
+
+/* Back to top + reading progress */
+window.addEventListener('scroll',()=>{document.getElementById('backTop').classList.toggle('visible',window.scrollY>400);const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('readingProgress').style.width=(window.scrollY/h*100)+'%'});
+
+/* ── Interactive Sequence Diagram Engine ── */
+const seqState={};
+function seqInit(id){
+  const panel=document.getElementById(id+'-steps');
+  if(!panel) return;
+  const cards=panel.querySelectorAll('.seq-step-card');
+  seqState[id]={step:0,total:cards.length,cards,playing:false,timer:null};
+  seqUpdate(id);
+}
+function seqUpdate(id){
+  const s=seqState[id]; if(!s) return;
+  const counter=document.getElementById(id+'-counter');
+  if(counter) counter.textContent=s.step===0?'Step 0 of '+s.total:'Step '+s.step+' of '+s.total;
+  s.cards.forEach((c,i)=>{
+    if(s.step===0){c.classList.remove('active');c.style.display='none';}
+    else if(s.step>s.total){c.classList.add('active');c.style.display='';}
+    else{c.style.display='';c.classList.toggle('active',i+1===s.step);} 
+  });
+}
+function seqNext(id){const s=seqState[id];if(!s)return;if(s.step<=s.total){s.step++;seqUpdate(id);}else{seqStop(id);}}
+function seqPrev(id){const s=seqState[id];if(!s||s.step<=0)return;s.step--;seqUpdate(id);}
+function seqReset(id){seqStop(id);const s=seqState[id];if(!s)return;s.step=0;seqUpdate(id);}
+function seqShowAll(id){seqStop(id);const s=seqState[id];if(!s)return;s.step=s.total+1;seqUpdate(id);}
+function seqPlay(id){const s=seqState[id];if(!s||s.playing)return;s.playing=true;s.step=0;seqUpdate(id);s.timer=setInterval(()=>{if(s.step>s.total){seqStop(id);return;}s.step++;seqUpdate(id);},1200);}
+function seqStop(id){const s=seqState[id];if(!s)return;s.playing=false;if(s.timer){clearInterval(s.timer);s.timer=null;}}
+document.addEventListener('DOMContentLoaded',()=>{seqInit('preflight');seqInit('determinism');/* show all by default */seqShowAll('preflight');seqShowAll('determinism');});
+</script>
+<script src="seq-engine.js"></script>
+</body>
+</html>

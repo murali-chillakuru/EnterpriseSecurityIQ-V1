@@ -1,0 +1,694 @@
+{
+  "framework": "CIS",
+  "frameworkName": "CIS Microsoft Azure Foundations Benchmark",
+  "version": "2.0",
+  "description": "Mappings from PostureIQ evidence types to CIS Azure controls",
+  "controls": [
+    {
+      "control_id": "CIS-1.1",
+      "title": "Ensure Security Defaults is disabled (when CA policies exist)",
+      "domain": "identity",
+      "severity": "medium",
+      "evidence_types": [
+        "entra-security-defaults",
+        "entra-tenant-info",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_security_defaults_vs_ca",
+      "rationale": "Security Defaults and Conditional Access are mutually exclusive. CA provides more granular control.",
+      "recommendation": "Disable Security Defaults and use Conditional Access policies for granular control."
+    },
+    {
+      "control_id": "CIS-1.2",
+      "title": "Ensure MFA is enabled for all users",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-security-defaults",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_mfa_all_users",
+      "rationale": "MFA significantly reduces the risk of account compromise.",
+      "recommendation": "Create a Conditional Access policy requiring MFA for all users and all cloud apps.",
+      "compensating_evidence": [
+        "entra-security-defaults"
+      ]
+    },
+    {
+      "control_id": "CIS-1.3",
+      "title": "Ensure MFA is enabled for administrative roles",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-conditional-access-policy",
+        "entra-role-assignment"
+      ],
+      "evaluation_logic": "check_mfa_admins",
+      "rationale": "Administrative accounts are high-value targets and must require MFA.",
+      "recommendation": "Ensure a CA policy requires MFA for all directory roles."
+    },
+    {
+      "control_id": "CIS-1.5",
+      "title": "Ensure guest users are reviewed regularly",
+      "domain": "identity",
+      "severity": "medium",
+      "evidence_types": [
+        "entra-tenant-info"
+      ],
+      "evaluation_logic": "check_guest_user_review",
+      "rationale": "Unreviewed guest accounts may retain access beyond their need.",
+      "recommendation": "Implement regular access reviews for guest users."
+    },
+    {
+      "control_id": "CIS-2.1",
+      "title": "Ensure Azure Defender is enabled for servers",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_defender_enabled",
+      "rationale": "Azure Defender provides threat detection for server workloads.",
+      "recommendation": "Enable Microsoft Defender for Servers across all subscriptions."
+    },
+    {
+      "control_id": "CIS-3.1",
+      "title": "Ensure storage account uses customer-managed keys",
+      "domain": "data_protection",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource"
+      ],
+      "evaluation_logic": "check_storage_cmk",
+      "rationale": "Customer-managed keys provide additional control over data encryption.",
+      "recommendation": "Configure storage accounts to use customer-managed keys where required."
+    },
+    {
+      "control_id": "CIS-4.1",
+      "title": "Ensure no custom subscription owner roles exist",
+      "domain": "access",
+      "severity": "high",
+      "evidence_types": [
+        "azure-role-assignment"
+      ],
+      "evaluation_logic": "check_custom_owner_roles",
+      "rationale": "Custom owner roles bypass built-in safeguards and are difficult to audit.",
+      "recommendation": "Remove custom roles that grant subscription-level owner permissions."
+    },
+    {
+      "control_id": "CIS-5.1",
+      "title": "Ensure diagnostic settings capture all activities",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_logging_enabled",
+      "rationale": "Comprehensive logging enables security investigation and compliance auditing.",
+      "recommendation": "Enable diagnostic settings for activity logs and key resources."
+    },
+    {
+      "control_id": "CIS-6.1",
+      "title": "Ensure NSG flow logs are enabled",
+      "domain": "network",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource",
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_nsg_flow_logs",
+      "rationale": "NSG flow logs provide visibility into network traffic patterns.",
+      "recommendation": "Enable NSG flow logs for all network security groups."
+    },
+    {
+      "control_id": "CIS-8.1",
+      "title": "Ensure resource locks are applied to critical resources",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource"
+      ],
+      "evaluation_logic": "check_resource_locks",
+      "rationale": "Resource locks prevent accidental deletion of critical infrastructure.",
+      "recommendation": "Apply CanNotDelete or ReadOnly locks to production resource groups."
+    },
+    {
+      "control_id": "CIS-1.23",
+      "title": "Ensure MFA registration coverage exceeds 90%",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-mfa-registration",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_mfa_registration_coverage",
+      "rationale": "All users must be registered for MFA to prevent credential-based attacks.",
+      "recommendation": "Enforce MFA registration via Conditional Access. Target 90%+ registration rate."
+    },
+    {
+      "control_id": "CIS-1.24",
+      "title": "Ensure risky users are monitored and remediated",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-risky-user",
+        "entra-risk-detection"
+      ],
+      "evaluation_logic": "check_risky_users",
+      "rationale": "Identity Protection must detect and respond to risky users.",
+      "recommendation": "Enable Identity Protection risk policies. Remediate high-risk users."
+    },
+    {
+      "control_id": "CIS-1.25",
+      "title": "Ensure cross-tenant access is properly restricted",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-cross-tenant-policy"
+      ],
+      "evaluation_logic": "check_cross_tenant_access",
+      "rationale": "Cross-tenant access must enforce MFA trust and restrict partner access.",
+      "recommendation": "Configure cross-tenant MFA trust. Restrict B2B to approved partners."
+    },
+    {
+      "control_id": "CIS-2.1b",
+      "title": "Ensure Azure Policy compliance is monitored",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-compliance",
+        "azure-policy-definition"
+      ],
+      "evaluation_logic": "check_policy_compliance_state",
+      "rationale": "Policy compliance must be monitored to detect non-compliant resources.",
+      "recommendation": "Remediate non-compliant resources. Target 80%+ compliance rate."
+    },
+    {
+      "control_id": "CIS-2.2",
+      "title": "Ensure Microsoft Defender for Cloud is enabled for all resources",
+      "domain": "governance",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-auto-provisioning",
+        "azure-sql-advanced-threat",
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_defender_plans",
+      "rationale": "Defender for Cloud must be enabled for all critical workloads.",
+      "recommendation": "Enable all Defender plans. Configure auto-provisioning and security contacts."
+    },
+    {
+      "control_id": "CIS-1.26",
+      "title": "Ensure PIM requires MFA and justification for activation",
+      "domain": "governance",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-pim-eligible-assignment"
+      ],
+      "evaluation_logic": "check_pim_configuration",
+      "rationale": "PIM role activation must require MFA and justification.",
+      "recommendation": "Require MFA and justification. Limit activation to 8 hours."
+    },
+    {
+      "control_id": "CIS-1.27",
+      "title": "Ensure access reviews are configured for privileged roles",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "entra-access-review",
+        "entra-role-assignment"
+      ],
+      "evaluation_logic": "check_access_reviews",
+      "rationale": "Periodic access reviews ensure role assignments remain appropriate.",
+      "recommendation": "Configure recurring access reviews for privileged roles."
+    },
+    {
+      "control_id": "CIS-7.1",
+      "title": "Ensure virtual machines use disk encryption and managed identity",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-registry",
+        "azure-aks-cluster",
+        "azure-vm-config"
+      ],
+      "evaluation_logic": "check_vm_security",
+      "rationale": "VMs must have encrypted disks, managed identity, and security agents.",
+      "recommendation": "Enable disk encryption, managed identity, and MDE extension."
+    },
+    {
+      "control_id": "CIS-9.1",
+      "title": "Ensure web apps enforce HTTPS and TLS 1.2+",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-webapp-auth",
+        "azure-webapp-tls",
+        "azure-webapp-diagnostic",
+        "azure-webapp-config"
+      ],
+      "evaluation_logic": "check_webapp_security",
+      "rationale": "Web apps must enforce HTTPS, TLS 1.2+, and disable insecure protocols.",
+      "recommendation": "Enable HTTPS-only. Set TLS to 1.2+. Disable FTP and remote debugging."
+    },
+    {
+      "control_id": "CIS-4.1b",
+      "title": "Ensure SQL Server uses AD auth, auditing, and TDE",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-sql-server",
+        "azure-sql-tde",
+        "azure-sql-database",
+        "azure-sql-firewall",
+        "azure-sql-auditing",
+        "azure-sql-vulnerability",
+        "azure-sql-advanced-threat"
+      ],
+      "evaluation_logic": "check_sql_security",
+      "rationale": "SQL Servers must use Azure AD auth, auditing, and TDE.",
+      "recommendation": "Configure Azure AD admin, auditing, TDE, and restrict public access.",
+      "compensating_evidence": [
+        "azure-sql-advanced-threat"
+      ]
+    },
+    {
+      "control_id": "CIS-8.2",
+      "title": "Ensure AKS clusters enforce RBAC and security controls",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-acr-repository",
+        "azure-aks-cluster"
+      ],
+      "evaluation_logic": "check_aks_security",
+      "rationale": "AKS clusters must enforce RBAC, AAD, network policy, and Defender.",
+      "recommendation": "Enable RBAC, AAD, network policy, and Defender for Containers."
+    },
+    {
+      "control_id": "CIS-6.1b",
+      "title": "Ensure Azure Firewall has threat intelligence enabled",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-firewall"
+      ],
+      "evaluation_logic": "check_firewall_protection",
+      "rationale": "Azure Firewalls must have threat intelligence and rule collections.",
+      "recommendation": "Enable threat intelligence. Configure network and application rules."
+    },
+    {
+      "control_id": "CIS-6.2",
+      "title": "Ensure route tables enforce controlled routing and flow logs are enabled",
+      "domain": "network",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-route-table",
+        "azure-nsg-flow-log"
+      ],
+      "evaluation_logic": "check_route_table_security",
+      "rationale": "Route tables must enforce controlled routing through firewalls.",
+      "recommendation": "Configure default routes. Enable NSG flow logs with traffic analytics."
+    },
+    {
+      "control_id": "CIS-5.1b",
+      "title": "Ensure monitoring infrastructure covers all critical resources",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-log-analytics",
+        "azure-alert-rule",
+        "azure-action-group"
+      ],
+      "evaluation_logic": "check_monitoring_coverage",
+      "rationale": "Centralized monitoring infrastructure must be in place.",
+      "recommendation": "Configure Log Analytics with 90+ days retention. Set up alerts and action groups."
+    },
+    {
+      "control_id": "CIS-5.2",
+      "title": "Ensure managed identity hygiene is maintained",
+      "domain": "access",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-managed-identity",
+        "azure-role-assignment"
+      ],
+      "evaluation_logic": "check_managed_identity_hygiene",
+      "rationale": "Orphaned managed identities expand the attack surface and should be removed.",
+      "recommendation": "Review user-assigned managed identities. Remove orphaned identities."
+    },
+    {
+      "control_id": "CIS-5.3",
+      "title": "Ensure Cognitive Services accounts are securely configured",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-cognitive-account"
+      ],
+      "evaluation_logic": "check_ai_services_security",
+      "rationale": "AI accounts must disable public access, local auth, and enforce network restrictions.",
+      "recommendation": "Disable public access, disable local auth, enable CMK, and use managed identities."
+    },
+    {
+      "control_id": "CIS-5.4",
+      "title": "Ensure resource groups are consistently tagged",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource-group"
+      ],
+      "evaluation_logic": "check_resource_group_governance",
+      "rationale": "Resource groups must have consistent tags for governance and cost management.",
+      "recommendation": "Apply mandatory tags to all resource groups."
+    },
+    {
+      "control_id": "CIS-5.5",
+      "title": "Ensure AI deployments have responsible AI guardrails",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-ai-deployment"
+      ],
+      "evaluation_logic": "check_ai_governance",
+      "rationale": "AI deployments must have content filtering and rate limits.",
+      "recommendation": "Configure content filter policies and rate limits on all AI deployments."
+    },
+    {
+      "control_id": "CIS-5.6",
+      "title": "Ensure ML workspaces use private endpoints",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-ml-workspace"
+      ],
+      "evaluation_logic": "check_ml_network_security",
+      "rationale": "ML workspaces must disable public access and use private endpoints.",
+      "recommendation": "Disable public network access. Configure private endpoints. Enable managed identity."
+    },
+    {
+      "control_id": "CIS-3.10",
+      "title": "Ensure storage accounts enforce encryption and soft delete",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-account"
+      ],
+      "evaluation_logic": "check_storage_account_security",
+      "rationale": "Storage accounts must enforce HTTPS, TLS 1.2, soft delete, and network isolation.",
+      "recommendation": "Enable HTTPS-only, TLS 1.2, blob/container soft delete, and firewall."
+    },
+    {
+      "control_id": "CIS-7.5",
+      "title": "Ensure container registries disable admin user",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-registry"
+      ],
+      "evaluation_logic": "check_container_registry_security",
+      "rationale": "ACR admin user must be disabled; use Azure AD for authentication.",
+      "recommendation": "Disable admin user. Enable content trust. Use private endpoints."
+    },
+    {
+      "control_id": "CIS-7.6",
+      "title": "Ensure Container Apps enforce HTTPS ingress",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-app"
+      ],
+      "evaluation_logic": "check_container_app_network",
+      "rationale": "Container Apps must disable insecure HTTP ingress.",
+      "recommendation": "Disable insecure connections. Enable managed identity."
+    },
+    {
+      "control_id": "CIS-4.5.1",
+      "title": "Ensure Cosmos DB disables local authentication",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-cosmosdb-account"
+      ],
+      "evaluation_logic": "check_cosmosdb_security",
+      "rationale": "Cosmos DB must disable key-based authentication and use Azure AD.",
+      "recommendation": "Disable local auth. Use private endpoints. Enable CMK."
+    },
+    {
+      "control_id": "CIS-4.5.2",
+      "title": "Ensure database servers disable public access",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-database-server"
+      ],
+      "evaluation_logic": "check_database_server_security",
+      "rationale": "Database servers must disable public access and enable HA.",
+      "recommendation": "Disable public access. Enable HA. Enable geo-redundant backup."
+    },
+    {
+      "control_id": "CIS-6.6",
+      "title": "Ensure Application Gateway has WAF enabled in Prevention mode",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-app-gateway",
+        "azure-waf-policy"
+      ],
+      "evaluation_logic": "check_app_gateway_security",
+      "rationale": "Application Gateways must enable WAF in Prevention mode.",
+      "recommendation": "Enable WAF in Prevention mode. Set minimum TLS to 1.2."
+    },
+    {
+      "control_id": "CIS-6.7",
+      "title": "Ensure API Management disables legacy TLS",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-apim-instance"
+      ],
+      "evaluation_logic": "check_apim_network_security",
+      "rationale": "APIM must disable TLS 1.0/1.1 and use VNet integration.",
+      "recommendation": "Disable TLS 1.0/1.1. Configure VNet. Enable managed identity."
+    },
+    {
+      "control_id": "CIS-3.12",
+      "title": "Ensure storage containers are not publicly accessible",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-storage-container"
+      ],
+      "evaluation_logic": "check_storage_container_security",
+      "rationale": "Individual blob containers must not permit anonymous access.",
+      "recommendation": "Set container access to Private. Configure lifecycle management."
+    },
+    {
+      "control_id": "CIS-4.2.5",
+      "title": "Ensure SQL Server has ATP and vulnerability assessment enabled",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-sql-detailed"
+      ],
+      "evaluation_logic": "check_sql_detailed_security",
+      "rationale": "SQL Servers must enable ATP and verify per-database auditing and TDE.",
+      "recommendation": "Enable ATP. Configure vulnerability assessment. Verify per-database auditing."
+    },
+    {
+      "control_id": "CIS-9.5",
+      "title": "Ensure Web App has authentication enabled",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-webapp-detailed"
+      ],
+      "evaluation_logic": "check_webapp_detailed_security",
+      "rationale": "Web Apps must enable authentication, restrict CORS, configure IP restrictions.",
+      "recommendation": "Enable App Service Authentication. Restrict CORS. Add IP restrictions."
+    },
+    {
+      "control_id": "CIS-4.4.1",
+      "title": "Ensure PostgreSQL/MySQL require secure transport and logging",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-database-config"
+      ],
+      "evaluation_logic": "check_database_config_security",
+      "rationale": "Database servers must enforce SSL/TLS and enable audit logging.",
+      "recommendation": "Enable require_secure_transport. Enable log_checkpoints and audit logging."
+    },
+    {
+      "control_id": "CIS-7.8",
+      "title": "Ensure ACR images use immutable tags",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-acr-repository"
+      ],
+      "evaluation_logic": "check_acr_repository_security",
+      "rationale": "ACR repositories must enforce tag immutability to prevent overwriting.",
+      "recommendation": "Enable tag immutability. Clean up stale repositories."
+    },
+    {
+      "control_id": "CIS-10.1",
+      "title": "Incident Detection and Response",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-alert-rule",
+        "entra-risk-summary"
+      ],
+      "evaluation_logic": "check_incident_detection",
+      "rationale": "Organizations must have automated incident detection capabilities.",
+      "recommendation": "Enable Defender for Cloud and configure alert rules."
+    },
+    {
+      "control_id": "CIS-10.2",
+      "title": "Incident Notification",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-action-group",
+        "azure-alert-rule",
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_incident_alerting",
+      "rationale": "Alert infrastructure must notify personnel of security incidents.",
+      "recommendation": "Configure action groups with email/SMS receivers."
+    },
+    {
+      "control_id": "CIS-10.3",
+      "title": "Security Contact Configuration",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_security_contact_config",
+      "rationale": "Security contacts must be configured for incident reporting.",
+      "recommendation": "Configure security contacts with alert notifications."
+    },
+    {
+      "control_id": "CIS-5.5b",
+      "title": "Configuration Change Control",
+      "domain": "change_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "azure-policy-definition"
+      ],
+      "evaluation_logic": "check_change_control_policies",
+      "rationale": "Policies must enforce change control governance.",
+      "recommendation": "Assign policies with deny effects for unauthorized changes."
+    },
+    {
+      "control_id": "CIS-5.6b",
+      "title": "Resource Lock Governance",
+      "domain": "change_management",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource-lock",
+        "azure-resource-group"
+      ],
+      "evaluation_logic": "check_resource_lock_governance",
+      "rationale": "Critical resources must be protected with resource locks.",
+      "recommendation": "Apply CanNotDelete locks on production resource groups."
+    },
+    {
+      "control_id": "CIS-11.1",
+      "title": "Backup Configuration",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-recovery-vault",
+        "azure-vm-config",
+        "azure-sql-server"
+      ],
+      "evaluation_logic": "check_backup_configuration",
+      "rationale": "Recovery Services vaults must protect critical workloads.",
+      "recommendation": "Deploy recovery vaults with soft delete enabled."
+    },
+    {
+      "control_id": "CIS-11.2",
+      "title": "Geo-Redundant Storage",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-account",
+        "azure-cosmosdb-account"
+      ],
+      "evaluation_logic": "check_geo_redundancy",
+      "rationale": "Storage must be geo-redundant for disaster recovery.",
+      "recommendation": "Use GRS/RA-GRS replication for storage accounts."
+    },
+    {
+      "control_id": "CIS-1.4",
+      "title": "Asset Inventory",
+      "domain": "asset_management",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource",
+        "azure-resource-group",
+        "azure-managed-identity"
+      ],
+      "evaluation_logic": "check_asset_inventory",
+      "rationale": "Maintain a comprehensive inventory of all Azure resources.",
+      "recommendation": "Enable resource discovery and maintain asset inventory."
+    },
+    {
+      "control_id": "CIS-1.5b",
+      "title": "Data Classification Tagging",
+      "domain": "asset_management",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource",
+        "azure-resource-group"
+      ],
+      "evaluation_logic": "check_classification_tagging",
+      "rationale": "Resources must have classification tags for data sensitivity.",
+      "recommendation": "Apply mandatory data classification tags to resources."
+    },
+    {
+      "control_id": "CIS-5.7",
+      "title": "Session Management",
+      "domain": "access",
+      "severity": "medium",
+      "evidence_types": [
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_session_management",
+      "rationale": "Session controls must enforce sign-in frequency and browser restrictions.",
+      "recommendation": "Configure CA policies with session controls."
+    },
+    {
+      "control_id": "CIS-8.9",
+      "title": "Log Retention",
+      "domain": "logging",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-log-analytics",
+        "azure-nsg-flow-log"
+      ],
+      "evaluation_logic": "check_log_retention_analysis",
+      "rationale": "Logs must be retained for compliance investigation periods.",
+      "recommendation": "Set Log Analytics retention to at least 90 days."
+    },
+    {
+      "control_id": "CIS-1.6",
+      "title": "Service Principal Hygiene",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-service-principal",
+        "entra-risky-service-principal",
+        "entra-application"
+      ],
+      "evaluation_logic": "check_service_principal_hygiene",
+      "rationale": "Service principals must have valid credentials and assigned owners.",
+      "recommendation": "Rotate expired credentials and investigate risky service principals."
+    }
+  ]
+}

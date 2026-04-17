@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PostureIQ — Sequence Diagram</title>
+<style>
+:root {
+  --ms-blue:#0078D4; --primary:#4EA8DE; --success:#54B054; --danger:#E74856; --warning:#FFCB3D;
+  --bg:#1B1A1F; --bg-elevated:#252429; --bg-card:#22212A; --bg-card-hover:#2A2933;
+  --text:#E4E2E0; --text-secondary:#A8A6A3; --text-muted:#918F8C;
+  --border:#383640; --border-light:#2E2D35;
+  --font-primary:'Segoe UI Variable','Segoe UI',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
+  --font-mono:'Cascadia Code','Fira Code','Consolas',monospace;
+  --shadow-sm:0 2px 4px rgba(0,0,0,.2),0 0 1px rgba(0,0,0,.18);
+  --shadow-md:0 4px 8px rgba(0,0,0,.24),0 0 2px rgba(0,0,0,.12);
+}
+[data-theme="light"]{
+  --primary:#0078D4;--success:#107C10;--danger:#D13438;--warning:#E67700;
+  --bg:#F3F2F1;--bg-elevated:#FFF;--bg-card:#FFF;--bg-card-hover:#FAFAFA;
+  --text:#323130;--text-secondary:#605E5C;--text-muted:#696765;
+  --border:#EDEBE9;--border-light:#F3F2F1;
+  --shadow-sm:0 2px 4px rgba(0,0,0,.06),0 0 1px rgba(0,0,0,.04);
+  --shadow-md:0 4px 8px rgba(0,0,0,.08),0 0 2px rgba(0,0,0,.04);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:14px}
+body{font-family:var(--font-primary);font-size:1rem;line-height:1.65;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+.skip-nav{position:absolute;top:-100%;left:16px;padding:12px 24px;background:var(--primary);color:#fff;font-size:14px;font-weight:600;border-radius:0 0 8px 8px;z-index:10000;text-decoration:none;transition:top .2s}
+.skip-nav:focus{top:0}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:2px}
+button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
+
+/* Top nav */
+.top-nav{position:sticky;top:0;z-index:1000;background:var(--bg-elevated);border-bottom:1px solid var(--border);padding:12px 32px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;box-shadow:var(--shadow-sm)}
+.top-nav a{color:var(--text-secondary);text-decoration:none;font-size:13px;padding:6px 10px;border-radius:6px;transition:all .2s;min-height:36px;display:inline-flex;align-items:center}
+.top-nav a:hover,.top-nav a.active{color:var(--primary);background:rgba(78,168,222,0.08)}
+.top-nav .brand{font-size:15px;font-weight:700;color:var(--primary);margin-right:auto}
+.theme-btn{padding:6px 14px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;min-height:36px}
+.theme-btn:hover{border-color:var(--primary);color:var(--primary)}
+
+/* Content */
+.content{padding:32px;max-width:100%}
+.page-title{font-size:28px;font-weight:700;margin-bottom:8px}
+.meta-bar{display:flex;gap:24px;color:var(--text-secondary);font-size:13px;margin-bottom:24px;flex-wrap:wrap}
+.section{margin-bottom:48px}
+h2{font-size:20px;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+h3{font-size:16px;margin:20px 0 10px;color:var(--text)}
+h4{font-size:14px;margin:16px 0 8px;color:var(--text-secondary)}
+
+/* Diagram container */
+.diagram-container{width:100%;overflow-x:auto;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:32px;box-shadow:var(--shadow-sm)}
+.diagram-container svg{max-width:none;height:auto;transition:width .15s ease,height .15s ease}
+
+/* Diagram toolbar & zoom controls */
+.diagram-toolbar{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--bg-elevated);border-bottom:1px solid var(--border);border-radius:12px 12px 0 0;margin:-24px -24px 16px -24px}
+.toolbar-label{font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px}
+.toolbar-actions{display:flex;align-items:center;gap:4px}
+.toolbar-btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:6px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-secondary);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;min-height:32px;font-family:var(--font-primary)}
+.toolbar-btn:hover{border-color:var(--primary);color:var(--primary);background:rgba(78,168,222,0.08)}
+.toolbar-btn:active{transform:scale(.97)}
+.toolbar-btn[data-action="fullscreen"]{margin-left:4px}
+.zoom-indicator{font-size:12px;font-weight:600;color:var(--primary);min-width:48px;text-align:center;font-variant-numeric:tabular-nums;padding:0 4px}
+.diagram-container:fullscreen,.diagram-container:-webkit-full-screen{background:var(--bg);border:none;border-radius:0;padding:0;display:flex;flex-direction:column;height:100vh;overflow:auto}
+.diagram-container:fullscreen .diagram-toolbar,.diagram-container:-webkit-full-screen .diagram-toolbar{margin:0;border-radius:0;flex-shrink:0;position:sticky;top:0;z-index:10;background:var(--bg-elevated)}
+.diagram-container[tabindex]:focus-within .diagram-toolbar{border-bottom-color:var(--primary)}
+.diagram-hint{font-size:11px;color:var(--text-muted);padding:6px 12px;text-align:center;border-top:1px solid var(--border-light)}
+
+/* Explanation section */
+.explanation{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px 28px;margin-bottom:24px;box-shadow:var(--shadow-sm)}
+.explanation p{font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px}
+.explanation p:last-child{margin-bottom:0}
+.explanation strong{color:var(--text)}
+.explanation code{font-family:var(--font-mono);font-size:12px;background:var(--bg-elevated);padding:2px 6px;border-radius:4px;color:var(--primary);border:1px solid var(--border-light)}
+.phase-card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin-bottom:12px}
+.phase-card h4{margin:0 0 8px;color:var(--primary);font-size:14px}
+.phase-card p,.phase-card ul{font-size:13px;color:var(--text-secondary);line-height:1.7}
+.phase-card ul{margin:8px 0 0 20px}
+.phase-card li{margin-bottom:4px}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;font-weight:700;margin-right:6px;flex-shrink:0}
+.actor-table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0}
+.actor-table th{background:var(--bg-elevated);padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid var(--border);color:var(--text-secondary);text-transform:uppercase;font-size:11px;letter-spacing:.5px}
+.actor-table td{padding:10px 14px;border-bottom:1px solid var(--border-light)}
+.actor-table tr:hover td{background:var(--bg-card-hover)}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;color:#fff;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)}
+.legend-dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+.note-box{background:rgba(255,185,0,0.08);border:1px solid rgba(255,185,0,0.3);border-radius:8px;padding:12px 16px;margin:16px 0;font-size:13px;color:var(--warning)}
+.info-box{background:rgba(78,168,222,0.08);border:1px solid rgba(78,168,222,0.3);border-radius:8px;padding:12px 16px;margin:16px 0;font-size:13px;color:var(--primary)}
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px;margin:16px 0 28px}
+.toc a{display:block;padding:8px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text);text-decoration:none;font-size:13px;transition:all .2s}
+.toc a:hover{border-color:var(--primary);color:var(--primary);background:var(--bg-card-hover)}
+.toc .toc-num{color:var(--primary);font-weight:600;margin-right:6px}
+
+/* Loading state */
+.mermaid-loading{text-align:center;padding:48px;color:var(--text-muted);font-size:14px}
+
+/* Back to top */
+.back-to-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;font-size:20px;border:none;cursor:pointer;opacity:0;visibility:hidden;transition:all .3s;z-index:999;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md)}
+.back-to-top.visible{opacity:1;visibility:visible}
+.back-to-top:hover{transform:scale(1.1)}
+
+@media(max-width:768px){.content{padding:16px}.diagram-container{padding:12px}}
+@media print{.top-nav,.theme-btn,.back-to-top,.skip-nav{display:none!important}.content{padding:16px;max-width:100%}body{background:#fff;color:#000}.explanation,.phase-card,.diagram-container{border:1px solid #ccc;background:#fff}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;scroll-behavior:auto!important}html{scroll-behavior:auto}}
+@media(forced-colors:active){.badge,.back-to-top,.theme-btn,.step-num,.toc a{border:1px solid ButtonText;forced-color-adjust:none}.skip-nav:focus{background:Highlight;color:HighlightText}}
+</style>
+<!-- Mermaid: load in head, defer init until after DOM is ready -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+// Prevent Mermaid from auto-initializing on load
+mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose',
+  sequence: { diagramMarginX: 20, diagramMarginY: 20, actorMargin: 40, width: 180,
+    height: 50, boxMargin: 10, boxTextMargin: 10, noteMargin: 14, messageMargin: 35,
+    mirrorActors: true, useMaxWidth: false, wrap: true, wrapPadding: 14 }
+});
+</script>
+</head>
+<body>
+<a href="#main" class="skip-nav">Skip to content</a>
+
+<nav class="top-nav" aria-label="Main navigation">
+  <span class="brand">&#128202; PostureIQ Sequence Diagram</span>
+  <a href="#overview-diagram">Main Sequence</a>
+  <a href="#collection-diagram">Collection Detail</a>
+  <a href="#evaluation-diagram">Evaluation Detail</a>
+  <a href="#error-diagram">Error Handling</a>
+  <a href="#architecture-diagram">Architecture</a>
+  <a href="#explanation">Detailed Explanation</a>
+  <button class="theme-btn" onclick="toggleTheme()">Switch to Light</button>
+</nav>
+
+<main id="main" class="content">
+
+<h1 class="page-title">PostureIQ — End-to-End Sequence Diagram</h1>
+<div class="meta-bar">
+  <span>Architecture Documentation</span>
+  <span>v1.0</span>
+  <span>Generated: 2026-03-31</span>
+</div>
+
+<div class="toc">
+  <a href="#overview-diagram"><span class="toc-num">1</span>Assessment Pipeline Overview</a>
+  <a href="#collection-diagram"><span class="toc-num">2</span>Evidence Collection Detail</a>
+  <a href="#evaluation-diagram"><span class="toc-num">3</span>Compliance Evaluation Detail</a>
+  <a href="#error-diagram"><span class="toc-num">4</span>Error Handling &amp; Resilience</a>
+  <a href="#architecture-diagram"><span class="toc-num">5</span>Architecture Overview</a>
+  <a href="#explanation"><span class="toc-num">6</span>Detailed Phase Explanation</a>
+  <a href="#actors"><span class="toc-num">7</span>Actor Reference</a>
+  <a href="#data-flow"><span class="toc-num">8</span>Data Flow &amp; Structures</a>
+  <a href="#modes"><span class="toc-num">9</span>Operational Modes</a>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<!-- DIAGRAM 1: Full Assessment Pipeline Overview                        -->
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<section id="overview-diagram" class="section">
+<h2>1. Assessment Pipeline — Full Sequence Overview</h2>
+<p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px">
+  End-to-end flow from CLI invocation to final report output across all four phases.
+</p>
+<div class="diagram-container" id="dc-1" tabindex="0" role="group" aria-roledescription="Sequence diagram" aria-label="Assessment Pipeline Overview. Keyboard: + zoom in, − zoom out, 0 fit, F fullscreen.">
+  <div class="diagram-toolbar" role="toolbar" aria-label="Diagram 1 controls">
+    <span class="toolbar-label">Assessment Pipeline Overview</span>
+    <div class="toolbar-actions">
+      <button class="toolbar-btn" data-action="zoom-in" data-dc="1" title="Zoom in (+)" aria-label="Zoom in">&#43; Zoom</button>
+      <button class="toolbar-btn" data-action="zoom-out" data-dc="1" title="Zoom out (−)" aria-label="Zoom out">&#8722; Zoom</button>
+      <button class="toolbar-btn" data-action="fit" data-dc="1" title="Fit to view (0)" aria-label="Fit diagram to view">Fit</button>
+      <button class="toolbar-btn" data-action="fullscreen" data-dc="1" title="Full screen (F)" aria-label="Toggle full screen">&#9974; Full Screen</button>
+      <span class="zoom-indicator" id="zoom-1" aria-live="polite" role="status">100%</span>
+    </div>
+  </div>
+  <div class="mermaid-loading" id="loading-1">Loading diagram…</div>
+  <pre class="mermaid" style="display:none" id="diagram-1">
+sequenceDiagram
+    autonumber
+    actor User
+    participant CLI as CLI<br/>(run_assessment.py)
+    participant Config as AssessmentConfig<br/>(config.py)
+    participant Auth as ComplianceCredentials<br/>(auth.py)
+    participant AzIdentity as Azure Identity SDK
+    participant SubClient as SubscriptionClient<br/>(ARM)
+    participant Graph as GraphServiceClient<br/>(MS Graph v1.0)
+    participant Orch as Orchestrator<br/>(orchestrator.py)
+    participant Registry as Collector Registry<br/>(registry.py)
+    participant Inventory as ResourceInventory<br/>(Singleton Cache)
+    participant AzCollectors as Azure Collectors<br/>(44 modules)
+    participant ARM as Azure ARM APIs
+    participant EntraCollectors as Entra Collectors<br/>(12 modules)
+    participant GraphAPI as MS Graph API<br/>(v1.0 + /beta)
+    participant EvalEngine as Evaluation Engine<br/>(engine.py)
+    participant DomainEval as Domain Evaluators<br/>(10 modules)
+    participant Frameworks as Framework Mappings<br/>(11 JSON files)
+    participant Reports as Report Generators<br/>(24 modules)
+    participant FS as File System<br/>(output/)
+
+    rect rgb(40, 60, 90)
+    Note over User, FS: PHASE 0 — CLI Bootstrap & Pre-Flight Validation
+    User->>CLI: python run_assessment.py --tenant T --framework NIST CIS
+    CLI->>CLI: parse args (argparse)
+    CLI->>CLI: select_frameworks() → validate against 11 available
+    CLI->>Config: AssessmentConfig.from_env()
+    Config->>Config: load JSON file / env vars / defaults
+    Config-->>CLI: config (batch_size, timeout, thresholds)
+
+    CLI->>Auth: ComplianceCredentials(tenant_id=T)
+    Auth->>AzIdentity: create DefaultAzureCredential / AzureCliCredential
+    AzIdentity-->>Auth: credential (lazy, cached)
+
+    Note over CLI, Graph: Pre-flight Check — validates all access before collection
+    CLI->>Auth: preflight_check()
+    Auth->>SubClient: subscriptions.list()
+    SubClient-->>Auth: subscription list
+    Auth->>Graph: /me (user identity)
+    Graph-->>Auth: user info (displayName, UPN)
+    Auth->>Graph: /organization (tenant info)
+    Graph-->>Auth: tenant details
+    Auth->>Graph: /me/memberOf (role check)
+    Graph-->>Auth: directory roles
+    Auth->>Auth: check roles vs SUFFICIENT_ROLES
+    Auth-->>CLI: {ok, user, tenant, roles, arm_subs, warnings}
+    CLI->>CLI: abort if ok=false
+    end
+
+    rect rgb(30, 70, 50)
+    Note over CLI, FS: PHASE 1 — Evidence Collection (44 Azure + 12 Entra collectors)
+    CLI->>Orch: run_full_assessment(creds, config, output_dir)
+    Orch->>Auth: get_tenant_info() → Graph /organization
+    Auth-->>Orch: tenant_info
+    Orch->>Auth: list_subscriptions(filter)
+    Auth->>SubClient: subscriptions.list()
+    SubClient-->>Auth: filtered subscription list
+    Auth-->>Orch: subscriptions[]
+
+    Orch->>Inventory: ResourceInventory.ensure_loaded(creds, subs)
+    loop For each subscription
+        Inventory->>ARM: resources.list() via paginate_arm()
+        ARM-->>Inventory: all resources
+    end
+    Inventory->>Inventory: index by type, sub_id (singleton cache)
+
+    Orch->>Registry: discover_collectors()
+    Registry->>Registry: pkgutil.iter_modules() → import all
+    Registry-->>Orch: azure_fns (44), entra_fns (12) sorted by priority
+
+    Orch->>Orch: check for .checkpoint.json (resume support)
+
+    Note over Orch, ARM: Azure Collectors — batches of 4, asyncio.gather()
+    loop Azure Batches (batch_size=4)
+        Orch->>AzCollectors: asyncio.gather(*batch, return_exceptions=True)
+        AzCollectors->>AzCollectors: run_collector(name, source, collect_fn)
+        AzCollectors->>ARM: paginate_arm() — list/get API calls
+        ARM-->>AzCollectors: resource configurations
+        AzCollectors->>AzCollectors: make_evidence() → EvidenceRecord[]
+        AzCollectors-->>Orch: list[dict] (evidence records)
+        Orch->>FS: _save_checkpoint() after each batch
+    end
+
+    Note over Orch, GraphAPI: Entra Collectors — batches of 3, asyncio.gather()
+    loop Entra Batches (batch_size=3)
+        Orch->>EntraCollectors: asyncio.gather(*batch, return_exceptions=True)
+        EntraCollectors->>EntraCollectors: run_collector(name, source, collect_fn)
+        EntraCollectors->>GraphAPI: paginate_graph() — Graph v1.0 + /beta
+        GraphAPI-->>EntraCollectors: directory objects, policies, roles
+        EntraCollectors->>EntraCollectors: make_evidence() → EvidenceRecord[]
+        EntraCollectors-->>Orch: list[dict] (evidence records)
+        Orch->>FS: _save_checkpoint() after each batch
+    end
+
+    Orch->>Orch: extract access_denied_collectors from evidence
+    end
+
+    rect rgb(70, 50, 30)
+    Note over Orch, Frameworks: PHASE 2 — Compliance Evaluation & Scoring
+    Orch->>EvalEngine: evaluate_all(evidence, frameworks, domains, thresholds)
+    EvalEngine->>EvalEngine: _index_evidence(evidence) → dict[type → records]
+
+    loop For each framework (e.g. NIST-800-53, CIS)
+        EvalEngine->>Frameworks: _load_mappings(framework_key)
+        Frameworks-->>EvalEngine: controls[] with evidence_types, domain, logic
+
+        loop For each control in framework
+            EvalEngine->>EvalEngine: gather evidence by evidence_types from index
+            alt Evidence found
+                EvalEngine->>DomainEval: DOMAIN_EVALUATORS[domain](ctrl, evidence, index)
+                DomainEval->>DomainEval: execute evaluation_logic function
+                DomainEval-->>EvalEngine: FindingRecord[] (status, severity, description)
+            else No matching evidence
+                EvalEngine->>EvalEngine: check compensating_evidence
+                alt Compensating evidence found
+                    EvalEngine->>DomainEval: evaluate with compensating evidence
+                    DomainEval-->>EvalEngine: FindingRecord[]
+                else No evidence at all
+                    EvalEngine->>EvalEngine: create missing_evidence record
+                end
+            end
+            EvalEngine->>EvalEngine: cross-domain fallback check
+        end
+
+        EvalEngine->>EvalEngine: aggregate control statuses
+        EvalEngine->>EvalEngine: _weighted_score() — severity-weighted %
+        EvalEngine->>EvalEngine: _maturity_level() — 5-level scale
+    end
+
+    EvalEngine-->>Orch: {findings, control_results, missing_evidence, summary}
+
+    Orch->>Orch: find_previous_results() → prior compliance-data.json
+    Orch->>Orch: compute_delta() → control status changes
+    end
+
+    rect rgb(50, 30, 70)
+    Note over Orch, FS: PHASE 3 — Report Generation (24 generators)
+    loop Per-framework (when multi-framework)
+        Orch->>Reports: generate per-framework reports
+        Reports->>FS: {fw}/compliance-report.html
+        Reports->>FS: {fw}/compliance-report.md
+        Reports->>FS: {fw}/master-report.html/.md/.xlsx
+    end
+
+    Note over Reports, FS: Shared reports (root output directory)
+    Orch->>Reports: methodology_report.html
+    Reports->>FS: methodology-report.html
+    Orch->>Reports: executive_dashboard.html
+    Reports->>FS: executive-dashboard.html
+    Orch->>Reports: drift_report (if delta exists)
+    Reports->>FS: drift-report.html
+    Orch->>Reports: data exports
+    Reports->>FS: control-results.csv/json, findings.csv/json
+    Reports->>FS: missing-evidence.csv/json, compliance-data.json
+    Orch->>Reports: raw evidence archive
+    Reports->>FS: raw/{evidence-type}.json files
+    Orch->>Reports: remediation playbooks
+    Reports->>FS: remediation/*.md (CLI/PS/Bicep)
+    Orch->>Reports: SARIF + OSCAL exports
+    Reports->>FS: *.sarif, *.oscal
+    end
+
+    rect rgb(40, 40, 50)
+    Note over Orch, FS: PHASE 4 — Cleanup & Results
+    Orch->>FS: delete .checkpoint.json
+    Orch->>FS: save last-run metadata
+    Orch-->>CLI: {summary, findings, control_results, report_paths, elapsed}
+    CLI->>CLI: print summary table + score
+    CLI-->>User: assessment complete — output directory path
+    end
+  </pre>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<!-- DIAGRAM 2: Collection Detail                                        -->
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<section id="collection-diagram" class="section">
+<h2>2. Evidence Collection — Detailed Sequence</h2>
+<p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px">
+  Internal detail of how a single collector executes, including retry logic, pagination, and evidence creation.
+</p>
+<div class="diagram-container" id="dc-2" tabindex="0" role="group" aria-roledescription="Sequence diagram" aria-label="Evidence Collection Detail. Keyboard: + zoom in, − zoom out, 0 fit, F fullscreen.">
+  <div class="diagram-toolbar" role="toolbar" aria-label="Diagram 2 controls">
+    <span class="toolbar-label">Evidence Collection Detail</span>
+    <div class="toolbar-actions">
+      <button class="toolbar-btn" data-action="zoom-in" data-dc="2" title="Zoom in (+)" aria-label="Zoom in">&#43; Zoom</button>
+      <button class="toolbar-btn" data-action="zoom-out" data-dc="2" title="Zoom out (−)" aria-label="Zoom out">&#8722; Zoom</button>
+      <button class="toolbar-btn" data-action="fit" data-dc="2" title="Fit to view (0)" aria-label="Fit diagram to view">Fit</button>
+      <button class="toolbar-btn" data-action="fullscreen" data-dc="2" title="Full screen (F)" aria-label="Toggle full screen">&#9974; Full Screen</button>
+      <span class="zoom-indicator" id="zoom-2" aria-live="polite" role="status">100%</span>
+    </div>
+  </div>
+  <div class="mermaid-loading" id="loading-2">Loading diagram…</div>
+  <pre class="mermaid" style="display:none" id="diagram-2">
+sequenceDiagram
+    autonumber
+    participant Orch as Orchestrator
+    participant RunColl as run_collector()<br/>(base.py)
+    participant CollFn as Collector Function<br/>(e.g. collect_azure_rbac)
+    participant ArmClient as ARM SDK Client<br/>(e.g. AuthorizationMgmt)
+    participant PagArm as paginate_arm()<br/>(base.py)
+    participant API as Azure ARM API
+    participant MakeEvid as make_evidence()<br/>(base.py)
+    participant Result as CollectorResult
+
+    Orch->>RunColl: run_collector("AzureRBAC", "Azure", _collect)
+    RunColl->>RunColl: start timer, attempt=1
+
+    loop Retry loop (max 3 attempts, backoff 2s/4s/8s)
+        RunColl->>CollFn: await _collect()
+
+        loop For each subscription
+            CollFn->>ArmClient: AuthorizationManagementClient(cred, sub_id)
+            CollFn->>PagArm: paginate_arm(client.role_assignments.list_for_subscription())
+
+            PagArm->>PagArm: detect type: async iterator vs coroutine vs iterable
+
+            alt Async pager (standard)
+                loop async for item in pager
+                    PagArm->>API: GET /subscriptions/{id}/providers/Microsoft.Authorization/roleAssignments
+                    API-->>PagArm: page of role assignments (with nextLink)
+                    PagArm->>PagArm: items.append(item)
+                end
+            else Coroutine (SDK variant)
+                PagArm->>API: GET (single call)
+                API-->>PagArm: result with .value list
+                PagArm->>PagArm: return result.value
+            end
+
+            PagArm-->>CollFn: list[RoleAssignment]
+
+            loop For each role assignment
+                CollFn->>ArmClient: role_definitions.get_by_id(def_id) [cached]
+                ArmClient-->>CollFn: role_name, role_type
+
+                CollFn->>CollFn: classify scope_level (MG/Sub/RG/Resource)
+                CollFn->>CollFn: check IsPrivileged against PRIVILEGED_ROLES[]
+                CollFn->>MakeEvid: make_evidence(source, collector, type, data)
+                MakeEvid->>MakeEvid: EvidenceRecord(UUID, timestamp, PascalCase)
+                MakeEvid-->>CollFn: evidence dict
+                CollFn->>CollFn: evidence.append(dict)
+            end
+
+            CollFn->>ArmClient: client.close()
+        end
+
+        CollFn-->>RunColl: evidence[]
+        RunColl->>RunColl: stop timer, calculate duration
+
+        RunColl->>Result: CollectorResult(success=True, data=evidence, duration, count)
+        Result-->>Orch: CollectorResult
+    end
+
+    Note right of Orch: Orchestrator extends all_evidence[]<br/>then saves checkpoint to disk
+  </pre>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<!-- DIAGRAM 3: Evaluation Detail                                        -->
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<section id="evaluation-diagram" class="section">
+<h2>3. Compliance Evaluation — Detailed Sequence</h2>
+<p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px">
+  How evidence is indexed, mapped to framework controls, dispatched to domain evaluators, scored, and aggregated.
+</p>
+<div class="diagram-container" id="dc-3" tabindex="0" role="group" aria-roledescription="Sequence diagram" aria-label="Compliance Evaluation Detail. Keyboard: + zoom in, − zoom out, 0 fit, F fullscreen.">
+  <div class="diagram-toolbar" role="toolbar" aria-label="Diagram 3 controls">
+    <span class="toolbar-label">Compliance Evaluation Detail</span>
+    <div class="toolbar-actions">
+      <button class="toolbar-btn" data-action="zoom-in" data-dc="3" title="Zoom in (+)" aria-label="Zoom in">&#43; Zoom</button>
+      <button class="toolbar-btn" data-action="zoom-out" data-dc="3" title="Zoom out (−)" aria-label="Zoom out">&#8722; Zoom</button>
+      <button class="toolbar-btn" data-action="fit" data-dc="3" title="Fit to view (0)" aria-label="Fit diagram to view">Fit</button>
+      <button class="toolbar-btn" data-action="fullscreen" data-dc="3" title="Full screen (F)" aria-label="Toggle full screen">&#9974; Full Screen</button>
+      <span class="zoom-indicator" id="zoom-3" aria-live="polite" role="status">100%</span>
+    </div>
+  </div>
+  <div class="mermaid-loading" id="loading-3">Loading diagram…</div>
+  <pre class="mermaid" style="display:none" id="diagram-3">
+sequenceDiagram
+    autonumber
+    participant Orch as Orchestrator
+    participant Engine as Evaluation Engine<br/>(engine.py)
+    participant Index as Evidence Index<br/>(dict[type→records])
+    participant FwFile as Framework Mapping<br/>(JSON file)
+    participant DomEval as Domain Evaluator<br/>(e.g. access.py)
+    participant CrossDom as Cross-Domain<br/>Fallback Map
+    participant Suppress as Suppression<br/>System
+    participant Score as Scoring Engine
+
+    Orch->>Engine: evaluate_all(evidence, ["NIST-800-53","CIS"], domains, thresholds)
+
+    Engine->>Index: _index_evidence(all_evidence)
+    Note right of Index: evidence_index = {<br/>"azure-role-assignment": [...],<br/>"entra-conditional-access-policy": [...],<br/>"azure-nsg-rule": [...],<br/>...120+ evidence types<br/>}
+
+    loop For each framework (NIST-800-53, CIS, …)
+        Engine->>FwFile: _load_mappings("NIST-800-53")
+        FwFile-->>Engine: {framework, controls: [{control_id, domain, evidence_types, evaluation_logic, severity}]}
+
+        loop For each control (e.g. AC-2 Account Management)
+            Engine->>Index: lookup evidence_types ["entra-role-assignment", "azure-role-assignment"]
+            Index-->>Engine: matching evidence records
+
+            alt Primary evidence found
+                Engine->>DomEval: access_evaluator(ctrl_id, ctrl, evidence, index, thresholds)
+
+                Note right of DomEval: Dispatches to specific logic function:<br/>e.g. _check_account_management()<br/>• Count subscription Owners vs threshold (3)<br/>• Check for service principal Owners<br/>• Verify MFA registration %<br/>• Check conditional access coverage
+
+                DomEval->>DomEval: evaluate based on evaluation_logic
+                DomEval->>DomEval: create FindingRecord(status, severity, description, recommendation)
+                DomEval-->>Engine: FindingRecord[]
+
+            else No primary evidence
+                Engine->>Index: check compensating_evidence types
+                alt Compensating evidence exists
+                    Engine->>DomEval: evaluate with compensating evidence
+                    DomEval-->>Engine: FindingRecord[]
+                else No evidence at all
+                    Engine->>Engine: MissingEvidenceRecord(ctrl_id, missing_types, severity)
+                    Engine->>Engine: FindingRecord(status=missing_evidence)
+                end
+            end
+
+            alt All findings = not_assessed
+                Engine->>CrossDom: _CROSS_DOMAIN_MAP[evaluation_logic] → alt domain
+                CrossDom-->>Engine: alternative evaluator
+                Engine->>DomEval: retry with alternative domain evaluator
+                DomEval-->>Engine: FindingRecord[] (may upgrade from not_assessed)
+            end
+
+            Engine->>Engine: aggregate control status (worst-case)
+            Note right of Engine: non_compliant if ANY NC<br/>compliant if ALL compliant<br/>partial if mixed<br/>missing_evidence if no data
+        end
+
+        Engine->>Suppress: apply suppression rules (if configured)
+        Suppress-->>Engine: filtered findings
+
+        Engine->>Score: _weighted_score(control_results)
+        Note right of Score: weights: critical=4, high=3,<br/>medium=2, low=1<br/>partial = 50% credit<br/>missing/not_assessed excluded<br/>from denominator
+
+        Engine->>Score: _maturity_level(pass_ratio, critical_pass, depth)
+        Note right of Score: composite score = <br/>pass_ratio×50 + critical_pass×30<br/>+ depth_ratio×20<br/>→ Initial/Developing/Defined/<br/>Managed/Optimized
+    end
+
+    Engine-->>Orch: {findings[], control_results[], missing_evidence[], summary{scores, maturity, domain_scores}}
+  </pre>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<!-- DIAGRAM 4: Error Handling & Resilience                              -->
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<section id="error-diagram" class="section">
+<h2>4. Error Handling &amp; Resilience Patterns</h2>
+<p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px">
+  How PostureIQ handles failures gracefully — 403 access denied, 429 throttling, timeouts, and collector isolation.
+</p>
+<div class="diagram-container" id="dc-4" tabindex="0" role="group" aria-roledescription="Sequence diagram" aria-label="Error Handling and Resilience. Keyboard: + zoom in, − zoom out, 0 fit, F fullscreen.">
+  <div class="diagram-toolbar" role="toolbar" aria-label="Diagram 4 controls">
+    <span class="toolbar-label">Error Handling &amp; Resilience</span>
+    <div class="toolbar-actions">
+      <button class="toolbar-btn" data-action="zoom-in" data-dc="4" title="Zoom in (+)" aria-label="Zoom in">&#43; Zoom</button>
+      <button class="toolbar-btn" data-action="zoom-out" data-dc="4" title="Zoom out (−)" aria-label="Zoom out">&#8722; Zoom</button>
+      <button class="toolbar-btn" data-action="fit" data-dc="4" title="Fit to view (0)" aria-label="Fit diagram to view">Fit</button>
+      <button class="toolbar-btn" data-action="fullscreen" data-dc="4" title="Full screen (F)" aria-label="Toggle full screen">&#9974; Full Screen</button>
+      <span class="zoom-indicator" id="zoom-4" aria-live="polite" role="status">100%</span>
+    </div>
+  </div>
+  <div class="mermaid-loading" id="loading-4">Loading diagram…</div>
+  <pre class="mermaid" style="display:none" id="diagram-4">
+sequenceDiagram
+    autonumber
+    participant Orch as Orchestrator
+    participant RunColl as run_collector()
+    participant CollFn as Collector Function
+    participant Pag as paginate_arm() /<br/>paginate_graph()
+    participant API as Azure API / Graph API
+    participant Chk as Checkpoint System
+
+    Note over Orch, API: Scenario A — Access Denied (403/401)
+    RunColl->>CollFn: attempt collect
+    CollFn->>Pag: paginate_arm(api_call)
+    Pag->>API: GET /resource
+    API-->>Pag: HTTP 403 Forbidden
+    Pag->>Pag: _extract_status(exc) → 403
+    Pag-->>CollFn: raise AccessDeniedError(api, 403)
+    CollFn-->>RunColl: AccessDeniedError propagates
+    RunColl->>RunColl: NO RETRY — immediate handling
+    RunColl->>RunColl: create access-denied evidence marker
+    Note right of RunColl: marker = EvidenceRecord(<br/>type="access-denied",<br/>Data.AccessDenied=True,<br/>Data.Api="ARM API")
+    RunColl-->>Orch: CollectorResult(success=True, access_denied=True, data=[marker])
+    Note right of Orch: Assessment continues —<br/>reports show "insufficient permissions"
+
+    Note over Orch, API: Scenario B — Transient Failure with Retry
+    RunColl->>CollFn: attempt 1
+    CollFn->>API: GET /resource
+    API-->>CollFn: HTTP 500 Internal Server Error
+    RunColl->>RunColl: wait 2 seconds (backoff)
+    RunColl->>CollFn: attempt 2
+    CollFn->>API: GET /resource
+    API-->>CollFn: HTTP 500 again
+    RunColl->>RunColl: wait 4 seconds (doubled)
+    RunColl->>CollFn: attempt 3
+    CollFn->>API: GET /resource
+    API-->>CollFn: 200 OK — data returned
+    RunColl-->>Orch: CollectorResult(success=True, data=[...])
+
+    Note over Orch, API: Scenario C — Graph 429 Throttling
+    Pag->>API: GET /users (Graph API)
+    API-->>Pag: HTTP 429 Too Many Requests (Retry-After: 15)
+    Pag->>Pag: parse Retry-After header → 15s
+    Pag->>Pag: await asyncio.sleep(15)
+    Pag->>API: GET /users (retry)
+    API-->>Pag: 200 OK — page of results
+    Pag->>Pag: check odata_next_link → more pages
+    Pag->>API: GET nextLink
+    API-->>Pag: 200 OK — next page
+    Pag-->>CollFn: all items[]
+
+    Note over Orch, Chk: Scenario D — Collector Timeout & Checkpoint Resume
+    Orch->>Orch: asyncio.wait_for(collector, timeout=600s)
+    Orch->>CollFn: start long-running collector
+    CollFn->>API: many API calls...
+    Note right of Orch: 600 seconds elapse
+    Orch->>Orch: TimeoutError raised
+    Orch->>Orch: add to failed_collectors[]
+    Orch->>Chk: _save_checkpoint(evidence, completed, failed)
+    Chk->>Chk: write .checkpoint.json
+    Note right of Chk: Next run loads checkpoint,<br/>skips completed collectors,<br/>resumes from failure point
+
+    Note over Orch, Orch: Scenario E — Batch Isolation
+    Orch->>Orch: asyncio.gather(*[coll_A, coll_B, coll_C, coll_D], return_exceptions=True)
+    Note right of Orch: coll_A → success<br/>coll_B → AccessDenied (marker)<br/>coll_C → Exception (failed)<br/>coll_D → success
+    Orch->>Orch: process results: extend evidence, log failures
+    Note right of Orch: Batch continues —<br/>one failure never crashes others
+  </pre>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<!-- DIAGRAM 5: Architecture Overview                                    -->
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<section id="architecture-diagram" class="section">
+<h2>5. Architecture Overview — Component Interaction</h2>
+<p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px">
+  High-level architecture showing how the 7 runner modes, authentication layer, collector registry, evaluation engine, and report generators interact end-to-end.
+</p>
+<div class="diagram-container" id="dc-5" tabindex="0" role="group" aria-roledescription="Sequence diagram" aria-label="Architecture Overview. Keyboard: + zoom in, − zoom out, 0 fit, F fullscreen.">
+  <div class="diagram-toolbar" role="toolbar" aria-label="Diagram 5 controls">
+    <span class="toolbar-label">Architecture Overview</span>
+    <div class="toolbar-actions">
+      <button class="toolbar-btn" data-action="zoom-in" data-dc="5" title="Zoom in (+)" aria-label="Zoom in">&#43; Zoom</button>
+      <button class="toolbar-btn" data-action="zoom-out" data-dc="5" title="Zoom out (−)" aria-label="Zoom out">&#8722; Zoom</button>
+      <button class="toolbar-btn" data-action="fit" data-dc="5" title="Fit to view (0)" aria-label="Fit diagram to view">Fit</button>
+      <button class="toolbar-btn" data-action="fullscreen" data-dc="5" title="Full screen (F)" aria-label="Toggle full screen">&#9974; Full Screen</button>
+      <span class="zoom-indicator" id="zoom-5" aria-live="polite" role="status">100%</span>
+    </div>
+  </div>
+  <div class="mermaid-loading" id="loading-5">Loading diagram…</div>
+  <pre class="mermaid" style="display:none" id="diagram-5">
+sequenceDiagram
+    autonumber
+    actor User
+    participant Runners as Entry Points<br/>(7 Runner Modes)
+    participant Auth as ComplianceCredentials<br/>(auth.py)
+    participant SDKs as Azure Identity<br/>+ ARM + Graph SDKs
+    participant Orch as Orchestrator<br/>(orchestrator.py)
+    participant Registry as Collector Registry<br/>(auto-discovery)
+    participant Inventory as ResourceInventory<br/>(cached index)
+    participant AzColl as 44 Azure Collectors<br/>(Control + Data Plane)
+    participant EnColl as 12 Entra Collectors<br/>(Graph v1.0 + /beta)
+    participant APIs as Azure ARM +<br/>MS Graph APIs
+    participant EvalEngine as Evaluation Engine<br/>(engine.py)
+    participant Evaluators as 10 Domain Evaluators<br/>(8 core + 2 support)
+    participant Frameworks as 11 Framework Mappings<br/>(JSON definitions)
+    participant Reports as 23 Report Generators<br/>(multi-format)
+    participant Engines as Standalone Engines<br/>(Risk / DataSec / Query)
+    participant Output as File System<br/>(output/)
+
+    rect rgb(40, 60, 90)
+    Note over User, Runners: Entry Point Layer — 7 Runner Modes
+    User->>Runners: CLI / Agent / API invocation
+    Note right of Runners: run_assessment.py (Full)<br/>run_rbac_tree.py (RBAC)<br/>run_query.py (NL Query)<br/>run_risk_analysis.py (Risk)<br/>run_data_security.py (Data)<br/>main.py (Foundry Agent)<br/>app/api.py (REST API)
+    alt Full Assessment
+        Runners->>Orch: run_full_assessment(creds, config)
+    else Standalone Engine
+        Runners->>Engines: analyze_risk() / assess_data_security()
+        Engines->>Auth: get credentials
+        Engines->>APIs: targeted API queries
+        Engines-->>Runners: engine-specific results
+    end
+    end
+
+    rect rgb(30, 50, 40)
+    Note over Auth, SDKs: Authentication Layer — Lazy Cached Credentials
+    Orch->>Auth: ComplianceCredentials(tenant_id)
+    Auth->>SDKs: DefaultAzureCredential (lazy, cached)
+    SDKs-->>Auth: token provider
+    Auth->>SDKs: create SubscriptionClient + GraphServiceClient
+    SDKs-->>Auth: SDK clients
+    Auth->>Auth: preflight_check() — validate access
+    Auth-->>Orch: {user, tenant, subscriptions, roles}
+    end
+
+    rect rgb(30, 70, 50)
+    Note over Orch, APIs: Evidence Collection — 56 Async Collectors
+    Orch->>Registry: discover_collectors() via pkgutil
+    Registry-->>Orch: 44 azure_fns + 12 entra_fns
+    Orch->>Inventory: pre-fetch all resources
+    Inventory->>APIs: ARM resources.list() per subscription
+    APIs-->>Inventory: indexed by type + subscription
+    par Azure (batches of 4)
+        Orch->>AzColl: asyncio.gather(*batch)
+        AzColl->>APIs: paginate_arm() — control + data plane
+        APIs-->>AzColl: resource configurations
+        AzColl-->>Orch: EvidenceRecord[] (120+ types)
+    and Entra (batches of 3)
+        Orch->>EnColl: asyncio.gather(*batch)
+        EnColl->>APIs: paginate_graph() — v1.0 + /beta
+        APIs-->>EnColl: directory objects + policies
+        EnColl-->>Orch: EvidenceRecord[]
+    end
+    Note over Orch: Checkpoint saved after each batch
+    end
+
+    rect rgb(70, 50, 30)
+    Note over EvalEngine, Frameworks: Compliance Evaluation — Multi-Framework
+    Orch->>EvalEngine: evaluate_all(evidence, frameworks)
+    EvalEngine->>EvalEngine: _index_evidence() by type
+    loop For each of 11 frameworks
+        EvalEngine->>Frameworks: load JSON control mappings
+        Frameworks-->>EvalEngine: controls with domains + logic
+        loop For each control
+            EvalEngine->>Evaluators: dispatch to domain evaluator
+            Evaluators-->>EvalEngine: FindingRecord[]
+        end
+        EvalEngine->>EvalEngine: weighted_score + maturity_level
+    end
+    EvalEngine-->>Orch: findings + control_results + summary
+    end
+
+    rect rgb(50, 30, 70)
+    Note over Reports, Output: Report Generation — 23 Generators
+    Orch->>Reports: generate all report types
+    Reports->>Output: Per-framework HTML + MD + XLSX
+    Reports->>Output: Executive dashboard + methodology
+    Reports->>Output: CSV + JSON data exports
+    Reports->>Output: SARIF + OSCAL machine-readable
+    Reports->>Output: Remediation playbooks + evidence archive
+    end
+
+    rect rgb(40, 40, 50)
+    Note over Orch, Output: Cleanup
+    Orch->>Output: delete checkpoint, save metadata
+    Orch-->>Runners: results summary
+    Runners-->>User: compliance score + output path
+    end
+  </pre>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<!-- DETAILED EXPLANATION SECTION                                        -->
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<section id="explanation" class="section">
+<h2>6. Detailed Phase Explanation</h2>
+
+<div class="phase-card">
+  <h4><span class="step-num">0</span> Phase 0 — CLI Bootstrap &amp; Pre-Flight Validation</h4>
+  <p>The assessment begins when the user invokes <code>run_assessment.py</code> via the command line. The CLI performs three critical setup steps before any Azure API calls:</p>
+  <ul>
+    <li><strong>Argument parsing:</strong> <code>argparse</code> extracts <code>--tenant</code>, <code>--framework</code> (validated against 11 supported: NIST-800-53, CIS, HIPAA, PCI-DSS, FedRAMP, SOC2, ISO-27001, MCSB, NIST-CSF, CSA-CCM, GDPR), <code>--subscriptions</code> filter, and <code>--output-dir</code>.</li>
+    <li><strong>Configuration loading:</strong> <code>AssessmentConfig.from_env()</code> loads settings from a JSON config file (if <code>ENTERPRISESECURITYIQ_CONFIG</code> env var is set), then overlays environment variable overrides. Key settings include <code>azure_batch_size=4</code>, <code>entra_batch_size=3</code>, <code>collector_timeout=600s</code>, <code>checkpoint_enabled=true</code>, and compliance thresholds.</li>
+    <li><strong>Pre-flight validation:</strong> <code>ComplianceCredentials.preflight_check()</code> performs four API probes — ARM subscription listing, Graph <code>/me</code> for user identity, <code>/organization</code> for tenant info, and <code>/me/memberOf</code> to verify the caller holds at least one of five sufficient Entra roles (Global Admin, Global Reader, Security Admin, Security Reader, Compliance Admin). If any probe fails, the assessment is aborted with a clear error before expensive collection runs.</li>
+  </ul>
+</div>
+
+<div class="phase-card">
+  <h4><span class="step-num">1</span> Phase 1 — Evidence Collection (56 Collectors)</h4>
+  <p>The orchestrator coordinates parallel execution of <strong>44 Azure collectors</strong> and <strong>12 Entra collectors</strong>, each producing standardised <code>EvidenceRecord</code> dictionaries with PascalCase keys.</p>
+  <ul>
+    <li><strong>Collector discovery:</strong> At module-load time, <code>registry.py</code> uses <code>pkgutil.iter_modules()</code> to auto-discover all Python modules under <code>collectors/azure/</code> and <code>collectors/entra/</code>. Each module's <code>@register_collector</code> decorator populates a central registry with the collector function, name, source (azure/entra), plane (control/data), and priority (execution order).</li>
+    <li><strong>Resource inventory pre-population:</strong> Before collectors run, the <code>ResourceInventory</code> singleton pre-fetches all resources across all subscriptions via ARM <code>resources.list()</code>, creating an in-memory index by resource type and subscription ID. This avoids N+1 API calls across collectors.</li>
+    <li><strong>Batched parallel execution:</strong> Azure collectors run in batches of 4 (configurable) using <code>asyncio.gather()</code>. Each collector is wrapped in <code>asyncio.wait_for(timeout=600s)</code> for safety. Entra collectors run similarly in batches of 3. After each batch, a checkpoint is saved to <code>.checkpoint.json</code> with all collected evidence and the list of completed/failed collectors, enabling resume on interruption.</li>
+    <li><strong>ARM pagination:</strong> <code>paginate_arm(pager)</code> handles three SDK return patterns — async iterators (standard pagers), coroutines (some SDK methods), and plain iterables. It raises <code>AccessDeniedError</code> on 403/401 responses.</li>
+    <li><strong>Graph pagination:</strong> <code>paginate_graph(request_builder, top=999)</code> follows <code>odata.nextLink</code> for multi-page Graph responses, handles 429 throttling by parsing <code>Retry-After</code> headers, and raises <code>AccessDeniedError</code> on 403/401.</li>
+    <li><strong>Evidence production:</strong> Each collector calls <code>make_evidence(source, collector, evidence_type, description, data, resource_id, resource_type)</code> which creates an <code>EvidenceRecord</code> dataclass with a UUID, UTC timestamp, and PascalCase-serialised fields.</li>
+  </ul>
+</div>
+
+<div class="phase-card">
+  <h4><span class="step-num">2</span> Phase 2 — Compliance Evaluation &amp; Scoring</h4>
+  <p>The evaluation engine maps collected evidence to framework controls, dispatches to domain-specific evaluators, and produces severity-weighted compliance scores.</p>
+  <ul>
+    <li><strong>Evidence indexing:</strong> <code>_index_evidence()</code> builds a dictionary keyed by <code>EvidenceType</code> (e.g. <code>"azure-role-assignment"</code>) pointing to lists of matching records. This enables O(1) evidence lookup per control.</li>
+    <li><strong>Framework mapping:</strong> For each selected framework, <code>_load_mappings()</code> reads its JSON file from <code>app/frameworks/</code>. Each control definition specifies a <code>domain</code> (routing key), <code>evidence_types</code> (lookup keys), <code>evaluation_logic</code> (function name), <code>severity</code> (scoring weight), and optionally <code>compensating_evidence</code> (fallback types).</li>
+    <li><strong>Domain dispatch:</strong> 10 domain evaluators (access, identity, data_protection, logging, network, governance, compute, database, application, encryption) are registered in <code>DOMAIN_EVALUATORS</code>. The engine dispatches each control to its domain evaluator, passing the control definition, matching evidence, the full evidence index, and threshold configuration. Each evaluator executes the specific <code>evaluation_logic</code> function (e.g. <code>_check_account_management()</code>) and returns a list of <code>FindingRecord</code> dictionaries.</li>
+    <li><strong>Cross-domain fallback:</strong> If a primary domain evaluator returns all <code>not_assessed</code> findings, the engine consults <code>_CROSS_DOMAIN_MAP</code> to try an alternative domain's evaluator. This handles controls that span multiple security domains.</li>
+    <li><strong>Scoring:</strong> <code>_weighted_score()</code> assigns weights by severity (critical=4, high=3, medium=2, low=1), grants 50% credit for partial compliance, and <strong>excludes missing_evidence/not_assessed from the denominator</strong> to avoid unfairly penalising limited-permission assessments. <code>_maturity_level()</code> computes a composite score: <code>pass_ratio×50 + critical_pass×30 + depth_ratio×20</code> mapping to a 5-level maturity scale (Initial → Developing → Defined → Managed → Optimized).</li>
+    <li><strong>Suppression system:</strong> Post-evaluation, configurable suppression rules can filter out known-accepted findings (e.g. accepted risks, compensating controls in place).</li>
+  </ul>
+</div>
+
+<div class="phase-card">
+  <h4><span class="step-num">3</span> Phase 3 — Report Generation (24 Generators)</h4>
+  <p>The orchestrator invokes up to <strong>24 report generators</strong>, each wrapped in <code>_safe()</code> for isolated error handling — a single report failure never blocks others.</p>
+  <ul>
+    <li><strong>Per-framework reports:</strong> When multiple frameworks are assessed, each gets its own subfolder (<code>output/{ts}/NIST-800-53/</code>, <code>output/{ts}/CIS/</code>, etc.) containing <code>compliance-report.html</code> (full sidebar-nav HTML report with inventory, RBAC analysis, control details, findings, and remediation roadmap), <code>compliance-report.md</code> (Markdown version), and <code>master-report.html/.md/.xlsx</code> (flat finding table, sortable and searchable).</li>
+    <li><strong>Shared reports:</strong> Generated once in the root output directory — <code>methodology-report.html</code> (4-phase pipeline diagram, collector stats), <code>executive-dashboard.html</code> (score gauge, framework comparison cards, top-10 findings, domain heatmap), <code>drift-report.html</code> (if a prior assessment exists, shows control status changes).</li>
+    <li><strong>Data exports:</strong> <code>control-results.csv/json</code>, <code>findings.csv/json</code>, <code>missing-evidence.csv/json</code>, <code>compliance-data.json</code> (full serialised assessment data for downstream consumption).</li>
+    <li><strong>Machine-readable formats:</strong> SARIF export for CI/CD pipeline integration (GitHub, Azure DevOps), OSCAL export for federal compliance workflows.</li>
+    <li><strong>Raw evidence archive:</strong> All evidence records are grouped by <code>EvidenceType</code> and saved as individual JSON files in <code>raw/</code> — providing a full audit trail for independent verification.</li>
+    <li><strong>Remediation playbooks:</strong> Auto-generated per-finding-type remediation guides in <code>remediation/</code> with Azure CLI, PowerShell, and Bicep code snippets.</li>
+  </ul>
+</div>
+
+<div class="phase-card">
+  <h4><span class="step-num">4</span> Phase 4 — Cleanup &amp; Results</h4>
+  <p>The orchestrator performs final cleanup: deletes the <code>.checkpoint.json</code> file (no longer needed after successful completion), saves last-run metadata for future delta comparisons, and returns the complete results dictionary to the CLI. The CLI prints a summary table with compliance scores, finding counts by severity, and the output directory path.</p>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<!-- ACTOR REFERENCE TABLE                                               -->
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<section id="actors" class="section">
+<h2>7. Actor Reference</h2>
+<table class="actor-table">
+  <thead>
+    <tr><th scope="col">Actor / Participant</th><th scope="col">Description</th><th scope="col">Key File(s)</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>CLI</strong></td><td>Command-line entry point — argument parsing, framework selection, output formatting</td><td><code>run_assessment.py</code></td></tr>
+    <tr><td><strong>AssessmentConfig</strong></td><td>Configuration loader — JSON file, environment variables, defaults (batch sizes, timeouts, thresholds)</td><td><code>app/config.py</code></td></tr>
+    <tr><td><strong>ComplianceCredentials</strong></td><td>Authentication manager — lazy credential creation, Graph/ARM client factories, subscription listing, pre-flight check</td><td><code>app/auth.py</code></td></tr>
+    <tr><td><strong>Azure Identity SDK</strong></td><td>Token provider — <code>DefaultAzureCredential</code>, <code>AzureCliCredential</code>, <code>ClientSecretCredential</code></td><td><code>azure-identity</code></td></tr>
+    <tr><td><strong>Orchestrator</strong></td><td>Pipeline coordinator — phases 1-3 execution, batching, checkpointing, delta comparison</td><td><code>app/orchestrator.py</code></td></tr>
+    <tr><td><strong>Collector Registry</strong></td><td>Auto-discovery of collector modules via <code>pkgutil</code>, <code>@register_collector</code> decorator, priority-sorted dispatch</td><td><code>app/collectors/registry.py</code></td></tr>
+    <tr><td><strong>ResourceInventory</strong></td><td>Singleton cache — pre-fetches all Azure resources, indexed by type and subscription for O(1) collector lookups</td><td><code>app/collectors/inventory.py</code></td></tr>
+    <tr><td><strong>Base Collector</strong></td><td>Shared execution framework — <code>run_collector()</code> retry/timing, <code>paginate_arm()</code>, <code>paginate_graph()</code>, <code>make_evidence()</code>, <code>AccessDeniedError</code></td><td><code>app/collectors/base.py</code></td></tr>
+    <tr><td><strong>44 Azure Collectors</strong></td><td>Individual ARM API collectors — RBAC, compute, network, storage, databases, security, policy, containers, etc.</td><td><code>app/collectors/azure/*.py</code></td></tr>
+    <tr><td><strong>12 Entra Collectors</strong></td><td>Individual Graph API collectors — roles, conditional access, users, applications, governance, identity protection, etc.</td><td><code>app/collectors/entra/*.py</code></td></tr>
+    <tr><td><strong>Azure ARM APIs</strong></td><td>Azure Resource Manager REST APIs — management-plane configuration queries across all resource providers</td><td>Azure cloud endpoints</td></tr>
+    <tr><td><strong>MS Graph API</strong></td><td>Microsoft Graph v1.0 and /beta endpoints — Entra ID directory, policies, PIM, audit logs</td><td>Graph cloud endpoints</td></tr>
+    <tr><td><strong>Evaluation Engine</strong></td><td>Central evaluator — evidence indexing, framework mapping loading, domain dispatch, scoring, maturity calculation</td><td><code>app/evaluators/engine.py</code></td></tr>
+    <tr><td><strong>10 Domain Evaluators</strong></td><td>Per-domain compliance logic — access, identity, data_protection, logging, network, governance, compute, database, application, encryption</td><td><code>app/evaluators/*.py</code></td></tr>
+    <tr><td><strong>Framework Mappings</strong></td><td>11 JSON control-mapping files defining controls, evidence types, evaluation logic, severity, and recommendations</td><td><code>app/frameworks/*.json</code></td></tr>
+    <tr><td><strong>24 Report Generators</strong></td><td>Output renderers — HTML, Markdown, Excel, CSV, JSON, SARIF, OSCAL, remediation playbooks</td><td><code>app/reports/*.py</code></td></tr>
+    <tr><td><strong>File System</strong></td><td>Output directory (<code>output/{timestamp}/</code>) — per-framework subfolders, shared reports, raw evidence, checkpoints</td><td>Local disk</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<!-- DATA FLOW SECTION                                                   -->
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<section id="data-flow" class="section">
+<h2>8. Data Flow &amp; Data Structures</h2>
+
+<div class="explanation">
+<h3>Evidence Record (collection output)</h3>
+<p>Each collector produces a list of <strong>EvidenceRecord</strong> dictionaries (PascalCase-serialised via <code>to_dict()</code>). Key fields:</p>
+<ul style="margin:8px 0 0 20px;font-size:13px;color:var(--text-secondary)">
+  <li><code>EvidenceId</code> — UUID v4, unique per record</li>
+  <li><code>Source</code> — <code>"Azure"</code> or <code>"Entra"</code></li>
+  <li><code>Collector</code> — e.g. <code>"AzureRBAC"</code>, <code>"EntraConditionalAccess"</code></li>
+  <li><code>EvidenceType</code> — the <strong>key lookup field</strong> used by the evaluation engine index (e.g. <code>"azure-role-assignment"</code>, <code>"entra-conditional-access-policy"</code>) — over 120 distinct types</li>
+  <li><code>Data</code> — nested dict with resource-specific fields (varies per collector)</li>
+  <li><code>ResourceId</code>, <code>ResourceType</code> — ARM resource ID and type</li>
+  <li><code>CollectedAt</code> — ISO 8601 UTC timestamp</li>
+</ul>
+</div>
+
+<div class="explanation">
+<h3>Evidence Index (evaluation input)</h3>
+<p><code>_index_evidence()</code> transforms the flat evidence list into a <strong>dictionary keyed by EvidenceType</strong> → list of matching records. This provides O(1) lookup when the evaluation engine needs to gather evidence for a specific control. Example: <code>index["azure-nsg-rule"]</code> instantly returns all NSG rule evidence records without scanning the full list.</p>
+</div>
+
+<div class="explanation">
+<h3>Finding Record (evaluation output)</h3>
+<p>Each domain evaluator produces <strong>FindingRecord</strong> dictionaries. Key fields:</p>
+<ul style="margin:8px 0 0 20px;font-size:13px;color:var(--text-secondary)">
+  <li><code>FindingId</code> — UUID v4</li>
+  <li><code>ControlId</code>, <code>Framework</code>, <code>ControlTitle</code> — control identification</li>
+  <li><code>Status</code> — <code>compliant</code>, <code>non_compliant</code>, <code>partial</code>, <code>missing_evidence</code>, or <code>not_assessed</code></li>
+  <li><code>Severity</code> — <code>critical</code>, <code>high</code>, <code>medium</code>, <code>low</code>, or <code>informational</code></li>
+  <li><code>Domain</code> — evaluation domain (access, network, etc.)</li>
+  <li><code>Description</code> — human-readable finding text</li>
+  <li><code>Recommendation</code> — remediation guidance</li>
+  <li><code>SupportingEvidence</code> — array of {ResourceId, ResourceName, ResourceType} references</li>
+</ul>
+</div>
+
+<div class="explanation">
+<h3>Compliance Summary (aggregated output)</h3>
+<p>The final summary structure contains:</p>
+<ul style="margin:8px 0 0 20px;font-size:13px;color:var(--text-secondary)">
+  <li><code>ComplianceScore</code> — severity-weighted percentage (critical=4×, high=3×, medium=2×, low=1×; partial=50% credit; missing/not_assessed excluded from denominator)</li>
+  <li><code>FrameworkSummaries</code> — per-framework breakdown of control counts by status</li>
+  <li><code>DomainScores</code> — per-domain scores with maturity levels</li>
+  <li><code>OverallMaturity</code> — 5-level scale: Initial (0-30) → Developing (30-50) → Defined (50-70) → Managed (70-85) → Optimized (85-100)</li>
+</ul>
+</div>
+
+<div class="info-box">
+  <strong>Data transformation pipeline:</strong>
+  ARM/Graph API responses → Collector SDK objects → <code>make_evidence()</code> → EvidenceRecord[] → <code>_index_evidence()</code> → evidence_index{} → Domain Evaluator → FindingRecord[] → control aggregation → ComplianceControlResult[] → scoring → Summary → Report Generators → HTML/MD/XLSX/CSV/JSON/SARIF/OSCAL files
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<!-- OPERATIONAL MODES SECTION                                           -->
+<!-- ════════════════════════════════════════════════════════════════════ -->
+<section id="modes" class="section">
+<h2>9. Operational Modes</h2>
+
+<div class="phase-card">
+  <h4>&#9654; Mode 1: Full Compliance Assessment (<code>run_assessment.py</code>)</h4>
+  <p>End-to-end assessment: pre-flight → collect all evidence (56 collectors) → evaluate against N frameworks → generate all reports. This is the primary mode depicted in the sequence diagrams above.</p>
+  <p><code>python run_assessment.py --tenant T --framework NIST-800-53 CIS HIPAA PCI-DSS</code></p>
+</div>
+
+<div class="phase-card">
+  <h4>&#9654; Mode 2: RBAC Hierarchy Report (<code>run_rbac_tree.py</code>)</h4>
+  <p>Standalone visualisation of the full Azure RBAC hierarchy: Management Groups → Subscriptions → Resource Groups → Resources, with role assignments, PIM eligibility, principal resolution, and group member expansion. Does <strong>not</strong> use the standard collector registry or evaluation engine. Produces an interactive HTML tree report and raw JSON.</p>
+  <p><code>python run_rbac_tree.py --tenant T [--subscriptions sub1 sub2]</code></p>
+</div>
+
+<div class="phase-card">
+  <h4>&#9654; Mode 3: Interactive Query REPL (<code>run_query.py</code>)</h4>
+  <p>On-demand search of Azure and Entra resources without a full assessment. Supports natural language queries (dispatched to Azure Resource Graph or Graph API), raw KQL via <code>/arg</code>, user detail lookups via <code>/user</code>, and compliance findings search via <code>/findings</code> (requires a prior assessment run). Results can be exported to JSON.</p>
+  <p><code>python run_query.py --tenant T [--query "list all VMs without encryption"]</code></p>
+</div>
+
+<div class="phase-card">
+  <h4>&#9654; Mode 4: Risk Analysis (<code>run_risk_analysis.py</code>)</h4>
+  <p>Security risk gap analysis across 4 categories (identity, network, defender, configuration). Can reuse evidence from a prior assessment via <code>--evidence</code> flag or collect fresh data. Produces risk scores per category.</p>
+  <p><code>python run_risk_analysis.py --tenant T [--evidence path] [--category identity,network]</code></p>
+</div>
+
+<div class="phase-card">
+  <h4>&#9654; Mode 5: Data Security Assessment (<code>run_data_security.py</code>)</h4>
+  <p>Data-layer security posture across 5 categories (storage, database, keyvault, encryption, classification). Focuses on data-at-rest encryption, access controls, key management, and data classification policies.</p>
+  <p><code>python run_data_security.py --tenant T [--category storage,encryption]</code></p>
+</div>
+
+<div class="phase-card">
+  <h4>&#9654; Mode 6: Foundry Agent (<code>main.py</code> + <code>agent.py</code>)</h4>
+  <p>Azure AI Foundry hosted agent mode exposing 5 tools (run_assessment, query_results, search_tenant, analyze_risk, assess_data_security) via the <code>responses</code> v1 protocol. Uses Managed Identity authentication and an LLM (configurable, default gpt-4.1) for conversational compliance analysis.</p>
+</div>
+
+<div class="phase-card">
+  <h4>&#9654; Mode 7: REST API (<code>api.py</code>)</h4>
+  <p>FastAPI server exposing <code>POST /assessments</code> (async assessment with <code>BackgroundTasks</code>, returns <code>task_id</code>), <code>GET /assessments/{task_id}</code> (poll for results), and <code>GET /health</code>. Supports webhook notification on completion.</p>
+  <p><code>uvicorn app.api:app --host 0.0.0.0 --port 8000</code></p>
+</div>
+
+</section>
+
+</main>
+
+<button class="back-to-top" aria-label="Back to top">&#8593;</button>
+
+<!-- Scripts at bottom, but Mermaid rendering triggered after DOM ready -->
+<script>
+// ═══════════════════════════════════════════════════════════════
+// Theme toggle
+// ═══════════════════════════════════════════════════════════════
+(function(){
+  var saved=localStorage.getItem('enterprisesecurityiq-theme');
+  var theme=saved||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');
+  document.documentElement.setAttribute('data-theme',theme);
+  var btn=document.querySelector('.theme-btn');
+  if(btn)btn.textContent=theme==='dark'?'Switch to Light':'Switch to Dark';
+})();
+function toggleTheme(){
+  var html=document.documentElement;
+  var current=html.getAttribute('data-theme')||'dark';
+  var next=current==='dark'?'light':'dark';
+  html.setAttribute('data-theme',next);
+  localStorage.setItem('enterprisesecurityiq-theme',next);
+  var btn=document.querySelector('.theme-btn');
+  if(btn)btn.textContent=next==='dark'?'Switch to Light':'Switch to Dark';
+  renderMermaidDiagrams(next);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Diagram zoom / pan / fit / fullscreen
+// ═══════════════════════════════════════════════════════════════
+var diagramStates = {};
+
+function getDiagramState(idx) {
+  if (!diagramStates[idx]) diagramStates[idx] = { zoom: 100, naturalW: 0, naturalH: 0 };
+  return diagramStates[idx];
+}
+
+function updateDiagramZoom(idx) {
+  var state = getDiagramState(idx);
+  var container = document.getElementById('dc-' + idx);
+  if (!container) return;
+  var svg = container.querySelector('svg');
+  if (!svg) return;
+
+  // Capture natural dimensions on first call
+  if (!state.naturalW) {
+    var vb = svg.viewBox && svg.viewBox.baseVal;
+    if (vb && vb.width > 0) {
+      state.naturalW = vb.width;
+      state.naturalH = vb.height;
+    } else {
+      state.naturalW = parseInt(svg.getAttribute('width')) || svg.getBoundingClientRect().width || 800;
+      state.naturalH = parseInt(svg.getAttribute('height')) || svg.getBoundingClientRect().height || 600;
+    }
+  }
+
+  var scale = state.zoom / 100;
+  var w = Math.round(state.naturalW * scale);
+  var h = Math.round(state.naturalH * scale);
+  svg.setAttribute('width', w);
+  svg.setAttribute('height', h);
+  svg.style.maxWidth = 'none';
+  svg.style.width = w + 'px';
+  svg.style.height = h + 'px';
+
+  var indicator = document.getElementById('zoom-' + idx);
+  if (indicator) indicator.textContent = state.zoom + '%';
+}
+
+function fitDiagram(idx) {
+  var state = getDiagramState(idx);
+  var container = document.getElementById('dc-' + idx);
+  if (!container) return;
+  var svg = container.querySelector('svg');
+  if (!svg) return;
+
+  // Capture natural dimensions
+  if (!state.naturalW) {
+    var vb = svg.viewBox && svg.viewBox.baseVal;
+    if (vb && vb.width > 0) {
+      state.naturalW = vb.width;
+      state.naturalH = vb.height;
+    } else {
+      state.naturalW = parseInt(svg.getAttribute('width')) || 800;
+      state.naturalH = parseInt(svg.getAttribute('height')) || 600;
+    }
+  }
+
+  var toolbarH = container.querySelector('.diagram-toolbar');
+  var usedH = toolbarH ? toolbarH.offsetHeight : 0;
+  var availW = container.clientWidth - 48; // horizontal padding
+  var availH = (document.fullscreenElement === container)
+    ? window.innerHeight - usedH - 32
+    : Infinity;
+
+  var fitW = Math.round((availW / state.naturalW) * 100);
+  var fitH = (availH < Infinity) ? Math.round((availH / state.naturalH) * 100) : Infinity;
+  state.zoom = Math.max(Math.min(fitW, fitH, 200), 10);
+  updateDiagramZoom(idx);
+}
+
+function diagramAction(action, idx) {
+  var state = getDiagramState(idx);
+  switch (action) {
+    case 'zoom-in':
+      state.zoom = Math.min(state.zoom + 25, 400);
+      updateDiagramZoom(idx);
+      break;
+    case 'zoom-out':
+      state.zoom = Math.max(state.zoom - 25, 10);
+      updateDiagramZoom(idx);
+      break;
+    case 'fit':
+      fitDiagram(idx);
+      break;
+    case 'fullscreen':
+      toggleFullscreen(idx);
+      break;
+  }
+}
+
+function toggleFullscreen(idx) {
+  var container = document.getElementById('dc-' + idx);
+  if (!container) return;
+  var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+  if (fsEl === container) {
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+  } else {
+    var fn = container.requestFullscreen || container.webkitRequestFullscreen;
+    if (fn) fn.call(container);
+  }
+}
+
+// Toolbar button clicks (event delegation)
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('.toolbar-btn');
+  if (!btn) return;
+  var action = btn.getAttribute('data-action');
+  var dc = parseInt(btn.getAttribute('data-dc'));
+  if (action && dc) diagramAction(action, dc);
+});
+
+// Keyboard controls when a diagram container is focused
+document.addEventListener('keydown', function(e) {
+  var container = e.target.closest('.diagram-container[tabindex]');
+  if (!container) return;
+  var idx = parseInt(container.id.replace('dc-', ''));
+  if (!idx) return;
+
+  switch (e.key) {
+    case '+': case '=':
+      diagramAction('zoom-in', idx); e.preventDefault(); break;
+    case '-': case '_':
+      diagramAction('zoom-out', idx); e.preventDefault(); break;
+    case '0':
+      diagramAction('fit', idx); e.preventDefault(); break;
+    case 'f': case 'F':
+      if (!e.ctrlKey && !e.metaKey) { diagramAction('fullscreen', idx); e.preventDefault(); }
+      break;
+  }
+});
+
+// Ctrl+scroll wheel zoom
+document.addEventListener('wheel', function(e) {
+  var container = e.target.closest('.diagram-container[tabindex]');
+  if (!container || !e.ctrlKey) return;
+  e.preventDefault();
+  var idx = parseInt(container.id.replace('dc-', ''));
+  if (!idx) return;
+  if (e.deltaY < 0) diagramAction('zoom-in', idx);
+  else diagramAction('zoom-out', idx);
+}, { passive: false });
+
+// Re-fit on fullscreen enter/exit
+document.addEventListener('fullscreenchange', function() {
+  var all = document.querySelectorAll('.diagram-container[id^="dc-"]');
+  all.forEach(function(c) {
+    var idx = parseInt(c.id.replace('dc-', ''));
+    if (idx) setTimeout(function() { fitDiagram(idx); }, 120);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// Mermaid rendering — render all diagrams, then auto-fit each
+// ═══════════════════════════════════════════════════════════════
+function renderMermaidDiagrams(theme) {
+  var isDark = (theme || document.documentElement.getAttribute('data-theme') || 'dark') === 'dark';
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: isDark ? 'dark' : 'default',
+    securityLevel: 'loose',
+    sequence: {
+      diagramMarginX: 20, diagramMarginY: 20, actorMargin: 40, width: 180,
+      height: 50, boxMargin: 10, boxTextMargin: 10, noteMargin: 14, messageMargin: 35,
+      mirrorActors: true, useMaxWidth: false, wrap: true, wrapPadding: 14
+    }
+  });
+
+  var blocks = document.querySelectorAll('pre.mermaid');
+  blocks.forEach(function(block, idx) {
+    var id = 'mermaid-svg-' + idx;
+    var code = block.getAttribute('data-mermaid-src') || block.textContent;
+    if (!block.getAttribute('data-mermaid-src')) {
+      block.setAttribute('data-mermaid-src', code);
+    }
+
+    mermaid.render(id, code).then(function(result) {
+      block.innerHTML = result.svg;
+      block.style.display = '';
+      // Hide loading indicator
+      var loading = document.getElementById('loading-' + (idx + 1));
+      if (loading) loading.style.display = 'none';
+
+      // Accessible SVG
+      var svg = block.querySelector('svg');
+      if (svg) svg.setAttribute('role', 'img');
+
+      // Auto-fit to container
+      var dcContainer = block.closest('.diagram-container[id^="dc-"]');
+      if (dcContainer) {
+        var dcIdx = parseInt(dcContainer.id.replace('dc-', ''));
+        if (dcIdx) {
+          diagramStates[dcIdx] = null; // reset for fresh natural dims
+          setTimeout(function() { fitDiagram(dcIdx); }, 80);
+        }
+      }
+    }).catch(function(err) {
+      console.error('Mermaid render error for diagram ' + (idx + 1) + ':', err);
+      block.innerHTML = '<p style="color:var(--danger);padding:16px">Diagram rendering failed. Please refresh the page.</p>';
+      block.style.display = '';
+      var loading = document.getElementById('loading-' + (idx + 1));
+      if (loading) loading.style.display = 'none';
+    });
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() { renderMermaidDiagrams(); });
+} else {
+  renderMermaidDiagrams();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Back-to-top button
+// ═══════════════════════════════════════════════════════════════
+(function(){
+  var btn=document.querySelector('.back-to-top');
+  if(!btn)return;
+  window.addEventListener('scroll',function(){btn.classList.toggle('visible',window.scrollY>300)});
+  btn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+})();
+
+// ═══════════════════════════════════════════════════════════════
+// Top-nav scroll-spy
+// ═══════════════════════════════════════════════════════════════
+(function(){
+  var secs=document.querySelectorAll('section[id]');
+  var links=document.querySelectorAll('.top-nav a[href^="#"]');
+  if(!secs.length||!links.length)return;
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var id=e.target.getAttribute('id');
+        links.forEach(function(l){
+          var isActive=l.getAttribute('href')==='#'+id;
+          l.classList.toggle('active',isActive);
+          if(isActive)l.setAttribute('aria-current','true');else l.removeAttribute('aria-current');
+        });
+      }
+    });
+  },{rootMargin:'-10% 0px -80% 0px'});
+  secs.forEach(function(s){obs.observe(s)});
+})();
+</script>
+<script src="seq-engine.js"></script>
+</body>
+</html>

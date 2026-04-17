@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostureIQ — Architecture</title>
+<meta name="description" content="Architecture documentation for PostureIQ: 3-phase pipeline, 64 collectors, 10 evaluation domains, 28 report generators.">
+<meta name="author" content="Murali Chillakuru">
+<style>
+:root {
+    --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-tertiary:#1C2128;--bg-card:#21262D;--bg-card-hover:#282E36;--bg-inset:#0D1117;
+    --border-primary:#30363D;--border-secondary:#21262D;--border-accent:#1F6FEB;
+    --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;--text-link:#58A6FF;
+    --accent-blue:#1F6FEB;--accent-blue-light:#388BFD;--accent-green:#3FB950;--accent-green-bg:rgba(63,185,80,.12);
+    --accent-orange:#D29922;--accent-orange-bg:rgba(210,153,34,.12);--accent-red:#F85149;--accent-red-bg:rgba(248,81,73,.12);
+    --accent-purple:#A371F7;--accent-purple-bg:rgba(163,113,247,.12);--accent-cyan:#39D2C0;--accent-cyan-bg:rgba(57,210,192,.12);
+    --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);--shadow-lg:0 8px 24px rgba(0,0,0,.5);
+    --radius:8px;--radius-lg:12px;
+    --font-sans:'Segoe UI Variable','Segoe UI',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+    --font-mono:'Cascadia Code','Fira Code','Consolas','Monaco',monospace;
+    --max-width:1100px;
+}
+[data-theme="light"]{
+    --bg-primary:#F6F8FA;--bg-secondary:#FFFFFF;--bg-tertiary:#F0F2F5;--bg-card:#FFFFFF;--bg-card-hover:#F6F8FA;--bg-inset:#F0F2F5;
+    --border-primary:#D0D7DE;--border-secondary:#E1E4E8;--border-accent:#0078D4;
+    --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;--text-link:#0969DA;
+    --accent-blue:#0969DA;--accent-blue-light:#0078D4;--accent-green:#1A7F37;--accent-green-bg:rgba(26,127,55,.08);
+    --accent-orange:#9A6700;--accent-orange-bg:rgba(154,103,0,.08);--accent-red:#CF222E;--accent-red-bg:rgba(207,34,46,.08);
+    --accent-purple:#8250DF;--accent-purple-bg:rgba(130,80,223,.08);--accent-cyan:#0E8A8A;--accent-cyan-bg:rgba(14,138,138,.08);
+    --shadow-sm:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.1);--shadow-lg:0 8px 24px rgba(0,0,0,.12);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(31,111,235,.4)}a{color:var(--text-link);text-decoration:none;transition:color .15s}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.85em;background:var(--bg-inset);padding:2px 7px;border-radius:4px;color:var(--accent-cyan);border:1px solid var(--border-secondary)}
+pre{background:var(--bg-inset);border:1px solid var(--border-primary);border-radius:var(--radius);padding:20px 24px;overflow-x:auto;margin:1rem 0;line-height:1.5}
+pre code{background:none;border:none;padding:0;font-size:.82rem;color:var(--text-primary)}
+.skip-nav{position:absolute;top:-100%;left:16px;padding:12px 24px;background:var(--accent-blue);color:#fff;font-size:14px;font-weight:600;border-radius:0 0 8px 8px;z-index:10000;text-decoration:none;transition:top .2s}.skip-nav:focus{top:0}
+:focus-visible{outline:2px solid var(--accent-blue);outline-offset:2px;border-radius:2px}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#0078D4,#00B7C3);z-index:1001;width:0%;transition:width 80ms linear}
+.hero{position:relative;padding:80px 0 60px;background:linear-gradient(145deg,var(--bg-primary) 0%,#0D2137 50%,var(--bg-primary) 100%);border-bottom:1px solid var(--border-primary);overflow:hidden}
+[data-theme="light"] .hero{background:linear-gradient(145deg,#EBF3FE 0%,#D4E6FC 50%,#EBF3FE 100%)}
+.hero::before{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(31,111,235,.08) 0%,transparent 70%)}
+.hero-inner{max-width:var(--max-width);margin:0 auto;padding:0 32px;position:relative;z-index:1}
+.hero-label{display:inline-flex;align-items:center;gap:8px;background:rgba(31,111,235,.15);border:1px solid rgba(31,111,235,.3);padding:6px 16px;border-radius:20px;font-size:.8rem;color:var(--accent-blue-light);letter-spacing:.5px;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-size:2.4rem;font-weight:700;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;margin-bottom:16px}
+.hero p.subtitle{font-size:1.05rem;color:var(--text-secondary);max-width:700px;line-height:1.7}
+.hero-meta{display:flex;gap:24px;flex-wrap:wrap;font-size:.85rem;color:var(--text-muted);margin-top:20px}
+.hero-meta span{display:flex;align-items:center;gap:6px}
+.stats-bar{max-width:var(--max-width);margin:-34px auto 40px;padding:0 32px;position:relative;z-index:2}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:22px 24px}
+.stat-item{text-align:center}.stat-number{font-size:1.6rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.stat-number.blue{color:var(--accent-blue)}.stat-number.green{color:var(--accent-green)}.stat-number.purple{color:var(--accent-purple)}.stat-number.orange{color:var(--accent-orange)}.stat-number.cyan{color:var(--accent-cyan)}.stat-number.red{color:var(--accent-red)}
+.stat-label{font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-top:6px}
+.sticky-nav{position:sticky;top:0;background:rgba(13,17,23,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-primary);z-index:100}
+[data-theme="light"] .sticky-nav{background:rgba(255,255,255,.92)}
+.sticky-nav-inner{max-width:var(--max-width);margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:2px;overflow-x:auto;scrollbar-width:none}
+.sticky-nav-inner::-webkit-scrollbar{display:none}
+.nav-pill{display:inline-block;padding:12px 12px;font-size:.8rem;color:var(--text-secondary);white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;cursor:pointer}
+.nav-pill:hover{color:var(--text-primary);text-decoration:none}.nav-pill.active{color:var(--accent-blue-light);border-bottom-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;padding:6px 14px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);color:var(--text-secondary);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font-sans);white-space:nowrap}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--accent-blue)}
+.container{max-width:var(--max-width);margin:0 auto;padding:0 32px 80px}
+.section{margin-bottom:48px;scroll-margin-top:60px}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border-primary)}
+.section-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.section-icon.blue{background:rgba(31,111,235,.15);border:1px solid rgba(31,111,235,.3)}
+.section-icon.green{background:var(--accent-green-bg);border:1px solid rgba(63,185,80,.3)}
+.section-icon.purple{background:var(--accent-purple-bg);border:1px solid rgba(163,113,247,.3)}
+.section-icon.orange{background:var(--accent-orange-bg);border:1px solid rgba(210,153,34,.3)}
+.section-icon.cyan{background:var(--accent-cyan-bg);border:1px solid rgba(57,210,192,.3)}
+.section-icon.red{background:var(--accent-red-bg);border:1px solid rgba(248,81,73,.3)}
+.section-header h2{font-size:1.4rem;font-weight:600}
+.section-desc{color:var(--text-secondary);margin-bottom:20px;font-size:.95rem;line-height:1.7}
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border-primary);margin-bottom:16px}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.data-table thead th{text-align:left;padding:10px 14px;background:var(--bg-tertiary);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);border-bottom:2px solid var(--border-primary)}
+.data-table tbody td{padding:10px 14px;border-bottom:1px solid var(--border-secondary);vertical-align:top;color:var(--text-secondary)}
+.data-table tbody tr:last-child td{border-bottom:none}.data-table tbody tr:hover{background:var(--bg-card-hover)}
+.diagram-container{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:24px;margin-bottom:24px;overflow-x:auto;box-shadow:var(--shadow-sm)}
+.diagram-container .mermaid{text-align:center}
+.diagram-title{font-size:1rem;font-weight:600;margin-bottom:12px;color:var(--accent-blue-light)}
+.diagram-explanation{margin-top:16px;padding:16px;background:var(--bg-tertiary);border-radius:var(--radius);font-size:.88rem;color:var(--text-secondary);line-height:1.7}
+.diagram-explanation ol{margin:8px 0 0 20px}.diagram-explanation li{margin-bottom:6px}
+.phase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.phase-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:24px;text-align:center;transition:border-color .2s}
+.phase-card:hover{border-color:var(--border-accent)}
+.phase-num{font-size:2rem;font-weight:700;margin-bottom:8px}
+.phase-card h4{font-size:.95rem;margin-bottom:6px;color:var(--text-primary)}
+.phase-card p{font-size:.82rem;color:var(--text-muted)}
+.safety-banner{background:linear-gradient(135deg,rgba(63,185,80,.12) 0%,rgba(63,185,80,.05) 100%);border:1px solid rgba(63,185,80,.25);color:var(--text-primary);border-radius:var(--radius-lg);padding:32px;display:grid;grid-template-columns:60px 1fr;gap:20px;align-items:start}
+.safety-icon{width:52px;height:52px;background:rgba(63,185,80,.15);border:1px solid rgba(63,185,80,.3);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.safety-banner h3{font-size:1.15rem;margin-bottom:14px;color:var(--accent-green)}
+.safety-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0}
+.safety-list li{font-size:.88rem;color:var(--text-secondary);padding-left:24px;position:relative}
+.safety-list li::before{content:'✓';position:absolute;left:0;color:var(--accent-green);font-weight:700}
+.framework-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:24px}
+.framework-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);padding:18px;text-align:center;transition:border-color .15s,transform .15s}
+.framework-card:hover{border-color:var(--border-accent);transform:translateY(-2px)}
+.framework-count{font-size:1.5rem;font-weight:700;color:var(--accent-blue)}
+.framework-name{font-size:.72rem;font-weight:600;margin-top:4px;color:var(--text-secondary)}
+.domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}
+.domain-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);padding:18px;border-top:3px solid var(--accent-blue);transition:all .2s}
+.domain-card:hover{border-color:var(--accent-blue-light);transform:translateY(-2px)}
+.domain-icon{font-size:1.6rem;margin-bottom:8px}.domain-card h4{font-size:.88rem;margin-bottom:4px;font-weight:600}
+.domain-checks{font-size:.8rem;color:var(--accent-blue-light);font-weight:600}
+.info-box{border-radius:var(--radius);padding:16px 20px;margin:1rem 0;font-size:.9rem;border:1px solid}
+.info-box.blue{background:rgba(31,111,235,.08);border-color:rgba(31,111,235,.25);color:var(--text-secondary)}
+.info-box.green{background:var(--accent-green-bg);border-color:rgba(63,185,80,.25);color:var(--text-secondary)}
+.back-to-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--accent-blue);color:#fff;font-size:20px;border:none;cursor:pointer;opacity:0;visibility:hidden;transition:all .3s;z-index:999;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md)}
+.back-to-top.visible{opacity:1;visibility:visible}.back-to-top:hover{transform:scale(1.1)}
+.footer{text-align:center;padding:36px;color:var(--text-muted);font-size:.82rem;border-top:1px solid var(--border-primary);background:var(--bg-secondary)}
+@media(max-width:768px){.hero h1{font-size:1.6rem}.stats-grid{grid-template-columns:repeat(3,1fr)}.phase-grid{grid-template-columns:1fr}.safety-list{grid-template-columns:1fr}.domain-grid{grid-template-columns:repeat(2,1fr)}}
+@media print{.sticky-nav,.theme-toggle,.back-to-top,.skip-nav,.progress-bar{display:none!important}body{background:#fff;color:#000}.hero{background:#f0f4f8!important;padding:40px 0 30px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+<div class="progress-bar" id="progressBar" role="progressbar" aria-label="Reading progress"></div>
+
+<section class="hero">
+<div class="hero-inner">
+    <span class="hero-label">🏗️ Architecture</span>
+    <h1>PostureIQ Architecture</h1>
+    <p class="subtitle">Python 3.10+ async compliance intelligence platform built on Microsoft Agent Framework SDK. 3-phase pipeline: collect → evaluate → report. All operations strictly read-only.</p>
+    <div class="hero-meta">
+        <span>👤 Murali Chillakuru</span>
+        <span>📅 April 2026</span>
+        <span>🏷️ Foundry Agent · Port 8088 · responses v1</span>
+    </div>
+</div>
+</section>
+
+<div class="stats-bar">
+<div class="stats-grid" role="list" aria-label="Key metrics">
+    <div class="stat-item" role="listitem"><div class="stat-number blue" data-target="64">0</div><div class="stat-label">Collectors</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number green" data-target="218">0</div><div class="stat-label">Evidence Types</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number purple" data-target="10">0</div><div class="stat-label">Eval Domains</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number orange" data-target="113">0</div><div class="stat-label">Check Functions</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number cyan" data-target="11">0</div><div class="stat-label">Frameworks</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number red" data-target="28">0</div><div class="stat-label">Report Generators</div></div>
+</div>
+</div>
+
+<nav class="sticky-nav" aria-label="Section navigation">
+<div class="sticky-nav-inner">
+    <a class="nav-pill" href="#pipeline">Pipeline</a>
+    <a class="nav-pill" href="#collection">Collection</a>
+    <a class="nav-pill" href="#evaluation">Evaluation</a>
+    <a class="nav-pill" href="#reporting">Reporting</a>
+    <a class="nav-pill" href="#engines">Engines</a>
+    <a class="nav-pill" href="#frameworks">Frameworks</a>
+    <a class="nav-pill" href="#models">Data Models</a>
+    <a class="nav-pill" href="#auth">Auth</a>
+    <a class="nav-pill" href="#safety">Safety</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme">🌙 Dark</button>
+</div>
+</nav>
+
+<!-- EXEC SUMMARY -->
+<div class="container">
+<div style="background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.25);border-radius:8px;padding:16px 20px;margin:24px 0 0;font-size:.9rem;color:var(--text-secondary)">
+<strong>📋 Executive Summary</strong> — Bird's-eye view of the platform architecture: 3-phase pipeline (collect → evaluate → report), 64 collectors, 10 evaluation domains with 113 check functions, 11 frameworks (525 controls), 28 report generators, and 10 modular engines.
+<div style="margin-top:8px;font-size:.82rem"><strong>Audience:</strong> Architects, senior engineers · <strong>Prerequisites:</strong> <a href="readme.html">Project Overview</a> · <strong>Related:</strong> <a href="agent-capabilities.html">Agent Capabilities</a> · <a href="evaluation-rules.html">Evaluation Rules</a> · <a href="FILE-REFERENCE.html">File Reference</a></div>
+</div>
+</div>
+
+<main id="main-content">
+<div class="container">
+
+<!-- Pipeline Overview -->
+<section class="section" id="pipeline">
+<div class="section-header"><div class="section-icon purple">⚙️</div><h2>Pipeline Overview</h2></div>
+<p class="section-desc">The orchestrator (<code>app/postureiq_orchestrator.py</code>) coordinates a 3-phase pipeline. Azure and Entra collector groups run concurrently via <code>asyncio.gather()</code>, with checkpoint/resume and delta mode support.</p>
+
+<div class="phase-grid">
+<div class="phase-card"><div class="phase-num" style="color:var(--accent-blue)">1</div><h4>Collect</h4><p>64 collectors · 218 evidence types<br>Batched: 8 Azure, 6 Entra concurrent<br>Checkpoint saved per batch</p></div>
+<div class="phase-card"><div class="phase-num" style="color:var(--accent-green)">2</div><h4>Evaluate</h4><p>10 domains · 113 check functions<br>11 frameworks · 525 controls<br>Cross-domain fallback</p></div>
+<div class="phase-card"><div class="phase-num" style="color:var(--accent-orange)">3</div><h4>Report</h4><p>28 generators · 8+ formats<br>Per-framework sub-folders<br>Optional PDF via Playwright</p></div>
+</div>
+
+<div class="diagram-container">
+<div class="diagram-title">End-to-End Pipeline Sequence</div>
+<div class="mermaid" data-seq-details='[
+{"overview":"The user or AI Agent tool initiates a full security assessment by calling the orchestrator entry point with Azure credentials and a configuration object.","dataFlow":"Credentials (tenant ID, client ID, secret or managed identity token) and the config JSON (selected frameworks, suppression rules, output preferences) are passed to postureiq_orchestrator.py.","keyPoints":["Single entry point for the entire pipeline ensures consistent behavior","Credentials are validated before any API calls begin","The config determines which frameworks, collectors, and report formats are active"],"whyItMatters":"A single entry point ensures consistent behavior whether triggered by a human, a CI/CD pipeline, or the AI Agent, reducing configuration drift and ensuring reproducible assessments.","output":"An initialized orchestrator session ready to discover and run collectors."},
+{"overview":"The orchestrator asks the collector registry to enumerate all available collectors across Azure and Entra domains.","dataFlow":"The registry scans the collectors/ package, introspects each module for the standard collector interface, and returns a sorted list of collector callables.","keyPoints":["Collectors are auto-discovered via Python module introspection","Each collector declares a priority integer for ordering","Disabled collectors (via config) are filtered out at this stage"],"whyItMatters":"Auto-discovery means new collectors are picked up automatically without code changes to the orchestrator — true plug-and-play extensibility.","output":"A priority-sorted list of collector callables grouped by domain (Azure vs Entra)."},
+{"overview":"The registry returns the discovered collectors sorted by their declared priority, ensuring foundational data is gathered first.","dataFlow":"A list of collector metadata objects (name, domain, priority, function reference) flows back to the orchestrator.","keyPoints":["Lower priority numbers run first","Azure and Entra collectors are grouped separately for parallel execution","The sort is stable so same-priority collectors maintain discovery order"],"whyItMatters":"Priority ordering ensures foundational evidence (like tenant config, subscription metadata) is collected before dependent checks that reference it.","output":"Two ordered lists — one for Azure collectors (50) and one for Entra collectors (18)."},
+{"overview":"The orchestrator dispatches Azure collectors in concurrent batches of 8, maximizing throughput while respecting API rate limits.","dataFlow":"Each batch of 8 collectors runs simultaneously via asyncio, each making Azure Resource Manager or Graph API calls and returning evidence dictionaries.","keyPoints":["Batch size of 8 balances speed against Azure API throttling limits","Each collector has independent retry logic with exponential backoff","A failed collector does not block others in the batch"],"whyItMatters":"Running 50 collectors sequentially would take 10-15 minutes. Concurrent batching reduces this to 2-3 minutes while staying within Azure rate limits.","output":"Evidence arrays from each Azure collector batch, ready for merging."},
+{"overview":"Azure collectors return their gathered evidence as structured arrays back to the orchestrator.","dataFlow":"Each collector emits one or more EvidenceRecord objects containing the raw API response data, timestamps, and evidence type identifiers.","keyPoints":["Evidence is typed (e.g., azure_nsg_rules, azure_storage_config) for O(1) lookup during evaluation","Timestamps enable freshness checks","Failed collectors return empty arrays with error metadata"],"whyItMatters":"Structured evidence typing is what makes the evaluation engine fast — it can locate relevant data instantly rather than scanning all evidence.","output":"A merged array of all Azure evidence records ready for evaluation."},
+{"overview":"Simultaneously with Azure collection, the orchestrator dispatches Entra ID collectors in batches of 6.","dataFlow":"Entra collectors query Microsoft Graph API for identity, authentication, conditional access, role, and directory configuration data.","keyPoints":["Batch size of 6 is lower than Azure because Graph API has tighter throttling","Entra and Azure batches run in parallel for maximum speed","Conditional access policy collectors often take the longest"],"whyItMatters":"Identity is the new perimeter — Entra evidence covers authentication policies, MFA enforcement, privileged roles, and access reviews which are critical for security posture.","output":"Evidence arrays from each Entra collector batch."},
+{"overview":"Entra collectors return identity and access management evidence back to the orchestrator.","dataFlow":"EvidenceRecord objects covering conditional access policies, role assignments, authentication methods, directory settings, and more flow back.","keyPoints":["Entra evidence often cross-references with Azure evidence (e.g., managed identity assignments)","Some evidence types feed multiple evaluation domains","PII fields are hashed before storage"],"whyItMatters":"Without comprehensive Entra evidence, the evaluation engine cannot assess identity-based controls which represent 30-40% of most compliance frameworks.","output":"A merged array of all Entra evidence records."},
+{"overview":"The orchestrator passes all collected evidence plus the selected compliance frameworks to the evaluation engine.","dataFlow":"The full evidence array and a list of framework identifiers (e.g., NIST-800-53, CIS-Azure, ISO-27001) are passed to engine.py.","keyPoints":["Multiple frameworks can be evaluated in a single pass","The engine shares evidence across frameworks to avoid redundant checks","Framework definitions are loaded from JSON files in the postureiq_frameworks/ directory"],"whyItMatters":"Multi-framework evaluation in one pass is a key efficiency — a single evidence set can satisfy controls across NIST, CIS, ISO, and custom frameworks simultaneously.","output":"The evaluation engine begins processing all frameworks."},
+{"overview":"The engine builds a hash-map index of all evidence keyed by evidence type for instant lookup during control evaluation.","dataFlow":"The flat evidence array is transformed into a dictionary where keys are evidence type strings and values are arrays of matching records.","keyPoints":["This one-time O(n) operation enables O(1) access for all subsequent lookups","Evidence types follow a naming convention like azure_nsg_rules or entra_conditional_access","Duplicate records under the same type are preserved as arrays"],"whyItMatters":"With 218 evidence types and 525 controls to evaluate, linear scanning would be O(n x m). The index makes evaluation O(m) regardless of evidence volume.","output":"An indexed evidence dictionary ready for fast lookup."},
+{"overview":"For each control in each framework, the engine dispatches to the appropriate domain-specific check function.","dataFlow":"Each control definition includes a domain field (e.g., identity, network, encryption). The engine routes to the matching evaluator module which runs the specific check logic.","keyPoints":["10 evaluation domains with 113 check functions","Dispatch is done by domain name lookup in a registry","Each check function receives the indexed evidence and the control definition","Results are deterministic for the same input"],"whyItMatters":"Domain-based dispatch keeps evaluation logic organized and maintainable — identity checks are separate from network checks, making it easy to add new controls or domains.","output":"Individual FindingRecord objects for each evaluated control."},
+{"overview":"The evaluation engine returns all finding records plus aggregate compliance scores to the orchestrator.","dataFlow":"An array of FindingRecord objects (each with status, severity, evidence references, remediation steps) plus per-framework and per-domain scores flow back.","keyPoints":["Each FindingRecord includes: control ID, status, severity, evidence references, and remediation guidance","Scores are severity-weighted percentages","Suppressed findings are tracked but excluded from scoring"],"whyItMatters":"Severity-weighted scoring ensures critical failures have proportionally more impact than low-severity issues — a single critical failure drops the score more than ten low findings.","output":"Complete finding records and numerical compliance scores per framework."},
+{"overview":"The orchestrator sends evaluation results and configuration to the report generation subsystem.","dataFlow":"FindingRecord arrays, compliance scores, evidence metadata, and report configuration (formats, output paths, framework-specific templates) are passed to the report generators.","keyPoints":["28 report generators cover 8+ output formats","Generators are selected based on config preferences","Multiple frameworks produce per-framework sub-folders","All generators share the Fluent Design theme"],"whyItMatters":"Multiple output formats serve different audiences — HTML dashboards for executives, JSON/SARIF for CI/CD pipelines, Excel for auditors, OSCAL for government compliance.","output":"Report generation begins across all requested formats."},
+{"overview":"Report generators produce the final output files in all requested formats.","dataFlow":"Each generator creates its output file(s) in the timestamped output directory, with optional per-framework sub-folders.","keyPoints":["HTML reports include interactive charts and expandable sections","JSON follows strict schema validation","SARIF integrates with GitHub Code Scanning","OSCAL meets NIST automation requirements","PDF requires optional Playwright dependency"],"whyItMatters":"The variety of output formats ensures assessment results can be consumed by any stakeholder or system in the organization, from security engineers to compliance auditors to CI/CD pipelines.","output":"Complete report files in the timestamped output directory."}
+]'>
+sequenceDiagram
+    participant U as User / Agent Tool
+    participant O as postureiq_orchestrator.py
+    participant R as Registry
+    participant AZ as Azure Collectors (50)
+    participant EN as Entra Collectors (18)
+    participant EV as engine.py
+    participant RP as Report Generators (29)
+
+    U->>O: run_postureiq_assessment(creds, config)
+    O->>R: discover_collectors()
+    R-->>O: sorted by priority
+
+    par Azure Group (batch_size=8)
+        O->>AZ: Concurrent batches
+        AZ-->>O: evidence[]
+    and Entra Group (batch_size=6)
+        O->>EN: Concurrent batches
+        EN-->>O: evidence[]
+    end
+
+    Note over O: Checkpoint saved
+
+    O->>EV: evaluate_all(evidence, frameworks)
+    EV->>EV: Index evidence by type (O(1) lookup)
+    loop For each framework × control
+        EV->>EV: Domain dispatch → check function
+    end
+    EV-->>O: FindingRecord[] + scores
+
+    O->>RP: generate_reports(results, config)
+    RP-->>O: HTML, JSON, MD, Excel, OSCAL, SARIF, PDF
+    O-->>U: AssessmentSummary
+</div>
+<div class="diagram-explanation">
+<strong>Pipeline details:</strong>
+<ol>
+<li><strong>Discovery</strong> — <code>discover_collectors()</code> walks <code>collectors/azure/</code> and <code>collectors/entra/</code>, importing modules which trigger <code>@register_collector</code> decorators</li>
+<li><strong>Concurrent groups</strong> — Azure and Entra groups run in parallel. Within each, collectors execute in priority-sorted batches</li>
+<li><strong>Error isolation</strong> — Each collector catches exceptions independently; failures produce access-denied markers</li>
+<li><strong>Checkpoint resume</strong> — Interrupted assessments can resume from the last completed batch</li>
+<li><strong>Severity-weighted scoring</strong> — critical=4, high=3, medium=2, low=1 with 50% partial credit</li>
+</ol>
+</div>
+</div>
+</section>
+
+<!-- Collection Phase -->
+<section class="section" id="collection">
+<div class="section-header"><div class="section-icon blue">☁️</div><h2>Phase 1: Evidence Collection</h2></div>
+<p class="section-desc">68 total collectors: 47 registered Azure (39 control-plane + 8 data-plane), 17 registered Entra (12 + 5 M365 compliance), and 2 standalone. All use read-only SDK methods.</p>
+
+<div class="diagram-container">
+<div class="diagram-title">Collector Architecture</div>
+<div class="mermaid">
+graph TB
+    subgraph Registry["@register_collector Registry"]
+        direction LR
+        AZ["Azure Collectors<br/>47 registered"]
+        EN["Entra Collectors<br/>17 registered"]
+    end
+    subgraph Standalone["Standalone (not registered)"]
+        RC["rbac_collector.py<br/>983 lines"]
+        AI["ai_identity.py<br/>419 lines"]
+    end
+    subgraph Azure["Azure (50 total)"]
+        CP["Control Plane (39)<br/>ARM SDK"]
+        DP["Data Plane (8)<br/>Sub-resource APIs"]
+        M3["M365 Compliance (5)<br/>registered as entra"]
+    end
+    subgraph Entra["Entra ID (18 total)"]
+        ED["Directory (12)<br/>Graph SDK"]
+        MC["M365 Compliance (5)<br/>from azure/m365_compliance.py"]
+    end
+    Registry --> Azure
+    Registry --> Entra
+    RC -->|"Called by"| RR["run_rbac_report.py"]
+    AI -->|"Called by"| AE["ai_agent_security_engine.py"]
+</div>
+</div>
+
+<div class="info-box blue">
+<strong>Auto-discovery:</strong> The <code>@register_collector(source, priority)</code> decorator registers each collector function. <code>discover_collectors()</code> imports all modules from <code>collectors/azure/</code> and <code>collectors/entra/</code>, sorts by priority, and returns grouped lists. The orchestrator runs Azure and Entra groups concurrently.
+</div>
+
+<div class="table-wrap">
+<table class="data-table" aria-label="Collector summary">
+<thead><tr><th>Category</th><th>Count</th><th>Source</th><th>Priority Range</th></tr></thead>
+<tbody>
+<tr><td>Azure Control Plane</td><td>39</td><td>ARM SDK (<code>azure-mgmt-*</code>)</td><td>10–190</td></tr>
+<tr><td>Azure Data Plane</td><td>8</td><td>Sub-resource REST/SDK</td><td>200–240</td></tr>
+<tr><td>M365 Compliance</td><td>5</td><td>Graph SDK (registered as <code>entra</code>)</td><td>180–190</td></tr>
+<tr><td>Entra ID Directory</td><td>12</td><td>MS Graph SDK</td><td>10–100</td></tr>
+<tr><td>Standalone: RBAC</td><td>1</td><td>ARM + Graph (983 lines)</td><td>—</td></tr>
+<tr><td>Standalone: AI Identity</td><td>1</td><td>Graph (419 lines)</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- Evaluation Phase -->
+<section class="section" id="evaluation">
+<div class="section-header"><div class="section-icon green">📊</div><h2>Phase 2: Compliance Evaluation</h2></div>
+<p class="section-desc">10 evaluation domains with 113 check functions. The engine indexes evidence by type for O(1) lookup, dispatches per-control to domain evaluators, and supports cross-domain fallback.</p>
+
+<div class="domain-grid">
+<div class="domain-card"><div class="domain-icon">🔑</div><h4>Access</h4><div class="domain-checks">8 functions</div></div>
+<div class="domain-card"><div class="domain-icon">🪪</div><h4>Identity</h4><div class="domain-checks">22 functions</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-green)"><div class="domain-icon">🛡️</div><h4>Data Protection</h4><div class="domain-checks">22 functions</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-orange)"><div class="domain-icon">📋</div><h4>Logging</h4><div class="domain-checks">13 functions</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-cyan)"><div class="domain-icon">🌐</div><h4>Network</h4><div class="domain-checks">16 functions</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-purple)"><div class="domain-icon">⚖️</div><h4>Governance</h4><div class="domain-checks">21 functions</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-red)"><div class="domain-icon">🚨</div><h4>Incident Response</h4><div class="domain-checks">6 functions</div></div>
+<div class="domain-card" style="border-top-color:#00B7C3"><div class="domain-icon">🔄</div><h4>Change Mgmt</h4><div class="domain-checks">4 functions</div></div>
+<div class="domain-card" style="border-top-color:#FFB900"><div class="domain-icon">💾</div><h4>Business Continuity</h4><div class="domain-checks">4 functions</div></div>
+<div class="domain-card" style="border-top-color:#F7630C"><div class="domain-icon">📦</div><h4>Asset Mgmt</h4><div class="domain-checks">4 functions</div></div>
+</div>
+
+<div class="diagram-container">
+<div class="diagram-title">Evaluation Dispatch Flow</div>
+<div class="mermaid" data-seq-details='[
+{"overview":"The evaluation engine transforms the flat evidence array into a dictionary keyed by evidence type for O(1) lookups during control evaluation.","dataFlow":"Raw evidence records are iterated once, grouping them by their type field into a dictionary of arrays.","keyPoints":["One-time O(n) operation that enables O(1) access for all subsequent lookups","Evidence types follow a naming convention like azure_nsg_rules or entra_conditional_access","Duplicate records under the same type are preserved as arrays"],"whyItMatters":"Without indexing, each of the 525 control evaluations would scan the entire evidence array. Indexing reduces total evaluation from O(n x m) to O(n + m).","output":"A dictionary mapping evidence type strings to arrays of matching evidence records."},
+{"overview":"For each selected compliance framework, the engine loads its control mapping definitions from a JSON file.","dataFlow":"The framework JSON file (e.g., nist-800-53.json) is loaded and parsed, yielding an array of control definitions with fields like control_id, domain, evidence_types, and thresholds.","keyPoints":["Framework files are stored in the postureiq_frameworks/ directory","Each maps compliance controls to evidence types and evaluation logic","Custom frameworks can be added by creating new JSON files following the schema"],"whyItMatters":"Separating framework definitions from evaluation logic means compliance updates (new controls, changed thresholds) only require JSON changes — no Python code modifications.","output":"Parsed control definition array for the current framework."},
+{"overview":"For each control, the engine reads its domain field and dispatches evaluation to the matching domain evaluator module.","dataFlow":"The control definition (with domain, evidence_types, thresholds) is passed to the appropriate evaluator (e.g., identity_evaluator, network_evaluator).","keyPoints":["10 domains cover all security areas: identity, network, encryption, logging, governance, and more","Dispatch uses a registry pattern mapping domain strings to evaluator functions","Unknown domains trigger a warning and are skipped"],"whyItMatters":"Domain-based dispatch keeps each evaluator focused and testable — identity experts maintain identity checks, network experts maintain network checks.","output":"The domain evaluator begins processing the control against indexed evidence."},
+{"overview":"The domain evaluator retrieves relevant evidence from the index and checks it against the control thresholds.","dataFlow":"Evidence records matching the control evidence_types are fetched from the index, then each threshold condition is evaluated (e.g., MFA enabled for all admins, NSG denies inbound 3389).","keyPoints":["Thresholds can be boolean (enabled/disabled), numeric (percentage >= 95), or pattern-based (regex match)","Multi-evidence controls require ALL evidence types to be present","Evaluation logic is fully deterministic"],"whyItMatters":"Threshold-based evaluation provides clear, auditable pass/fail decisions — every finding can be traced back to specific evidence and specific threshold criteria.","output":"A preliminary status: compliant, non_compliant, or needs further evaluation."},
+{"overview":"When the primary evidence type for a control is not available, the evaluator falls back to checking compensating evidence types.","dataFlow":"The control definition includes optional compensating_evidence fields. The evaluator asks the engine to look up these alternative evidence types from the index.","keyPoints":["Compensating evidence prevents false not_assessed results","For example, if azure_defender_status is missing, azure_security_center_config might provide equivalent data","Compensating evidence usage is logged for audit transparency"],"whyItMatters":"Real-world assessments often have gaps — API permissions not granted, services not enabled. Compensating evidence maximizes assessment coverage despite incomplete data collection.","output":"Either alternative evidence for re-evaluation, or confirmation that no compensating evidence exists."},
+{"overview":"When a control remains not_assessed after primary and compensating evidence checks, the engine tries cross-domain fallback mapping.","dataFlow":"The _CROSS_DOMAIN_MAP dictionary maps certain controls to evaluators in other domains that might have relevant evidence. The control is re-dispatched to the fallback domain.","keyPoints":["Cross-domain fallback catches controls that span multiple areas (e.g., an encryption control satisfiable by network or storage evidence)","This is a last resort before marking not_assessed","The fallback path is recorded in the finding metadata"],"whyItMatters":"Cross-domain mapping increases assessment coverage by 5-10%, catching controls that sit at the intersection of multiple security domains.","output":"The control is re-dispatched to a different domain evaluator for a second evaluation attempt."},
+{"overview":"The cross-domain fallback evaluator returns its assessment result for the re-dispatched control.","dataFlow":"A FindingRecord or status update flows back from the fallback evaluator to the engine, potentially upgrading a not_assessed to compliant or non_compliant.","keyPoints":["Fallback results carry a flag indicating they came from cross-domain evaluation","If the fallback also returns not_assessed, the control is permanently marked as such","Audit logs capture the full dispatch chain"],"whyItMatters":"Transparency about which path produced the result is critical for auditors — they need to know if a finding came from primary, compensating, or cross-domain evidence.","output":"Updated status and finding metadata for the control."},
+{"overview":"The domain evaluator (or fallback evaluator) returns the final FindingRecord with a definitive compliance status for the control.","dataFlow":"A FindingRecord object containing control_id, status, severity, evidence_references, remediation_steps, and evaluation_path metadata flows back to the engine.","keyPoints":["Every control produces exactly one FindingRecord","Statuses are one of: compliant, non_compliant, not_assessed, or suppressed","Suppressed controls are configured via the suppressions mechanism"],"whyItMatters":"The FindingRecord is the atomic unit of the assessment output — it drives scoring, reporting, and remediation tracking. Consistent structure ensures all downstream consumers can process findings uniformly.","output":"One FindingRecord object added to the results array."},
+{"overview":"After all controls are evaluated, the engine calculates aggregate compliance scores using severity-based weighting.","dataFlow":"All FindingRecords are grouped by framework and domain, then weighted: critical findings count 4x, high 3x, medium 2x, low 1x, and the compliance percentage is calculated.","keyPoints":["Severity weights ensure critical gaps dominate the score","Per-framework and per-domain scores are computed separately","not_assessed controls are excluded from scoring denominators to avoid penalizing missing data"],"whyItMatters":"A flat pass/fail percentage would mislead — showing 95% compliant while having 3 critical failures. Severity weighting surfaces the true risk posture.","output":"Per-framework compliance percentages, per-domain scores, and an overall weighted score."}
+]'>
+sequenceDiagram
+    participant ENG as engine.py
+    participant FW as Framework JSON
+    participant DOM as Domain Evaluator
+    participant FB as Cross-Domain Fallback
+
+    ENG->>ENG: _index_evidence() → dict by type
+    loop For each framework
+        ENG->>FW: Load control mappings
+        loop For each control
+            ENG->>DOM: Dispatch by domain field
+            DOM->>DOM: Check evidence vs thresholds
+            alt Primary evidence missing
+                DOM->>ENG: Try compensating_evidence
+            end
+            alt Status = not_assessed
+                ENG->>FB: _CROSS_DOMAIN_MAP fallback
+                FB-->>ENG: Re-dispatch result
+            end
+            DOM-->>ENG: FindingRecord + status
+        end
+    end
+    ENG->>ENG: Severity-weighted scoring
+</div>
+</div>
+</section>
+
+<!-- Reporting Phase -->
+<section class="section" id="reporting">
+<div class="section-header"><div class="section-icon orange">📄</div><h2>Phase 3: Report Generation</h2></div>
+<p class="section-desc">28 report generators produce 8+ output formats. When multiple frameworks are selected, reports go into per-framework sub-folders. The shared theme provides dark/light Fluent Design CSS/JS.</p>
+
+<div class="table-wrap">
+<table class="data-table" aria-label="Report generators">
+<thead><tr><th>Report</th><th>Module</th><th>Lines</th><th>Format</th></tr></thead>
+<tbody>
+<tr><td>Compliance Report</td><td><code>compliance_report_html.py</code></td><td>1,680</td><td>HTML</td></tr>
+<tr><td>Data Security Report</td><td><code>data_security_report.py</code></td><td>3,348</td><td>HTML</td></tr>
+<tr><td>Copilot Readiness</td><td><code>copilot_readiness_report.py</code></td><td>3,409</td><td>HTML</td></tr>
+<tr><td>AI Agent Security</td><td><code>ai_agent_security_report.py</code></td><td>1,518</td><td>HTML</td></tr>
+<tr><td>RBAC Report</td><td><code>rbac_report.py</code></td><td>1,913</td><td>HTML</td></tr>
+<tr><td>Risk Report</td><td><code>risk_report.py</code></td><td>917</td><td>HTML</td></tr>
+<tr><td>Executive Dashboard</td><td><code>executive_dashboard.py</code></td><td>222</td><td>HTML</td></tr>
+<tr><td>Gaps Report</td><td><code>gaps_report.py</code></td><td>473</td><td>HTML, MD</td></tr>
+<tr><td>Master Report</td><td><code>master_report.py</code></td><td>594</td><td>HTML, MD</td></tr>
+<tr><td>Excel Export</td><td><code>excel_export.py</code></td><td>236</td><td>XLSX (3 sheets)</td></tr>
+<tr><td>OSCAL Export</td><td><code>oscal_export.py</code></td><td>102</td><td>JSON (NIST OSCAL)</td></tr>
+<tr><td>SARIF Export</td><td><code>sarif_export.py</code></td><td>119</td><td>SARIF</td></tr>
+<tr><td>PDF Export</td><td><code>pdf_export.py</code></td><td>85</td><td>PDF (Playwright)</td></tr>
+<tr><td>Remediation</td><td><code>remediation.py</code></td><td>547</td><td>HTML</td></tr>
+<tr><td>Shared Theme</td><td><code>shared_theme.py</code></td><td>294</td><td>CSS/JS</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- Standalone Engines -->
+<section class="section" id="engines">
+<div class="section-header"><div class="section-icon cyan">🔧</div><h2>Standalone Engines</h2></div>
+<p class="section-desc">10 modular engines provide specialized assessment capabilities beyond the main PostureIQ pipeline.</p>
+
+<div class="table-wrap">
+<table class="data-table" aria-label="Standalone engines">
+<thead><tr><th>Engine</th><th>Module</th><th>Lines</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td>Query Engine</td><td><code>query_engine.py</code></td><td>714</td><td>Interactive ARG (KQL) + MS Graph queries with NL support</td></tr>
+<tr><td>Risk Engine</td><td><code>risk_engine.py</code></td><td>1,124</td><td>Security risk gap analysis: identity, network, Defender, config</td></tr>
+<tr><td>Data Security</td><td><code>data_security_engine.py</code></td><td>9,085</td><td>12 categories: storage, DB, encryption, keys, classification</td></tr>
+<tr><td>Copilot Readiness</td><td><code>copilot_readiness_engine.py</code></td><td>5,090</td><td>M365 Copilot: oversharing, labels, DLP, restricted search</td></tr>
+<tr><td>AI Agent Security</td><td><code>ai_agent_security_engine.py</code></td><td>5,968</td><td>6 platforms, 23+ areas: Copilot Studio, Foundry, custom agents</td></tr>
+<tr><td>Data Residency</td><td><code>data_residency_engine.py</code></td><td>296</td><td>Data residency compliance — 5 checks</td></tr>
+<tr><td>Remediation</td><td><code>remediation_engine.py</code></td><td>299</td><td>Automated remediation plans — 7 rules</td></tr>
+<tr><td>Continuous Monitor</td><td><code>continuous_monitor.py</code></td><td>196</td><td>Scheduled re-assessments with drift detection</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- Frameworks -->
+<section class="section" id="frameworks">
+<div class="section-header"><div class="section-icon orange">📑</div><h2>Compliance Frameworks</h2></div>
+<p class="section-desc">11 framework JSON mapping files in <code>AIAgent/app/postureiq_frameworks/</code> with 525 total controls. Each control defines domain, severity, evidence types, evaluation logic, and compensating evidence.</p>
+
+<div class="framework-grid">
+<div class="framework-card"><div class="framework-count">83</div><div class="framework-name">NIST 800-53</div></div>
+<div class="framework-card"><div class="framework-count">69</div><div class="framework-name">FedRAMP</div></div>
+<div class="framework-card"><div class="framework-count">53</div><div class="framework-name">CIS</div></div>
+<div class="framework-card"><div class="framework-count">53</div><div class="framework-name">MCSB</div></div>
+<div class="framework-card"><div class="framework-count">51</div><div class="framework-name">PCI DSS</div></div>
+<div class="framework-card"><div class="framework-count">51</div><div class="framework-name">ISO 27001</div></div>
+<div class="framework-card"><div class="framework-count">47</div><div class="framework-name">SOC 2</div></div>
+<div class="framework-card"><div class="framework-count">43</div><div class="framework-name">HIPAA</div></div>
+<div class="framework-card"><div class="framework-count">29</div><div class="framework-name">NIST CSF</div></div>
+<div class="framework-card"><div class="framework-count">24</div><div class="framework-name">CSA CCM</div></div>
+<div class="framework-card"><div class="framework-count">22</div><div class="framework-name">GDPR</div></div>
+</div>
+</section>
+
+<!-- Data Models -->
+<section class="section" id="models">
+<div class="section-header"><div class="section-icon purple">📐</div><h2>Data Models</h2></div>
+<p class="section-desc">Python dataclasses in <code>app/models.py</code> with deterministic UUID5 IDs and PascalCase JSON serialization.</p>
+
+<div class="table-wrap">
+<table class="data-table" aria-label="Data models">
+<thead><tr><th>Class</th><th>Purpose</th><th>Key Fields</th></tr></thead>
+<tbody>
+<tr><td><code>EvidenceRecord</code></td><td>Normalized evidence from any collector</td><td>evidence_type, resource_id, data, source, collected_at</td></tr>
+<tr><td><code>FindingRecord</code></td><td>Single control evaluation finding</td><td>control_id, status, severity, domain, evidence_refs</td></tr>
+<tr><td><code>ComplianceControlResult</code></td><td>Per-control aggregated result</td><td>control_id, title, status, findings[], score</td></tr>
+<tr><td><code>MissingEvidenceRecord</code></td><td>Tracks controls lacking evidence</td><td>control_id, missing_types[], compensating_available</td></tr>
+<tr><td><code>CollectorResult</code></td><td>Collector execution metadata</td><td>collector_name, duration_ms, evidence_count, errors[]</td></tr>
+<tr><td><code>AssessmentSummary</code></td><td>Overall assessment metrics</td><td>total_controls, passed, failed, not_assessed, overall_score</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- Authentication -->
+<section class="section" id="auth">
+<div class="section-header"><div class="section-icon red">🔐</div><h2>Authentication</h2></div>
+<p class="section-desc"><code>ComplianceCredentials</code> supports 4 authentication modes with a single credential for both ARM and Graph.</p>
+
+<div class="table-wrap">
+<table class="data-table" aria-label="Authentication modes">
+<thead><tr><th>Mode</th><th>Credential Source</th><th>Use Case</th></tr></thead>
+<tbody>
+<tr><td><code>auto</code> (default)</td><td>DefaultAzureCredential</td><td>Picks up az login, managed identity, or env vars</td></tr>
+<tr><td><code>azurecli</code></td><td>AzureCliCredential</td><td>Explicit CLI session</td></tr>
+<tr><td><code>serviceprincipal</code></td><td>ClientSecretCredential</td><td>CI/CD pipelines</td></tr>
+<tr><td><code>appregistration</code></td><td>ClientSecretCredential</td><td>App registration with Graph consent</td></tr>
+</tbody>
+</table>
+</div>
+<div class="info-box blue"><strong>Preflight check:</strong> <code>preflight_check()</code> probes both ARM and Graph APIs before any assessment, verifying connectivity and permissions.</div>
+</section>
+
+<!-- Safety -->
+<section class="section" id="safety">
+<div class="section-header"><div class="section-icon green">✅</div><h2>Safety Guarantees</h2></div>
+<div class="safety-banner">
+<div class="safety-icon">🛡️</div>
+<div>
+<h3>All Operations Are Strictly Read-Only</h3>
+<ul class="safety-list">
+<li>Azure SDK: exclusively <code>list()</code> and <code>get()</code></li>
+<li>Graph API: exclusively <code>GET</code> requests</li>
+<li>No PUT, POST, PATCH, or DELETE — ever</li>
+<li>No resource state modified, created, or deleted</li>
+<li>No secret values read — only metadata</li>
+<li>PII summarized (counts/rates), not exported</li>
+<li>Deterministic UUID5 IDs for reproducibility</li>
+<li>Checkpoint/resume for interrupted assessments</li>
+</ul>
+</div>
+</div>
+</section>
+
+</div>
+</main>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+<footer class="footer"><strong>PostureIQ</strong> — Architecture<br>Author: Murali Chillakuru · April 2026</footer>
+
+<script>
+(function(){var s=localStorage.getItem('enterprisesecurityiq-theme');var t=s||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');document.documentElement.setAttribute('data-theme',t);var b=document.getElementById('themeToggle');if(b)b.textContent=t==='dark'?'🌙 Dark':'☀️ Light'})();
+document.getElementById('themeToggle').addEventListener('click',function(){var h=document.documentElement;var c=h.getAttribute('data-theme')||'dark';var n=c==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('enterprisesecurityiq-theme',n);this.textContent=n==='dark'?'🌙 Dark':'☀️ Light';if(typeof mermaid!=='undefined'){mermaid.initialize({startOnLoad:false,theme:n==='dark'?'dark':'default'});document.querySelectorAll('.mermaid[data-processed]').forEach(function(e){e.removeAttribute('data-processed')});mermaid.run()}});
+window.addEventListener('scroll',function(){var h=document.documentElement;document.getElementById('progressBar').style.width=((h.scrollTop/(h.scrollHeight-h.clientHeight))*100)+'%'});
+document.querySelectorAll('.stat-number[data-target]').forEach(function(el){var t=parseInt(el.getAttribute('data-target'));var d=1200;var s=null;function a(ts){if(!s)s=ts;var p=Math.min((ts-s)/d,1);el.textContent=Math.round((1-Math.pow(1-p,3))*t).toLocaleString();if(p<1)requestAnimationFrame(a);else el.textContent=t>=200?t.toLocaleString()+'+':t.toLocaleString()}requestAnimationFrame(a)});
+(function(){var ss=document.querySelectorAll('section[id]');var pp=document.querySelectorAll('.nav-pill[href]');ss.forEach(function(s){new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){pp.forEach(function(p){p.classList.toggle('active',p.getAttribute('href')==='#'+e.target.id)})}})},{rootMargin:'-20% 0px -70% 0px'}).observe(s)})})();
+(function(){var b=document.getElementById('backToTop');window.addEventListener('scroll',function(){b.classList.toggle('visible',window.scrollY>300)});b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})})})();
+document.addEventListener('DOMContentLoaded',function(){var t=document.documentElement.getAttribute('data-theme')||'dark';mermaid.initialize({startOnLoad:true,theme:t==='dark'?'dark':'default'})});
+</script>
+<script src="seq-engine.js"></script>
+</body>
+</html>

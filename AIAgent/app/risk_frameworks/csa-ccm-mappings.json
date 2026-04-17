@@ -1,0 +1,29 @@
+{
+  "framework": "CSA Cloud Controls Matrix",
+  "version": "4.0",
+  "mappings": {
+    "dormant_accounts": ["IAM-06", "IAM-12"],
+    "overpermissioned_service_principals": ["IAM-05", "IAM-10"],
+    "expired_credentials": ["IAM-09", "IAM-02"],
+    "expiring_credentials": ["IAM-09", "IAM-02"],
+    "mfa_gaps": ["IAM-02", "IAM-04"],
+    "admin_proliferation": ["IAM-05", "IAM-10"],
+    "guest_user_risk": ["IAM-06", "IAM-12"],
+    "missing_guest_review": ["IAM-06", "IAM-12"],
+    "high_risk_users": ["TVM-01", "IAM-02"],
+    "medium_risk_users": ["TVM-01", "IAM-02"],
+    "open_management_ports": ["IVS-03", "IVS-06"],
+    "public_storage": ["DSP-10", "IVS-03"],
+    "webapp_transport_security": ["CEK-03", "DSP-17"],
+    "sql_firewall_exposure": ["IVS-03", "IVS-06"],
+    "disabled_plans": ["TVM-01", "TVM-02"],
+    "security_recommendations": ["TVM-02", "GRC-01"],
+    "low_secure_score": ["GRC-01", "GRC-02"],
+    "missing_diagnostics": ["LOG-01", "LOG-03"],
+    "policy_noncompliance": ["GRC-01", "GRC-03"],
+    "missing_tags": ["DSP-01", "GRC-02"],
+    "irm_not_assessed": ["TVM-01", "HRS-09"],
+    "no_irm_policies": ["TVM-01", "HRS-09"],
+    "active_irm_alerts": ["TVM-01", "HRS-09"]
+  }
+}

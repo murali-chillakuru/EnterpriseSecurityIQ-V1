@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug EnterpriseSecurityIQ Agent (HTTP Server)",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "localhost",
+        "port": 5679
+      },
+      "preLaunchTask": "Open Agent Inspector",
+      "internalConsoleOptions": "neverOpen",
+      "postDebugTask": "Terminate All Tasks"
+    },
+    {
+      "name": "Run Agent (No Debug)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/AIAgent/main.py",
+      "cwd": "${workspaceFolder}/AIAgent",
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/AIAgent"
+      }
+    }
+  ]
+}

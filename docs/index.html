@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostureIQ — Complete Knowledge Hub</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-code:#0D1117;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#484F58;
+  --border-primary:#30363D;--border-subtle:#21262D;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --shadow-lg:0 8px 32px rgba(0,0,0,.4);--shadow-md:0 4px 16px rgba(0,0,0,.3);
+  --radius-lg:16px;--radius-md:12px;--radius-sm:8px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',monospace;
+  --max-width:1200px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-code:#F6F8FA;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8B949E;
+  --border-primary:#D0D7DE;--border-subtle:#E8EBEF;
+  --shadow-lg:0 8px 32px rgba(0,0,0,.08);--shadow-md:0 4px 16px rgba(0,0,0,.06);
+}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.85em;background:var(--bg-code);padding:2px 6px;border-radius:4px;border:1px solid var(--border-subtle)}
+.reading-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),var(--accent-green),var(--accent-purple),var(--accent-cyan));z-index:10001;transition:width .15s}
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,#0D1117 0%,#0a1628 30%,#161B22 60%,#1C2128 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+[data-theme="light"] .hero{background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 30%,#f0fdf4 60%,#faf5ff 100%)}
+.hero::before{content:'';position:absolute;width:800px;height:800px;background:radial-gradient(circle,var(--accent-blue),transparent 60%);top:-300px;right:-200px;opacity:.06;pointer-events:none}
+.hero::after{content:'';position:absolute;width:500px;height:500px;background:radial-gradient(circle,var(--accent-purple),transparent 60%);bottom:-200px;left:-100px;opacity:.06;pointer-events:none}
+.hero h1{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-blue),var(--accent-green),var(--accent-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{font-size:1.2rem;color:var(--text-secondary);max-width:900px;margin:0 auto .5rem}
+.hero .sub2{font-size:.95rem;color:var(--text-muted);max-width:750px;margin:0 auto 1rem}
+.author-tag{display:inline-block;padding:6px 16px;border-radius:20px;font-size:.85rem;font-weight:600;border:1px solid var(--accent-purple);color:var(--accent-purple);margin-top:1rem}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:1rem;max-width:1200px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);position:relative;z-index:10}
+.stat{text-align:center}.stat-value{font-size:1.8rem;font-weight:800}.stat-label{font-size:.7rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}
+.stat-value.blue{color:var(--accent-blue)}.stat-value.green{color:var(--accent-green)}.stat-value.purple{color:var(--accent-purple)}.stat-value.orange{color:var(--accent-orange)}.stat-value.cyan{color:var(--accent-cyan)}.stat-value.red{color:var(--accent-red)}
+.sticky-nav{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);padding:.6rem 1rem;backdrop-filter:blur(12px)}
+.nav-inner{display:flex;gap:.5rem;max-width:1200px;margin:0 auto;overflow-x:auto;scrollbar-width:none;align-items:center}.nav-inner::-webkit-scrollbar{display:none}
+.nav-pill{padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:600;white-space:nowrap;border:1px solid var(--border-primary);background:transparent;color:var(--text-secondary);cursor:pointer;transition:all .2s}
+.nav-pill:hover,.nav-pill.active{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue);text-decoration:none}
+.theme-toggle{margin-left:auto;background:transparent;border:1px solid var(--border-primary);color:var(--text-secondary);padding:6px 12px;border-radius:20px;cursor:pointer;font-size:.85rem;white-space:nowrap;transition:all .2s}.theme-toggle:hover{color:var(--accent-orange);border-color:var(--accent-orange)}
+.container{max-width:var(--max-width);margin:0 auto;padding:2rem}
+section{margin-bottom:3rem;scroll-margin-top:80px}
+section h2{font-size:1.8rem;font-weight:700;margin-bottom:.25rem;display:flex;align-items:center;gap:.5rem}
+section h2 .icon{font-size:1.4rem}
+.level-tag{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.7rem;font-weight:700;letter-spacing:.03em;margin-left:.5rem}
+.level-tag.l100{background:rgba(63,185,80,.15);color:var(--accent-green)}
+.level-tag.l200{background:rgba(31,111,235,.15);color:var(--accent-blue)}
+.level-tag.l300{background:rgba(163,113,247,.15);color:var(--accent-purple)}
+.level-tag.l400{background:rgba(210,153,34,.15);color:var(--accent-orange)}
+.level-tag.l500{background:rgba(248,81,73,.15);color:var(--accent-red)}
+.level-desc{font-size:.88rem;color:var(--text-secondary);margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border-subtle)}
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem;margin:1rem 0}
+.doc-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.25rem 1.5rem;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column}
+.doc-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);text-decoration:none}
+.doc-card-icon{font-size:1.6rem;margin-bottom:.5rem}
+.doc-card h3{font-size:1.05rem;font-weight:700;margin-bottom:.4rem;color:var(--text-primary)}
+.doc-card p{font-size:.85rem;color:var(--text-secondary);line-height:1.5;flex-grow:1}
+.doc-card .doc-links{display:flex;gap:.75rem;margin-top:.75rem;padding-top:.5rem;border-top:1px solid var(--border-subtle)}
+.doc-link{font-size:.78rem;font-weight:600;padding:4px 12px;border-radius:12px;border:1px solid var(--border-primary);color:var(--text-secondary);transition:all .15s}
+.doc-link:hover{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue);text-decoration:none}
+.doc-link.html{border-color:var(--accent-green);color:var(--accent-green)}.doc-link.html:hover{background:var(--accent-green);color:#fff}
+.doc-link.md{border-color:var(--accent-purple);color:var(--accent-purple)}.doc-link.md:hover{background:var(--accent-purple);color:#fff}
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1rem 0}
+.concept-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.25rem}
+.concept-card h4{font-size:1rem;font-weight:700;margin-bottom:.5rem;color:var(--text-primary)}
+.concept-card p{font-size:.85rem;color:var(--text-secondary);line-height:1.6}
+.concept-card:hover{border-color:var(--accent-blue)}
+.toc-table{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);overflow:hidden;margin:1rem 0}
+.toc-row{display:grid;grid-template-columns:40px 1fr 180px;padding:.7rem 1rem;border-bottom:1px solid var(--border-subtle);align-items:center;transition:background .15s;font-size:.88rem}
+.toc-row:hover{background:rgba(31,111,235,.04)}
+.toc-row:last-child{border-bottom:none}
+.toc-num{font-weight:800;color:var(--accent-blue)}.toc-title{color:var(--text-primary);font-weight:600}
+.toc-links{display:flex;gap:.5rem;justify-content:flex-end}
+.info-box{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.25rem 1.5rem;margin:1rem 0}
+.info-box.tip{border-left:4px solid var(--accent-green)}.info-box.info{border-left:4px solid var(--accent-blue)}
+.info-box strong{display:block;margin-bottom:.4rem}
+.knowledge-ladder{display:flex;flex-direction:column;gap:0;margin:1.5rem 0}
+.ladder-step{display:flex;align-items:center;gap:1rem;padding:.8rem 1.25rem;border-left:3px solid var(--border-subtle);position:relative}
+.ladder-step::before{content:'';position:absolute;left:-8px;width:13px;height:13px;border-radius:50%;border:2px solid var(--bg-primary)}
+.ladder-step.l100::before{background:var(--accent-green)}.ladder-step.l200::before{background:var(--accent-blue)}.ladder-step.l300::before{background:var(--accent-purple)}.ladder-step.l400::before{background:var(--accent-orange)}.ladder-step.l500::before{background:var(--accent-red)}
+.ladder-label{font-weight:700;font-size:.82rem;min-width:40px}.ladder-text{font-size:.88rem;color:var(--text-secondary)}
+.back-top{position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--accent-blue);color:#fff;border:none;font-size:1.2rem;cursor:pointer;opacity:0;transition:opacity .3s,transform .3s;transform:translateY(20px);z-index:999;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md)}.back-top.visible{opacity:1;transform:translateY(0)}.back-top:hover{background:var(--accent-cyan)}
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.82rem;border-top:1px solid var(--border-primary);margin-top:3rem}
+@media print{.sticky-nav,.back-top,.theme-toggle,.reading-progress{display:none!important}body{background:#fff;color:#000}.hero{background:#f5f5f5!important;padding:2rem}.doc-card,.concept-card,.info-box{break-inside:avoid}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(forced-colors:active){.nav-pill,.doc-link,.doc-card,.concept-card,.ladder-step::before{border:1px solid CanvasText}}
+</style>
+</head>
+<body>
+<div class="reading-progress" id="readingProgress"></div>
+
+<header class="hero">
+  <h1>PostureIQ</h1>
+  <p class="subtitle">Complete Knowledge Hub — From Zero to Expert</p>
+  <p class="sub2">AI-powered compliance assessment for Azure, Entra ID, Microsoft 365, and AI platforms. 14 registered agent tools, 64 collectors, 11 frameworks, 525 controls.</p>
+  <div class="author-tag">Author: Murali Chillakuru</div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-value blue">14</div><div class="stat-label">Agent Tools</div></div>
+  <div class="stat"><div class="stat-value green">64</div><div class="stat-label">Collectors</div></div>
+  <div class="stat"><div class="stat-value purple">11</div><div class="stat-label">Frameworks</div></div>
+  <div class="stat"><div class="stat-value orange">525</div><div class="stat-label">Controls</div></div>
+  <div class="stat"><div class="stat-value cyan">113</div><div class="stat-label">Eval Functions</div></div>
+  <div class="stat"><div class="stat-value red">10</div><div class="stat-label">Domains</div></div>
+  <div class="stat"><div class="stat-value blue">24</div><div class="stat-label">Report Generators</div></div>
+  <div class="stat"><div class="stat-value green">8</div><div class="stat-label">Engines</div></div>
+</div>
+
+<nav class="sticky-nav" aria-label="Section navigation">
+  <div class="nav-inner">
+    <a href="#what" class="nav-pill">What Is It</a>
+    <a href="#ladder" class="nav-pill">Knowledge Ladder</a>
+    <a href="#l100" class="nav-pill">L100</a>
+    <a href="#l200" class="nav-pill">L200</a>
+    <a href="#l300" class="nav-pill">L300</a>
+    <a href="#l400" class="nav-pill">L400</a>
+    <a href="#l500" class="nav-pill">L500</a>
+    <a href="#all-docs" class="nav-pill">All Docs</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">☀ / ☾</button>
+  </div>
+</nav>
+
+<main class="container">
+
+<!-- ══════ What Is It ══════ -->
+<section id="what">
+  <h2><span class="icon">🎯</span> What Is PostureIQ?</h2>
+  <p style="font-size:1.05rem;color:var(--text-secondary);margin:1rem 0;line-height:1.8">
+    <strong>PostureIQ</strong> is an AI-powered compliance and security assessment tool that automatically audits your Azure subscriptions, Entra ID tenant, and Microsoft 365 environment against industry compliance frameworks. It collects evidence from 64 data sources, evaluates 525 controls across 11 frameworks (NIST 800-53, FedRAMP, CIS, PCI-DSS, ISO 27001, SOC 2, HIPAA, NIST CSF, CSA-CCM, MCSB, GDPR), and generates detailed reports with findings, scores, and remediation guidance.
+  </p>
+  <p style="font-size:1.05rem;color:var(--text-secondary);margin:1rem 0;line-height:1.8">
+    It runs as a <strong>Microsoft Foundry AI Agent</strong> (conversational) or as <strong>standalone CLI scripts</strong> (headless for CI/CD). The agent understands natural language queries like <em>"How compliant are we with NIST 800-53?"</em> or <em>"What are our top 10 risks?"</em> and produces detailed, evidence-backed answers.
+  </p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>🔍 What Problems Does It Solve?</h4>
+      <p>Manual compliance audits take weeks and go stale immediately. This tool automates the entire cycle — collect evidence, evaluate controls, generate reports — in minutes. Run it weekly in CI/CD to catch compliance drift before auditors do.</p>
+    </div>
+    <div class="concept-card">
+      <h4>👥 Who Is It For?</h4>
+      <p><strong>Security engineers</strong> who need continuous compliance monitoring. <strong>Compliance officers</strong> who need audit-ready evidence. <strong>Platform teams</strong> who want security gates in deployment pipelines. <strong>CISOs</strong> who need risk dashboards.</p>
+    </div>
+    <div class="concept-card">
+      <h4>🏗️ How Does It Work?</h4>
+      <p>Three-phase pipeline: <strong>Collect</strong> (64 collectors gather evidence from Azure ARM, Microsoft Graph, Entra ID) → <strong>Evaluate</strong> (113 check functions across 10 security domains) → <strong>Report</strong> (24 generators produce HTML, JSON, Markdown, Excel, OSCAL, SARIF, PDF).</p>
+    </div>
+    <div class="concept-card">
+      <h4>🤖 AI Agent vs CLI</h4>
+      <p>The AI Agent runs on Microsoft Foundry with 14 registered tools — invoke via natural language. The CLI scripts (8 total) run headlessly for automation, CI/CD, and scheduled assessments with no human interaction.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ Knowledge Ladder ══════ -->
+<section id="ladder">
+  <h2><span class="icon">📚</span> Knowledge Ladder</h2>
+  <p style="color:var(--text-secondary);margin-bottom:1rem">Documents are organized from foundational concepts (L100) to expert-level internals (L500). Start at your level and work up.</p>
+  <div class="knowledge-ladder">
+    <div class="ladder-step l100"><span class="ladder-label" style="color:var(--accent-green)">L100</span><span class="ladder-text"><strong>Fundamentals</strong> — What it is, what it does, getting started in 5 minutes</span></div>
+    <div class="ladder-step l200"><span class="ladder-label" style="color:var(--accent-blue)">L200</span><span class="ladder-text"><strong>Concepts</strong> — Architecture, frameworks, domains, scoring, evidence pipeline</span></div>
+    <div class="ladder-step l300"><span class="ladder-label" style="color:var(--accent-purple)">L300</span><span class="ladder-text"><strong>Operations</strong> — Configuration, CLI usage, reports, CI/CD integration, suppressions</span></div>
+    <div class="ladder-step l400"><span class="ladder-label" style="color:var(--accent-orange)">L400</span><span class="ladder-text"><strong>Advanced</strong> — Extending frameworks, adding collectors/evaluators/plugins, custom evaluators</span></div>
+    <div class="ladder-step l500"><span class="ladder-label" style="color:var(--accent-red)">L500</span><span class="ladder-text"><strong>Expert</strong> — Internals, dispatch mechanics, determinism guarantees, troubleshooting, code reference</span></div>
+  </div>
+</section>
+
+<!-- ══════ L100 ══════ -->
+<section id="l100">
+  <h2><span class="icon">🟢</span> L100 — Fundamentals <span class="level-tag l100">BEGINNER</span></h2>
+  <p class="level-desc">Start here if you're new to the tool, to compliance frameworks, or to Azure security. These documents explain what the tool does and how to get started.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>What Is Compliance?</h4>
+      <p>Compliance means your IT systems meet specific security standards required by regulations (HIPAA for healthcare, PCI-DSS for payments) or best practices (NIST, CIS). Each standard defines <strong>controls</strong> — specific security requirements like "enforce MFA" or "encrypt data at rest." This tool checks your Azure/Entra environment against those controls automatically.</p>
+    </div>
+    <div class="concept-card">
+      <h4>What Is Azure + Entra ID?</h4>
+      <p><strong>Azure</strong> is Microsoft's cloud platform where your VMs, databases, storage, and services run. <strong>Entra ID</strong> (formerly Azure AD) is the identity platform that manages users, groups, app registrations, and access policies. This tool audits both — Azure resources via ARM APIs and Entra identity data via Microsoft Graph.</p>
+    </div>
+    <div class="concept-card">
+      <h4>What Are Frameworks?</h4>
+      <p>A compliance framework is a structured set of security controls. Examples: <strong>NIST 800-53</strong> (83 controls, US government standard), <strong>PCI-DSS</strong> (51 controls, payment card industry), <strong>HIPAA</strong> (43 controls, healthcare). This tool maps controls from 11 frameworks to Azure/Entra evidence and evaluates each one.</p>
+    </div>
+    <div class="concept-card">
+      <h4>How Do I Run It?</h4>
+      <p>Two ways: (1) <strong>AI Agent</strong> — deploy to Microsoft Foundry and ask questions in natural language. (2) <strong>CLI</strong> — run any of the 8 CLI scripts (e.g., <code>python run_risk_analysis.py --tenant YOUR-TENANT-ID</code>) for a targeted assessment. Output goes to <code>output/YYYYMMDD_HHMMSS/</code> with HTML, JSON, and Markdown reports.</p>
+    </div>
+  </div>
+
+  <div class="doc-grid">
+    <a class="doc-card" href="readme.html">
+      <div class="doc-card-icon">📖</div>
+      <h3>Project README</h3>
+      <p>High-level overview, quick start, installation, and project structure. Start here.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="../AIAgent/readme.html">
+      <div class="doc-card-icon">🤖</div>
+      <h3>AI Agent README</h3>
+      <p>Agent-specific setup, Foundry deployment, Docker build, tool descriptions.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="agent-capabilities.html">
+      <div class="doc-card-icon">🛠️</div>
+      <h3>Agent Capabilities</h3>
+      <p>All 14 agent tools, what each does, example prompts, and response formats.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- ══════ L200 ══════ -->
+<section id="l200">
+  <h2><span class="icon">🔵</span> L200 — Architecture & Concepts <span class="level-tag l200">INTERMEDIATE</span></h2>
+  <p class="level-desc">Understand the internal architecture, the three-phase pipeline (Collect → Evaluate → Report), evidence types, evaluator domains, and how compliance scoring works.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>Three-Phase Pipeline</h4>
+      <p><strong>Phase 1: Collect</strong> — 64 collectors (49 Azure + 13 Entra + 2 standalone) gather evidence. Azure and Entra groups run concurrently. <strong>Phase 2: Evaluate</strong> — 113 check functions across 10 security domains evaluate 525 controls against gathered evidence. <strong>Phase 3: Report</strong> — 24 generators produce output in 8+ formats.</p>
+    </div>
+    <div class="concept-card">
+      <h4>Evidence Types (218)</h4>
+      <p>Each collector produces evidence records keyed by type (e.g., <code>azure-keyvault</code>, <code>entra-conditional-access-policy</code>). The engine builds an O(1) lookup index. Controls reference evidence types in their <code>evidence_types</code> field. If primary evidence is missing, <code>compensating_evidence</code> provides fallback.</p>
+    </div>
+    <div class="concept-card">
+      <h4>Security Domains (10)</h4>
+      <p>Controls are grouped into domains: <strong>access</strong> (8 handlers), <strong>identity</strong> (22), <strong>data_protection</strong> (22), <strong>network</strong> (16), <strong>logging</strong> (13), <strong>governance</strong> (21), <strong>incident_response</strong> (6), <strong>change_management</strong> (4), <strong>business_continuity</strong> (4), <strong>asset_management</strong> (4).</p>
+    </div>
+    <div class="concept-card">
+      <h4>Severity-Weighted Scoring</h4>
+      <p>Each finding carries a severity weight: <strong>critical=4</strong>, <strong>high=3</strong>, <strong>medium=2</strong>, <strong>low=1</strong>, informational=0. The compliance score is a weighted percentage with 50% partial credit. Framework-level and domain-level breakdowns are provided.</p>
+    </div>
+  </div>
+
+  <div class="doc-grid">
+    <a class="doc-card" href="architecture.html">
+      <div class="doc-card-icon">🏗️</div>
+      <h3>Architecture Deep Dive</h3>
+      <p>Full pipeline diagrams, collector registry, evaluator dispatch, report generation, and checkpoint/resume system.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="evaluation-rules.html">
+      <div class="doc-card-icon">⚖️</div>
+      <h3>Evaluation Rules</h3>
+      <p>All 10 domains, 113 check functions, handler signatures, cross-domain fallback (28 routes), scoring mechanics.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="FILE-REFERENCE.html">
+      <div class="doc-card-icon">📂</div>
+      <h3>File Reference</h3>
+      <p>Complete inventory of every file in the repo — purpose, line counts, key exports. Navigate the codebase.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- ══════ L300 ══════ -->
+<section id="l300">
+  <h2><span class="icon">🟣</span> L300 — Operations <span class="level-tag l300">PRACTITIONER</span></h2>
+  <p class="level-desc">Day-to-day usage: configuration, CLI commands, report formats, CI/CD pipelines, suppression rules, and authentication modes.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>4 Authentication Modes</h4>
+      <p><code>auto</code> (DefaultAzureCredential), <code>serviceprincipal</code>, <code>appregistration</code>, <code>azurecli</code>. Set via <code>ENTERPRISESECURITYIQ_AUTH_MODE</code> env var. Preflight check probes ARM + Graph + Entra to detect permission boundaries before collection.</p>
+    </div>
+    <div class="concept-card">
+      <h4>8 CLI Scripts</h4>
+      <p><code>run_rbac_report</code>, <code>run_query</code>, <code>run_risk_analysis</code>, <code>run_data_security</code>, <code>run_copilot_readiness</code>, <code>run_ai_agent_security</code>, plus 2 determinism checks. Some support <code>--fail-on-severity</code> for CI/CD gates.</p>
+    </div>
+    <div class="concept-card">
+      <h4>Report Formats</h4>
+      <p>24 report generators produce: HTML (interactive), JSON (machine-readable), Markdown, Excel, OSCAL, SARIF (static analysis), PDF (via Playwright headless Chromium). Per-framework subfolders with drift reports when delta mode is active.</p>
+    </div>
+    <div class="concept-card">
+      <h4>Suppression Rules</h4>
+      <p>Mute accepted risks via <code>suppressions.json</code> with regex-based <code>control_id</code> and <code>resource</code> matching, ISO date expiry, and full audit trail. Suppressed findings stay in JSON exports for auditability.</p>
+    </div>
+  </div>
+
+  <div class="doc-grid">
+    <a class="doc-card" href="configuration-guide.html">
+      <div class="doc-card-icon">⚙️</div>
+      <h3>Configuration Guide</h3>
+      <p>Config file reference, env var overrides, auth setup, collector tuning, output format selection.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="prompts.html">
+      <div class="doc-card-icon">💬</div>
+      <h3>Usage & Prompts Guide</h3>
+      <p>All CLI scripts, agent tool prompts, framework selection, SIEM integration, and operational workflows.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="ci-cd-integration.html">
+      <div class="doc-card-icon">🔄</div>
+      <h3>CI/CD Integration</h3>
+      <p>GitHub Actions + Azure DevOps examples, compliance gates, determinism checks, env vars, artifact management.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="suppressions-guide.html">
+      <div class="doc-card-icon">🔇</div>
+      <h3>Suppressions Guide</h3>
+      <p>Suppression rules, regex matching (fullmatch/search), expiry handling, audit trail, CI/CD workflow.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="deployment-guide.html">
+      <div class="doc-card-icon">🚀</div>
+      <h3>Deployment Guide</h3>
+      <p>Deploy to Foundry, Container Apps, or App Service. Bicep IaC, Docker build, identity setup, web dashboard.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- ══════ L400 ══════ -->
+<section id="l400">
+  <h2><span class="icon">🟠</span> L400 — Advanced Extension <span class="level-tag l400">ADVANCED</span></h2>
+  <p class="level-desc">Extend the tool: add custom compliance frameworks, write new collectors, create evaluator functions, and build plugins.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>Add a Framework</h4>
+      <p>Drop a JSON mapping file in <code>AIAgent/app/postureiq_frameworks/</code> with <code>control_id</code>, <code>domain</code>, <code>severity</code>, <code>evidence_types</code>, and <code>evaluation_logic</code> fields. Register in the <code>AVAILABLE_FRAMEWORKS</code> dict. Controls are snake_case (not camelCase).</p>
+    </div>
+    <div class="concept-card">
+      <h4>Add a Collector</h4>
+      <p>Create a Python module in <code>collectors/azure/</code> or <code>collectors/entra/</code> with the <code>@register_collector(name, plane, source, priority)</code> decorator. Auto-discovered via <code>pkgutil.iter_modules()</code>. No manual import needed.</p>
+    </div>
+    <div class="concept-card">
+      <h4>Add an Evaluator</h4>
+      <p>Write a handler function with signature <code>_check_xxx(control_id, control, evidence, evidence_index, thresholds) → list[dict]</code>. Add to the domain dispatch dict. Reference the function name in framework JSON's <code>evaluation_logic</code> field.</p>
+    </div>
+    <div class="concept-card">
+      <h4>Plugin System</h4>
+      <p>Drop a <code>.py</code> file in <code>plugins/</code> with an <code>evaluate(control, evidence_index) → tuple[str, list[dict]]</code> function. Set <code>custom_evaluator</code> field in framework JSON to the plugin name. Auto-discovered by <code>load_plugins()</code>.</p>
+    </div>
+  </div>
+
+  <div class="doc-grid">
+    <a class="doc-card" href="extending-frameworks.html">
+      <div class="doc-card-icon">🧩</div>
+      <h3>Extending Frameworks</h3>
+      <p>Full extension guide: 4 extension points, JSON reference (corrected snake_case), 121 evidence types, collector/evaluator/plugin patterns.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- ══════ L500 ══════ -->
+<section id="l500">
+  <h2><span class="icon">🔴</span> L500 — Expert Internals <span class="level-tag l500">EXPERT</span></h2>
+  <p class="level-desc">Deep internals: evaluation dispatch mechanics, determinism guarantees, checkpoint/resume implementation, error recovery, and troubleshooting.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>Two-Stage Dispatch</h4>
+      <p>The engine reads a control's <code>domain</code> field and dispatches to the matching domain evaluator. If all findings return <code>not_assessed</code>, the engine checks <code>_CROSS_DOMAIN_MAP</code> (28 routes) and redirects to an alternative domain. This ensures controls get evaluated even when primary evidence is in a different domain.</p>
+    </div>
+    <div class="concept-card">
+      <h4>Determinism Guarantees</h4>
+      <p>Three determinism check scripts verify evaluation reproducibility: collect once, evaluate N times (identical + shuffled order), compare SHA-256 hashes after stripping 12 volatile fields. Phase E checks report generation determinism. Exit code 0 = PASS, 1 = FAIL.</p>
+    </div>
+    <div class="concept-card">
+      <h4>Collector Error Recovery</h4>
+      <p>Base collector: 3 retries with exponential backoff (2s → 4s → 8s). <code>AccessDeniedError</code> creates a marker — pipeline continues. 429 reads <code>Retry-After</code> header. Timeouts preserve partial evidence via <code>_partial_evidence</code> attribute.</p>
+    </div>
+    <div class="concept-card">
+      <h4>Checkpoint / Resume</h4>
+      <p><code>.checkpoint.json</code> stores <code>{completed, failed, evidence}</code>. On resume, completed collectors are skipped. Corrupt checkpoint → fresh start. Auto-deleted on success. <code>.last_run.json</code> enables delta/drift analysis.</p>
+    </div>
+  </div>
+
+  <div class="doc-grid">
+    <a class="doc-card" href="troubleshooting.html">
+      <div class="doc-card-icon">🔧</div>
+      <h3>Troubleshooting</h3>
+      <p>15 diagnostic topics, error code reference (16 patterns), HTTP status impact, checkpoint recovery, log analysis.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="enterprisesecurityiq-sequence-diagram.html">
+      <div class="doc-card-icon">📊</div>
+      <h3>Sequence Diagrams</h3>
+      <p>Interactive sequence diagrams for the full assessment pipeline, authentication flow, and report generation.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span></div>
+    </a>
+    <a class="doc-card" href="enterprisesecurityiq-deep-dive.html">
+      <div class="doc-card-icon">🔬</div>
+      <h3>Technical Deep Dive</h3>
+      <p>Comprehensive technical analysis of the entire codebase.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span></div>
+    </a>
+  </div>
+
+  <h3 style="margin-top:2rem;font-size:1.1rem;color:var(--text-secondary)">Engine Deep Dives</h3>
+  <div class="doc-grid">
+    <a class="doc-card" href="tenant-assessment-deep-dive.html">
+      <div class="doc-card-icon">🏢</div>
+      <h3>PostureIQ Assessment</h3>
+      <p>Complete pipeline: 64 collectors, 10 evaluators, 24 report generators, checkpoint/resume, delta tracking.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="data-security-deep-dive.html">
+      <div class="doc-card-icon">🛡️</div>
+      <h3>Data Security Engine</h3>
+      <p>43 categories, ~160 checks, 8 framework mappings, 7 report formats.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="ai-agent-security-deep-dive.html">
+      <div class="doc-card-icon">🤖</div>
+      <h3>AI Agent Security</h3>
+      <p>6 platforms, 50+ categories, 120+ individual checks across Copilot Studio, Foundry, Azure OpenAI.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="copilot-readiness-deep-dive.html">
+      <div class="doc-card-icon">✅</div>
+      <h3>M365 Copilot Readiness</h3>
+      <p>10 readiness categories, 85+ checks, 65-control security matrix, effort mappings.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="rbac-reporting-deep-dive.html">
+      <div class="doc-card-icon">🔐</div>
+      <h3>RBAC Reporting</h3>
+      <p>7-phase pipeline, 19 privileged roles, 6 risk detection rules, PIM enrichment.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="risk-analysis-deep-dive.html">
+      <div class="doc-card-icon">⚡</div>
+      <h3>Risk Analysis</h3>
+      <p>5 risk categories, 19 checks, weighted scoring model, threshold configuration.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+    <a class="doc-card" href="query-engine-deep-dive.html">
+      <div class="doc-card-icon">🔍</div>
+      <h3>Query Engine</h3>
+      <p>11 ARG templates, 6 Entra queries, NL dispatch, interactive REPL with 9 commands.</p>
+      <div class="doc-links"><span class="doc-link html">HTML</span><span class="doc-link md">MD</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- ══════ All Docs Table ══════ -->
+<section id="all-docs">
+  <h2><span class="icon">📑</span> Complete Document Index</h2>
+  <p style="color:var(--text-secondary);margin-bottom:1rem">Every documentation file with links to both HTML and Markdown versions.</p>
+
+  <div class="toc-table">
+    <div class="toc-row" style="background:var(--bg-secondary);font-weight:700;color:var(--text-primary)"><span>#</span><span>Document</span><span style="text-align:right">Links</span></div>
+
+    <div class="toc-row"><span class="toc-num">1</span><span class="toc-title">Project README</span><span class="toc-links"><a href="readme.html" class="doc-link html">HTML</a> <a href="../README.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">2</span><span class="toc-title">AI Agent README</span><span class="toc-links"><a href="../AIAgent/readme.html" class="doc-link html">HTML</a> <a href="../AIAgent/README.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">3</span><span class="toc-title">Agent Capabilities</span><span class="toc-links"><a href="agent-capabilities.html" class="doc-link html">HTML</a> <a href="agent-capabilities.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">4</span><span class="toc-title">Architecture Deep Dive</span><span class="toc-links"><a href="architecture.html" class="doc-link html">HTML</a> <a href="architecture.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">5</span><span class="toc-title">File Reference</span><span class="toc-links"><a href="FILE-REFERENCE.html" class="doc-link html">HTML</a> <a href="FILE-REFERENCE.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">6</span><span class="toc-title">Evaluation Rules</span><span class="toc-links"><a href="evaluation-rules.html" class="doc-link html">HTML</a> <a href="evaluation-rules.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">7</span><span class="toc-title">Configuration Guide</span><span class="toc-links"><a href="configuration-guide.html" class="doc-link html">HTML</a> <a href="configuration-guide.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">8</span><span class="toc-title">Usage &amp; Prompts Guide</span><span class="toc-links"><a href="prompts.html" class="doc-link html">HTML</a> <a href="PROMPTS.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">9</span><span class="toc-title">CI/CD Integration</span><span class="toc-links"><a href="ci-cd-integration.html" class="doc-link html">HTML</a> <a href="ci-cd-integration.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">10</span><span class="toc-title">Suppressions Guide</span><span class="toc-links"><a href="suppressions-guide.html" class="doc-link html">HTML</a> <a href="suppressions-guide.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">11</span><span class="toc-title">Troubleshooting</span><span class="toc-links"><a href="troubleshooting.html" class="doc-link html">HTML</a> <a href="troubleshooting.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">12</span><span class="toc-title">Extending Frameworks</span><span class="toc-links"><a href="extending-frameworks.html" class="doc-link html">HTML</a> <a href="extending-frameworks.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">13</span><span class="toc-title">Sequence Diagrams</span><span class="toc-links"><a href="enterprisesecurityiq-sequence-diagram.html" class="doc-link html">HTML</a></span></div>
+    <div class="toc-row"><span class="toc-num">14</span><span class="toc-title">Technical Deep Dive</span><span class="toc-links"><a href="enterprisesecurityiq-deep-dive.html" class="doc-link html">HTML</a></span></div>
+    <div class="toc-row"><span class="toc-num">15</span><span class="toc-title">PostureIQ Assessment Deep Dive</span><span class="toc-links"><a href="tenant-assessment-deep-dive.html" class="doc-link html">HTML</a> <a href="tenant-assessment-deep-dive.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">16</span><span class="toc-title">Data Security Deep Dive</span><span class="toc-links"><a href="data-security-deep-dive.html" class="doc-link html">HTML</a> <a href="data-security-deep-dive.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">17</span><span class="toc-title">AI Agent Security Deep Dive</span><span class="toc-links"><a href="ai-agent-security-deep-dive.html" class="doc-link html">HTML</a> <a href="ai-agent-security-deep-dive.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">18</span><span class="toc-title">M365 Copilot Readiness Deep Dive</span><span class="toc-links"><a href="copilot-readiness-deep-dive.html" class="doc-link html">HTML</a> <a href="copilot-readiness-deep-dive.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">19</span><span class="toc-title">RBAC Reporting Deep Dive</span><span class="toc-links"><a href="rbac-reporting-deep-dive.html" class="doc-link html">HTML</a> <a href="rbac-reporting-deep-dive.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">20</span><span class="toc-title">Risk Analysis Deep Dive</span><span class="toc-links"><a href="risk-analysis-deep-dive.html" class="doc-link html">HTML</a> <a href="risk-analysis-deep-dive.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">21</span><span class="toc-title">Query Engine Deep Dive</span><span class="toc-links"><a href="query-engine-deep-dive.html" class="doc-link html">HTML</a> <a href="query-engine-deep-dive.md" class="doc-link md">MD</a></span></div>
+    <div class="toc-row"><span class="toc-num">22</span><span class="toc-title">Deployment Guide</span><span class="toc-links"><a href="deployment-guide.html" class="doc-link html">HTML</a> <a href="deployment-guide.md" class="doc-link md">MD</a></span></div>
+  </div>
+</section>
+
+</main>
+
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0})" aria-label="Back to top">↑</button>
+<footer>
+  <p>PostureIQ — Complete Knowledge Hub — Author: Murali Chillakuru</p>
+  <p style="margin-top:.25rem">14 Agent Tools · 64 Collectors · 11 Frameworks · 525 Controls · 113 Check Functions · 10 Domains · 24 Reports · 8 Engines</p>
+</footer>
+
+<script>
+function toggleTheme(){const t=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';if(t==='light')document.documentElement.setAttribute('data-theme','light');else document.documentElement.removeAttribute('data-theme');localStorage.setItem('esiq-theme',t)}
+(function(){if(localStorage.getItem('esiq-theme')==='light')document.documentElement.setAttribute('data-theme','light')})();
+const pills=document.querySelectorAll('.nav-pill[href^="#"]');const secs=document.querySelectorAll('section[id]');
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const a=document.querySelector('.nav-pill[href="#'+e.target.id+'"]');if(a)a.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px'});
+secs.forEach(s=>obs.observe(s));
+window.addEventListener('scroll',()=>{document.getElementById('backTop').classList.toggle('visible',window.scrollY>400);const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('readingProgress').style.width=(window.scrollY/h*100)+'%'});
+</script>
+
+<script src="seq-engine.js"></script>
+</body>
+</html>

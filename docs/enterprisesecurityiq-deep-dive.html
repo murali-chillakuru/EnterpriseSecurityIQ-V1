@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostureIQ — The Complete Deep Dive: From Zero to Expert</title>
+<meta name="description" content="A comprehensive guide to cloud compliance, Azure, Entra ID, and the PostureIQ AI Agent — from beginner (L100) to advanced (L500).">
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   EnterpriseSecurityIQ Deep-Dive Blog — Dark Enterprise Theme
+   ═══════════════════════════════════════════════════════════════════════ */
+:root {
+    --bg-primary: #0D1117;
+    --bg-secondary: #161B22;
+    --bg-tertiary: #1C2128;
+    --bg-card: #21262D;
+    --bg-card-hover: #282E36;
+    --bg-inset: #0D1117;
+    --border-primary: #30363D;
+    --border-secondary: #21262D;
+    --border-accent: #1F6FEB;
+    --text-primary: #E6EDF3;
+    --text-secondary: #8B949E;
+    --text-muted: #848D97;
+    --text-link: #58A6FF;
+    --accent-blue: #1F6FEB;
+    --accent-blue-light: #388BFD;
+    --accent-green: #3FB950;
+    --accent-green-bg: rgba(63,185,80,.12);
+    --accent-orange: #D29922;
+    --accent-orange-bg: rgba(210,153,34,.12);
+    --accent-red: #F85149;
+    --accent-red-bg: rgba(248,81,73,.12);
+    --accent-purple: #A371F7;
+    --accent-purple-bg: rgba(163,113,247,.12);
+    --accent-cyan: #39D2C0;
+    --accent-cyan-bg: rgba(57,210,192,.12);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.4);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,.5);
+    --radius: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --font-sans: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'Cascadia Code', 'Fira Code', 'Consolas', 'Monaco', monospace;
+    --max-width: 900px;
+    --wide-width: 1200px;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+::selection { background: rgba(31,111,235,.4); }
+
+a { color: var(--text-link); text-decoration: none; transition: color .15s; }
+a:hover { color: var(--accent-blue-light); text-decoration: underline; }
+
+img { max-width: 100%; }
+
+/* ─── Typography ─── */
+.prose { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+.wide { max-width: var(--wide-width); margin: 0 auto; padding: 0 24px; }
+
+h1, h2, h3, h4, h5 { font-weight: 600; line-height: 1.3; }
+h1 { font-size: 2.5rem; letter-spacing: -.02em; }
+h2 { font-size: 1.75rem; margin-top: 3.5rem; margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--border-primary); }
+h3 { font-size: 1.3rem; margin-top: 2rem; margin-bottom: .75rem; color: var(--accent-blue-light); }
+h4 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: .5rem; }
+
+p { margin-bottom: 1rem; color: var(--text-secondary); }
+p.lead { font-size: 1.15rem; color: var(--text-primary); line-height: 1.8; }
+strong { color: var(--text-primary); }
+
+blockquote {
+    border-left: 3px solid var(--accent-blue);
+    padding: 12px 20px;
+    margin: 1.5rem 0;
+    background: var(--bg-secondary);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+code {
+    font-family: var(--font-mono);
+    font-size: .875em;
+    background: var(--bg-card);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--accent-cyan);
+    border: 1px solid var(--border-secondary);
+}
+
+pre {
+    background: var(--bg-inset);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    line-height: 1.6;
+}
+pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: .9rem;
+    color: var(--text-primary);
+}
+
+ul, ol { margin-bottom: 1rem; padding-left: 1.5rem; color: var(--text-secondary); }
+li { margin-bottom: .4rem; }
+li::marker { color: var(--accent-blue); }
+
+hr {
+    border: none;
+    border-top: 1px solid var(--border-primary);
+    margin: 3rem 0;
+}
+
+/* ─── Hero / Masthead ─── */
+.hero {
+    position: relative;
+    padding: 100px 0 80px;
+    background: linear-gradient(145deg, #0D1117 0%, #161B22 30%, #0D2137 60%, #0D1117 100%);
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-primary);
+}
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(31,111,235,.08) 0%, transparent 70%);
+}
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: -150px; left: -100px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(163,113,247,.06) 0%, transparent 70%);
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(31,111,235,.15);
+    border: 1px solid rgba(31,111,235,.3);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: .8rem;
+    color: var(--accent-blue-light);
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+}
+.hero h1 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #E6EDF3 0%, #8B949E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+    max-width: 750px;
+}
+.hero .subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    max-width: 650px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+}
+.hero-meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-size: .85rem;
+    color: var(--text-muted);
+}
+.hero-meta span { display: flex; align-items: center; gap: 6px; }
+
+/* ─── Reading Progress ─── */
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--accent-blue);
+    z-index: 1000;
+    transition: width 80ms linear;
+    width: 0%;
+}
+
+/* ─── Sticky Nav ─── */
+.sticky-nav {
+    position: sticky;
+    top: 0;
+    background: rgba(13,17,23,.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-primary);
+    z-index: 100;
+    padding: 0;
+}
+.sticky-nav-inner {
+    max-width: var(--wide-width);
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.sticky-nav-inner::-webkit-scrollbar { display: none; }
+.nav-pill {
+    display: inline-block;
+    padding: 12px 16px;
+    font-size: .82rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all .15s;
+    cursor: pointer;
+}
+.nav-pill:hover { color: var(--text-primary); text-decoration: none; }
+.theme-toggle{margin-left:8px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:20px;padding:6px 12px;font-size:.82rem;cursor:pointer;color:var(--text-secondary);transition:all .15s;white-space:nowrap;flex-shrink:0}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--text-primary)}
+.nav-pill.active { color: var(--accent-blue-light); border-bottom-color: var(--accent-blue); }
+
+/* ─── Level Badges ─── */
+.level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .3px;
+    vertical-align: middle;
+    margin-left: 8px;
+}
+.level-100 { background: var(--accent-green-bg); color: var(--accent-green); border: 1px solid rgba(63,185,80,.25); }
+.level-200 { background: var(--accent-cyan-bg); color: var(--accent-cyan); border: 1px solid rgba(57,210,192,.25); }
+.level-300 { background: var(--accent-orange-bg); color: var(--accent-orange); border: 1px solid rgba(210,153,34,.25); }
+.level-400 { background: var(--accent-purple-bg); color: var(--accent-purple); border: 1px solid rgba(163,113,247,.25); }
+.level-500 { background: var(--accent-red-bg); color: var(--accent-red); border: 1px solid rgba(248,81,73,.25); }
+
+/* ─── Content Cards ─── */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin: 1.5rem 0;
+    transition: border-color .2s;
+}
+.card:hover { border-color: var(--border-accent); }
+.card h4 { margin-top: 0; color: var(--text-primary); }
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 1.5rem 0;
+}
+.card-grid .card { margin: 0; }
+
+.card-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 14px;
+}
+
+/* ─── Info Boxes ─── */
+.info-box {
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin: 1.5rem 0;
+    font-size: .95rem;
+    border: 1px solid;
+}
+.info-box.tip { background: var(--accent-green-bg); border-color: rgba(63,185,80,.2); }
+.info-box.tip::before { content: '💡 Tip: '; font-weight: 700; color: var(--accent-green); }
+.info-box.warning { background: var(--accent-orange-bg); border-color: rgba(210,153,34,.2); }
+.info-box.warning::before { content: '⚠️ Important: '; font-weight: 700; color: var(--accent-orange); }
+.info-box.note { background: rgba(31,111,235,.08); border-color: rgba(31,111,235,.2); }
+.info-box.note::before { content: '📌 Note: '; font-weight: 700; color: var(--accent-blue-light); }
+.info-box.danger { background: var(--accent-red-bg); border-color: rgba(248,81,73,.2); }
+.info-box.danger::before { content: '🚨 Critical: '; font-weight: 700; color: var(--accent-red); }
+
+/* ─── Tables ─── */
+.table-wrapper { overflow-x: auto; margin: 1.5rem 0; border-radius: var(--radius); border: 1px solid var(--border-primary); }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .9rem;
+}
+thead th {
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--bg-tertiary);
+    font-weight: 600;
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--border-primary);
+}
+tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-secondary);
+    vertical-align: top;
+    color: var(--text-secondary);
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--bg-card-hover); }
+td code { font-size: .82em; }
+
+/* ─── Expandable Sections ─── */
+details {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius);
+    margin: 1rem 0;
+    transition: border-color .2s;
+}
+details[open] { border-color: var(--border-accent); }
+details summary {
+    padding: 16px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-primary);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+}
+details summary::before {
+    content: '▶';
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: transform .2s;
+    flex-shrink: 0;
+}
+details[open] summary::before { transform: rotate(90deg); }
+details summary::-webkit-details-marker { display: none; }
+details > div { padding: 0 20px 20px; }
+
+/* ─── Diagram / Pipeline ─── */
+.pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 24px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    margin: 2rem 0;
+    overflow-x: auto;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.pipeline-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 24px;
+    min-width: 130px;
+}
+.pipeline-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+}
+.pipeline-icon.collect { background: rgba(31,111,235,.15); border: 1px solid rgba(31,111,235,.3); }
+.pipeline-icon.eval { background: rgba(163,113,247,.15); border: 1px solid rgba(163,113,247,.3); }
+.pipeline-icon.report { background: rgba(63,185,80,.15); border: 1px solid rgba(63,185,80,.3); }
+.pipeline-label { font-size: .85rem; font-weight: 600; text-align: center; }
+.pipeline-sub { font-size: .75rem; color: var(--text-muted); text-align: center; }
+.pipeline-arrow {
+    font-size: 20px;
+    color: var(--text-muted);
+    padding: 0 4px;
+    flex-shrink: 0;
+}
+
+/* ─── Stats Row ─── */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin: 2rem 0;
+}
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+}
+.stat-card .number {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+.stat-card .number.blue { color: var(--accent-blue); }
+.stat-card .number.green { color: var(--accent-green); }
+.stat-card .number.purple { color: var(--accent-purple); }
+.stat-card .number.orange { color: var(--accent-orange); }
+.stat-card .number.cyan { color: var(--accent-cyan); }
+.stat-card .number.red { color: var(--accent-red); }
+.stat-card .label {
+    font-size: .75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-top: 6px;
+}
+
+/* ─── Framework Badges ─── */
+.fw-badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 1rem 0;
+}
+.fw-badge {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    text-align: center;
+    flex: 1;
+    min-width: 120px;
+}
+.fw-badge .count { font-size: 1.5rem; font-weight: 700; color: var(--accent-blue); }
+.fw-badge .name { font-size: .8rem; font-weight: 600; margin-top: 4px; color: var(--text-secondary); }
+
+/* ─── Columns ─── */
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 1.5rem 0;
+}
+@media (max-width: 768px) {
+    .two-col { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2rem; }
+    .pipeline { flex-direction: column; }
+    .stats-row { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ─── Footer ─── */
+.footer {
+    border-top: 1px solid var(--border-primary);
+    padding: 40px 0;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: .85rem;
+    background: var(--bg-secondary);
+    margin-top: 80px;
+}
+
+/* ─── Glossary Terms ─── */
+.glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 12px;
+    margin: 1rem 0;
+}
+.glossary-item {
+    padding: 14px 18px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius);
+}
+.glossary-item dt { font-weight: 600; color: var(--accent-cyan); font-size: .95rem; margin-bottom: 4px; }
+.glossary-item dd { font-size: .88rem; color: var(--text-secondary); margin: 0; }
+
+/* ─── Checklist ─── */
+.checklist { list-style: none; padding-left: 0; }
+.checklist li {
+    padding: 8px 0 8px 28px;
+    position: relative;
+    color: var(--text-secondary);
+}
+.checklist li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--accent-green);
+    font-weight: 700;
+    font-size: .9rem;
+}
+
+/* ─── Accessibility ─── */
+.skip-nav {
+    position: absolute;
+    top: -100%;
+    left: 16px;
+    padding: 12px 24px;
+    background: var(--accent-blue);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 0 0 8px 8px;
+    z-index: 10000;
+    text-decoration: none;
+    transition: top .2s;
+}
+.skip-nav:focus { top: 0; color: #fff; }
+:focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none; }
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    html { scroll-behavior: auto; }
+}
+@media (forced-colors: active) {
+    .level-badge, .fw-badge, .card, .pipeline-icon, .stat-card, .info-box, .skip-nav:focus {
+        border: 1px solid ButtonText;
+        forced-color-adjust: none;
+    }
+    .progress-bar { background: Highlight; }
+}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-nav">Skip to content</a>
+
+<!-- Reading Progress -->
+<div class="progress-bar" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Reading progress"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="hero">
+    <div class="prose hero-content">
+        <div class="hero-eyebrow">📋 Technical Deep-Dive</div>
+        <h1>PostureIQ:<br>The Complete Guide</h1>
+        <p class="subtitle">Everything you need to know about cloud compliance, Azure, Microsoft Entra ID, and how PostureIQ automates assessment across 11 compliance frameworks with 64 async collectors, 10 evaluator modules with 113 check functions, and 28 report generators — from absolute beginner to expert level.</p>
+        <div class="hero-meta">
+            <span>📅 April 2026</span>
+            <span>⏱️ 30 min read + linked references</span>
+            <span>📖 L100 → L500</span>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STICKY NAV
+     ═══════════════════════════════════════════════════════════════ -->
+<nav class="sticky-nav" aria-label="Section navigation">
+    <div class="sticky-nav-inner">
+        <a class="nav-pill" href="#part1">Part 1: Foundations</a>
+        <a class="nav-pill" href="#part2">Part 2: Azure &amp; Entra</a>
+        <a class="nav-pill" href="#part3">Part 3: Compliance 101</a>
+        <a class="nav-pill" href="#part4">Part 4: PostureIQ</a>
+        <a class="nav-pill" href="#part5">Part 5: Architecture</a>
+        <a class="nav-pill" href="#part6">Part 6: Collectors</a>
+        <a class="nav-pill" href="#part7">Part 7: Evaluators</a>
+        <a class="nav-pill" href="#part8">Part 8: Frameworks</a>
+        <a class="nav-pill" href="#part9">Part 9: Reports</a>
+        <a class="nav-pill" href="#part10">Part 10: Running It</a>
+        <a class="nav-pill" href="#part11">Part 11: Engines</a>
+        <a class="nav-pill" href="#part12">Part 12: Agent &amp; API</a>
+        <a class="nav-pill" href="#glossary">Glossary</a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙 Dark</button>
+    </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════════════════════════ -->
+<main id="main">
+
+<div class="prose" style="margin-top:32px">
+<div style="background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.25);border-radius:8px;padding:16px 20px;margin:0 0 24px;font-size:.9rem;color:var(--text-secondary)">
+<strong>📋 Learning Path</strong> — This guide takes you from zero to expert. Parts 1–4 build foundational knowledge. Parts 5–12 link to comprehensive standalone references for each topic. Start from the beginning or jump to any section.
+<div style="margin-top:8px;font-size:.82rem"><strong>Audience:</strong> New team members, anyone wanting the complete picture · <strong>Time:</strong> ~30 min for Parts 1–4, then explore standalone docs as needed</div>
+</div>
+</div>
+
+<!-- ═══════════════ PART 1: FOUNDATIONS ═══════════════ -->
+<article class="prose" id="part1">
+<h2>Part 1: Why Does Any of This Matter? <span class="level-badge level-100">L100</span></h2>
+
+<p class="lead">Imagine your company stores customer data — credit card numbers, medical records, personal email addresses — in the cloud. Now imagine a hacker steals all of it because a door was left open. That's not hypothetical. It happens every day. <strong>Compliance</strong> is the discipline of making sure those doors are locked, monitored, and auditable.</p>
+
+<h3>What Is "The Cloud"?</h3>
+<p>Instead of buying physical servers and putting them in your office, you rent computing power from companies like <strong>Microsoft (Azure)</strong>, Amazon (AWS), or Google (GCP). These providers manage data centers around the world. When you "move to the cloud," your applications, databases, and files live in those data centers instead of under your desk.</p>
+
+<div class="info-box tip">Think of cloud computing like renting an apartment instead of buying a house. The landlord (Microsoft) maintains the building, but you're responsible for locking your own door and not leaving the stove on.</div>
+
+<h3>What Is Compliance?</h3>
+<p>Compliance means proving that your organization follows specific security rules. These rules come from:</p>
+<ul>
+    <li><strong>Government regulations</strong> — FedRAMP (US Federal), HIPAA (healthcare), PCI-DSS (credit cards)</li>
+    <li><strong>International standards</strong> — ISO 27001 (global security standard), NIST 800-53 (US government)</li>
+    <li><strong>Industry benchmarks</strong> — CIS Benchmarks (community best practices), MCSB (Microsoft's own)</li>
+</ul>
+
+<p>If your company sells to the US government, you <em>must</em> be FedRAMP authorized. If you process credit cards, you <em>must</em> comply with PCI-DSS. Failure means fines, lawsuits, lost contracts, and reputational damage.</p>
+
+<h3>What Is a "Control"?</h3>
+<p>A control is a specific security requirement. Think of it as a checkbox on a very long to-do list. Examples:</p>
+
+<div class="card-grid">
+    <div class="card">
+        <div class="card-icon" style="background: var(--accent-blue-light); color: #fff;">🔑</div>
+        <h4>AC-2: Account Management</h4>
+        <p style="font-size:.9rem;">Every user account must be tracked, reviewed regularly, and disabled when people leave the company.</p>
+    </div>
+    <div class="card">
+        <div class="card-icon" style="background: var(--accent-purple); color: #fff;">🔒</div>
+        <h4>SC-28: Protection of Information at Rest</h4>
+        <p style="font-size:.9rem;">All stored data must be encrypted — if someone steals the hard drive, they see only random noise.</p>
+    </div>
+    <div class="card">
+        <div class="card-icon" style="background: var(--accent-green); color: #fff;">📊</div>
+        <h4>AU-2: Audit Events</h4>
+        <p style="font-size:.9rem;">The system must log who did what and when — so investigators can trace an incident back to its source.</p>
+    </div>
+</div>
+
+<p>A typical compliance framework has 20–300+ controls. Manually checking each one across hundreds of cloud resources is a months-long project. <strong>That's the problem PostureIQ solves — it automates this entire process.</strong></p>
+</article>
+
+<hr class="prose">
+
+<!-- ═══════════════ PART 2: AZURE & ENTRA ═══════════════ -->
+<article class="prose" id="part2">
+<h2>Part 2: Microsoft Azure &amp; Entra ID Explained <span class="level-badge level-100">L100</span></h2>
+
+<h3>What Is Microsoft Azure?</h3>
+<p>Azure is Microsoft's cloud platform offering 200+ services. PostureIQ focuses on the security-critical ones:</p>
+
+<div class="two-col">
+    <div class="card">
+        <h4>🖥️ Compute</h4>
+        <p style="font-size:.9rem;"><strong>Virtual Machines (VMs)</strong> — full servers you control. <strong>App Services</strong> — managed web hosting. <strong>Azure Kubernetes Service (AKS)</strong> — container orchestration. <strong>Azure Functions</strong> — serverless event-driven code.</p>
+    </div>
+    <div class="card">
+        <h4>🌐 Networking</h4>
+        <p style="font-size:.9rem;"><strong>Virtual Networks (VNets)</strong> — private networks in the cloud. <strong>Network Security Groups (NSGs)</strong> — firewalls on steroids. <strong>Azure Firewall</strong> — centralized traffic filtering. <strong>Route Tables</strong> — control where traffic flows.</p>
+    </div>
+    <div class="card">
+        <h4>💾 Storage &amp; Databases</h4>
+        <p style="font-size:.9rem;"><strong>Storage Accounts</strong> — blobs, files, queues. <strong>Azure SQL</strong> — managed SQL databases. <strong>Key Vault</strong> — secrets, certificates, and encryption keys. <strong>Cosmos DB</strong> — globally distributed NoSQL.</p>
+    </div>
+    <div class="card">
+        <h4>🛡️ Security</h4>
+        <p style="font-size:.9rem;"><strong>Microsoft Defender for Cloud</strong> — threat detection and security posture. <strong>Azure Policy</strong> — guardrails that enforce rules automatically. <strong>RBAC</strong> — Role-Based Access Control (who can do what).</p>
+    </div>
+</div>
+
+<h3>Control Plane vs. Data Plane</h3>
+<p>This distinction is crucial for understanding PostureIQ:</p>
+
+<div class="two-col">
+    <div class="card" style="border-top: 3px solid var(--accent-blue);">
+        <h4>Control Plane (Management)</h4>
+        <p style="font-size:.9rem;">Operations that <em>manage</em> resources: create, delete, configure, list. Uses Azure Resource Manager (ARM) APIs. Example: "List all storage accounts" or "Get Key Vault configuration."</p>
+        <p><strong style="color: var(--accent-blue);">PostureIQ uses this for 39 of 44 Azure collectors.</strong></p>
+    </div>
+    <div class="card" style="border-top: 3px solid var(--accent-green);">
+        <h4>Data Plane (Content)</h4>
+        <p style="font-size:.9rem;">Operations that access <em>data inside</em> resources: read a blob, query a database, list secrets in Key Vault. Uses service-specific endpoints.</p>
+        <p style="font-size:.85rem; color: var(--accent-green);">PostureIQ uses this for 5 data-plane collectors — ACR, AKS in-cluster, APIM, Cosmos DB, and Storage data plane (metadata only — never reads data values).</p>
+    </div>
+</div>
+
+<h3>What Is Microsoft Entra ID?</h3>
+<p>Formerly called "Azure Active Directory" (Azure AD), <strong>Entra ID</strong> is Microsoft's cloud identity service. It answers three questions:</p>
+<ol>
+    <li><strong>Who are you?</strong> (Authentication — usernames, passwords, MFA)</li>
+    <li><strong>What can you do?</strong> (Authorization — roles, permissions, Conditional Access)</li>
+    <li><strong>Did you behave?</strong> (Auditing — sign-in logs, risk detections, PIM)</li>
+</ol>
+
+<p>Every Azure subscription is linked to an Entra ID <strong>tenant</strong>. A tenant is your organization's private directory of users, groups, applications, and policies. When PostureIQ scans "Entra," it's reading your tenant's configuration via the <strong>Microsoft Graph API</strong>.</p>
+
+<div class="info-box note">Microsoft Graph is the unified API for all Microsoft 365 services. Instead of one API for users, another for groups, and another for policies, Graph provides a single endpoint: <code>https://graph.microsoft.com</code>.</div>
+
+<h3>Key Entra ID Concepts</h3>
+
+<details>
+    <summary>👤 Users &amp; Groups</summary>
+    <div>
+        <p>Users are identities — employees, contractors, guests. Groups organize users for bulk permission assignment. Key attributes: member vs. guest, synced vs. cloud-only, enabled vs. disabled, last sign-in date.</p>
+    </div>
+</details>
+<details>
+    <summary>🔐 Multi-Factor Authentication (MFA)</summary>
+    <div>
+        <p>Requiring a second proof of identity beyond a password: a phone notification, a hardware key (FIDO2), or biometrics. MFA blocks 99.9% of credential attacks. PostureIQ checks whether MFA is required for all users and whether admins use strong (phishing-resistant) methods.</p>
+    </div>
+</details>
+<details>
+    <summary>🚦 Conditional Access (CA)</summary>
+    <div>
+        <p>Rules that evaluate sign-in context: "If user is an admin AND not on a trusted network, THEN require MFA + compliant device." CA policies are the backbone of Zero Trust. PostureIQ collects every CA policy and evaluates coverage.</p>
+    </div>
+</details>
+<details>
+    <summary>👑 Privileged Identity Management (PIM)</summary>
+    <div>
+        <p>Instead of permanent admin roles, PIM grants time-limited, approval-required elevation. Example: "I need Global Admin for 2 hours to fix something." PostureIQ checks PIM configuration: activation duration, MFA requirement, approvals.</p>
+    </div>
+</details>
+<details>
+    <summary>📋 Access Reviews</summary>
+    <div>
+        <p>Periodic certifications where managers confirm "yes, this person still needs this access." PostureIQ checks whether access reviews are configured for privileged roles.</p>
+    </div>
+</details>
+<details>
+    <summary>🏗️ App Registrations &amp; Service Principals</summary>
+    <div>
+        <p>Applications that authenticate against Entra ID have app registrations (the definition) and service principals (the instance). PostureIQ audits credential expiry, multi-tenant exposure, and excessive OAuth consent grants.</p>
+    </div>
+</details>
+</article>
+
+<hr class="prose">
+
+<!-- ═══════════════ PART 3: COMPLIANCE 101 ═══════════════ -->
+<article class="prose" id="part3">
+<h2>Part 3: How Compliance Actually Works <span class="level-badge level-200">L200</span></h2>
+
+<h3>The Compliance Lifecycle</h3>
+
+<div class="pipeline">
+    <div class="pipeline-stage">
+        <div class="pipeline-icon collect">📋</div>
+        <div class="pipeline-label">Scope</div>
+        <div class="pipeline-sub">Define what's audited</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-stage">
+        <div class="pipeline-icon collect">🔍</div>
+        <div class="pipeline-label">Collect</div>
+        <div class="pipeline-sub">Gather evidence</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-stage">
+        <div class="pipeline-icon eval">⚖️</div>
+        <div class="pipeline-label">Evaluate</div>
+        <div class="pipeline-sub">Map to controls</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-stage">
+        <div class="pipeline-icon eval">📝</div>
+        <div class="pipeline-label">Remediate</div>
+        <div class="pipeline-sub">Fix findings</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-stage">
+        <div class="pipeline-icon report">✅</div>
+        <div class="pipeline-label">Report</div>
+        <div class="pipeline-sub">Prove compliance</div>
+    </div>
+</div>
+
+<p>Traditionally, this is a <strong>manual process</strong>. Auditors spend weeks or months taking screenshots, interviewing engineers, and filling spreadsheets. PostureIQ collapses the Collect → Evaluate → Report phases into a <strong>single automated run that takes minutes</strong>.</p>
+
+<h3>Frameworks PostureIQ Supports</h3>
+
+<div class="fw-badge-row">
+    <div class="fw-badge"><div class="count">38</div><div class="name">FedRAMP</div></div>
+    <div class="fw-badge"><div class="count">27</div><div class="name">NIST 800-53</div></div>
+    <div class="fw-badge"><div class="count">26</div><div class="name">MCSB</div></div>
+    <div class="fw-badge"><div class="count">24</div><div class="name">CIS Benchmarks</div></div>
+    <div class="fw-badge"><div class="count">24</div><div class="name">ISO 27001</div></div>
+    <div class="fw-badge"><div class="count">24</div><div class="name">PCI DSS v4.0</div></div>
+    <div class="fw-badge"><div class="count">24</div><div class="name">HIPAA</div></div>
+    <div class="fw-badge"><div class="count">24</div><div class="name">SOC 2</div></div>
+    <div class="fw-badge"><div class="count">20</div><div class="name">NIST CSF</div></div>
+    <div class="fw-badge"><div class="count">18</div><div class="name">CSA CCM</div></div>
+    <div class="fw-badge"><div class="count">16</div><div class="name">GDPR</div></div>
+</div>
+
+<details>
+    <summary><strong>FedRAMP</strong> — Federal Risk and Authorization Management Program</summary>
+    <div>
+        <p>Required for any cloud service used by US federal agencies. FedRAMP defines three impact levels: <strong>Low</strong> (100+ controls), <strong>Moderate</strong> (325+ controls), and <strong>High</strong> (421+ controls). PostureIQ maps 38 FedRAMP controls that can be automatically verified via Azure and Entra data.</p>
+        <p>Key areas: AC (Access Control), AU (Audit & Accountability), IA (Identification & Authentication), SC (System & Communications Protection), SI (System & Information Integrity).</p>
+    </div>
+</details>
+<details>
+    <summary><strong>NIST 800-53 Rev 5</strong> — The "Master List"</summary>
+    <div>
+        <p>NIST Special Publication 800-53 is the most comprehensive US security control catalog. FedRAMP <em>inherits</em> from NIST 800-53. PostureIQ maps 27 NIST controls across access control, audit, identification, system protection, and risk assessment families.</p>
+    </div>
+</details>
+<details>
+    <summary><strong>CIS Azure Foundations Benchmark v2.0</strong></summary>
+    <div>
+        <p>The Center for Internet Security publishes community-developed benchmarks — step-by-step hardening guides. CIS Azure covers identity (Section 1), Defender (Section 2), storage (Section 3), database (Section 4), logging (Section 5), networking (Section 6), VMs (Section 7), key management (Section 8). PostureIQ maps 24 CIS controls.</p>
+    </div>
+</details>
+<details>
+    <summary><strong>ISO/IEC 27001:2022</strong></summary>
+    <div>
+        <p>The international gold standard for information security management systems (ISMS). Annex A defines 93 controls in 4 themes: Organizational, People, Physical, Technological. PostureIQ maps 24 ISO 27001 Annex A controls to automated checks.</p>
+    </div>
+</details>
+<details>
+    <summary><strong>PCI DSS v4.0</strong> — Payment Card Industry</summary>
+    <div>
+        <p>Mandatory for any organization that stores, processes, or transmits credit card data. 12 requirements covering network security, data protection, access control, monitoring, and testing. PostureIQ maps 24 PCI-DSS controls.</p>
+    </div>
+</details>
+<details>
+    <summary><strong>MCSB</strong> — Microsoft Cloud Security Benchmark</summary>
+    <div>
+        <p>Microsoft's own set of best practices for Azure. Organized by security domain (Network Security, Identity Management, Privileged Access, Data Protection, Asset Management, Logging & Threat Detection, Incident Response, Posture & Vulnerability Management, Endpoint Security, Backup & Recovery, DevOps Security, Governance & Strategy). PostureIQ maps 26 MCSB controls.</p>
+    </div>
+</details>
+
+<h3>What Is "Evidence"?</h3>
+<p>In compliance, evidence is proof that a control is implemented. Examples:</p>
+<ul>
+    <li>"Here's a screenshot showing MFA is enabled" → old way</li>
+    <li>"Here's a JSON record from the Graph API showing 95% of users have registered MFA" → PostureIQ way</li>
+</ul>
+<p>PostureIQ collects evidence programmatically — it calls Azure and Graph APIs, normalizes the responses into standardized <strong>evidence records</strong>, and stores them in JSON. Each record has a unique ID, timestamp, source, and structured data.</p>
+</article>
+
+<hr class="prose">
+
+<!-- ═══════════════ PART 4: WHAT IS ENTERPRISESECURITYIQ? ═══════════════ -->
+<article class="prose" id="part4">
+<h2>Part 4: PostureIQ — What, Why, and How <span class="level-badge level-200">L200</span></h2>
+
+<p class="lead">PostureIQ is an open-source AI-powered compliance assessment agent for Microsoft Azure and Entra ID. It connects to your tenant, collects evidence from <strong>64 async collectors</strong> (44 Azure + 20 Entra, producing 218 evidence types), evaluates it against <strong>11 compliance frameworks</strong> using 10 domain evaluators with 113 check functions, and produces professional reports via <strong>28 report generators</strong> (HTML, Markdown, Excel, CSV, JSON, SARIF, OSCAL) — all read-only, all automated, typically in under 5 minutes.</p>
+
+<div class="stats-row">
+    <div class="stat-card"><div class="number blue">64</div><div class="label">Collectors</div></div>
+    <div class="stat-card"><div class="number green">218</div><div class="label">Evidence Types</div></div>
+    <div class="stat-card"><div class="number purple">113</div><div class="label">Check Functions</div></div>
+    <div class="stat-card"><div class="number orange">11</div><div class="label">Frameworks</div></div>
+    <div class="stat-card"><div class="number cyan">28</div><div class="label">Report Generators</div></div>
+    <div class="stat-card"><div class="number red">7</div><div class="label">Runner Modes</div></div>
+</div>
+
+<h3>Core Principles</h3>
+<div class="card-grid">
+    <div class="card">
+        <h4>🔒 Read-Only</h4>
+        <p style="font-size:.9rem;">The agent <strong>never creates, modifies, or deletes</strong> anything. All Azure SDK calls are <code>list()</code> and <code>get()</code>. All Graph calls are <code>GET</code>. Safe to run on production tenants.</p>
+    </div>
+    <div class="card">
+        <h4>⚡ Async &amp; Parallel</h4>
+        <p style="font-size:.9rem;">Built on Python <code>asyncio</code>. Azure collectors run in batches of 4, Entra collectors in batches of 3. A full assessment of a large tenant completes in minutes, not hours.</p>
+    </div>
+    <div class="card">
+        <h4>🧩 Multi-Framework</h4>
+        <p style="font-size:.9rem;">One scan, multiple reports. Collect evidence once, evaluate against FedRAMP + CIS + ISO 27001 simultaneously. Each framework has its own JSON mapping file — easy to customize or add new frameworks.</p>
+    </div>
+    <div class="card">
+        <h4>🤖 AI-Native</h4>
+        <p style="font-size:.9rem;">Designed as an AI Foundry agent with tool-calling capabilities. Can be deployed to Azure AI Foundry and invoked by enterprise AI platforms. Also runs standalone from the command line.</p>
+    </div>
+</div>
+
+<h3>What the Agent Does NOT Do</h3>
+<ul>
+    <li>Does <strong>not</strong> read secret values from Key Vault — only metadata (expiry dates, types)</li>
+    <li>Does <strong>not</strong> export personal user data — only aggregated counts and rates</li>
+    <li>Does <strong>not</strong> remediate findings — it reports, you decide</li>
+    <li>Does <strong>not</strong> replace a 3PAO/auditor — it provides automated evidence to support human audits</li>
+</ul>
+</article>
+
+<hr class="prose">
+
+<!-- ═══════════════ PART 5: ARCHITECTURE (SUMMARY CARD) ═══════════════ -->
+<article class="prose" id="part5">
+<h2>Part 5: Architecture Deep Dive <span class="level-badge level-300">L300</span></h2>
+<div style="background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:24px;margin:16px 0">
+  <h3 style="margin-bottom:8px">🏗️ Architecture Deep Dive</h3>
+  <p style="color:var(--text-secondary);margin-bottom:12px">The 4-phase pipeline (Pre-Flight → Collect → Evaluate → Report), project structure, authentication flow, data model (EvidenceRecord, FindingRecord, etc.), status/severity enums, and how all components fit together.</p>
+  <a href="architecture.html" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--accent-blue);color:#fff;border-radius:6px;font-size:.85rem;font-weight:600;text-decoration:none">Read Full Guide →</a>
+</div>
+</article>
+
+<hr class="prose">
+
+<!-- ═══════════════ PART 6: COLLECTORS (SUMMARY CARD) ═══════════════ -->
+<article class="prose" id="part6">
+<h2>Part 6: The Collectors — What Gets Scanned <span class="level-badge level-300">L300</span></h2>
+<div style="background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:24px;margin:16px 0">
+  <h3 style="margin-bottom:8px">📡 Collectors &amp; Evidence Collection</h3>
+  <p style="color:var(--text-secondary);margin-bottom:12px">All 64 async collectors (44 Azure + 20 Entra), the registry/auto-discovery system, ResourceInventory cache, base collector retry logic, and every individual collector's SDK clients, evidence types, and required permissions.</p>
+  <a href="agent-capabilities.html" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--accent-blue);color:#fff;border-radius:6px;font-size:.85rem;font-weight:600;text-decoration:none">Read Full Guide →</a>
+</div>
+</article>
+
+<hr class="prose">
+
+<!-- ═══════════════ PART 7: EVALUATORS (SUMMARY CARD) ═══════════════ -->
+<article class="prose" id="part7">
+<h2>Part 7: The Evaluation Engine <span class="level-badge level-400">L400</span></h2>
+<div style="background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:24px;margin:16px 0">
+  <h3 style="margin-bottom:8px">⚖️ Evaluators &amp; Check Functions</h3>
+  <p style="color:var(--text-secondary);margin-bottom:12px">The evaluation engine dispatch flow, 10 domain evaluators with 113 check functions, severity-weighted scoring, maturity level computation, finding suppressions, remediation generation, and custom evaluator plugins.</p>
+  <a href="evaluation-rules.html" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--accent-blue);color:#fff;border-radius:6px;font-size:.85rem;font-weight:600;text-decoration:none">Read Full Guide →</a>
+</div>
+</article>
+
+<hr class="prose">
+
+<!-- ═══════════════ PART 8: FRAMEWORKS (SUMMARY CARD) ═══════════════ -->
+<article class="prose" id="part8">
+<h2>Part 8: Framework Mapping Files <span class="level-badge level-400">L400</span></h2>
+<div style="background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:24px;margin:16px 0">
+  <h3 style="margin-bottom:8px">📐 Frameworks &amp; JSON Mappings</h3>
+  <p style="color:var(--text-secondary);margin-bottom:12px">How the 11 compliance framework JSON mapping files are structured, the control schema, how to add or customize frameworks, and the mapping between controls, evidence types, and check functions.</p>
+  <a href="extending-frameworks.html" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--accent-blue);color:#fff;border-radius:6px;font-size:.85rem;font-weight:600;text-decoration:none">Read Full Guide →</a>
+</div>
+</article>
+
+<hr class="prose">
+
+<!-- ═══════════════ PART 9: REPORTS (SUMMARY CARD) ═══════════════ -->
+<article class="prose" id="part9">
+<h2>Part 9: Report Generation <span class="level-badge level-300">L300</span></h2>
+<div style="background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:24px;margin:16px 0">
+  <h3 style="margin-bottom:8px">📊 28 Report Generators</h3>
+  <p style="color:var(--text-secondary);margin-bottom:12px">All 28 report generators across four tiers (core, analytical, export, supporting), output formats (HTML, Markdown, Excel, CSV, JSON, SARIF, OSCAL), the shared Fluent Design theme, and the complete file reference.</p>
+  <a href="FILE-REFERENCE.html" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--accent-blue);color:#fff;border-radius:6px;font-size:.85rem;font-weight:600;text-decoration:none">Read Full Guide →</a>
+</div>
+</article>
+
+<hr class="prose">
+
+<!-- ═══════════════ PART 10: RUNNING IT (SUMMARY CARD) ═══════════════ -->
+<article class="prose" id="part10">
+<h2>Part 10: Running PostureIQ <span class="level-badge level-200">L200</span></h2>
+<div style="background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:24px;margin:16px 0">
+  <h3 style="margin-bottom:8px">🚀 Runner Modes &amp; CLI Usage</h3>
+  <p style="color:var(--text-secondary);margin-bottom:12px">The 7 runner modes (full assessment, RBAC tree, query REPL, risk analysis, data security, Copilot readiness, AI agent security), command-line options, environment variables, configuration, and CI/CD integration patterns.</p>
+  <a href="prompts.html" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--accent-blue);color:#fff;border-radius:6px;font-size:.85rem;font-weight:600;text-decoration:none">Read Full Guide →</a>
+</div>
+</article>
+
+<hr class="prose">
+
+<!-- ═══════════════ PART 11: STANDALONE ENGINES (SUMMARY CARDS) ═══════════════ -->
+<article class="prose" id="part11">
+<h2>Part 11: Standalone Engines <span class="level-badge level-400">L400</span></h2>
+<p style="color:var(--text-secondary);margin-bottom:16px">Beyond the core assessment pipeline, PostureIQ includes 7 standalone engines that can be invoked independently or through the agent/API for targeted analysis. Each has a comprehensive deep-dive guide:</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0">
+  <a href="data-security-deep-dive.html" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 16px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;text-decoration:none;transition:border-color .2s;color:var(--text-primary);font-weight:600;font-size:.9rem" onmouseover="this.style.borderColor='var(--accent-blue)'" onmouseout="this.style.borderColor='var(--border-primary)'"><span style="font-size:1.5rem">🛡️</span>Data Security</a>
+  <a href="ai-agent-security-deep-dive.html" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 16px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;text-decoration:none;transition:border-color .2s;color:var(--text-primary);font-weight:600;font-size:.9rem" onmouseover="this.style.borderColor='var(--accent-blue)'" onmouseout="this.style.borderColor='var(--border-primary)'"><span style="font-size:1.5rem">🤖</span>AI Agent Security</a>
+  <a href="copilot-readiness-deep-dive.html" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 16px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;text-decoration:none;transition:border-color .2s;color:var(--text-primary);font-weight:600;font-size:.9rem" onmouseover="this.style.borderColor='var(--accent-blue)'" onmouseout="this.style.borderColor='var(--border-primary)'"><span style="font-size:1.5rem">✅</span>Copilot Readiness</a>
+  <a href="rbac-reporting-deep-dive.html" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 16px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;text-decoration:none;transition:border-color .2s;color:var(--text-primary);font-weight:600;font-size:.9rem" onmouseover="this.style.borderColor='var(--accent-blue)'" onmouseout="this.style.borderColor='var(--border-primary)'"><span style="font-size:1.5rem">🔐</span>RBAC Reporting</a>
+  <a href="risk-analysis-deep-dive.html" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 16px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;text-decoration:none;transition:border-color .2s;color:var(--text-primary);font-weight:600;font-size:.9rem" onmouseover="this.style.borderColor='var(--accent-blue)'" onmouseout="this.style.borderColor='var(--border-primary)'"><span style="font-size:1.5rem">⚡</span>Risk Analysis</a>
+  <a href="query-engine-deep-dive.html" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 16px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;text-decoration:none;transition:border-color .2s;color:var(--text-primary);font-weight:600;font-size:.9rem" onmouseover="this.style.borderColor='var(--accent-blue)'" onmouseout="this.style.borderColor='var(--border-primary)'"><span style="font-size:1.5rem">🔍</span>Query Engine</a>
+  <a href="tenant-assessment-deep-dive.html" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 16px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;text-decoration:none;transition:border-color .2s;color:var(--text-primary);font-weight:600;font-size:.9rem" onmouseover="this.style.borderColor='var(--accent-blue)'" onmouseout="this.style.borderColor='var(--border-primary)'"><span style="font-size:1.5rem">🏢</span>Tenant Assessment</a>
+</div>
+</article>
+
+<hr class="prose">
+
+<!-- ═══════════════ PART 12: AGENT & API (SUMMARY CARD) ═══════════════ -->
+<article class="prose" id="part12">
+<h2>Part 12: Agent &amp; API Modes <span class="level-badge level-400">L400</span></h2>
+<div style="background:var(--bg-card);border:1px solid var(--border-primary);border-radius:12px;padding:24px;margin:16px 0">
+  <h3 style="margin-bottom:8px">🤖 Foundry Agent &amp; REST API</h3>
+  <p style="color:var(--text-secondary);margin-bottom:12px">The Microsoft Foundry agent with 6 tools for conversational compliance, the FastAPI REST API with async task management, Docker deployment, and integration patterns for enterprise AI platforms.</p>
+  <a href="readme.html" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--accent-blue);color:#fff;border-radius:6px;font-size:.85rem;font-weight:600;text-decoration:none">Read Full Guide →</a>
+</div>
+</article>
+
+<hr class="prose">
+
+<!-- ═══════════════ GLOSSARY ═══════════════ -->
+<article class="prose" id="glossary">
+<h2>Glossary <span class="level-badge level-100">L100</span></h2>
+
+<div class="glossary-grid">
+    <dl class="glossary-item"><dt>ARM</dt><dd>Azure Resource Manager — the control plane API for managing Azure resources.</dd></dl>
+    <dl class="glossary-item"><dt>CA</dt><dd>Conditional Access — Entra ID policies that enforce security decisions based on sign-in context.</dd></dl>
+    <dl class="glossary-item"><dt>CIS</dt><dd>Center for Internet Security — non-profit publishing community-built security benchmarks.</dd></dl>
+    <dl class="glossary-item"><dt>CMK</dt><dd>Customer-Managed Key — encryption keys you control (vs. platform-managed).</dd></dl>
+    <dl class="glossary-item"><dt>Control</dt><dd>A specific security requirement from a compliance framework.</dd></dl>
+    <dl class="glossary-item"><dt>DDoS</dt><dd>Distributed Denial of Service — overwhelming a system with traffic to make it unavailable.</dd></dl>
+    <dl class="glossary-item"><dt>Entra ID</dt><dd>Microsoft's cloud identity service (formerly Azure AD). Manages users, auth, and access.</dd></dl>
+    <dl class="glossary-item"><dt>Evidence</dt><dd>Proof that a compliance control is implemented — e.g., a JSON record from an API call.</dd></dl>
+    <dl class="glossary-item"><dt>FedRAMP</dt><dd>Federal Risk and Authorization Management Program — US government cloud security authorization.</dd></dl>
+    <dl class="glossary-item"><dt>FIDO2</dt><dd>Fast Identity Online 2 — passwordless, phishing-resistant authentication standard.</dd></dl>
+    <dl class="glossary-item"><dt>Finding</dt><dd>A compliance assessment result — compliant, non-compliant, or partial.</dd></dl>
+    <dl class="glossary-item"><dt>Framework</dt><dd>A structured set of security controls (e.g., FedRAMP, ISO 27001, PCI-DSS).</dd></dl>
+    <dl class="glossary-item"><dt>Graph API</dt><dd>Microsoft Graph — unified REST API for Microsoft 365 and Entra ID data.</dd></dl>
+    <dl class="glossary-item"><dt>ISO 27001</dt><dd>International standard for information security management systems (ISMS).</dd></dl>
+    <dl class="glossary-item"><dt>MDE</dt><dd>Microsoft Defender for Endpoint — endpoint detection and response (EDR) agent.</dd></dl>
+    <dl class="glossary-item"><dt>MFA</dt><dd>Multi-Factor Authentication — requiring two or more identity proofs.</dd></dl>
+    <dl class="glossary-item"><dt>MCSB</dt><dd>Microsoft Cloud Security Benchmark — Microsoft's Azure best-practice framework.</dd></dl>
+    <dl class="glossary-item"><dt>NIST</dt><dd>National Institute of Standards and Technology — US standards body for security.</dd></dl>
+    <dl class="glossary-item"><dt>NSG</dt><dd>Network Security Group — Azure firewall rules for VNets and subnets.</dd></dl>
+    <dl class="glossary-item"><dt>PCI-DSS</dt><dd>Payment Card Industry Data Security Standard — required for credit card processing.</dd></dl>
+    <dl class="glossary-item"><dt>PIM</dt><dd>Privileged Identity Management — just-in-time, time-limited role elevation.</dd></dl>
+    <dl class="glossary-item"><dt>RBAC</dt><dd>Role-Based Access Control — permissions assigned through roles, not directly.</dd></dl>
+    <dl class="glossary-item"><dt>SSPR</dt><dd>Self-Service Password Reset — users reset their own passwords securely.</dd></dl>
+    <dl class="glossary-item"><dt>TDE</dt><dd>Transparent Data Encryption — automatic encryption for Azure SQL databases.</dd></dl>
+    <dl class="glossary-item"><dt>TLS</dt><dd>Transport Layer Security — encrypts data in transit (e.g., HTTPS).</dd></dl>
+    <dl class="glossary-item"><dt>Tenant</dt><dd>Your organization's isolated Entra ID directory of users, apps, and policies.</dd></dl>
+    <dl class="glossary-item"><dt>VNet</dt><dd>Virtual Network — a private, isolated network in Azure.</dd></dl>
+    <dl class="glossary-item"><dt>3PAO</dt><dd>Third-Party Assessment Organization — auditors who verify FedRAMP compliance.</dd></dl>
+    <dl class="glossary-item"><dt>Zero Trust</dt><dd>"Never trust, always verify" — every access request is authenticated and authorized.</dd></dl>
+    <dl class="glossary-item"><dt>CSA CCM</dt><dd>Cloud Security Alliance Cloud Controls Matrix — security controls for cloud computing across 17 domains.</dd></dl>
+    <dl class="glossary-item"><dt>DLP</dt><dd>Data Loss Prevention — policies and tools that prevent unauthorized data exfiltration.</dd></dl>
+    <dl class="glossary-item"><dt>Drift</dt><dd>Configuration drift — unplanned changes to resource settings that may degrade compliance posture.</dd></dl>
+    <dl class="glossary-item"><dt>GDPR</dt><dd>General Data Protection Regulation — EU regulation governing personal data privacy and protection.</dd></dl>
+    <dl class="glossary-item"><dt>HIPAA</dt><dd>Health Insurance Portability and Accountability Act — US law protecting health information privacy and security.</dd></dl>
+    <dl class="glossary-item"><dt>NIST CSF</dt><dd>NIST Cybersecurity Framework — voluntary guidance for managing cybersecurity risk across 5 core functions.</dd></dl>
+    <dl class="glossary-item"><dt>OSCAL</dt><dd>Open Security Controls Assessment Language — NIST standard for machine-readable compliance documentation.</dd></dl>
+    <dl class="glossary-item"><dt>SARIF</dt><dd>Static Analysis Results Interchange Format — OASIS standard for tool output, used by GitHub and Azure DevOps.</dd></dl>
+    <dl class="glossary-item"><dt>SIEM</dt><dd>Security Information and Event Management — centralized log analysis and security monitoring platform.</dd></dl>
+    <dl class="glossary-item"><dt>SOC 2</dt><dd>System and Organization Controls 2 — AICPA audit standard for service organization security, availability, and privacy.</dd></dl>
+    <dl class="glossary-item"><dt>Suppression</dt><dd>A rule that marks a known-acceptable finding as suppressed — excluded from compliance scoring.</dd></dl>
+</div>
+</article>
+
+</main>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer">
+    <p>PostureIQ — Evidence-based compliance intelligence for Azure and Microsoft Entra ID</p>
+    <p>March 2026 &middot; Internal documentation &middot; Open-source</p>
+</footer>
+
+<!-- ═══════════════ SCRIPTS ═══════════════ -->
+<script>
+// Reading progress bar
+(function() {
+    var bar = document.getElementById('progressBar');
+    window.addEventListener('scroll', function() {
+        var scrollTop = window.scrollY || document.documentElement.scrollTop;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        bar.style.width = pct + '%';
+        bar.setAttribute('aria-valuenow', Math.round(pct));
+    });
+})();
+
+// Active nav pill
+(function() {
+    var pills = document.querySelectorAll('.nav-pill');
+    var sections = [];
+    pills.forEach(function(p) {
+        var id = p.getAttribute('href');
+        if (id && id.startsWith('#')) {
+            var el = document.querySelector(id);
+            if (el) sections.push({ pill: p, el: el });
+        }
+    });
+    window.addEventListener('scroll', function() {
+        var scrollY = window.scrollY + 120;
+        var current = null;
+        sections.forEach(function(s) {
+            if (s.el.offsetTop <= scrollY) current = s;
+        });
+        pills.forEach(function(p) { p.classList.remove('active'); });
+        if (current) current.pill.classList.add('active');
+    });
+})();
+</script>
+
+
+<script src="seq-engine.js"></script>
+<script>/* Theme toggle */(function(){var root=document.documentElement,btn=document.getElementById('themeToggle');if(!btn)return;var t=localStorage.getItem('esiq-theme')||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');root.setAttribute('data-theme',t);btn.textContent=t==='light'?'☀️ Light':'🌙 Dark';btn.addEventListener('click',function(){t=t==='dark'?'light':'dark';root.setAttribute('data-theme',t);btn.textContent=t==='light'?'☀️ Light':'🌙 Dark';localStorage.setItem('esiq-theme',t)})})();</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "standing_owner_high_scope": [
+    "Art.5(1f)",
+    "Art.25(2)",
+    "Art.32(1)"
+  ],
+  "contributor_mg_scope": [
+    "Art.5(1f)",
+    "Art.25(2)"
+  ],
+  "sp_with_owner": [
+    "Art.5(1f)",
+    "Art.25(2)",
+    "Art.32(1)"
+  ],
+  "large_privileged_group": [
+    "Art.5(1f)",
+    "Art.25(2)"
+  ],
+  "custom_role_high_scope": [
+    "Art.5(1f)",
+    "Art.25(2)"
+  ],
+  "sp_contributor_broad_scope": [
+    "Art.5(1f)",
+    "Art.25(2)"
+  ]
+}

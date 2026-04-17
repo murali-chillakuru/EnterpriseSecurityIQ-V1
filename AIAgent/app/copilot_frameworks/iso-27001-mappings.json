@@ -1,0 +1,367 @@
+{
+  "unable_to_assess": [
+    "A.5.25"
+  ],
+  "broad_site_membership": [
+    "A.5.15",
+    "A.5.18"
+  ],
+  "everyone_permissions": [
+    "A.5.15",
+    "A.8.3"
+  ],
+  "anonymous_link_exposure": [
+    "A.5.14",
+    "A.8.3"
+  ],
+  "external_sharing_posture": [
+    "A.5.14",
+    "A.8.3"
+  ],
+  "no_sharepoint_advanced_management": [
+    "A.5.15",
+    "A.8.16"
+  ],
+  "no_sam_restricted_access_control": [
+    "A.5.15",
+    "A.8.3"
+  ],
+  "no_sam_site_lifecycle_policy": [
+    "A.8.10",
+    "A.5.33"
+  ],
+  "no_sam_dag_reports": [
+    "A.5.15",
+    "A.8.16"
+  ],
+  "high_permission_blast_radius": [
+    "A.5.15",
+    "A.5.18"
+  ],
+  "external_sharing_risk_score": [
+    "A.5.14",
+    "A.8.3"
+  ],
+  "label_api_inaccessible": [
+    "A.5.25"
+  ],
+  "no_labels_defined": [
+    "A.5.12",
+    "A.5.13"
+  ],
+  "insufficient_labels": [
+    "A.5.12",
+    "A.5.13"
+  ],
+  "no_mandatory_labeling": [
+    "A.5.12",
+    "A.5.13"
+  ],
+  "no_auto_labeling": [
+    "A.5.12",
+    "A.8.16"
+  ],
+  "low_site_label_coverage": [
+    "A.5.12",
+    "A.5.13"
+  ],
+  "no_default_label": [
+    "A.5.12",
+    "A.5.13"
+  ],
+  "mandatory_labeling_incomplete_scope": [
+    "A.5.12"
+  ],
+  "labels_without_encryption": [
+    "A.8.24",
+    "A.5.13"
+  ],
+  "labels_without_site_group_settings": [
+    "A.5.13",
+    "A.5.15"
+  ],
+  "no_dlp_policies": [
+    "A.8.12"
+  ],
+  "no_label_based_dlp": [
+    "A.8.12",
+    "A.5.13"
+  ],
+  "incomplete_workload_coverage": [
+    "A.8.12"
+  ],
+  "no_endpoint_dlp": [
+    "A.8.12",
+    "A.8.1"
+  ],
+  "rss_not_configured": [
+    "A.5.15",
+    "A.8.3"
+  ],
+  "rcd_not_configured": [
+    "A.5.15",
+    "A.8.3"
+  ],
+  "ca_unable_to_assess": [
+    "A.5.25"
+  ],
+  "no_copilot_ca_policy": [
+    "A.5.15",
+    "A.8.5"
+  ],
+  "copilot_deployment_scope_denied": [
+    "A.5.25"
+  ],
+  "copilot_deployment_unknown": [
+    "A.5.9",
+    "A.5.25"
+  ],
+  "no_copilot_license": [
+    "A.5.9"
+  ],
+  "copilot_licenses_unassigned": [
+    "A.5.9",
+    "A.5.18"
+  ],
+  "low_copilot_license_utilization": [
+    "A.5.9"
+  ],
+  "no_access_reviews": [
+    "A.5.18",
+    "A.5.15"
+  ],
+  "no_information_barriers": [
+    "A.5.3",
+    "A.5.15"
+  ],
+  "no_mfa_enforcement": [
+    "A.8.5"
+  ],
+  "no_pim_configured": [
+    "A.8.2",
+    "A.5.18"
+  ],
+  "no_named_locations": [
+    "A.8.20",
+    "A.5.15"
+  ],
+  "no_signin_risk_policy": [
+    "A.8.16",
+    "A.8.5"
+  ],
+  "no_device_compliance": [
+    "A.8.1",
+    "A.8.9"
+  ],
+  "stale_accounts_detected": [
+    "A.5.18",
+    "A.5.16"
+  ],
+  "excessive_global_admins": [
+    "A.8.2",
+    "A.5.3"
+  ],
+  "shared_accounts_detected": [
+    "A.5.16",
+    "A.8.5"
+  ],
+  "no_group_based_licensing": [
+    "A.5.18"
+  ],
+  "no_session_signin_frequency": [
+    "A.8.5"
+  ],
+  "no_persistent_browser_control": [
+    "A.8.5"
+  ],
+  "mailbox_delegation_fullaccess": [
+    "A.5.15",
+    "A.5.18"
+  ],
+  "shared_mailbox_over_delegated": [
+    "A.5.15",
+    "A.5.18"
+  ],
+  "ib_segments_not_assigned": [
+    "A.5.3",
+    "A.5.15"
+  ],
+  "disabled_users_with_copilot_license": [
+    "A.5.18",
+    "A.5.16"
+  ],
+  "no_app_protection_policies": [
+    "A.8.1",
+    "A.8.12"
+  ],
+  "app_protection_platform_gaps": [
+    "A.8.1"
+  ],
+  "hybrid_accounts_stale_sync": [
+    "A.5.16",
+    "A.5.18"
+  ],
+  "no_copilot_license_segmentation": [
+    "A.5.18",
+    "A.8.9"
+  ],
+  "no_legal_hold_configured": [
+    "A.5.28",
+    "A.5.33"
+  ],
+  "stale_content_exposure": [
+    "A.8.10",
+    "A.5.33"
+  ],
+  "retention_assessment_needed": [
+    "A.5.33"
+  ],
+  "no_m365_backup": [
+    "A.5.29",
+    "A.5.30"
+  ],
+  "audit_logging_unknown": [
+    "A.8.15"
+  ],
+  "copilot_interaction_audit": [
+    "A.8.15",
+    "A.8.16"
+  ],
+  "no_alert_policies": [
+    "A.8.16"
+  ],
+  "no_defender_cloud_apps": [
+    "A.8.16",
+    "A.5.23"
+  ],
+  "no_copilot_usage_analytics": [
+    "A.8.15",
+    "A.8.16"
+  ],
+  "copilot_audit_events_not_analyzed": [
+    "A.8.15",
+    "A.8.16"
+  ],
+  "no_prompt_pattern_monitoring": [
+    "A.8.16"
+  ],
+  "copilot_security_incidents_detected": [
+    "A.5.26",
+    "A.5.28"
+  ],
+  "copilot_plugins_unrestricted": [
+    "A.8.9",
+    "A.5.23"
+  ],
+  "data_residency_unverified": [
+    "A.5.23"
+  ],
+  "no_ediscovery_configured": [
+    "A.5.28"
+  ],
+  "no_insider_risk_policies": [
+    "A.5.7",
+    "A.8.16"
+  ],
+  "no_communication_compliance": [
+    "A.8.16",
+    "A.8.15"
+  ],
+  "no_dspm_for_ai": [
+    "A.5.7",
+    "A.5.12"
+  ],
+  "dspm_oversharing_not_reviewed": [
+    "A.5.15",
+    "A.5.7"
+  ],
+  "unmanaged_copilot_agents": [
+    "A.5.23",
+    "A.8.9"
+  ],
+  "agent_over_permissioned": [
+    "A.5.18",
+    "A.5.23"
+  ],
+  "no_regulatory_framework_mapping": [
+    "A.5.1",
+    "A.5.25"
+  ],
+  "multi_geo_copilot_residency": [
+    "A.5.23"
+  ],
+  "no_rai_policy": [
+    "A.5.1"
+  ],
+  "cross_tenant_access_not_assessed": [
+    "A.5.25",
+    "A.5.19"
+  ],
+  "cross_tenant_access_permissive": [
+    "A.5.19",
+    "A.5.14"
+  ],
+  "no_agent_approval_workflow": [
+    "A.8.9",
+    "A.8.25"
+  ],
+  "ungoverned_external_connectors": [
+    "A.5.23",
+    "A.5.19"
+  ],
+  "external_connector_review_needed": [
+    "A.5.23",
+    "A.5.18"
+  ],
+  "no_prompt_guardrails": [
+    "A.8.16",
+    "A.8.9"
+  ],
+  "no_continuous_access_evaluation": [
+    "A.8.5",
+    "A.8.16"
+  ],
+  "no_token_protection": [
+    "A.8.5",
+    "A.8.24"
+  ],
+  "no_phishing_resistant_mfa": [
+    "A.8.5"
+  ],
+  "no_authentication_context": [
+    "A.8.5",
+    "A.5.15"
+  ],
+  "workload_identity_unprotected": [
+    "A.5.16",
+    "A.8.5"
+  ],
+  "no_compliant_network_check": [
+    "A.8.20",
+    "A.8.5"
+  ],
+  "unauthorized_ai_apps_detected": [
+    "A.5.23",
+    "A.8.9"
+  ],
+  "ai_consent_grants_detected": [
+    "A.5.18",
+    "A.5.23"
+  ],
+  "shadow_copilot_agents_detected": [
+    "A.5.23",
+    "A.8.9"
+  ],
+  "no_ai_app_governance": [
+    "A.8.16",
+    "A.5.23"
+  ],
+  "ai_apps_overpermissioned": [
+    "A.5.18",
+    "A.5.23"
+  ],
+  "no_ai_dlp_web_restrictions": [
+    "A.8.12",
+    "A.8.20"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "framework": "PCI DSS",
+  "version": "4.0",
+  "mappings": {
+    "dormant_accounts": ["8.1.4", "8.2.6"],
+    "overpermissioned_service_principals": ["7.1", "7.2.2"],
+    "expired_credentials": ["8.2.4", "8.3.9"],
+    "expiring_credentials": ["8.2.4", "8.3.9"],
+    "mfa_gaps": ["8.4.2", "8.3.1"],
+    "admin_proliferation": ["7.1.1", "7.2.2"],
+    "guest_user_risk": ["7.1", "8.1.5"],
+    "missing_guest_review": ["7.1", "7.1.4"],
+    "high_risk_users": ["10.6.1", "11.4"],
+    "medium_risk_users": ["10.6.1", "11.4"],
+    "open_management_ports": ["1.3.1", "2.2.2"],
+    "public_storage": ["1.3.1", "7.1"],
+    "webapp_transport_security": ["4.1", "4.2.1"],
+    "sql_firewall_exposure": ["1.3.1", "1.2.1"],
+    "disabled_plans": ["11.4", "6.1"],
+    "security_recommendations": ["6.1", "11.4"],
+    "low_secure_score": ["12.2", "6.1"],
+    "missing_diagnostics": ["10.2", "10.3"],
+    "policy_noncompliance": ["12.1", "12.2"],
+    "missing_tags": ["2.4", "12.3.1"],
+    "irm_not_assessed": ["12.10.1", "12.4"],
+    "no_irm_policies": ["12.10.1", "12.4"],
+    "active_irm_alerts": ["12.10.5", "10.6.1"]
+  }
+}

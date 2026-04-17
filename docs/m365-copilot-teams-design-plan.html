@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>M365 Copilot &amp; Teams Integration Design Plan — PostureIQ</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-hover:#252D38;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --border-primary:#30363D;--border-accent:#1F6FEB33;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --accent-pink:#DB61A2;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.5);
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',Consolas,monospace;
+  --transition-fast:.18s ease;--transition-med:.3s ease;
+  color-scheme:dark;
+  --max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-hover:#F0F3F6;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;
+  --border-primary:#D0D7DE;--border-accent:#0969DA22;
+  --accent-blue:#0969DA;--accent-purple:#8250DF;--accent-green:#1A7F37;
+  --accent-orange:#BF8700;--accent-cyan:#1B7C83;--accent-red:#CF222E;
+  --accent-pink:#BF3989;
+  --shadow-sm:0 1px 3px rgba(31,35,40,.08);--shadow-md:0 4px 12px rgba(31,35,40,.1);
+  --shadow-lg:0 8px 24px rgba(31,35,40,.12);
+  color-scheme:light
+}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none;transition:color var(--transition-fast)}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--bg-secondary);padding:2px 6px;border-radius:4px}
+pre{background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.5}
+pre code{background:none;padding:0;border-radius:0}
+table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.7rem .9rem;border:1px solid var(--border-primary);text-align:left;font-size:.88rem}
+th{background:var(--bg-secondary);color:var(--text-primary);font-weight:600;white-space:nowrap}
+tr:nth-child(even){background:var(--bg-secondary)}
+.skip-nav{position:absolute;top:-100%;left:1rem;background:var(--accent-blue);color:#fff;padding:.5rem 1rem;border-radius:var(--radius-sm);z-index:9999;font-weight:600}.skip-nav:focus{top:1rem}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple),var(--accent-cyan));z-index:10001;transition:width .1s linear;width:0}
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:500px;height:500px;background:radial-gradient(circle,var(--accent-blue),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-purple),transparent 70%);bottom:-150px;left:-80px}
+.hero-label{display:inline-block;background:var(--accent-blue);color:#fff;font-size:.75rem;font-weight:600;padding:.3rem .8rem;border-radius:20px;margin-bottom:1rem;letter-spacing:.03em}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{color:var(--text-secondary);font-size:1.05rem;max-width:680px;margin:0 auto .8rem}
+.hero .hero-meta{color:var(--text-muted);font-size:.85rem;margin-top:.5rem}
+.hero .hero-meta span{margin:0 .5rem}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;max-width:960px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);position:relative;z-index:10}
+.stat{text-align:center}.stat .num{font-size:1.6rem;font-weight:700;display:block}.stat .lbl{color:var(--text-secondary);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.nav-wrap{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);backdrop-filter:blur(12px)}
+.nav-inner{display:flex;align-items:center;gap:.5rem;max-width:1200px;margin:0 auto;padding:.6rem 1rem;overflow-x:auto;scrollbar-width:thin}
+.nav-pill{padding:.35rem .75rem;border-radius:20px;font-size:.78rem;font-weight:500;color:var(--text-secondary);white-space:nowrap;transition:all var(--transition-fast);border:1px solid transparent;cursor:pointer;text-decoration:none}
+.nav-pill:hover{color:var(--text-primary);background:var(--bg-hover);text-decoration:none}
+.nav-pill.active{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:20px;padding:.35rem .75rem;font-size:.78rem;cursor:pointer;color:var(--text-secondary);transition:all var(--transition-fast);white-space:nowrap}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--text-primary)}
+.content{max-width:var(--max-width);margin:0 auto;padding:2rem 1.5rem 4rem}
+.section{margin-bottom:3.5rem;scroll-margin-top:80px}
+.section h2{font-size:1.5rem;font-weight:700;margin-bottom:.3rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent-blue);display:inline-block}
+.section h3{font-size:1.15rem;font-weight:600;margin:1.8rem 0 .8rem;color:var(--accent-purple)}
+.section h4{font-size:1rem;font-weight:600;margin:1.2rem 0 .6rem;color:var(--accent-cyan)}
+.section p,.section li{color:var(--text-secondary);font-size:.92rem}
+.section ul,.section ol{padding-left:1.4rem;margin:.6rem 0}.section li{margin-bottom:.3rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin:1rem 0}
+.card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;transition:all var(--transition-fast)}
+.card:hover{border-color:var(--accent-blue);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.card .card-title{font-weight:600;font-size:.95rem;margin-bottom:.3rem}
+.card .card-count{font-size:1.3rem;font-weight:700;color:var(--accent-blue)}
+.card .card-desc{color:var(--text-secondary);font-size:.82rem;margin-top:.3rem}
+.accent-blue .card-count,.accent-blue .num{color:var(--accent-blue)}
+.accent-purple .card-count,.accent-purple .num{color:var(--accent-purple)}
+.accent-green .card-count,.accent-green .num{color:var(--accent-green)}
+.accent-orange .card-count,.accent-orange .num{color:var(--accent-orange)}
+.accent-cyan .card-count,.accent-cyan .num{color:var(--accent-cyan)}
+.accent-red .card-count,.accent-red .num{color:var(--accent-red)}
+.accent-pink .card-count,.accent-pink .num{color:var(--accent-pink)}
+details{margin:1rem 0;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);overflow:hidden}
+details>summary{padding:.8rem 1rem;font-weight:600;cursor:pointer;color:var(--text-primary);transition:background var(--transition-fast);font-size:.92rem}
+details>summary:hover{background:var(--bg-hover)}
+details[open]>summary{border-bottom:1px solid var(--border-primary)}
+details .detail-body{padding:1rem}
+.config-block{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;margin:1rem 0}
+.config-block h4{font-size:.95rem;margin-bottom:.8rem;color:var(--accent-cyan)}
+.config-block pre{background:var(--bg-secondary);margin-bottom:.8rem}
+.safety-banner{background:linear-gradient(135deg,rgba(31,111,235,.08),rgba(163,113,247,.08));border:1px solid var(--border-accent);border-radius:var(--radius-lg);padding:1.5rem;margin:2rem 0}
+.safety-banner h3{color:var(--accent-blue);margin-bottom:.8rem}
+.step-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.8rem;margin:1rem 0}
+.step-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1rem;text-align:center;transition:all var(--transition-fast)}
+.step-card:hover{border-color:var(--accent-blue);transform:translateY(-2px)}
+.step-card .step-num{font-size:1.8rem;font-weight:700;display:block;margin-bottom:.3rem}
+.step-card .step-title{font-weight:600;font-size:.9rem;margin-bottom:.2rem}
+.step-card .step-desc{font-size:.78rem;color:var(--text-secondary)}
+.ux-demo{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.5rem;margin:1rem 0}
+.ux-demo .ux-user{font-weight:600;color:var(--accent-blue);margin-bottom:.5rem}
+.ux-demo .ux-copilot{font-style:italic;color:var(--text-muted);margin:.5rem 0}
+.ux-demo .ux-response{background:var(--bg-secondary);border-radius:var(--radius-sm);padding:1rem;margin:.8rem 0;font-size:.9rem;color:var(--text-secondary)}
+.ux-demo .ux-response h4{color:var(--text-primary);margin-bottom:.5rem;font-style:normal}
+.ux-demo .ux-response ul{padding-left:1.2rem;margin:.4rem 0}
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.8rem;border-top:1px solid var(--border-primary)}
+.back-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;border-radius:50%;background:var(--accent-blue);color:#fff;border:none;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all var(--transition-med);box-shadow:var(--shadow-md);z-index:999}
+.back-top.show{opacity:1;pointer-events:auto}.back-top:hover{transform:scale(1.1)}
+@media print{.nav-wrap,.theme-toggle,.back-top,.progress-bar{display:none!important}.hero{padding:2rem 1rem}.content{max-width:100%}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:0s!important;animation-duration:0s!important}}
+@media(forced-colors:active){.nav-pill.active{border:2px solid ButtonText}.card{border:1px solid ButtonText}}
+</style>
+</head>
+<body>
+<a class="skip-nav" href="#main">Skip to content</a>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ════════ HERO ════════ -->
+<header class="hero">
+  <span class="hero-label">📋 Design Plan</span>
+  <h1>M365 Copilot &amp; Teams Integration Design Plan</h1>
+  <p class="subtitle">Publishing PostureIQ as an M365 Copilot declarative agent and Teams app — architecture, implementation steps, and security considerations</p>
+  <p class="hero-meta">
+    <span>Status: Design Proposal — Ready for Review</span> ·
+    <span>Author: Copilot Agent</span> ·
+    <span>April 2026</span>
+  </p>
+</header>
+
+<!-- ════════ STATS BAR ════════ -->
+<div class="stats-bar">
+  <div class="stat accent-blue"><span class="num" data-target="3">0</span><span class="lbl">Options</span></div>
+  <div class="stat accent-purple"><span class="num" data-target="2">0</span><span class="lbl">Phases</span></div>
+  <div class="stat accent-green"><span class="num" data-target="12">0</span><span class="lbl">Tasks</span></div>
+  <div class="stat accent-orange"><span class="num" data-target="7">0</span><span class="lbl">Security Items</span></div>
+  <div class="stat accent-cyan"><span class="num" data-target="6">0</span><span class="lbl">API Endpoints</span></div>
+  <div class="stat accent-red"><span class="num" data-target="10">0</span><span class="lbl">Sections</span></div>
+</div>
+
+<!-- ════════ NAV ════════ -->
+<nav class="nav-wrap" aria-label="Section navigation">
+  <div class="nav-inner">
+    <a class="nav-pill" href="#executive-summary">Executive Summary</a>
+    <a class="nav-pill" href="#current-architecture">Current Architecture</a>
+    <a class="nav-pill" href="#target-architecture">Target Architecture</a>
+    <a class="nav-pill" href="#phase1">Phase 1</a>
+    <a class="nav-pill" href="#phase2">Phase 2</a>
+    <a class="nav-pill" href="#checklist">Checklist</a>
+    <a class="nav-pill" href="#security">Security</a>
+    <a class="nav-pill" href="#user-experience">User Experience</a>
+    <a class="nav-pill" href="#alternatives">Alternatives</a>
+    <a class="nav-pill" href="#dependencies">Dependencies &amp; Risks</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀️ Light</button>
+  </div>
+</nav>
+
+<!-- ════════ CONTENT ════════ -->
+<main class="content" id="main">
+
+<!-- ──── 1. Executive Summary ──── -->
+<section class="section" id="executive-summary">
+  <h2>📌 1. Executive Summary</h2>
+  <p>This document describes the architecture, implementation steps, and prerequisites for publishing PostureIQ as a <strong>Microsoft 365 Copilot agent</strong> (declarative agent) and a <strong>Teams app</strong> (bot + tab). The goal is to let users invoke security assessments, query compliance results, and receive reports directly from Microsoft 365 Copilot chat and Microsoft Teams — without visiting the standalone web dashboard.</p>
+
+  <h3>Delivery Options</h3>
+  <table class="data-table">
+    <tr><th>Option</th><th>Effort</th><th>Capability</th><th>Recommended</th></tr>
+    <tr><td><strong>A. Declarative Copilot Agent</strong> (API Plugin)</td><td>Medium</td><td>Natural language → tool calls in M365 Copilot</td><td>✅ Yes (primary)</td></tr>
+    <tr><td><strong>B. Teams Bot + Tab</strong></td><td>Medium-High</td><td>Bot commands + embedded dashboard tab</td><td>✅ Yes (secondary)</td></tr>
+    <tr><td><strong>C. Both A + B in one Teams App</strong></td><td>High</td><td>Full M365 integration</td><td>✅ Ideal end state</td></tr>
+  </table>
+
+  <div class="safety-banner">
+    <h3>💡 Recommendation</h3>
+    <p style="color:var(--text-secondary);font-size:.9rem">Start with <strong>Option A</strong> (Declarative Agent with API Plugin) — it gets PostureIQ into M365 Copilot with minimal code changes, then extend to Teams bot + tab as a Phase 2.</p>
+  </div>
+
+  <div class="step-grid">
+    <div class="step-card accent-blue">
+      <span class="step-num" style="color:var(--accent-blue)">A</span>
+      <div class="step-title">Declarative Copilot Agent</div>
+      <p class="step-desc">Natural language → tool calls in M365 Copilot. Primary delivery vehicle.</p>
+    </div>
+    <div class="step-card accent-purple">
+      <span class="step-num" style="color:var(--accent-purple)">B</span>
+      <div class="step-title">Teams Bot + Tab</div>
+      <p class="step-desc">Bot commands + embedded dashboard tab for richer Teams integration.</p>
+    </div>
+    <div class="step-card accent-orange">
+      <span class="step-num" style="color:var(--accent-orange)">C</span>
+      <div class="step-title">Combined App</div>
+      <p class="step-desc">Full M365 integration — both agent and bot+tab in one Teams app.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ──── 2. Current Architecture ──── -->
+<section class="section" id="current-architecture">
+  <h2>🏗️ 2. Architecture — Current State</h2>
+  <div class="config-block">
+    <pre><code>┌──────────────────────────────────────────────────────────┐
+│  User (Browser)                                          │
+│  ↓ MSAL.js → Entra ID → Graph + ARM tokens              │
+│  ↓ POST /chat (SSE)                                     │
+│  ↓                                                       │
+│  ┌────────────────────────────────────┐                  │
+│  │ Container App (esiqnew-agent)       │                  │
+│  │  FastAPI + OpenAI function-calling  │                  │
+│  │  13 tools (agent.py)                │                  │
+│  │  SSE streaming response             │                  │
+│  └────────────────────────────────────┘                  │
+│       ↓ MI (RBAC)          ↓ User tokens (OBO)           │
+│  Azure OpenAI          Azure ARM / Graph API              │
+└──────────────────────────────────────────────────────────┘</code></pre>
+  </div>
+
+  <div class="safety-banner">
+    <h3>⚠️ Key Constraint</h3>
+    <p style="color:var(--text-secondary);font-size:.9rem">The agent currently requires user-delegated ARM + Graph tokens passed in each <code>/chat</code> request body. M365 Copilot and Teams Bot Framework cannot send arbitrary tokens — they provide the user's SSO token for your app, but <strong>not</strong> pre-acquired ARM/Graph tokens.</p>
+  </div>
+</section>
+
+<!-- ──── 3. Target Architecture ──── -->
+<section class="section" id="target-architecture">
+  <h2>🎯 3. Architecture — Target State (Option A: Declarative Agent)</h2>
+  <div class="config-block">
+    <pre><code>┌─────────────────────────────────────────────────────────────────┐
+│  M365 Copilot (Teams / copilot.microsoft.com)                   │
+│  ↓                                                               │
+│  Declarative Agent Manifest (agent.json)                         │
+│  → References API Plugin (openapi.json)                          │
+│       ↓ OAuth 2.0 (on-behalf-of)                                 │
+│       ↓                                                          │
+│  ┌──────────────────────────────────────────────────┐            │
+│  │ Container App (esiqnew-agent)                     │            │
+│  │                                                    │            │
+│  │  NEW: /api/v1/assessment   (REST, JSON response)  │            │
+│  │  NEW: /api/v1/risk         (REST, JSON response)  │            │
+│  │  NEW: /api/v1/copilot      (REST, JSON response)  │            │
+│  │  NEW: /api/v1/query        (REST, JSON response)  │            │
+│  │  NEW: /api/v1/permissions  (REST, JSON response)  │            │
+│  │  NEW: /api/v1/rbac         (REST, JSON response)  │            │
+│  │                                                    │            │
+│  │  Auth: Validate JWT → extract OBO token →          │            │
+│  │        exchange for ARM + Graph tokens              │            │
+│  └──────────────────────────────────────────────────┘            │
+│       ↓ OBO flow          ↓ MI (infra)                           │
+│  ARM / Graph API      Azure OpenAI / Storage / ACR               │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+  </div>
+
+  <h3>What Changes</h3>
+  <table class="data-table">
+    <tr><th>Component</th><th>Current</th><th>Target</th></tr>
+    <tr><td><strong>API surface</strong></td><td>Single <code>/chat</code> SSE endpoint</td><td>REST endpoints per tool (JSON request/response)</td></tr>
+    <tr><td><strong>Auth flow</strong></td><td>SPA sends pre-acquired ARM+Graph tokens</td><td>Server-side OBO: receives SSO JWT, exchanges for ARM+Graph</td></tr>
+    <tr><td><strong>Response format</strong></td><td>SSE stream with tool events</td><td>Standard JSON responses (Copilot handles display)</td></tr>
+    <tr><td><strong>App Registration</strong></td><td>SPA-only (public client)</td><td>Add Web redirect + client secret for OBO</td></tr>
+    <tr><td><strong>Manifest files</strong></td><td>None</td><td><code>declarativeAgent.json</code> + <code>openapi.yaml</code> + Teams app manifest</td></tr>
+  </table>
+</section>
+
+<!-- ──── 4. Phase 1 ──── -->
+<section class="section" id="phase1">
+  <h2>🚀 4. Phase 1 — Declarative Copilot Agent (API Plugin)</h2>
+
+  <h3>4.1 Prerequisites</h3>
+  <ol>
+    <li><strong>Teams Admin Center</strong> access to upload custom apps</li>
+    <li><strong>Copilot for Microsoft 365</strong> license assigned to target users</li>
+    <li><strong>App Registration update:</strong> Add <code>Web</code> platform with redirect URI, generate client secret, add API scope (<code>api://&lt;app-id&gt;/access_as_user</code>)</li>
+    <li><strong>Graph API permissions:</strong> Ensure existing delegated permissions cover OBO scope</li>
+  </ol>
+
+  <h3>4.2 App Registration Changes</h3>
+  <div class="config-block">
+    <pre><code>Current:
+  Platform: SPA (single-page application)
+  Redirect: https://esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io
+
+Add:
+  Platform: Web
+  Redirect: https://esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io/auth/callback
+  Client Secret: (generate new)
+  Expose API:
+    Scope: api://&lt;client-id&gt;/access_as_user
+    Authorized client apps:
+      - ab3be6b7-f5df-413d-ac2d-abf1e3fd9c0b  (Teams desktop)
+      - 1fec8e78-bce4-4aaf-ab1b-5451cc387264  (Teams web)
+      - 5e3ce6c0-2b1f-4285-8d4b-75ee78787346  (Teams mobile)
+      - 4765445b-32c6-49b0-83e6-1d93765276ca  (M365 desktop)
+      - 4345a7b9-9a63-4910-a426-35363201d503  (M365 web)
+      - 0ec893e0-5785-4de6-99da-4ed124e5296c  (M365 mobile)</code></pre>
+  </div>
+
+  <h3>4.3 New API Endpoints (REST, JSON)</h3>
+  <p>Each endpoint maps to one agent tool, accepts JSON body, returns JSON response:</p>
+  <div class="config-block">
+    <pre><code># api_v1.py — new router
+
+from fastapi import APIRouter, Depends, Request
+from app.auth_obo import validate_and_exchange_token
+
+router = APIRouter(prefix="/api/v1")
+
+@router.post("/assessment")
+async def run_assessment_api(request: Request, body: AssessmentRequest):
+    """Run compliance assessment — used by Copilot API plugin."""
+    creds = await validate_and_exchange_token(request)
+    result = await run_assessment(scope=body.scope, frameworks=body.frameworks, subscriptions=body.subscriptions)
+    return {"status": "complete", "result": result}
+
+@router.post("/risk")
+async def analyze_risk_api(request: Request, body: RiskRequest):
+    creds = await validate_and_exchange_token(request)
+    result = await analyze_risk(scope=body.scope, subscriptions=body.subscriptions)
+    return {"status": "complete", "result": result}
+
+# ... similar for /copilot, /query, /rbac, /data-security, /permissions</code></pre>
+  </div>
+
+  <h3>4.4 OBO Token Exchange</h3>
+  <div class="config-block">
+    <pre><code># auth_obo.py — On-Behalf-Of token exchange
+
+from msal import ConfidentialClientApplication
+
+async def validate_and_exchange_token(request: Request):
+    """
+    1. Extract Bearer token from Authorization header
+    2. Validate JWT signature + audience
+    3. Exchange via OBO for ARM token (https://management.azure.com/.default)
+    4. Exchange via OBO for Graph token (https://graph.microsoft.com/.default)
+    5. Return ComplianceCredentials with both tokens
+    """
+    sso_token = request.headers.get("Authorization", "").replace("Bearer ", "")
+
+    app = ConfidentialClientApplication(
+        client_id=CLIENT_ID,
+        client_credential=CLIENT_SECRET,
+        authority=f"https://login.microsoftonline.com/{TENANT_ID}",
+    )
+
+    arm_result = app.acquire_token_on_behalf_of(
+        user_assertion=sso_token,
+        scopes=["https://management.azure.com/.default"],
+    )
+
+    graph_result = app.acquire_token_on_behalf_of(
+        user_assertion=sso_token,
+        scopes=["https://graph.microsoft.com/.default"],
+    )
+
+    return ComplianceCredentials(
+        arm_token=arm_result["access_token"],
+        graph_token=graph_result["access_token"],
+    )</code></pre>
+  </div>
+
+  <h3>4.5 OpenAPI Spec (API Plugin Definition)</h3>
+  <div class="config-block">
+    <pre><code># openapi.yaml
+openapi: 3.0.3
+info:
+  title: EnterpriseSecurityIQ
+  description: AI-powered compliance and security assessment for Azure &amp; Entra ID
+  version: 1.0.0
+servers:
+  - url: https://esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io
+paths:
+  /api/v1/assessment:
+    post:
+      operationId: runAssessment
+      summary: Run a compliance assessment against Azure environment
+      description: &gt;
+        Evaluates Azure resources against selected compliance frameworks.
+        Returns compliance score, findings, and domain-level breakdowns.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                scope:
+                  type: string
+                  description: "'full' or comma-separated domains"
+                  default: full
+                frameworks:
+                  type: string
+                  description: "'all' or comma-separated framework names"
+                  default: all
+                subscriptions:
+                  type: string
+                  description: "Optional comma-separated subscription IDs"
+      responses:
+        '200':
+          description: Assessment results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string }
+                  result: { type: string }
+
+  /api/v1/risk:
+    post:
+      operationId: analyzeRisk
+      summary: Run a Security Risk Gap Analysis
+
+  /api/v1/copilot-readiness:
+    post:
+      operationId: assessCopilotReadiness
+      summary: Evaluate M365 Copilot readiness
+
+  /api/v1/query:
+    post:
+      operationId: queryResults
+      summary: Query assessment results with natural language
+
+  /api/v1/rbac:
+    post:
+      operationId: generateRbacReport
+      summary: Generate RBAC hierarchy report
+
+  /api/v1/permissions:
+    post:
+      operationId: checkPermissions
+      summary: Check caller's Azure and Graph permissions
+
+security:
+  - oauth2: [access_as_user]
+
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize
+          tokenUrl: https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token
+          scopes:
+            access_as_user: Access EnterpriseSecurityIQ as the signed-in user</code></pre>
+  </div>
+
+  <h3>4.6 Declarative Agent Manifest</h3>
+  <div class="config-block">
+    <pre><code>{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.4/schema.json",
+  "version": "v1.4",
+  "name": "EnterpriseSecurityIQ",
+  "description": "AI-powered compliance and security intelligence for Azure, Entra ID,
+    M365 Copilot, and AI agents. Run assessments, analyze risks, query findings,
+    and generate reports.",
+  "instructions": "You are EnterpriseSecurityIQ, an enterprise security compliance agent.
+    When users ask about their security posture, compliance status, or risk analysis,
+    use the available tools to run assessments against their Azure environment.
+    Always check permissions first if users report errors. Present results clearly
+    with scores, findings by severity, and actionable remediation steps.",
+  "capabilities": [
+    {
+      "name": "actions",
+      "plugins": [
+        {
+          "id": "enterprisesecurityiq-plugin",
+          "file": "openapi.yaml"
+        }
+      ]
+    }
+  ],
+  "conversation_starters": [
+    { "text": "Run a compliance assessment against all frameworks" },
+    { "text": "What's my security risk score?" },
+    { "text": "Check my M365 Copilot readiness" },
+    { "text": "Show my RBAC role assignments" },
+    { "text": "Analyze data security posture" },
+    { "text": "What are my critical compliance gaps?" }
+  ]
+}</code></pre>
+  </div>
+
+  <h3>4.7 Teams App Manifest (appPackage for Upload)</h3>
+  <div class="config-block">
+    <pre><code>{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/vDevPreview/MicrosoftTeams.schema.json",
+  "manifestVersion": "devPreview",
+  "version": "1.0.0",
+  "id": "&lt;app-id&gt;",
+  "developer": {
+    "name": "EnterpriseSecurityIQ",
+    "websiteUrl": "https://esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io",
+    "privacyUrl": "https://esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io/privacy",
+    "termsOfUseUrl": "https://esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io/terms"
+  },
+  "name": { "short": "SecurityIQ", "full": "EnterpriseSecurityIQ" },
+  "description": {
+    "short": "AI-powered Azure compliance and security intelligence",
+    "full": "Run compliance assessments, risk analysis, RBAC reports, Copilot readiness
+      checks, and AI agent security evaluations against your Azure tenant."
+  },
+  "icons": { "color": "color.png", "outline": "outline.png" },
+  "accentColor": "#1F6FEB",
+  "copilotAgents": {
+    "declarativeAgents": [
+      {
+        "id": "esiq-agent",
+        "file": "declarativeAgent.json"
+      }
+    ]
+  },
+  "validDomains": [
+    "esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io"
+  ],
+  "webApplicationInfo": {
+    "id": "&lt;client-id&gt;",
+    "resource": "api://&lt;client-id&gt;"
+  }
+}</code></pre>
+  </div>
+</section>
+
+<!-- ──── 5. Phase 2 ──── -->
+<section class="section" id="phase2">
+  <h2>🔧 5. Phase 2 — Teams Bot + Tab (Optional Enhancement)</h2>
+
+  <h3>5.1 Teams Bot</h3>
+  <p>Add a Bot Framework adapter to the Container App for richer Teams integration:</p>
+  <ul>
+    <li><strong>Proactive notifications:</strong> Send compliance alerts when scores drop</li>
+    <li><strong>Adaptive Cards:</strong> Rich formatted assessment summaries with action buttons</li>
+    <li><strong>Task modules:</strong> Launch the full dashboard as an embedded iframe</li>
+  </ul>
+
+  <h3>5.2 Teams Tab</h3>
+  <p>Embed the existing SPA dashboard as a Teams tab:</p>
+  <div class="config-block">
+    <pre><code>"staticTabs": [
+  {
+    "entityId": "dashboard",
+    "name": "Dashboard",
+    "contentUrl": "https://esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io?inTeams=true",
+    "scopes": ["personal"]
+  }
+]</code></pre>
+  </div>
+  <p>The SPA already handles MSAL authentication. For Teams, you'd add <code>@microsoft/teams-js</code> SDK to detect the Teams context and use <code>authentication.getAuthToken()</code> for SSO.</p>
+</section>
+
+<!-- ──── 6. Implementation Checklist ──── -->
+<section class="section" id="checklist">
+  <h2>✅ 6. Implementation Checklist</h2>
+
+  <h3>Phase 1 — Declarative Agent (Estimated: 3–5 days of dev)</h3>
+  <table class="data-table">
+    <tr><th>#</th><th>Task</th><th>Files</th><th>Status</th></tr>
+    <tr><td>1</td><td>Update App Registration: add Web platform, client secret, expose API scope, authorize Teams client IDs</td><td>Azure Portal</td><td>⬜</td></tr>
+    <tr><td>2</td><td>Create <code>auth_obo.py</code> — validate SSO JWT + OBO exchange for ARM &amp; Graph tokens</td><td><code>AIAgent/app/auth_obo.py</code></td><td>⬜</td></tr>
+    <tr><td>3</td><td>Create <code>api_v1.py</code> — REST endpoints per tool (JSON in/out, no SSE)</td><td><code>AIAgent/app/api_v1.py</code></td><td>⬜</td></tr>
+    <tr><td>4</td><td>Register <code>api_v1</code> router in <code>api.py</code> (<code>app.include_router(...)</code>)</td><td><code>AIAgent/app/api.py</code></td><td>⬜</td></tr>
+    <tr><td>5</td><td>Add env vars: <code>ESIQ_CLIENT_SECRET</code>, <code>ESIQ_OBO_SCOPES</code></td><td>Container App</td><td>⬜</td></tr>
+    <tr><td>6</td><td>Write <code>openapi.yaml</code> — full OpenAPI 3.0 spec for all endpoints</td><td><code>AIAgent/openapi.yaml</code></td><td>⬜</td></tr>
+    <tr><td>7</td><td>Write <code>declarativeAgent.json</code></td><td><code>appPackage/declarativeAgent.json</code></td><td>⬜</td></tr>
+    <tr><td>8</td><td>Write Teams app manifest <code>manifest.json</code></td><td><code>appPackage/manifest.json</code></td><td>⬜</td></tr>
+    <tr><td>9</td><td>Create app icons (color.png 192×192, outline.png 32×32)</td><td><code>appPackage/</code></td><td>⬜</td></tr>
+    <tr><td>10</td><td>Package as .zip, upload to Teams Admin Center</td><td>Manual</td><td>⬜</td></tr>
+    <tr><td>11</td><td>Test in M365 Copilot: <code>@EnterpriseSecurityIQ run assessment</code></td><td>Manual</td><td>⬜</td></tr>
+    <tr><td>12</td><td>Build + deploy updated container image</td><td>ACR + Container App</td><td>⬜</td></tr>
+  </table>
+
+  <h3>Phase 2 — Teams Bot + Tab (Estimated: 3–4 additional days)</h3>
+  <table class="data-table">
+    <tr><th>#</th><th>Task</th><th>Status</th></tr>
+    <tr><td>1</td><td>Add Bot Framework SDK adapter</td><td>⬜</td></tr>
+    <tr><td>2</td><td>Design Adaptive Cards for assessment results</td><td>⬜</td></tr>
+    <tr><td>3</td><td>Add static tab pointing to SPA dashboard</td><td>⬜</td></tr>
+    <tr><td>4</td><td>Integrate <code>@microsoft/teams-js</code> in SPA for Teams SSO</td><td>⬜</td></tr>
+    <tr><td>5</td><td>Add proactive notification for score changes</td><td>⬜</td></tr>
+  </table>
+</section>
+
+<!-- ──── 7. Security Considerations ──── -->
+<section class="section" id="security">
+  <h2>🔒 7. Security Considerations</h2>
+  <table class="data-table">
+    <tr><th>Concern</th><th>Mitigation</th></tr>
+    <tr><td>Client secret for OBO</td><td>Store in Key Vault, reference via env var secret ref</td></tr>
+    <tr><td>Token scope</td><td>OBO exchanges request only the minimum scopes needed (ARM Reader, Graph ReadAll)</td></tr>
+    <tr><td>User impersonation</td><td>OBO tokens carry the user's identity — same permission model as the SPA</td></tr>
+    <tr><td>Admin consent</td><td>Some Graph permissions may need admin consent; document in deployment guide</td></tr>
+    <tr><td>Rate limiting</td><td>API plugin calls are rate-limited by M365 Copilot orchestrator; add server-side throttling for safety</td></tr>
+    <tr><td>Data in Copilot context</td><td>Assessment results returned to Copilot stay in the user's context; comply with Microsoft data handling</td></tr>
+    <tr><td>Timeout</td><td>M365 Copilot has a ~30s plugin timeout; long-running assessments need async pattern (return task ID → poll)</td></tr>
+  </table>
+
+  <h3>Timeout Strategy for Long-Running Assessments</h3>
+  <p>Full compliance assessments can take 2–5 minutes. The Copilot API plugin timeout is ~30s.</p>
+  <p><strong>Solution:</strong> Async pattern with polling:</p>
+  <ol>
+    <li><code>POST /api/v1/assessment</code> → starts assessment, returns <code>{ "taskId": "abc123", "status": "running" }</code></li>
+    <li>Copilot sees <code>status: running</code> and calls <code>GET /api/v1/assessment/abc123</code> periodically</li>
+    <li>When complete, returns full results</li>
+  </ol>
+  <p>This requires defining the polling pattern in the OpenAPI spec using the <code>x-openai-isConsequential</code> and response schema patterns.</p>
+</section>
+
+<!-- ──── 8. User Experience ──── -->
+<section class="section" id="user-experience">
+  <h2>💬 8. User Experience in M365 Copilot</h2>
+  <p>Example interaction:</p>
+
+  <div class="ux-demo">
+    <p class="ux-user">👤 User: @PostureIQ What's my compliance score?</p>
+    <p class="ux-copilot">🤖 Copilot: I'll run a compliance assessment for you. [Calls runAssessment API]</p>
+    <div class="ux-response">
+      <h4>📊 Assessment Complete</h4>
+      <p><strong>Compliance Score: 73%</strong></p>
+      <ul>
+        <li>Controls Assessed: 247</li>
+        <li>Non-Compliant: 42</li>
+        <li>Critical Findings: 3</li>
+        <li>High Findings: 12</li>
+      </ul>
+      <p style="margin-top:.6rem"><strong>Top Issues:</strong></p>
+      <ul>
+        <li>[CRITICAL] MFA not enforced for privileged accounts</li>
+        <li>[HIGH] 23 storage accounts allow public blob access</li>
+        <li>[HIGH] No DLP policies for sensitive content</li>
+      </ul>
+      <p style="margin-top:.6rem">Would you like me to generate a detailed report or analyze specific domains?</p>
+    </div>
+  </div>
+</section>
+
+<!-- ──── 9. Alternatives Considered ──── -->
+<section class="section" id="alternatives">
+  <h2>🔀 9. Alternatives Considered</h2>
+  <table class="data-table">
+    <tr><th>Alternative</th><th>Why Not</th></tr>
+    <tr><td><strong>Message Extension (search)</strong></td><td>Read-only search, can't run assessments</td></tr>
+    <tr><td><strong>Power Platform connector</strong></td><td>Adds complexity; direct API plugin is simpler</td></tr>
+    <tr><td><strong>Copilot Studio agent</strong></td><td>Requires separate platform; we already have the engine</td></tr>
+    <tr><td><strong>Graph connector</strong></td><td>For indexing content into M365 search, not for running tools</td></tr>
+  </table>
+</section>
+
+<!-- ──── 10. Dependencies & Risks ──── -->
+<section class="section" id="dependencies">
+  <h2>⚠️ 10. Dependencies &amp; Risks</h2>
+  <table class="data-table">
+    <tr><th>Risk</th><th>Impact</th><th>Mitigation</th></tr>
+    <tr><td>Copilot license requirement</td><td>Users without Copilot license can't use the agent</td><td>Teams bot fallback (Phase 2)</td></tr>
+    <tr><td>OBO token exchange failures</td><td>Users in certain Entra ID configurations may fail OBO</td><td>Clear error messages, fallback to SPA</td></tr>
+    <tr><td>Plugin approval delay</td><td>Teams Admin Center may require IT approval for custom apps</td><td>Pre-engage IT admin, document security posture</td></tr>
+    <tr><td>Assessment timeout</td><td>Copilot ~30s timeout too short for full assessment</td><td>Async polling pattern</td></tr>
+    <tr><td>Foundry agent registration conflict</td><td>Current Foundry registration may conflict with Copilot agent</td><td>Use separate agent IDs</td></tr>
+  </table>
+</section>
+
+</main>
+
+<!-- ════════ FOOTER ════════ -->
+<footer>
+  <p>PostureIQ — M365 Copilot &amp; Teams Integration Design Plan · Author: Copilot Agent</p>
+  <p style="margin-top:.3rem">3 delivery options · 2 phases · 12 implementation tasks · 7 security items · 6 API endpoints · 10 sections</p>
+</footer>
+
+<button class="back-top" id="backTop" aria-label="Back to top">↑</button>
+
+<script>
+const toggle=document.getElementById('themeToggle'),root=document.documentElement;
+function setTheme(t){root.dataset.theme=t;toggle.textContent=t==='dark'?'☀️ Light':'🌙 Dark';localStorage.setItem('esiq-theme',t)}
+toggle.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark'));
+setTheme(localStorage.getItem('esiq-theme')||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const el=e.target,t=+el.dataset.target;let c=0;const d=Math.max(1,Math.floor(30/(t||1)));const iv=setInterval(()=>{c+=d;if(c>=t){el.textContent=(t>100?'~':'')+t;clearInterval(iv)}else{el.textContent=c}},16);io.unobserve(el)}})},{threshold:.5});
+document.querySelectorAll('.num[data-target]').forEach(el=>io.observe(el));
+const pills=document.querySelectorAll('.nav-pill[href]'),sections=[];
+pills.forEach(p=>{const id=p.getAttribute('href')?.slice(1);if(id){const s=document.getElementById(id);if(s)sections.push({el:s,pill:p})}});
+const spy=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const m=sections.find(s=>s.el===e.target);if(m)m.pill.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px',threshold:0});
+sections.forEach(s=>spy.observe(s.el));
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('progressBar').style.width=(window.scrollY/h*100)+'%'});
+const btn=document.getElementById('backTop');
+window.addEventListener('scroll',()=>{btn.classList.toggle('show',window.scrollY>400)});
+btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>

@@ -1,0 +1,434 @@
+{
+  "blob_public_access": [
+    "DSP-10",
+    "IVS-03"
+  ],
+  "storage_https": [
+    "CEK-03",
+    "DSP-17"
+  ],
+  "storage_network_rules": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "soft_delete_disabled": [
+    "BCR-03",
+    "DSP-16"
+  ],
+  "min_tls_weak": [
+    "CEK-03",
+    "DSP-17"
+  ],
+  "shared_key_enabled": [
+    "IAM-02",
+    "CEK-01"
+  ],
+  "no_blob_logging": [
+    "LOG-01",
+    "LOG-03"
+  ],
+  "blob_versioning_disabled": [
+    "BCR-03",
+    "DSP-16"
+  ],
+  "sql_tde_disabled": [
+    "CEK-03",
+    "DSP-17"
+  ],
+  "sql_auditing_disabled": [
+    "LOG-01",
+    "LOG-05"
+  ],
+  "sql_atp_disabled": [
+    "TVM-01",
+    "LOG-09"
+  ],
+  "sql_no_ddm": [
+    "DSP-05",
+    "DSP-17"
+  ],
+  "sql_no_rls": [
+    "IAM-10",
+    "DSP-05"
+  ],
+  "cosmosdb_public_access": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "eventual_consistency": [
+    "DSP-16",
+    "BCR-01"
+  ],
+  "access_policy_model": [
+    "IAM-10",
+    "CEK-01"
+  ],
+  "purge_protection_off": [
+    "BCR-03",
+    "CEK-05"
+  ],
+  "no_expiry_set": [
+    "CEK-04",
+    "IAM-09"
+  ],
+  "cert_no_auto_renewal": [
+    "CEK-04",
+    "IAM-09"
+  ],
+  "keys_not_hsm_backed": [
+    "CEK-02",
+    "CEK-05"
+  ],
+  "disk_encryption_missing": [
+    "CEK-03",
+    "DSP-17"
+  ],
+  "overprivileged_access": [
+    "IAM-05",
+    "IAM-10"
+  ],
+  "defender_coverage_gaps": [
+    "TVM-01",
+    "TVM-02"
+  ],
+  "audit_log_short_retention": [
+    "LOG-05",
+    "LOG-11"
+  ],
+  "nsg_data_ports_open": [
+    "IVS-03",
+    "IVS-06"
+  ],
+  "no_dlp_policies": [
+    "DSP-01",
+    "DSP-05"
+  ],
+  "dlp_no_sensitive_info_types": [
+    "DSP-01",
+    "DSP-05"
+  ],
+  "sql_local_auth_enabled": [
+    "IAM-02",
+    "IAM-04"
+  ],
+  "pg_mysql_no_aad_auth": [
+    "IAM-02",
+    "IAM-04"
+  ],
+  "no_managed_identity": [
+    "IAM-02",
+    "IAM-09"
+  ],
+  "no_resource_lock": [
+    "BCR-03",
+    "DSP-16"
+  ],
+  "adf_no_managed_vnet": [
+    "IVS-03",
+    "IVS-06"
+  ],
+  "synapse_no_exfiltration_protection": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "ai_services_public_access": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "log_analytics_no_cmk": [
+    "CEK-03",
+    "CEK-01"
+  ],
+  "no_immutable_audit_logs": [
+    "LOG-03",
+    "LOG-11"
+  ],
+  "redis_non_ssl_port": [
+    "CEK-03",
+    "DSP-17"
+  ],
+  "redis_weak_tls": [
+    "CEK-03",
+    "DSP-17"
+  ],
+  "redis_no_firewall": [
+    "IVS-03",
+    "IVS-06"
+  ],
+  "eventhub_public_access": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "servicebus_public_access": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "messaging_weak_tls": [
+    "CEK-03",
+    "DSP-17"
+  ],
+  "purge_protection_disabled": [
+    "BCR-03",
+    "CEK-05"
+  ],
+  "legacy_access_policy_model": [
+    "IAM-10",
+    "CEK-01"
+  ],
+  "no_network_restrictions": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "purview_public_access": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "purview_no_private_endpoint": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "purview_scan_coverage_gap": [
+    "TVM-02",
+    "DSP-01"
+  ],
+  "purview_scan_issues": [
+    "TVM-02",
+    "DSP-01"
+  ],
+  "managed_disk_no_cmk": [
+    "CEK-03",
+    "CEK-01"
+  ],
+  "no_diagnostic_settings": [
+    "LOG-01",
+    "LOG-03"
+  ],
+  "no_private_endpoint": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "no_ddos_protection": [
+    "IVS-09",
+    "IVS-06"
+  ],
+  "no_sas_expiration_policy": [
+    "IAM-09",
+    "CEK-04"
+  ],
+  "no_immutability_policy": [
+    "LOG-11",
+    "DSP-16"
+  ],
+  "change_feed_disabled": [
+    "LOG-01",
+    "LOG-03"
+  ],
+  "unencrypted_disks": [
+    "CEK-03",
+    "DSP-17"
+  ],
+  "no_encryption_at_host": [
+    "CEK-03",
+    "DSP-17"
+  ],
+  "no_security_action_groups": [
+    "TVM-01",
+    "LOG-09"
+  ],
+  "ai_key_auth_enabled": [
+    "IAM-02",
+    "IAM-04"
+  ],
+  "ai_no_managed_identity": [
+    "IAM-02",
+    "IAM-09"
+  ],
+  "ai_no_cmk": [
+    "CEK-03",
+    "CEK-01"
+  ],
+  "adf_public_access": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "adf_no_managed_identity": [
+    "IAM-02",
+    "IAM-09"
+  ],
+  "adf_no_git_integration": [
+    "GRC-01",
+    "DSP-16"
+  ],
+  "synapse_public_access": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "synapse_sql_auth_enabled": [
+    "IAM-02",
+    "IAM-04"
+  ],
+  "eventhub_local_auth": [
+    "IAM-02",
+    "IAM-04"
+  ],
+  "servicebus_local_auth": [
+    "IAM-02",
+    "IAM-04"
+  ],
+  "eventhub_no_capture": [
+    "LOG-01",
+    "LOG-05"
+  ],
+  "redis_no_patch_schedule": [
+    "TVM-04",
+    "IVS-05"
+  ],
+  "redis_public_access": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "data_services_no_managed_identity": [
+    "IAM-02",
+    "IAM-09"
+  ],
+  "sqlmi_no_atp": [
+    "TVM-01",
+    "LOG-09"
+  ],
+  "sqlmi_public_endpoint": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "sqlmi_no_aad_only": [
+    "IAM-02",
+    "IAM-04"
+  ],
+  "appconfig_public_access": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "appconfig_no_private_endpoint": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "appconfig_no_soft_delete": [
+    "BCR-03",
+    "DSP-16"
+  ],
+  "cert_expiring_soon": [
+    "CEK-04",
+    "IAM-09"
+  ],
+  "cert_no_auto_renew": [
+    "CEK-04",
+    "IAM-09"
+  ],
+  "cert_weak_key": [
+    "CEK-02",
+    "CEK-05"
+  ],
+  "databricks_no_vnet": [
+    "IVS-03",
+    "IVS-06"
+  ],
+  "databricks_no_cmk": [
+    "CEK-03",
+    "CEK-01"
+  ],
+  "databricks_public_access": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "apim_no_vnet": [
+    "IVS-03",
+    "IVS-06"
+  ],
+  "apim_no_managed_identity": [
+    "IAM-02",
+    "IAM-09"
+  ],
+  "frontdoor_no_waf": [
+    "IVS-06",
+    "TVM-01"
+  ],
+  "frontdoor_old_tls": [
+    "CEK-03",
+    "DSP-17"
+  ],
+  "secret_in_app_settings": [
+    "CEK-01",
+    "DSP-17"
+  ],
+  "no_keyvault_references": [
+    "CEK-01",
+    "DSP-17"
+  ],
+  "firewall_no_threat_intel": [
+    "TVM-01",
+    "IVS-06"
+  ],
+  "firewall_no_idps": [
+    "TVM-01",
+    "IVS-06"
+  ],
+  "appgw_no_waf": [
+    "IVS-06",
+    "TVM-01"
+  ],
+  "no_bastion_open_rdp": [
+    "IAM-14",
+    "IVS-03"
+  ],
+  "bastion_shareable_links": [
+    "IAM-14",
+    "IAM-10"
+  ],
+  "data_policy_noncompliant": [
+    "GRC-01",
+    "GRC-03"
+  ],
+  "defender_data_recs_unhealthy": [
+    "TVM-02",
+    "TVM-04"
+  ],
+  "stale_data_role_assignment": [
+    "IAM-05",
+    "IAM-10"
+  ],
+  "storage_unusual_bypass": [
+    "IVS-03",
+    "DSP-10"
+  ],
+  "cross_sub_private_endpoint": [
+    "IAM-10",
+    "IVS-03"
+  ],
+  "nsg_unrestricted_outbound": [
+    "IVS-03",
+    "IVS-06"
+  ],
+  "no_mfa_ca_policy": [
+    "IAM-02",
+    "IAM-04"
+  ],
+  "pim_permanent_assignments": [
+    "IAM-05",
+    "IAM-10"
+  ],
+  "drift_detected": [
+    "GRC-01",
+    "DSP-16"
+  ],
+  "aks_no_acr_integration": [
+    "DSP-16",
+    "TVM-04"
+  ],
+  "acr_admin_enabled": [
+    "IAM-02",
+    "IAM-05"
+  ],
+  "func_external_package": [
+    "TVM-04",
+    "DSP-16"
+  ]
+}

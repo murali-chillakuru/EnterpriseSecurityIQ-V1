@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostureIQ — Enhancement Backlog</title>
+<meta name="description" content="Living document tracking planned enhancements, feature ideas, and architectural evolution for EnterpriseSecurityIQ.">
+<meta name="author" content="Murali Chillakuru">
+<style>
+:root {
+    --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-tertiary:#1C2128;--bg-card:#21262D;--bg-card-hover:#282E36;--bg-inset:#0D1117;
+    --border-primary:#30363D;--border-secondary:#21262D;--border-accent:#1F6FEB;
+    --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;--text-link:#58A6FF;
+    --ms-blue:#0078D4;--ms-green:#107C10;--ms-red:#D13438;--ms-yellow:#FFB900;--ms-orange:#F7630C;--ms-teal:#00B7C3;
+    --accent-blue:#1F6FEB;--accent-blue-light:#388BFD;--accent-green:#3FB950;--accent-green-bg:rgba(63,185,80,.12);
+    --accent-orange:#D29922;--accent-orange-bg:rgba(210,153,34,.12);--accent-red:#F85149;--accent-red-bg:rgba(248,81,73,.12);
+    --accent-purple:#A371F7;--accent-purple-bg:rgba(163,113,247,.12);--accent-cyan:#39D2C0;--accent-cyan-bg:rgba(57,210,192,.12);
+    --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);--shadow-lg:0 8px 24px rgba(0,0,0,.5);
+    --radius:8px;--radius-lg:12px;
+    --font-sans:'Segoe UI Variable','Segoe UI',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+    --font-mono:'Cascadia Code','Fira Code','Consolas','Monaco',monospace;
+    --max-width:1200px;
+}
+[data-theme="light"]{
+    --bg-primary:#F6F8FA;--bg-secondary:#FFFFFF;--bg-tertiary:#F0F2F5;--bg-card:#FFFFFF;--bg-card-hover:#F6F8FA;--bg-inset:#F0F2F5;
+    --border-primary:#D0D7DE;--border-secondary:#E1E4E8;--border-accent:#0078D4;
+    --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;--text-link:#0969DA;
+    --accent-blue:#0969DA;--accent-blue-light:#0078D4;--accent-green:#1A7F37;--accent-green-bg:rgba(26,127,55,.08);
+    --accent-orange:#9A6700;--accent-orange-bg:rgba(154,103,0,.08);--accent-red:#CF222E;--accent-red-bg:rgba(207,34,46,.08);
+    --accent-purple:#8250DF;--accent-purple-bg:rgba(130,80,223,.08);--accent-cyan:#0E8A8A;--accent-cyan-bg:rgba(14,138,138,.08);
+    --shadow-sm:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.1);--shadow-lg:0 8px 24px rgba(0,0,0,.12);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(31,111,235,.4)}
+a{color:var(--text-link);text-decoration:none;transition:color .15s}a:hover{text-decoration:underline;color:var(--accent-blue-light)}
+code{font-family:var(--font-mono);font-size:.85em;background:var(--bg-inset);padding:2px 7px;border-radius:4px;color:var(--accent-cyan);border:1px solid var(--border-secondary)}
+pre{background:var(--bg-inset);border:1px solid var(--border-primary);border-radius:var(--radius);padding:20px 24px;overflow-x:auto;margin:1rem 0;line-height:1.6}
+pre code{background:none;border:none;padding:0;font-size:.9rem;color:var(--text-primary)}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--ms-blue),var(--ms-teal));z-index:1001;width:0%;transition:width 80ms linear}
+.hero{position:relative;padding:90px 0 70px;background:linear-gradient(145deg,var(--bg-primary) 0%,#0D2137 50%,var(--bg-primary) 100%);border-bottom:1px solid var(--border-primary);overflow:hidden}
+[data-theme="light"] .hero{background:linear-gradient(145deg,#EBF3FE 0%,#D4E6FC 50%,#EBF3FE 100%)}
+.hero::before{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(31,111,235,.08) 0%,transparent 70%)}
+.hero-inner{max-width:var(--max-width);margin:0 auto;padding:0 32px;position:relative;z-index:1}
+.hero-label{display:inline-flex;align-items:center;gap:8px;background:rgba(31,111,235,.15);border:1px solid rgba(31,111,235,.3);padding:6px 16px;border-radius:20px;font-size:.8rem;color:var(--accent-blue-light);letter-spacing:.5px;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-size:2.4rem;font-weight:700;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;margin-bottom:16px}
+.hero p.subtitle{font-size:1.05rem;color:var(--text-secondary);max-width:750px;line-height:1.7;margin-bottom:24px}
+.hero-meta{display:flex;gap:24px;flex-wrap:wrap;font-size:.85rem;color:var(--text-muted)}
+.hero-meta span{display:flex;align-items:center;gap:6px}
+.container{max-width:var(--max-width);margin:0 auto;padding:40px 32px}
+.section{margin-bottom:48px}
+.section-title{font-size:1.6rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.section-desc{color:var(--text-secondary);margin-bottom:24px;font-size:.95rem}
+
+/* Status badges */
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:.78rem;font-weight:600;letter-spacing:.3px}
+.badge-shipped{background:var(--accent-green-bg);color:var(--accent-green);border:1px solid rgba(63,185,80,.3)}
+.badge-planned{background:var(--accent-orange-bg);color:var(--accent-orange);border:1px solid rgba(210,153,34,.3)}
+.badge-idea{background:var(--accent-purple-bg);color:var(--accent-purple);border:1px solid rgba(163,113,247,.3)}
+.badge-progress{background:rgba(31,111,235,.12);color:var(--accent-blue-light);border:1px solid rgba(31,111,235,.3)}
+
+/* Cards */
+.card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:28px;margin-bottom:20px;transition:border-color .2s,box-shadow .2s}
+.card:hover{border-color:var(--border-accent);box-shadow:var(--shadow-md)}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px}
+.card-title{font-size:1.15rem;font-weight:600}
+.card-meta{display:flex;gap:16px;font-size:.82rem;color:var(--text-muted)}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+th{background:var(--bg-tertiary);text-align:left;padding:12px 16px;font-weight:600;border-bottom:2px solid var(--border-primary);color:var(--text-secondary);font-size:.8rem;text-transform:uppercase;letter-spacing:.5px}
+td{padding:10px 16px;border-bottom:1px solid var(--border-secondary)}
+tr:hover td{background:var(--bg-card-hover)}
+
+/* Architecture diagram */
+.arch-diagram{background:var(--bg-inset);border:1px solid var(--border-primary);border-radius:var(--radius);padding:24px;margin:20px 0;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.5;white-space:pre;color:var(--accent-cyan)}
+
+/* Detection list */
+.detection-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;margin-top:16px}
+.detection-item{background:var(--bg-tertiary);border:1px solid var(--border-secondary);border-radius:var(--radius);padding:20px}
+.detection-item h4{font-size:.95rem;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.detection-item .severity{font-size:.72rem;padding:2px 8px;border-radius:10px;font-weight:700;text-transform:uppercase}
+.severity-critical{background:var(--accent-red-bg);color:var(--accent-red)}
+.severity-high{background:var(--accent-orange-bg);color:var(--accent-orange)}
+.severity-medium{background:rgba(255,185,0,.12);color:var(--ms-yellow)}
+.detection-item p{font-size:.85rem;color:var(--text-secondary);line-height:1.6}
+.detection-item .evidence{font-size:.78rem;color:var(--text-muted);margin-top:8px}
+
+/* Theme toggle */
+.theme-toggle{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--bg-card);border:1px solid var(--border-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;box-shadow:var(--shadow-md);z-index:100;transition:transform .2s}
+.theme-toggle:hover{transform:scale(1.1)}
+
+/* TOC */
+.toc{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:24px 28px;margin-bottom:40px}
+.toc h3{font-size:1rem;font-weight:600;margin-bottom:12px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;font-size:.82rem}
+.toc ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px 20px}
+.toc li a{font-size:.9rem;display:flex;align-items:center;gap:6px;padding:4px 0}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">&#128203; Enhancement Backlog</div>
+    <h1>PostureIQ — Enhancement Backlog</h1>
+    <p class="subtitle">Living document tracking planned enhancements, feature ideas, and architectural evolution for the platform. Covers attack path analysis, cross-cloud capabilities, and future vision.</p>
+    <div class="hero-meta">
+      <span>&#128197; Last Updated: 2026-04-15</span>
+      <span>&#128220; 3 Backlog Items</span>
+      <span>&#9989; 1 Shipped (v45)</span>
+      <span>&#128203; 1 Planned (Option B)</span>
+      <span>&#128161; 1 Idea (Option C)</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- TOC -->
+  <div class="toc">
+    <h3>Contents</h3>
+    <ul>
+      <li><a href="#v45">&#9989; v45 — Multi-Hop Attack Paths (Shipped)</a></li>
+      <li><a href="#option-b">&#128203; Option B — Standalone Pathfinder Tool</a></li>
+      <li><a href="#option-c">&#128161; Option C — Full Cross-Cloud AI</a></li>
+      <li><a href="#other">&#128301; Other Enhancements</a></li>
+    </ul>
+  </div>
+
+  <!-- v45 Shipped -->
+  <div class="section" id="v45">
+    <div class="section-title">&#9989; v45 — Multi-Hop Attack Path Analysis</div>
+    <div class="section-desc">Deepened PostureIQ attack_paths.py with 5 new multi-hop detection categories using existing collected evidence.</div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Implementation Details</span>
+        <span class="badge badge-shipped">&#9989; Shipped 2026-04-15</span>
+      </div>
+      <p style="color:var(--text-secondary);margin-bottom:16px;font-size:.9rem">Zero new collectors required — all detections use existing PostureIQ evidence index.</p>
+
+      <div class="detection-grid">
+        <div class="detection-item">
+          <h4><span class="severity severity-high">HIGH</span> Key Vault → Identity → Resource</h4>
+          <p>Principals with Key Vault read access AND privileged roles elsewhere. Compromising this identity exposes vault secrets AND privileged resource access.</p>
+          <div class="evidence">Evidence: <code>azure-keyvault</code>, <code>azure-role-assignment</code> | Score: 88</div>
+        </div>
+        <div class="detection-item">
+          <h4><span class="severity severity-high">HIGH</span> App/Function → MI → Resource</h4>
+          <p>Web Apps or Functions with system-assigned Managed Identity holding privileged roles. Exploiting the app via SSRF/RCE grants privileged Azure access via the MI token endpoint.</p>
+          <div class="evidence">Evidence: <code>azure-webapp-config</code>, <code>azure-function-app</code>, <code>azure-role-assignment</code> | Score: 87</div>
+        </div>
+        <div class="detection-item">
+          <h4><span class="severity severity-critical">CRITICAL</span> Conditional Access Bypass</h4>
+          <p>Privileged Entra roles (Global Admin, Security Admin, etc.) without MFA enforcement via Conditional Access. Stolen credentials provide direct privileged access.</p>
+          <div class="evidence">Evidence: <code>entra-conditional-access-policy</code>, <code>entra-role-assignment</code> | Score: 92</div>
+        </div>
+        <div class="detection-item">
+          <h4><span class="severity severity-high">MEDIUM–HIGH</span> Weak Credential + Privileged SP</h4>
+          <p>Service Principals with expired or expiring credentials that hold privileged Azure roles. Creates a window for unauthorized access or automation failure.</p>
+          <div class="evidence">Evidence: <code>entra-application</code>, <code>entra-service-principal</code>, <code>azure-role-assignment</code> | Score: 75–82</div>
+        </div>
+        <div class="detection-item">
+          <h4><span class="severity severity-critical">CRITICAL</span> Network Pivot — Internet-Exposed VM</h4>
+          <p>VMs in subscriptions with Internet-exposed NSG rules AND privileged Managed Identity. Attacker can request MI token from IMDS (169.254.169.254) and pivot to privileged Azure access.</p>
+          <div class="evidence">Evidence: <code>azure-nsg-rule</code>, <code>azure-vm-config</code>, <code>azure-role-assignment</code> | Score: 93</div>
+        </div>
+      </div>
+
+      <h4 style="margin-top:24px;margin-bottom:12px">Query Support</h4>
+      <table>
+        <tr><th>User Query</th><th>Filter Applied</th></tr>
+        <tr><td>"credential chain" / "keyvault chain"</td><td>credential_chain type paths</td></tr>
+        <tr><td>"CA bypass" / "conditional access bypass"</td><td>ca_bypass type paths</td></tr>
+        <tr><td>"network pivot"</td><td>network_pivot type paths</td></tr>
+        <tr><td>"app mi chain" / "managed identity chain"</td><td>app_mi_to_resource subtype</td></tr>
+        <tr><td>"attack path" (general)</td><td>All paths with category breakdown table</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Option B -->
+  <div class="section" id="option-b">
+    <div class="section-title">&#128203; Option B — Standalone Attack Pathfinder Tool</div>
+    <div class="section-desc">A new agent tool with graph-based traversal. Initially Azure-only but architectured for multi-cloud.</div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Architecture &amp; Components</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span class="badge badge-planned">&#128203; Planned</span>
+          <span class="card-meta">Priority: Medium | Effort: 3–5 sessions</span>
+        </div>
+      </div>
+
+      <div class="arch-diagram">┌─────────────────────────────────────────────────┐
+│              Attack Pathfinder Tool               │
+│                                                   │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐       │
+│  │  Azure   │  │   AWS    │  │   GCP    │       │
+│  │ Provider │  │ Provider │  │ Provider │       │
+│  │ (v1)  ✅ │  │ (future) │  │ (future) │       │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘       │
+│       │              │              │             │
+│       ▼              ▼              ▼             │
+│  ┌─────────────────────────────────────┐         │
+│  │     Unified Knowledge Graph          │         │
+│  │  Nodes: identities, resources,      │         │
+│  │         networks, credentials       │         │
+│  │  Edges: trust, access, network,     │         │
+│  │         credential-sharing          │         │
+│  └──────────────┬──────────────────────┘         │
+│                 │                                  │
+│       ┌─────────▼──────────┐                      │
+│       │  Graph Traversal   │                      │
+│       │  Engine (BFS/DFS)  │                      │
+│       └─────────┬──────────┘                      │
+│                 │                                  │
+│       ┌─────────▼──────────┐                      │
+│       │  LLM Reasoning     │                      │
+│       │  (attacker sim)    │                      │
+│       └─────────┬──────────┘                      │
+│                 │                                  │
+│       ┌─────────▼──────────┐                      │
+│       │  Path Report +     │                      │
+│       │  Remediation       │                      │
+│       └────────────────────┘                      │
+└─────────────────────────────────────────────────┘</div>
+
+      <h4 style="margin-top:20px;margin-bottom:12px">Components to Build</h4>
+      <table>
+        <tr><th>Component</th><th>Description</th><th>Est. Lines</th></tr>
+        <tr><td><code>attack_pathfinder.py</code></td><td>Orchestrator + tool registration</td><td>~100</td></tr>
+        <tr><td><code>graph_model.py</code></td><td>Unified knowledge graph (nodes, edges, trust/access/network types)</td><td>~500</td></tr>
+        <tr><td><code>graph_traversal.py</code></td><td>BFS/DFS attack path traversal with multi-hop semantics</td><td>~400</td></tr>
+        <tr><td><code>llm_reasoning.py</code></td><td>LLM-powered attacker simulation prompts</td><td>~300</td></tr>
+        <tr><td><code>providers/azure_provider.py</code></td><td>Azure evidence → graph node/edge mapping</td><td>~300</td></tr>
+        <tr><td><code>providers/base_provider.py</code></td><td>Abstract provider interface</td><td>~50</td></tr>
+        <tr><td>Config + Agent tool</td><td>Config schema + <code>run_attack_pathfinder</code> registration</td><td>~150</td></tr>
+        <tr><td><strong>Total</strong></td><td></td><td><strong>~1800</strong></td></tr>
+      </table>
+
+      <h4 style="margin-top:20px;margin-bottom:12px">New Detection Capabilities (beyond v45)</h4>
+      <div class="detection-grid">
+        <div class="detection-item">
+          <h4>Multi-Hop Traversal (3+ hops)</h4>
+          <p>A → B → C → D chains where no single hop is critical but the chain creates a critical path.</p>
+        </div>
+        <div class="detection-item">
+          <h4>Cross-Subscription Pivots</h4>
+          <p>Identity in subscription A with role in subscription B that trusts subscription C.</p>
+        </div>
+        <div class="detection-item">
+          <h4>VNet Peering Chains</h4>
+          <p>VNet A ↔ VNet B ↔ VNet C creating network adjacency across subscriptions.</p>
+        </div>
+        <div class="detection-item">
+          <h4>Private Endpoint Bypass</h4>
+          <p>Resource with private endpoint but identity has both network AND data-plane access.</p>
+        </div>
+        <div class="detection-item">
+          <h4>Full 4-Hop Identity Chain</h4>
+          <p>App Registration → Service Principal → Managed Identity → Resource.</p>
+        </div>
+        <div class="detection-item">
+          <h4>LLM Attacker Reasoning</h4>
+          <p>"Given this graph, what would an APT actor target first?" — emergent pattern discovery.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option C -->
+  <div class="section" id="option-c">
+    <div class="section-title">&#128161; Option C — Full Cross-Cloud Attack Pathfinder AI</div>
+    <div class="section-desc">AI agent mapping attack paths spanning Azure, AWS, and GCP — discovering cross-cloud breach pathways.</div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Cross-Cloud Vision</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span class="badge badge-idea">&#128161; Idea</span>
+          <span class="card-meta">Priority: Low | Effort: 10+ sessions | Prereq: Option B</span>
+        </div>
+      </div>
+
+      <h4 style="margin-bottom:12px">Gap Analysis — What Needs to Be Built</h4>
+      <table>
+        <tr><th>Requirement</th><th>Current State</th><th>Effort</th></tr>
+        <tr><td>AWS Collectors</td><td>Zero exist. Need boto3, STS/AssumeRole, IAM/S3/EC2/RDS/Lambda</td><td>~2000+ lines</td></tr>
+        <tr><td>GCP Collectors</td><td>Zero exist. Need google-cloud SDK, GCP IAM, GCS/GKE/Cloud SQL</td><td>~1500+ lines</td></tr>
+        <tr><td>Cross-Cloud Auth</td><td>Azure AD only. Need AWS STS, GCP service accounts</td><td>~500 lines</td></tr>
+        <tr><td>Cross-Cloud Graph</td><td>None. Need trust relationships spanning clouds</td><td>~600 lines</td></tr>
+        <tr><td>Cross-Cloud Remediation</td><td>Azure CLI only. Need AWS CLI, gcloud, multi-cloud Terraform</td><td>~800 lines</td></tr>
+        <tr><td>Continuous Monitoring</td><td>On-demand only. Need event-driven architecture</td><td>Architecture change</td></tr>
+        <tr><td><strong>Total New Code</strong></td><td></td><td><strong>~5000+ lines</strong></td></tr>
+      </table>
+
+      <h4 style="margin-top:20px;margin-bottom:12px">Cross-Cloud Attack Patterns</h4>
+      <div class="detection-grid">
+        <div class="detection-item">
+          <h4><span class="severity severity-critical">CRITICAL</span> S3 Credential Leak → Azure Pivot</h4>
+          <p>AWS S3 bucket with public access contains Azure SP credentials → full Azure subscription access.</p>
+        </div>
+        <div class="detection-item">
+          <h4><span class="severity severity-critical">CRITICAL</span> Azure AD Trust → AWS AssumeRole</h4>
+          <p>Azure AD identity trusted by AWS IAM role → cross-cloud lateral movement.</p>
+        </div>
+        <div class="detection-item">
+          <h4><span class="severity severity-high">HIGH</span> GCP Workload Identity → Azure MI</h4>
+          <p>GCP service linked to Azure Managed Identity → cloud-to-cloud pivot.</p>
+        </div>
+        <div class="detection-item">
+          <h4><span class="severity severity-high">HIGH</span> Shared VPN/ExpressRoute</h4>
+          <p>Network paths connecting cloud VPCs/VNets enabling lateral movement.</p>
+        </div>
+        <div class="detection-item">
+          <h4><span class="severity severity-high">HIGH</span> Container Registry Poisoning</h4>
+          <p>ACR/ECR/GCR image shared across clouds → supply chain attack path.</p>
+        </div>
+        <div class="detection-item">
+          <h4><span class="severity severity-high">HIGH</span> Shared Secrets Across Vaults</h4>
+          <p>Same credentials stored in Key Vault, Secrets Manager, and Secret Manager.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Other Enhancements -->
+  <div class="section" id="other">
+    <div class="section-title">&#128301; Other Enhancements</div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Attack Path Visualization (Sequence Diagrams)</span>
+        <div style="display:flex;gap:8px"><span class="badge badge-idea">&#128161; Idea</span><span class="card-meta">Effort: 1–2 sessions</span></div>
+      </div>
+      <p style="color:var(--text-secondary);font-size:.9rem">Generate animated Mermaid sequence diagrams for each attack path category using existing <code>seq-engine.js</code>. Embed in PostureIQ HTML report with step-by-step playback and explanations.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Continuous PostureIQ Monitoring</span>
+        <span class="badge badge-idea">&#128161; Idea</span>
+      </div>
+      <p style="color:var(--text-secondary);font-size:.9rem">Scheduled re-runs with delta comparison, alerting on new critical attack paths or score degradation.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">PostureIQ Drift Alerting</span>
+        <span class="badge badge-idea">&#128161; Idea</span>
+      </div>
+      <p style="color:var(--text-secondary);font-size:.9rem">Webhook/email notification when PostureIQ score drops below threshold or new critical paths appear.</p>
+    </div>
+  </div>
+
+  <!-- Revision History -->
+  <div class="section">
+    <div class="section-title">&#128340; Revision History</div>
+    <table>
+      <tr><th>Date</th><th>Change</th></tr>
+      <tr><td>2026-04-15</td><td>Initial backlog created. v45 shipped (multi-hop attack paths). Option B &amp; C documented.</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<button class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">&#9790;</button>
+
+<script>
+// Progress bar
+window.addEventListener('scroll',()=>{const h=document.documentElement;const p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;document.getElementById('progressBar').style.width=p+'%'});
+// Theme toggle
+const t=document.getElementById('themeToggle');
+t.addEventListener('click',()=>{const d=document.documentElement;const c=d.getAttribute('data-theme')==='dark'?'light':'dark';d.setAttribute('data-theme',c);t.textContent=c==='dark'?'\u263E':'\u2600';try{localStorage.setItem('esiq-theme',c)}catch(e){}});
+try{const s=localStorage.getItem('esiq-theme');if(s){document.documentElement.setAttribute('data-theme',s);t.textContent=s==='dark'?'\u263E':'\u2600'}}catch(e){}
+</script>
+</body>
+</html>

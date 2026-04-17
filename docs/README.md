@@ -4,20 +4,11 @@
 
 **Author:** Murali Chillakuru
 
-> **Executive Summary** — Project overview and quick-start guide for PostureIQ,
-> a read-only AI-powered compliance platform for Azure, Entra ID, M365, and AI agents.
-> Covers capabilities, supported frameworks, repository structure, and getting started.
->
-> | | |
-> |---|---|
-> | **Audience** | Everyone — start here |
-> | **Next steps** | [Architecture](docs/architecture.md) for technical depth · [Usage Guide](docs/PROMPTS.md) for CLI commands |
-
 ## Overview
 
-PostureIQ is a **read-only** compliance assessment platform that discovers Azure resources and Microsoft Entra configurations, collects evidence from control-plane and data-plane APIs, normalizes findings, maps them to 11 compliance frameworks (525 total controls), evaluates posture across 10 security domains with 113 check functions, and produces professional auditor-ready reports in 8 formats.
+PostureIQ is a **read-only** compliance assessment platform that discovers Azure resources and Microsoft Entra configurations, collects evidence from control-plane and data-plane APIs, normalizes findings, maps them to 11 compliance frameworks (525 total controls), evaluates posture across 10 security domains with 120 check functions, and produces professional auditor-ready reports in 8 formats.
 
-Built with Python and the Microsoft Agent Framework SDK, PostureIQ runs as an AI agent on Microsoft Foundry (12 tools) or standalone via 10 CLI scripts. It uses 64 async collectors with concurrency, retry logic, pagination, and checkpoint resume for production-grade evidence gathering across 218 evidence types.
+Built with Python and the Microsoft Agent Framework SDK, PostureIQ runs as an AI agent on Microsoft Foundry (12 tools) or standalone via 10 CLI scripts. It uses 68 async collectors with concurrency, retry logic, pagination, and checkpoint resume for production-grade evidence gathering across 200+ evidence types.
 
 **PostureIQ never creates, modifies, or deletes any tenant resource.** All operations are strictly read-only.
 
@@ -27,15 +18,15 @@ Built with Python and the Microsoft Agent Framework SDK, PostureIQ runs as an AI
 |--------|-------|
 | **Azure Collectors** | 50 (49 registered + 1 standalone RBAC) |
 | **Entra ID Collectors** | 18 (17 registered + 1 standalone AI identity) |
-| **Distinct Evidence Types** | 218 |
+| **Distinct Evidence Types** | 200+ |
 | **Evaluation Domains** | 10 |
-| **Evaluation Check Functions** | 113 |
+| **Evaluation Check Functions** | 120 |
 | **Compliance Frameworks** | 11 (525 total controls) |
-| **Agent Tools (Foundry)** | 14 |
+| **Agent Tools (Foundry)** | 12 |
 | **CLI Scripts** | 10 assessment runners + 3 determinism validators |
 | **Report Formats** | HTML, JSON, Markdown, Excel, OSCAL, SARIF, PDF, Webhook |
 | **Report Generators** | 29 modules |
-| **Standalone Engines** | 9 (query, risk, data security, Copilot readiness, AI agent security, **PostureIQ**, data residency, remediation, continuous monitoring) |
+| **Standalone Engines** | 8 (query, risk, data security, Copilot readiness, AI agent security, data residency, remediation, continuous monitoring) |
 | **Tests** | 1,357 test functions across 15 files |
 | **Codebase** | ~50,000 lines of Python |
 
@@ -47,7 +38,7 @@ Built with Python and the Microsoft Agent Framework SDK, PostureIQ runs as an AI
 | **Collect** | Gather structured evidence from control-plane and data-plane APIs (async, concurrent, with retry and pagination) |
 | **Normalize** | Convert raw API outputs into a unified evidence model with deterministic IDs |
 | **Map** | Map evidence to 11 compliance framework controls (525 total) across 10 evaluation domains |
-| **Evaluate** | Assess compliance posture per control, domain, and framework with 113 check functions |
+| **Evaluate** | Assess compliance posture per control, domain, and framework with 120 check functions |
 | **Report** | Generate professional reports in 8 formats — HTML (Fluent Design), JSON, Markdown, Excel, OSCAL, SARIF, PDF, and webhooks |
 
 ## Capabilities
@@ -66,26 +57,22 @@ Built with Python and the Microsoft Agent Framework SDK, PostureIQ runs as an AI
 | **Permission Check** | `check_permissions` | — | Preflight verification of ARM/Graph/Entra permissions |
 | **Run Comparison** | `compare_runs` | — | Delta comparison showing new/resolved findings and score drift |
 | **Exposure Search** | `search_exposure` | — | Quick-scan of public-facing resources and sensitive data exposure |
-| **Custom Report** | `generate_custom_report` | — | Generate custom-scoped reports with selected frameworks and formats |
-| **PostureIQ Assessment** | `run_postureiq_assessment` | — | Risk-weighted posture assessment: attack paths, priority ranking, AI fix recommendations |
 
 ## Documentation
 
 | Document | Description |
 |----------|-------------|
-| [AI Agent README](AIAgent/README.md) | Agent architecture, 14 tools, deployment to Foundry |
+| [AI Agent README](AIAgent/README.md) | Agent architecture, 12 tools, deployment to Foundry |
 | [Usage Guide](docs/PROMPTS.md) | Step-by-step instructions, all CLI commands, troubleshooting |
 | [Architecture](docs/architecture.md) | Pipeline design, data flow, module interactions, sequence diagrams |
 | [Agent Capabilities](docs/agent-capabilities.md) | Complete resource coverage, all collectors, evidence types, evaluators |
 | [File Reference](docs/FILE-REFERENCE.md) | Detailed documentation of every file in the codebase |
-| [Evaluation Rules](docs/evaluation-rules.md) | All 113 check functions, thresholds, scoring methodology |
+| [Evaluation Rules](docs/evaluation-rules.md) | All 120 check functions, thresholds, scoring methodology |
 | [Configuration Guide](docs/configuration-guide.md) | Full configuration reference with all engines and options |
 | [Extending Frameworks](docs/extending-frameworks.md) | Guide for adding custom compliance frameworks |
 | [CI/CD Integration](docs/ci-cd-integration.md) | GitHub Actions and Azure DevOps pipeline integration |
 | [Suppressions Guide](docs/suppressions-guide.md) | Finding suppression rules and audit trail |
 | [Troubleshooting](docs/troubleshooting.md) | Common issues and resolutions for all engines |
-| [PostureIQ Deep Dive](docs/postureiq-deep-dive.md) | PostureIQ engine: risk-weighted scoring, attack paths, priority ranking, AI fixes |
-| [Changelog](CHANGELOG.md) | Version history (v1–v27) — all enhancements, fixes, and deployment changes |
 
 ## Supported Frameworks
 
@@ -136,7 +123,7 @@ EnterpriseSecurityIQ/
 │   ├── run_copilot_readiness.py           # CLI: M365 Copilot readiness assessment
 │   ├── run_ai_agent_security.py           # CLI: AI agent security assessment
 │   └── app/
-│       ├── agent.py                       # System prompt + 12 Foundry tools
+│       ├── agent.py                       # System prompt + 14 Foundry tools
 │       ├── orchestrator.py                # Concurrent collector → evaluator → report pipeline
 │       ├── auth.py                        # Multi-mode auth (Auto/ServicePrincipal/AzureCLI)
 │       ├── config.py                      # Environment + JSON file configuration
@@ -146,6 +133,7 @@ EnterpriseSecurityIQ/
 │       ├── data_security_engine.py        # Data security assessment (12 categories)
 │       ├── copilot_readiness_engine.py    # M365 Copilot readiness (9+ categories)
 │       ├── ai_agent_security_engine.py    # AI agent security (6 platforms, 23+ areas)
+│       ├── postureiq_orchestrator.py      # PostureIQ: independent risk-weighted posture assessment
 │       ├── data_residency_engine.py       # Data residency compliance (5 checks)
 │       ├── remediation_engine.py          # Automated remediation plan generation
 │       ├── continuous_monitor.py          # Scheduled re-assessments with drift detection
@@ -159,20 +147,22 @@ EnterpriseSecurityIQ/
 │       │   └── entra/ (18 collectors)     # Graph SDK: users, MFA, CA, roles, apps, PIM, risk…
 │       ├── evaluators/
 │       │   ├── engine.py                  # Multi-framework evaluation engine
-│       │   ├── access.py                  # Access control (8 checks)
-│       │   ├── identity.py                # Identity & authentication (22 checks)
-│       │   ├── data_protection.py         # Data protection (22 checks)
-│       │   ├── logging_eval.py            # Logging & monitoring (13 checks)
-│       │   ├── network.py                 # Network security (16 checks)
-│       │   ├── governance.py              # Governance & risk (21 checks)
-│       │   ├── incident_response.py       # Incident response (6 checks)
-│       │   ├── change_management.py       # Change management (4 checks)
-│       │   ├── business_continuity.py     # Business continuity (4 checks)
-│       │   ├── asset_management.py        # Asset management (4 checks)
-│       │   ├── plugins.py                 # Custom evaluator plugin loader
-│       │   └── suppressions.py            # Finding suppression system
+│       │   └── ... (10 domain evaluators + plugins + suppressions)
+│       ├── postureiq_evaluators/           # PostureIQ evaluators (18 files)
+│       │   ├── engine.py                  # Risk-weighted scoring (severity × exploitability × blast radius)
+│       │   ├── attack_paths.py            # Attack path analysis (privilege escalation, lateral movement)
+│       │   ├── priority_ranking.py        # ROI-based remediation ranking
+│       │   ├── ai_fix_recommendations.py  # GPT-powered remediation scripts
+│       │   └── ... (10 domain evaluators + plugins + suppressions)
+│       ├── postureiq_frameworks/ (11 JSON) # PostureIQ framework mappings (independent copies)
+│       ├── postureiq_reports/ (20 files)  # PostureIQ report generators
 │       ├── frameworks/ (11 mappings)      # Compliance framework control definitions
-│       └── reports/ (28 modules)          # HTML, JSON, MD, Excel, OSCAL, SARIF, PDF…
+│       └── reports/ (29 modules)          # HTML, JSON, MD, Excel, OSCAL, SARIF, PDF…
+├── webapp/                                # 11 self-contained HTML SPAs with MSAL auth
+│   ├── index.html                         # Portal — card-grid launcher
+│   ├── EnterpriseSecurityIQ.html          # Full dashboard
+│   ├── PostureIQ.html                     # PostureIQ posture assessment
+│   └── ... (8 more focused assessment SPAs)
 ├── config/
 │   ├── enterprisesecurityiq.config.json   # Reference configuration file
 │   └── config.schema.json                 # JSON Schema for config validation
@@ -277,20 +267,20 @@ Assessment results are written to `output/<timestamp>/`:
 ┌──────────────────┐    ┌──────────────┐    ┌──────────────────┐    ┌───────────────┐    ┌──────────┐
 │    Collectors     │───>│ Normalization│───>│    Evaluator     │───>│    Reports     │───>│  Output  │
 │ 50 Azure + 18    │    │   Layer      │    │     Engine       │    │   Generator    │    │  Files   │
-│ Entra (async)    │    │ (base.py)    │    │(11 frameworks,   │    │(28 modules,    │    │          │
+│ Entra (async)    │    │ (base.py)    │    │(11 frameworks,   │    │(29 modules,    │    │          │
 │                  │    │              │    │ 10 domains,      │    │ 8 formats)     │    │          │
-│                  │    │              │    │ 113 checks)      │    │                │    │          │
+│                  │    │              │    │ 120 checks)      │    │                │    │          │
 └──────────────────┘    └──────────────┘    └──────────────────┘    └───────────────┘    └──────────┘
       │                        │                    │                       │
-      │ ARM + Graph SDK        │ 218 evidence        │ Findings +           │ HTML, JSON, MD,
+      │ ARM + Graph SDK        │ 200+ evidence      │ Findings +           │ HTML, JSON, MD,
       │ (async, retry,         │ types (unified      │ control results      │ Excel, OSCAL,
       │  pagination,           │  PascalCase dicts)  │ (per framework)      │ SARIF, PDF
       │  checkpoint)           │                     │                      │
 ```
 
-1. **Collectors** (64 async) call Azure ARM, data-plane, MS Graph, and Power Platform APIs with retry, pagination, and checkpoint resume
+1. **Collectors** (68 async) call Azure ARM, data-plane, MS Graph, and Power Platform APIs with retry, pagination, and checkpoint resume
 2. **Normalization** converts raw data into unified evidence dicts with deterministic UUID5 IDs
-3. **Evaluator Engine** iterates all selected frameworks, dispatches to 10 domain evaluators running 113 check functions
+3. **Evaluator Engine** iterates all selected frameworks, dispatches to 10 domain evaluators running 120 check functions
 4. **Report Generator** produces professional reports in 8 formats with SHA-256 integrity hashes
 
 ## Safety Guarantees
@@ -341,7 +331,7 @@ If they **differ** → the report content was modified after generation.
 
 ## Using with GitHub Copilot
 
-EnterpriseSecurityIQ can be run directly from GitHub Copilot Chat in VS Code. Use the following example prompt:
+PostureIQ can be run directly from GitHub Copilot Chat in VS Code. Use the following example prompt:
 
 ```
 provide Assessment on tenant "<TenantID>", using account "<USER UPN>" based on NIST, CIS, HIPAA, PCI-DSS, FedRAMP, SOC

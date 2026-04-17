@@ -1,0 +1,29 @@
+{
+  "framework": "SOC 2 Type II",
+  "version": "2017",
+  "mappings": {
+    "dormant_accounts": ["CC6.1", "CC6.2"],
+    "overpermissioned_service_principals": ["CC6.1", "CC6.3"],
+    "expired_credentials": ["CC6.5", "CC6.1"],
+    "expiring_credentials": ["CC6.5", "CC6.1"],
+    "mfa_gaps": ["CC6.1", "CC6.5"],
+    "admin_proliferation": ["CC6.1", "CC6.3"],
+    "guest_user_risk": ["CC6.1", "CC6.2"],
+    "missing_guest_review": ["CC6.1", "CC6.2"],
+    "high_risk_users": ["CC6.1", "CC9.1"],
+    "medium_risk_users": ["CC6.1", "CC9.1"],
+    "open_management_ports": ["CC6.1", "CC6.6"],
+    "public_storage": ["CC6.1", "CC6.7"],
+    "webapp_transport_security": ["CC6.7", "CC6.1"],
+    "sql_firewall_exposure": ["CC6.1", "CC6.6"],
+    "disabled_plans": ["CC9.1", "CC7.1"],
+    "security_recommendations": ["CC7.1", "CC3.2"],
+    "low_secure_score": ["CC3.2", "CC4.1"],
+    "missing_diagnostics": ["CC8.2", "CC7.2"],
+    "policy_noncompliance": ["CC3.2", "CC8.1"],
+    "missing_tags": ["CC3.2", "CC6.1"],
+    "irm_not_assessed": ["CC9.1", "CC3.2"],
+    "no_irm_policies": ["CC9.1", "CC3.2"],
+    "active_irm_alerts": ["CC9.1", "CC7.3"]
+  }
+}

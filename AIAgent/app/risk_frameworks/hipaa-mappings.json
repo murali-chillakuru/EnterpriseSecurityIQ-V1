@@ -1,0 +1,29 @@
+{
+  "framework": "HIPAA Security Rule",
+  "version": "2013",
+  "mappings": {
+    "dormant_accounts": ["164.312(a)(1)", "164.308(a)(4)(ii)(C)"],
+    "overpermissioned_service_principals": ["164.312(a)(1)", "164.308(a)(3)(i)"],
+    "expired_credentials": ["164.312(d)", "164.312(a)(2)(iv)"],
+    "expiring_credentials": ["164.312(d)", "164.312(a)(2)(iv)"],
+    "mfa_gaps": ["164.312(d)", "164.312(a)(2)(i)"],
+    "admin_proliferation": ["164.312(a)(1)", "164.308(a)(3)(i)"],
+    "guest_user_risk": ["164.312(a)(1)", "164.308(a)(4)(ii)(B)"],
+    "missing_guest_review": ["164.312(a)(1)", "164.308(a)(4)(ii)(C)"],
+    "high_risk_users": ["164.308(a)(6)(ii)", "164.312(a)(1)"],
+    "medium_risk_users": ["164.308(a)(6)(ii)", "164.312(a)(1)"],
+    "open_management_ports": ["164.312(e)(1)", "164.312(a)(1)"],
+    "public_storage": ["164.312(a)(1)", "164.312(e)(1)"],
+    "webapp_transport_security": ["164.312(e)(1)", "164.312(e)(2)"],
+    "sql_firewall_exposure": ["164.312(e)(1)", "164.312(a)(1)"],
+    "disabled_plans": ["164.308(a)(6)(ii)", "164.308(a)(1)(ii)(D)"],
+    "security_recommendations": ["164.308(a)(1)(ii)(A)", "164.308(a)(8)"],
+    "low_secure_score": ["164.308(a)(8)", "164.308(a)(1)(ii)(A)"],
+    "missing_diagnostics": ["164.312(b)", "164.308(a)(1)(ii)(D)"],
+    "policy_noncompliance": ["164.308(a)(8)", "164.308(a)(1)(ii)(A)"],
+    "missing_tags": ["164.308(a)(7)(ii)(A)", "164.310(d)(1)"],
+    "irm_not_assessed": ["164.308(a)(1)(ii)(A)", "164.308(a)(6)(ii)"],
+    "no_irm_policies": ["164.308(a)(1)(ii)(A)", "164.308(a)(6)(ii)"],
+    "active_irm_alerts": ["164.308(a)(6)(ii)", "164.308(a)(6)(i)"]
+  }
+}

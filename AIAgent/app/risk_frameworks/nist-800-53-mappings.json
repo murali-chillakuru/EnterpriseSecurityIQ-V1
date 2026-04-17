@@ -1,0 +1,29 @@
+{
+  "framework": "NIST 800-53",
+  "version": "Rev 5",
+  "mappings": {
+    "dormant_accounts": ["AC-2(3)", "AC-2(12)"],
+    "overpermissioned_service_principals": ["AC-6", "AC-6(1)"],
+    "expired_credentials": ["IA-5(1)", "IA-5"],
+    "expiring_credentials": ["IA-5(1)", "IA-5"],
+    "mfa_gaps": ["IA-2(1)", "IA-2(2)"],
+    "admin_proliferation": ["AC-6(5)", "AC-2(7)"],
+    "guest_user_risk": ["AC-2(5)", "IA-8"],
+    "missing_guest_review": ["AC-2(3)", "AC-2(12)"],
+    "high_risk_users": ["SI-4", "AC-7"],
+    "medium_risk_users": ["SI-4", "AC-7"],
+    "open_management_ports": ["SC-7", "SC-7(5)"],
+    "public_storage": ["AC-3", "SC-7"],
+    "webapp_transport_security": ["SC-8", "SC-8(1)"],
+    "sql_firewall_exposure": ["SC-7", "AC-3"],
+    "disabled_plans": ["SI-4", "RA-5"],
+    "security_recommendations": ["RA-5", "CA-7"],
+    "low_secure_score": ["CA-7", "PM-4"],
+    "missing_diagnostics": ["AU-2", "AU-3"],
+    "policy_noncompliance": ["CA-7", "CM-6"],
+    "missing_tags": ["CM-8", "PM-5"],
+    "irm_not_assessed": ["PM-12", "IR-4"],
+    "no_irm_policies": ["PM-12", "AC-2(12)"],
+    "active_irm_alerts": ["IR-4", "IR-5"]
+  }
+}

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RBAC Assignments — ESIQNew</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-hover:#252D38;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --border-primary:#30363D;--border-accent:#1F6FEB33;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.5);
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',Consolas,monospace;
+  --transition-fast:.18s ease;--transition-med:.3s ease;
+  color-scheme:dark;--max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-hover:#F0F3F6;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;
+  --border-primary:#D0D7DE;--border-accent:#0969DA22;
+  --accent-blue:#0969DA;--accent-purple:#8250DF;--accent-green:#1A7F37;
+  --accent-orange:#BF8700;--accent-cyan:#1B7C83;--accent-red:#CF222E;
+  --shadow-sm:0 1px 3px rgba(31,35,40,.08);--shadow-md:0 4px 12px rgba(31,35,40,.1);
+  --shadow-lg:0 8px 24px rgba(31,35,40,.12);
+  color-scheme:light
+}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none;transition:color var(--transition-fast)}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--bg-secondary);padding:2px 6px;border-radius:4px}
+pre{background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.7rem .9rem;border:1px solid var(--border-primary);text-align:left;font-size:.88rem}
+th{background:var(--bg-secondary);color:var(--text-primary);font-weight:600;white-space:nowrap}
+tr:nth-child(even){background:var(--bg-secondary)}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-orange),var(--accent-purple),var(--accent-blue));z-index:10001;transition:width .1s linear;width:0}
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:500px;height:500px;background:radial-gradient(circle,var(--accent-orange),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-purple),transparent 70%);bottom:-150px;left:-80px}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-orange),var(--accent-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{color:var(--text-secondary);font-size:1.05rem;max-width:680px;margin:0 auto .8rem}
+.hero .author{color:var(--text-muted);font-size:.85rem}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;max-width:960px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);position:relative;z-index:10}
+.stat{text-align:center}.stat .num{font-size:1.6rem;font-weight:700;display:block}.stat .lbl{color:var(--text-secondary);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.nav-wrap{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);backdrop-filter:blur(12px)}
+.nav-inner{display:flex;align-items:center;gap:.5rem;max-width:1200px;margin:0 auto;padding:.6rem 1rem;overflow-x:auto;scrollbar-width:thin}
+.nav-pill{padding:.35rem .75rem;border-radius:20px;font-size:.78rem;font-weight:500;color:var(--text-secondary);white-space:nowrap;transition:all var(--transition-fast);border:1px solid transparent;cursor:pointer;text-decoration:none}
+.nav-pill:hover{color:var(--text-primary);background:var(--bg-hover);text-decoration:none}
+.nav-pill.active{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:20px;padding:.35rem .75rem;font-size:.78rem;cursor:pointer;color:var(--text-secondary);transition:all var(--transition-fast);white-space:nowrap}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--text-primary)}
+.content{max-width:var(--max-width);margin:0 auto;padding:2rem 1.5rem 4rem}
+.section{margin-bottom:3.5rem;scroll-margin-top:80px}
+.section h2{font-size:1.5rem;font-weight:700;margin-bottom:.3rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent-orange);display:inline-block}
+.section h3{font-size:1.15rem;font-weight:600;margin:1.8rem 0 .8rem;color:var(--accent-blue)}
+.section p,.section li{color:var(--text-secondary);font-size:.92rem}
+.section ul,.section ol{padding-left:1.4rem;margin:.6rem 0}.section li{margin-bottom:.3rem}
+.safety-banner{background:linear-gradient(135deg,rgba(210,153,34,.08),rgba(163,113,247,.08));border:1px solid var(--border-accent);border-radius:var(--radius-lg);padding:1.5rem;margin:2rem 0}
+.safety-banner h3{color:var(--accent-orange);margin-bottom:.8rem}
+.accent-blue .num{color:var(--accent-blue)}.accent-purple .num{color:var(--accent-purple)}.accent-green .num{color:var(--accent-green)}.accent-orange .num{color:var(--accent-orange)}.accent-cyan .num{color:var(--accent-cyan)}.accent-red .num{color:var(--accent-red)}
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.8rem;border-top:1px solid var(--border-primary)}
+.back-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;border-radius:50%;background:var(--accent-orange);color:#fff;border:none;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all var(--transition-med);box-shadow:var(--shadow-md);z-index:999}
+.back-top.show{opacity:1;pointer-events:auto}.back-top:hover{transform:scale(1.1)}
+@media print{.nav-wrap,.theme-toggle,.back-top,.progress-bar{display:none!important}.hero{padding:2rem 1rem}.content{max-width:100%}}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+
+<header class="hero">
+  <h1>RBAC Assignments</h1>
+  <p class="subtitle">Role-based access control assignments for the ESIQNew managed identity — 5 roles following least-privilege principles.</p>
+  <p class="author">Author: Murali Chillakuru — April 12, 2026</p>
+</header>
+
+<div class="stats-bar">
+  <div class="stat accent-orange"><span class="num" data-target="5">0</span><span class="lbl">Roles</span></div>
+  <div class="stat accent-purple"><span class="num" data-target="3">0</span><span class="lbl">Scopes</span></div>
+  <div class="stat accent-green"><span class="num" data-target="1">0</span><span class="lbl">Identity</span></div>
+</div>
+
+<nav class="nav-wrap">
+  <div class="nav-inner">
+    <a class="nav-pill" href="#assignments">Assignments</a>
+    <a class="nav-pill" href="#identity">Identity</a>
+    <a class="nav-pill" href="#roleids">Role IDs</a>
+    <a class="nav-pill" href="#notes">Least Privilege</a>
+    <button class="theme-toggle" id="themeToggle">☀️ Light</button>
+  </div>
+</nav>
+
+<main class="content">
+
+<section class="section" id="assignments">
+  <h2>Role Assignments</h2>
+  <p>All roles assigned to <strong>ESIQNew-identity</strong> (principal ID: <code>d742617c-6f14-4215-be65-e1f7b68866de</code>).</p>
+  <table style="margin-top:1.2rem">
+    <tr><th>#</th><th>Role</th><th>Scope</th><th>Purpose</th></tr>
+    <tr><td>1</td><td><strong>AcrPull</strong></td><td><code>esiqnewacr</code> (Container Registry)</td><td>Pull container images during deployment</td></tr>
+    <tr><td>2</td><td><strong>Reader</strong></td><td>Subscription</td><td>Read Azure resource metadata for security assessments</td></tr>
+    <tr><td>3</td><td><strong>Security Reader</strong></td><td>Subscription</td><td>Read Microsoft Defender for Cloud findings</td></tr>
+    <tr><td>4</td><td><strong>Cognitive Services OpenAI User</strong></td><td><code>ESIQNew-AI</code></td><td>Call gpt-4.1 and gpt-5.1 models</td></tr>
+    <tr><td>5</td><td><strong>Azure AI Developer</strong></td><td><code>ESIQNew-AI</code></td><td>Access Foundry Resource and child Projects</td></tr>
+  </table>
+</section>
+
+<section class="section" id="identity">
+  <h2>Identity Details</h2>
+  <table>
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Name</td><td><code>ESIQNew-identity</code></td></tr>
+    <tr><td>Type</td><td>User-assigned managed identity</td></tr>
+    <tr><td>Principal ID</td><td><code>d742617c-6f14-4215-be65-e1f7b68866de</code></td></tr>
+    <tr><td>Client ID</td><td><code>d5d10273-4a8b-4251-9b9d-00fe035df97a</code></td></tr>
+    <tr><td>Resource ID</td><td style="font-family:var(--font-mono);font-size:.78rem;word-break:break-all"><code>/subscriptions/d33fc1a7-56aa-4c30-a4a0-98b1e04fafd0/resourceGroups/ESIQNew-RG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ESIQNew-identity</code></td></tr>
+  </table>
+</section>
+
+<section class="section" id="roleids">
+  <h2>Built-in Role IDs</h2>
+  <table>
+    <tr><th>Role</th><th>Role Definition ID</th></tr>
+    <tr><td>AcrPull</td><td><code>7f951dda-4ed3-4680-a7ca-43fe172d538d</code></td></tr>
+    <tr><td>Reader</td><td><code>acdd72a7-3385-48ef-bd42-f606fba81ae7</code></td></tr>
+    <tr><td>Security Reader</td><td><code>39bc4728-0917-49c7-9d2c-d95423bc2eb4</code></td></tr>
+    <tr><td>Cognitive Services OpenAI User</td><td><code>5e0bd9bd-7b93-4f28-af87-19fc36ad61bd</code></td></tr>
+    <tr><td>Azure AI Developer</td><td><code>64702f94-c441-49e6-a78b-ef80e0188fee</code></td></tr>
+  </table>
+</section>
+
+<section class="section" id="notes">
+  <h2>Least-Privilege Notes</h2>
+  <div class="safety-banner">
+    <h3>Security Design</h3>
+    <ul>
+      <li><strong>Reader</strong> + <strong>Security Reader</strong> at subscription scope — required for the agent to enumerate resources and Defender findings across the tenant.</li>
+      <li><strong>Cognitive Services OpenAI User</strong> (not Contributor) — the identity can only invoke models, not manage deployments.</li>
+      <li><strong>AcrPull</strong> is scoped to the specific registry, not the resource group.</li>
+      <li><strong>Azure AI Developer</strong> grants access to the Foundry Resource and all child Projects (including ESIQNew-project).</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>EnterpriseSecurityIQ — RBAC Assignments · 5 Roles · Least Privilege · Author: Murali Chillakuru · April 12, 2026</p>
+</footer>
+
+<button class="back-top" id="backTop">↑</button>
+
+<script>
+const toggle=document.getElementById('themeToggle'),root=document.documentElement;
+function setTheme(t){root.dataset.theme=t;toggle.textContent=t==='dark'?'☀️ Light':'🌙 Dark';localStorage.setItem('esiq-theme',t)}
+toggle.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark'));
+setTheme(localStorage.getItem('esiq-theme')||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const el=e.target,t=+el.dataset.target;let c=0;const d=Math.max(1,Math.floor(30/(t||1)));const iv=setInterval(()=>{c+=d;if(c>=t){el.textContent=t;clearInterval(iv)}else{el.textContent=c}},16);io.unobserve(el)}})},{threshold:.5});
+document.querySelectorAll('.num[data-target]').forEach(el=>io.observe(el));
+const pills=document.querySelectorAll('.nav-pill[href]'),sections=[];
+pills.forEach(p=>{const id=p.getAttribute('href')?.slice(1);if(id){const s=document.getElementById(id);if(s)sections.push({el:s,pill:p})}});
+const spy=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const m=sections.find(s=>s.el===e.target);if(m)m.pill.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px',threshold:0});
+sections.forEach(s=>spy.observe(s.el));
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('progressBar').style.width=(window.scrollY/h*100)+'%'});
+const btn=document.getElementById('backTop');
+window.addEventListener('scroll',()=>{btn.classList.toggle('show',window.scrollY>400)});
+btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>

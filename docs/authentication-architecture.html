@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Authentication Architecture — PostureIQ</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-hover:#252D38;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --border-primary:#30363D;--border-accent:#1F6FEB33;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --accent-pink:#DB61A2;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.5);
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',Consolas,monospace;
+  --transition-fast:.18s ease;--transition-med:.3s ease;
+  color-scheme:dark;
+  --max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-hover:#F0F3F6;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;
+  --border-primary:#D0D7DE;--border-accent:#0969DA22;
+  --accent-blue:#0969DA;--accent-purple:#8250DF;--accent-green:#1A7F37;
+  --accent-orange:#BF8700;--accent-cyan:#1B7C83;--accent-red:#CF222E;
+  --accent-pink:#BF3989;
+  --shadow-sm:0 1px 3px rgba(31,35,40,.08);--shadow-md:0 4px 12px rgba(31,35,40,.1);
+  --shadow-lg:0 8px 24px rgba(31,35,40,.12);
+  color-scheme:light
+}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none;transition:color var(--transition-fast)}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--bg-secondary);padding:2px 6px;border-radius:4px}
+pre{background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.5}
+pre code{background:none;padding:0}
+table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.7rem .9rem;border:1px solid var(--border-primary);text-align:left;font-size:.88rem}
+th{background:var(--bg-secondary);color:var(--text-primary);font-weight:600;white-space:nowrap}
+tr:nth-child(even){background:var(--bg-secondary)}
+.skip-nav{position:absolute;top:-100%;left:1rem;background:var(--accent-blue);color:#fff;padding:.5rem 1rem;border-radius:var(--radius-sm);z-index:9999;font-weight:600}.skip-nav:focus{top:1rem}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple),var(--accent-cyan));z-index:10001;transition:width .1s linear;width:0}
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:500px;height:500px;background:radial-gradient(circle,var(--accent-blue),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-purple),transparent 70%);bottom:-150px;left:-80px}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{color:var(--text-secondary);font-size:1.05rem;max-width:680px;margin:0 auto .8rem}
+.hero .author{color:var(--text-muted);font-size:.85rem}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;max-width:960px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);position:relative;z-index:10}
+.stat{text-align:center}.stat .num{font-size:1.6rem;font-weight:700;display:block}.stat .lbl{color:var(--text-secondary);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.nav-wrap{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);backdrop-filter:blur(12px)}
+.nav-inner{display:flex;align-items:center;gap:.5rem;max-width:1200px;margin:0 auto;padding:.6rem 1rem;overflow-x:auto;scrollbar-width:thin}
+.nav-pill{padding:.35rem .75rem;border-radius:20px;font-size:.78rem;font-weight:500;color:var(--text-secondary);white-space:nowrap;transition:all var(--transition-fast);border:1px solid transparent;cursor:pointer;text-decoration:none}
+.nav-pill:hover{color:var(--text-primary);background:var(--bg-hover);text-decoration:none}
+.nav-pill.active{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:20px;padding:.35rem .75rem;font-size:.78rem;cursor:pointer;color:var(--text-secondary);transition:all var(--transition-fast);white-space:nowrap}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--text-primary)}
+.content{max-width:var(--max-width);margin:0 auto;padding:2rem 1.5rem 4rem}
+.section{margin-bottom:3.5rem;scroll-margin-top:80px}
+.section h2{font-size:1.5rem;font-weight:700;margin-bottom:.3rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent-blue);display:inline-block}
+.section h3{font-size:1.15rem;font-weight:600;margin:1.8rem 0 .8rem;color:var(--accent-purple)}
+.section h4{font-size:1rem;font-weight:600;margin:1.2rem 0 .6rem;color:var(--accent-cyan)}
+.section p,.section li{color:var(--text-secondary);font-size:.92rem}
+.section ul,.section ol{padding-left:1.4rem;margin:.6rem 0}.section li{margin-bottom:.3rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin:1rem 0}
+.card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;transition:all var(--transition-fast)}
+.card:hover{border-color:var(--accent-blue);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.card .card-title{font-weight:600;font-size:.95rem;margin-bottom:.3rem}
+.card .card-count{font-size:1.3rem;font-weight:700;color:var(--accent-blue)}
+.card .card-desc{color:var(--text-secondary);font-size:.82rem;margin-top:.3rem}
+.accent-blue .card-count,.accent-blue .num{color:var(--accent-blue)}
+.accent-purple .card-count,.accent-purple .num{color:var(--accent-purple)}
+.accent-green .card-count,.accent-green .num{color:var(--accent-green)}
+.accent-orange .card-count,.accent-orange .num{color:var(--accent-orange)}
+.accent-cyan .card-count,.accent-cyan .num{color:var(--accent-cyan)}
+.accent-red .card-count,.accent-red .num{color:var(--accent-red)}
+.accent-pink .card-count,.accent-pink .num{color:var(--accent-pink)}
+details{margin:1rem 0;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);overflow:hidden}
+details>summary{padding:.8rem 1rem;font-weight:600;cursor:pointer;color:var(--text-primary);transition:background var(--transition-fast);font-size:.92rem}
+details>summary:hover{background:var(--bg-hover)}
+details[open]>summary{border-bottom:1px solid var(--border-primary)}
+details .detail-body{padding:1rem}
+.config-block{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;margin:1rem 0}
+.config-block h4{font-size:.95rem;margin-bottom:.8rem;color:var(--accent-cyan)}
+.config-block pre{background:var(--bg-secondary);margin-bottom:.8rem}
+.safety-banner{background:linear-gradient(135deg,rgba(31,111,235,.08),rgba(163,113,247,.08));border:1px solid var(--border-accent);border-radius:var(--radius-lg);padding:1.5rem;margin:2rem 0}
+.safety-banner h3{color:var(--accent-blue);margin-bottom:.8rem}
+.data-table{width:100%;border-collapse:collapse;margin:1rem 0}
+.data-table th,.data-table td{padding:.7rem .9rem;border:1px solid var(--border-primary);text-align:left;font-size:.88rem}
+.data-table th{background:var(--bg-secondary);color:var(--text-primary);font-weight:600;white-space:nowrap}
+.data-table tr:nth-child(even){background:var(--bg-secondary)}
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.8rem;border-top:1px solid var(--border-primary)}
+.back-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;border-radius:50%;background:var(--accent-blue);color:#fff;border:none;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all var(--transition-med);box-shadow:var(--shadow-md);z-index:999}
+.back-top.show{opacity:1;pointer-events:auto}.back-top:hover{transform:scale(1.1)}
+@media print{.nav-wrap,.theme-toggle,.back-top,.progress-bar{display:none!important}.hero{padding:2rem 1rem}.content{max-width:100%}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:0s!important;animation-duration:0s!important}}
+@media(forced-colors:active){.nav-pill.active{border:2px solid ButtonText}.card{border:1px solid ButtonText}}
+</style>
+</head>
+<body>
+<a class="skip-nav" href="#main">Skip to content</a>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ════════ HERO ════════ -->
+<header class="hero">
+  <h1>Authentication Architecture</h1>
+  <p class="subtitle">Comprehensive reference for all identity objects, permissions, and auth flows used by PostureIQ</p>
+  <p class="author">Author: Murali Chillakuru — PostureIQ</p>
+</header>
+
+<!-- ════════ STATS BAR ════════ -->
+<div class="stats-bar">
+  <div class="stat accent-blue"><span class="num" data-target="2">0</span><span class="lbl">Identities</span></div>
+  <div class="stat accent-purple"><span class="num" data-target="11">0</span><span class="lbl">Graph Perms</span></div>
+  <div class="stat accent-green"><span class="num" data-target="6">0</span><span class="lbl">App Perms</span></div>
+  <div class="stat accent-orange"><span class="num" data-target="2">0</span><span class="lbl">Auth Modes</span></div>
+  <div class="stat accent-cyan"><span class="num" data-target="12">0</span><span class="lbl">Reference IDs</span></div>
+  <div class="stat accent-red"><span class="num" data-target="13">0</span><span class="lbl">Sections</span></div>
+</div>
+
+<!-- ════════ NAV ════════ -->
+<nav class="nav-wrap" aria-label="Section navigation">
+  <div class="nav-inner">
+    <a class="nav-pill" href="#security-model">Security Model</a>
+    <a class="nav-pill" href="#key-concepts">Key Concepts</a>
+    <a class="nav-pill" href="#identity-objects">Identity Objects</a>
+    <a class="nav-pill" href="#app-registration">App Registration</a>
+    <a class="nav-pill" href="#service-principal">Service Principal</a>
+    <a class="nav-pill" href="#managed-identity">Managed Identity</a>
+    <a class="nav-pill" href="#permissions-summary">Permissions</a>
+    <a class="nav-pill" href="#auth-flow">Auth Flow</a>
+    <a class="nav-pill" href="#credential-resolution">Credentials</a>
+    <a class="nav-pill" href="#dual-auth">Dual-Auth</a>
+    <a class="nav-pill" href="#msal-config">MSAL.js</a>
+    <a class="nav-pill" href="#troubleshooting">Troubleshoot</a>
+    <a class="nav-pill" href="#reference-ids">Reference IDs</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀️ Light</button>
+  </div>
+</nav>
+
+<!-- ════════ CONTENT ════════ -->
+<main class="content" id="main">
+
+<!-- ──── 0. Security Model ──── -->
+<section class="section" id="security-model">
+  <h2>🛡️ 0. Security Model (v33+)</h2>
+
+  <div class="safety-banner">
+    <h3>Critical Design Principle</h3>
+    <p style="color:var(--text-secondary);font-size:.9rem">The <code>/chat</code> API endpoint <strong>requires</strong> user-delegated tokens. Requests without valid <code>graph_token</code> and <code>arm_token</code> are rejected with HTTP 401.</p>
+  </div>
+
+  <p>The managed identity (<code>ESIQNew-identity</code>) is used <strong>only</strong> for:</p>
+  <ul>
+    <li>CLI scripts (<code>run_risk_analysis.py</code>, <code>run_copilot_readiness.py</code>, etc.) run from a terminal</li>
+    <li>Infrastructure tasks (ACR pull, blob storage, Azure AI Foundry access)</li>
+  </ul>
+  <p>This ensures that web app users always operate under their own Entra ID permissions — no privilege escalation through a managed identity fallback.</p>
+</section>
+
+<!-- ──── 1. Key Concepts ──── -->
+<section class="section" id="key-concepts">
+  <h2>📖 1. Key Concepts</h2>
+
+  <h3>Application (App Registration) vs Service Principal (SPN)</h3>
+  <table class="data-table">
+    <tr><th>Concept</th><th>What it is</th><th>Azure Portal location</th></tr>
+    <tr><td><strong>App Registration</strong></td><td>A <em>template/definition</em> of your application in Entra ID. Defines the client ID, redirect URIs, and what API permissions the app <em>declares</em> it needs. Think of it as the "blueprint."</td><td>Entra ID &gt; App registrations</td></tr>
+    <tr><td><strong>Service Principal (SPN)</strong></td><td>An <em>instance</em> of the app registration in a specific tenant. When an app registration is created, a corresponding SPN (Enterprise Application) is automatically created in the same tenant. The SPN is what actually gets permissions <em>granted/consented</em> and is what users interact with. Think of it as the "running instance."</td><td>Entra ID &gt; Enterprise applications</td></tr>
+    <tr><td><strong>Managed Identity</strong></td><td>A special type of Service Principal managed by Azure itself (no secrets to rotate). Assigned to Azure resources (VMs, Container Apps, Functions) so they can authenticate to other Azure services.</td><td>Entra ID &gt; Enterprise applications (type = Managed Identity)</td></tr>
+  </table>
+
+  <p><strong>Analogy:</strong> An App Registration is like a class definition. A Service Principal is like an object instance of that class. A Managed Identity is like an auto-managed object that Azure creates and handles the credentials for.</p>
+
+  <h3>Delegated vs Application Permissions</h3>
+  <table class="data-table">
+    <tr><th>Permission type</th><th>Who is acting</th><th>When to use</th></tr>
+    <tr><td><strong>Delegated</strong></td><td>A <em>signed-in user</em> — the app acts on behalf of the user. Access is limited by both the app's permissions AND the user's own permissions.</td><td>SPA/web apps where a human logs in</td></tr>
+    <tr><td><strong>Application</strong></td><td>The <em>application itself</em> — no user context. The app has the full permission regardless of any user.</td><td>Background services, daemons, managed identities</td></tr>
+  </table>
+</section>
+
+<!-- ──── 2. Identity Objects ──── -->
+<section class="section" id="identity-objects">
+  <h2>🆔 2. Identity Objects</h2>
+  <p>PostureIQ uses <strong>two distinct identity objects</strong> with different roles:</p>
+
+  <div class="config-block">
+    <pre><code>┌──────────────────────────────────────────────────────────┐
+│                      Entra ID Tenant                     │
+│              4a3eb5f4-1ec6-4a73-bb03-1ca63cb52d67        │
+│                                                          │
+│  ┌─────────────────────────────┐                         │
+│  │  App Registration           │                         │
+│  │  "EnterpriseSecurityIQ-SPA" │                         │
+│  │  appId: ffb6f10d-...        │                         │
+│  │  (defines the SPA client)   │                         │
+│  └──────────┬──────────────────┘                         │
+│             │ creates                                    │
+│  ┌──────────▼──────────────────┐                         │
+│  │  Service Principal (SPN)    │                         │
+│  │  objectId: 1b42cfa1-...     │                         │
+│  │  (runtime identity for SPA) │                         │
+│  │  Has: delegated permissions │                         │
+│  └─────────────────────────────┘                         │
+│                                                          │
+│  ┌─────────────────────────────┐                         │
+│  │  Managed Identity           │                         │
+│  │  "ESIQNew-identity"         │                         │
+│  │  clientId: d5d10273-...     │                         │
+│  │  (backend server identity)  │                         │
+│  │  Has: application perms     │                         │
+│  └─────────────────────────────┘                         │
+└──────────────────────────────────────────────────────────┘</code></pre>
+  </div>
+</section>
+
+<!-- ──── 3. App Registration ──── -->
+<section class="section" id="app-registration">
+  <h2>📋 3. App Registration (EnterpriseSecurityIQ-SPA)</h2>
+
+  <h3>Purpose</h3>
+  <p>The App Registration defines the <strong>SPA (Single Page Application)</strong> that end users interact with in the browser. It tells Entra ID:</p>
+  <ul>
+    <li>"This application exists and has client ID <code>ffb6f10d-...</code>"</li>
+    <li>"Users should be redirected back to these URLs after login"</li>
+    <li>"This app needs these API permissions on behalf of signed-in users"</li>
+  </ul>
+
+  <h3>Configuration</h3>
+  <table class="data-table">
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Display name</td><td><code>EnterpriseSecurityIQ-SPA</code></td></tr>
+    <tr><td>Application (client) ID</td><td><code>ffb6f10d-6991-430e-b3d6-23a0101a92b1</code></td></tr>
+    <tr><td>Object ID</td><td><code>fe171c21-b3a1-480d-a5f5-41e7c515d843</code></td></tr>
+    <tr><td>Sign-in audience</td><td><code>AzureADMyOrg</code> (single tenant)</td></tr>
+    <tr><td>Platform</td><td><strong>SPA</strong> (important: NOT "Web")</td></tr>
+    <tr><td>Supported account types</td><td>Accounts in this organizational directory only</td></tr>
+  </table>
+
+  <h3>Redirect URIs (SPA Platform)</h3>
+  <p>These are registered under the <strong>SPA</strong> platform (not "Web"). This is critical because:</p>
+  <ul>
+    <li><strong>SPA platform</strong> → Entra ID uses Authorization Code Flow with PKCE (no client secret needed, suitable for browser apps)</li>
+    <li><strong>Web platform</strong> → Entra ID expects a confidential client with a client secret (would fail for a browser SPA)</li>
+  </ul>
+
+  <table class="data-table">
+    <tr><th>Redirect URI</th><th>Purpose</th></tr>
+    <tr><td><code>http://localhost:8088</code></td><td>Local development</td></tr>
+    <tr><td><code>https://esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io</code></td><td>Production (Container App)</td></tr>
+  </table>
+
+  <h3>Declared Delegated Permissions</h3>
+  <p>These permissions are declared in the App Registration and define what the SPA <em>can request</em> on behalf of a signed-in user:</p>
+
+  <h4>Microsoft Graph (8 declared)</h4>
+  <table class="data-table">
+    <tr><th>Permission</th><th>Type</th><th>Description</th><th>Admin Consent</th><th>Status</th></tr>
+    <tr><td><code>User.Read</code></td><td>Delegated</td><td>Sign in and read user profile</td><td>No</td><td>Granted</td></tr>
+    <tr><td><code>Directory.Read.All</code></td><td>Delegated</td><td>Read directory data (users, groups, roles)</td><td>Yes</td><td>Granted</td></tr>
+    <tr><td><code>Policy.Read.All</code></td><td>Delegated</td><td>Read all organization policies (Conditional Access, auth methods)</td><td>Yes</td><td>Granted</td></tr>
+    <tr><td><code>RoleManagement.Read.All</code></td><td>Delegated</td><td>Read role management data (PIM, role assignments)</td><td>Yes</td><td>Granted</td></tr>
+    <tr><td><code>AuditLog.Read.All</code></td><td>Delegated</td><td>Read sign-in activity logs (stale account detection)</td><td>Yes</td><td>Granted (v33)</td></tr>
+    <tr><td><code>UserAuthenticationMethod.Read.All</code></td><td>Delegated</td><td>Read MFA registration details</td><td>Yes</td><td>Granted (v33)</td></tr>
+    <tr><td><code>IdentityRiskyUser.Read.All</code></td><td>Delegated</td><td>Read risky user detections</td><td>Yes</td><td>Granted (v33)</td></tr>
+    <tr><td><code>openid</code></td><td>Delegated</td><td>Sign users in (OpenID Connect)</td><td>No</td><td>Granted</td></tr>
+    <tr><td><code>profile</code></td><td>Delegated</td><td>View users' basic profile</td><td>No</td><td>Granted</td></tr>
+    <tr><td><code>offline_access</code></td><td>Delegated</td><td>Maintain access to data (refresh tokens)</td><td>No</td><td>Granted</td></tr>
+  </table>
+
+  <h4>Azure Service Management (2 declared)</h4>
+  <table class="data-table">
+    <tr><th>Permission</th><th>Type</th><th>Description</th><th>Admin Consent</th><th>Status</th></tr>
+    <tr><td><code>user_impersonation</code></td><td>Delegated</td><td>Access Azure Resource Manager as the user</td><td>No</td><td>Granted</td></tr>
+  </table>
+
+  <h3>How the App Registration is Used</h3>
+  <ol>
+    <li>The browser SPA loads MSAL.js configured with <code>clientId: "ffb6f10d-..."</code></li>
+    <li>User clicks "Sign in with Microsoft" → MSAL.js redirects to <code>login.microsoftonline.com</code></li>
+    <li>Entra ID looks up the App Registration by client ID to validate the redirect URI</li>
+    <li>After authentication, Entra ID issues tokens scoped to the declared permissions</li>
+    <li>The SPA receives a Graph API token and an ARM token</li>
+  </ol>
+</section>
+
+<!-- ──── 4. Service Principal ──── -->
+<section class="section" id="service-principal">
+  <h2>🏢 4. Service Principal (Enterprise Application)</h2>
+
+  <h3>Purpose</h3>
+  <p>The Service Principal is the <strong>runtime representation</strong> of the App Registration in the tenant. It is what:</p>
+  <ul>
+    <li>Actually holds the <strong>consent grants</strong> (admin consent)</li>
+    <li>Appears in "Enterprise applications" in the portal</li>
+    <li>Users see when they are asked to consent to permissions</li>
+    <li>Can be disabled to block all sign-ins</li>
+  </ul>
+
+  <h3>Configuration</h3>
+  <table class="data-table">
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Display name</td><td><code>EnterpriseSecurityIQ-SPA</code></td></tr>
+    <tr><td>Object ID (SPN)</td><td><code>1b42cfa1-b40a-4488-8f75-3ce3de2a11e6</code></td></tr>
+    <tr><td>Application ID</td><td><code>ffb6f10d-6991-430e-b3d6-23a0101a92b1</code> (same as App Registration)</td></tr>
+    <tr><td>Service principal type</td><td><code>Application</code></td></tr>
+    <tr><td>Account enabled</td><td><code>true</code></td></tr>
+    <tr><td>Owner tenant</td><td><code>4a3eb5f4-1ec6-4a73-bb03-1ca63cb52d67</code></td></tr>
+  </table>
+
+  <h3>Admin Consent Grants (oauth2PermissionGrants)</h3>
+  <p>Admin consent was granted for all principals (tenant-wide), meaning any user in the tenant can sign in without individual consent prompts:</p>
+
+  <table class="data-table">
+    <tr><th>Resource</th><th>Consent type</th><th>Scopes granted</th></tr>
+    <tr><td>Microsoft Graph (<code>8bd0732c-...</code>)</td><td>AllPrincipals (tenant-wide)</td><td><code>User.Read Directory.Read.All Policy.Read.All RoleManagement.Read.All AuditLog.Read.All UserAuthenticationMethod.Read.All IdentityRiskyUser.Read.All openid profile offline_access</code></td></tr>
+    <tr><td>Azure Service Management (<code>2b6caaea-...</code>)</td><td>AllPrincipals (tenant-wide)</td><td><code>user_impersonation</code></td></tr>
+  </table>
+
+  <h3>How the SPN is Used</h3>
+  <p>The SPN is never directly referenced in code. Entra ID automatically uses it behind the scenes:</p>
+  <ol>
+    <li>When a user signs in via the SPA, Entra ID checks the SPN to verify consent exists</li>
+    <li>Token claims include the SPN's <code>appId</code> as the <code>aud</code> (audience)</li>
+    <li>Admins can revoke access by disabling the SPN in Enterprise Applications</li>
+  </ol>
+</section>
+
+<!-- ──── 5. Managed Identity ──── -->
+<section class="section" id="managed-identity">
+  <h2>🤖 5. User-Assigned Managed Identity (ESIQNew-identity)</h2>
+
+  <h3>Purpose</h3>
+  <p>The Managed Identity is the <strong>server-side identity</strong> for the Container App backend. It is used when:</p>
+  <ul>
+    <li>No user is signed in (fallback mode)</li>
+    <li>Backend needs to authenticate to Azure AI Foundry, Key Vault, ACR, etc.</li>
+    <li>Application-level Graph API access (reads directory data without a user context)</li>
+  </ul>
+
+  <h3>Configuration</h3>
+  <table class="data-table">
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Name</td><td><code>ESIQNew-identity</code></td></tr>
+    <tr><td>Client ID</td><td><code>d5d10273-4a8b-4251-9b9d-00fe035df97a</code></td></tr>
+    <tr><td>Principal ID (Object ID)</td><td><code>d742617c-6f14-4215-be65-e1f7b68866de</code></td></tr>
+    <tr><td>Tenant ID</td><td><code>4a3eb5f4-1ec6-4a73-bb03-1ca63cb52d67</code></td></tr>
+    <tr><td>Type</td><td>User-assigned managed identity</td></tr>
+    <tr><td>Assigned to</td><td>Container App <code>esiqnew-agent</code></td></tr>
+  </table>
+
+  <h3>Application Permissions (App Role Assignments)</h3>
+  <p>Unlike the App Registration which has <em>delegated</em> permissions (on behalf of a user), the Managed Identity has <em>application</em> permissions (acts as itself):</p>
+
+  <table class="data-table">
+    <tr><th>Permission</th><th>App Role ID</th><th>Resource</th><th>Description</th></tr>
+    <tr><td><code>Directory.Read.All</code></td><td><code>7ab1d382-f21e-4acd-a863-ba3e13f7da61</code></td><td>Microsoft Graph</td><td>Read all directory data</td></tr>
+    <tr><td><code>Policy.Read.All</code></td><td><code>246dd0d5-5bd0-4def-940b-0421030a5b68</code></td><td>Microsoft Graph</td><td>Read all organization policies</td></tr>
+    <tr><td><code>RoleManagement.Read.All</code></td><td><code>c7fbd983-d9aa-4fa7-84b8-17382c103bc4</code></td><td>Microsoft Graph</td><td>Read all role management data</td></tr>
+    <tr><td><code>AuditLog.Read.All</code></td><td><code>b0afded3-3588-46d8-8b3d-9842eff778da</code></td><td>Microsoft Graph</td><td>Read sign-in activity logs (v33)</td></tr>
+    <tr><td><code>UserAuthenticationMethod.Read.All</code></td><td><code>38d9df27-64da-44fd-b7c5-a6fbac20248f</code></td><td>Microsoft Graph</td><td>Read MFA registration details (v33)</td></tr>
+    <tr><td><code>IdentityRiskyUser.Read.All</code></td><td><code>dc5007c0-2d7d-4c42-879c-2dab87571379</code></td><td>Microsoft Graph</td><td>Read risky user detections (v33)</td></tr>
+  </table>
+
+  <h3>How the Managed Identity is Used</h3>
+  <ol>
+    <li><strong>CLI scripts</strong> (e.g. <code>run_risk_analysis.py</code>, <code>run_copilot_readiness.py</code>): <code>DefaultAzureCredential</code> picks up the managed identity when run inside the container, or <code>az login</code> session when run locally</li>
+    <li>When requesting a Graph API token with scope <code>https://graph.microsoft.com/.default</code>, the token includes the application permissions above</li>
+    <li>No secrets to manage — Azure handles credential rotation</li>
+    <li><strong>NOT used by the web API</strong>: The <code>/chat</code> endpoint requires user-delegated tokens (v33+). The managed identity is no longer a fallback for unauthenticated web requests</li>
+  </ol>
+</section>
+
+<!-- ──── 6. Permissions Summary ──── -->
+<section class="section" id="permissions-summary">
+  <h2>📊 6. Permissions Summary</h2>
+
+  <div class="config-block">
+    <pre><code>┌───────────────────────────────────────────────────────────────┐
+│                     Permission Model                          │
+├───────────────────────┬───────────────────────────────────────┤
+│  USER-DELEGATED       │  APPLICATION (Managed Identity)       │
+│  (SPA → user login)   │  (CLI scripts only — no web fallback) │
+├───────────────────────┼───────────────────────────────────────┤
+│  User.Read            │  Directory.Read.All                   │
+│  Directory.Read.All   │  Policy.Read.All                      │
+│  Policy.Read.All      │  RoleManagement.Read.All              │
+│  RoleManagement.Read  │  AuditLog.Read.All                    │
+│  .All                 │  UserAuthenticationMethod.Read.All    │
+│  AuditLog.Read.All    │  IdentityRiskyUser.Read.All           │
+│  UserAuthentication   │                                       │
+│  Method.Read.All      │  (no ARM — MI uses Azure RBAC         │
+│  IdentityRiskyUser   │   role assignments instead)            │
+│  .Read.All            │                                       │
+│  user_impersonation   │                                       │
+│  (ARM access)         │                                       │
+│  openid, profile,     │                                       │
+│  offline_access       │                                       │
+├───────────────────────┼───────────────────────────────────────┤
+│  Scoped to user's own │  Full tenant-wide read access         │
+│  Entra role + consent │  (application-level, CLI only)        │
+└───────────────────────┴───────────────────────────────────────┘</code></pre>
+  </div>
+</section>
+
+<!-- ──── 7. Auth Flow ──── -->
+<section class="section" id="auth-flow">
+  <h2>🔄 7. Authentication Flow — End to End</h2>
+
+  <h3>Sequence Diagram</h3>
+  <div class="config-block">
+    <pre><code>User Browser (SPA)          Entra ID               Container App (API)      Azure/Graph APIs
+       │                        │                         │                       │
+       │  1. Click "Sign In"    │                         │                       │
+       │───────────────────────>│                         │                       │
+       │  loginRedirect()       │                         │                       │
+       │  (PKCE code challenge) │                         │                       │
+       │                        │                         │                       │
+       │  2. User enters creds  │                         │                       │
+       │<───────────────────────│                         │                       │
+       │  302 redirect + code   │                         │                       │
+       │                        │                         │                       │
+       │  3. handleRedirect()   │                         │                       │
+       │───────────────────────>│                         │                       │
+       │  Exchange code for     │                         │                       │
+       │  tokens (PKCE verifier)│                         │                       │
+       │<───────────────────────│                         │                       │
+       │  id_token + access     │                         │                       │
+       │  tokens (cached)       │                         │                       │
+       │                        │                         │                       │
+       │  4. acquireTokenSilent │                         │                       │
+       │  (Graph scopes)        │                         │                       │
+       │───────────────────────>│                         │                       │
+       │<───────────────────────│                         │                       │
+       │  graph_token           │                         │                       │
+       │                        │                         │                       │
+       │  5. acquireTokenSilent │                         │                       │
+       │  (ARM scopes)          │                         │                       │
+       │───────────────────────>│                         │                       │
+       │<───────────────────────│                         │                       │
+       │  arm_token             │                         │                       │
+       │                        │                         │                       │
+       │  6. POST /chat         │                         │                       │
+       │  { message, graph_token, arm_token }             │                       │
+       │────────────────────────────────────────────────>│                       │
+       │                        │                         │                       │
+       │                        │  7. UserTokenCredential │                       │
+       │                        │  wraps both tokens      │                       │
+       │                        │                         │                       │
+       │                        │  8. Tool calls Graph API│                       │
+       │                        │  (user's graph_token)   │                       │
+       │                        │─────────────────────────────────────────────────>│
+       │                        │                         │<──────────────────────│
+       │                        │                         │                       │
+       │                        │  9. Tool calls ARM API  │                       │
+       │                        │  (user's arm_token)     │                       │
+       │                        │─────────────────────────────────────────────────>│
+       │                        │                         │<──────────────────────│
+       │                        │                         │                       │
+       │  10. Response           │                         │                       │
+       │<────────────────────────────────────────────────│                       │</code></pre>
+  </div>
+
+  <h3>Step-by-Step</h3>
+  <table class="data-table">
+    <tr><th>Step</th><th>Component</th><th>Action</th></tr>
+    <tr><td>1</td><td>SPA (MSAL.js)</td><td>User clicks "Sign in with Microsoft". MSAL.js calls <code>loginRedirect()</code> with PKCE code challenge. Browser redirects to <code>login.microsoftonline.com</code>.</td></tr>
+    <tr><td>2</td><td>Entra ID</td><td>User authenticates (password, MFA, etc.). Entra ID validates the App Registration's redirect URI.</td></tr>
+    <tr><td>3</td><td>SPA (MSAL.js)</td><td>Browser returns to the SPA with an authorization code. <code>handleRedirectPromise()</code> exchanges the code for tokens using PKCE verifier.</td></tr>
+    <tr><td>4</td><td>SPA (MSAL.js)</td><td><code>acquireTokenSilent()</code> gets a Graph API access token for scopes: <code>User.Read</code>, <code>Directory.Read.All</code>, <code>Policy.Read.All</code>, <code>RoleManagement.Read.All</code>.</td></tr>
+    <tr><td>5</td><td>SPA (MSAL.js)</td><td><code>acquireTokenSilent()</code> gets an ARM access token for scope: <code>https://management.azure.com/user_impersonation</code>.</td></tr>
+    <tr><td>6</td><td>SPA → API</td><td>SPA sends <code>POST /chat</code> with the message AND both tokens in the request body.</td></tr>
+    <tr><td>7</td><td>API (<code>api.py</code>)</td><td><code>UserTokenCredential</code> wraps both tokens. <code>ComplianceCredentials</code> is created with this credential. Stored in <code>_request_creds</code> context variable.</td></tr>
+    <tr><td>8-9</td><td>Agent tools (<code>agent.py</code>)</td><td>Each tool function calls <code>_get_creds()</code> to retrieve the per-request credentials. Graph SDK and ARM SDK use the user's tokens. API calls run as the signed-in user (delegated access).</td></tr>
+    <tr><td>10</td><td>API → SPA</td><td>Response returned to the browser.</td></tr>
+  </table>
+</section>
+
+<!-- ──── 8. Credential Resolution ──── -->
+<section class="section" id="credential-resolution">
+  <h2>🔑 8. Credential Resolution in Code</h2>
+
+  <h3>File: app/auth.py</h3>
+  <div class="config-block">
+    <pre><code># UserTokenCredential — wraps SPA-acquired tokens
+class UserTokenCredential(AsyncTokenCredential):
+    def __init__(self, graph_token: str, arm_token: str):
+        # Inspects requested scopes to return the correct token
+        # "graph.microsoft.com" → returns graph_token
+        # "management.azure.com" → returns arm_token
+
+# ComplianceCredentials — main credential manager
+class ComplianceCredentials:
+    def __init__(self, user_credential=None):
+        # If user_credential is provided → use it (delegated mode)
+        # Otherwise → creates DefaultAzureCredential (managed identity)
+
+    @property
+    def credential(self):
+        # Priority: user_credential > _credential (auto-created)
+
+# Context variable for per-request credential passing
+_request_creds: ContextVar[ComplianceCredentials | None]</code></pre>
+  </div>
+
+  <h3>File: app/api.py — Token Enforcement (v33+)</h3>
+  <div class="config-block">
+    <pre><code>@app.post("/chat")
+async def chat(req: ChatRequest):
+    # SECURITY: Reject requests without user tokens — no managed identity fallback
+    if not req.graph_token or not req.arm_token:
+        raise HTTPException(status_code=401, detail="Authentication required")
+
+    user_cred = UserTokenCredential(graph_token=..., arm_token=...)
+    creds = ComplianceCredentials(user_credential=user_cred)
+    _request_creds.set(creds)       # Always user-delegated for web API</code></pre>
+  </div>
+
+  <div class="safety-banner">
+    <h3>v33 Security Change</h3>
+    <p style="color:var(--text-secondary);font-size:.9rem">Prior to v33, missing tokens silently fell back to the managed identity, allowing unauthenticated callers to access tenant data with application-level permissions. This fallback was removed.</p>
+  </div>
+
+  <h3>File: app/agent.py — Tool Functions</h3>
+  <div class="config-block">
+    <pre><code>def _get_creds() -> ComplianceCredentials:
+    """Return per-request user credentials if available, else managed identity."""
+    creds = _request_creds.get(None)
+    if creds is not None:
+        return creds               # User-delegated tokens from SPA
+    return ComplianceCredentials()  # Managed identity (DefaultAzureCredential)</code></pre>
+  </div>
+
+  <p>All 14 tool functions (<code>run_postureiq_assessment</code>, <code>query_results</code>, <code>search_tenant</code>, <code>analyze_risk</code>, <code>assess_data_security</code>, <code>generate_rbac_report</code>, <code>generate_report</code>, <code>generate_custom_report</code>, <code>assess_copilot_readiness</code>, <code>assess_ai_agent_security</code>, <code>check_permissions</code>, <code>compare_runs</code>, <code>search_exposure</code>, <code>query_assessment_history</code>) call <code>_get_creds()</code> at the start.</p>
+</section>
+
+<!-- ──── 9. Dual-Auth Model ──── -->
+<section class="section" id="dual-auth">
+  <h2>⚖️ 9. Dual-Auth Model: User-Delegated vs Managed Identity</h2>
+
+  <div class="config-block">
+    <pre><code>                    ┌─────────────────────┐
+                    │  User signs in via   │
+                    │  SPA + MSAL.js?      │
+                    └──────────┬──────────┘
+                               │
+                    ┌──────────▼──────────┐
+                    │   Tokens sent in    │
+                    │   POST /chat body?  │
+                    └──────┬────────┬─────┘
+                     YES   │        │  NO
+                    ┌──────▼─────┐  │
+                    │ Delegated  │  │
+                    │ Mode       │  │
+                    │            │  │
+                    │ Graph →    │  │  ┌──────────────┐
+                    │ user token │  └─>│ MI Mode      │
+                    │ ARM →      │     │              │
+                    │ user token │     │ Graph → MI   │
+                    │            │     │ ARM → MI     │
+                    │ Scoped to  │     │              │
+                    │ user perms │     │ Full app     │
+                    └────────────┘     │ permissions  │
+                                       └──────────────┘</code></pre>
+  </div>
+
+  <table class="data-table">
+    <tr><th>Aspect</th><th>User-Delegated Mode</th><th>Managed Identity Mode</th></tr>
+    <tr><td>When active</td><td>User logged in via SPA, tokens sent</td><td>CLI scripts (<code>run_risk_analysis.py</code>, etc.)</td></tr>
+    <tr><td>Graph identity</td><td>Signed-in user</td><td><code>ESIQNew-identity</code> managed identity</td></tr>
+    <tr><td>ARM identity</td><td>Signed-in user</td><td><code>ESIQNew-identity</code> managed identity</td></tr>
+    <tr><td>Permission scope</td><td>Intersection of app's delegated permissions AND user's Entra roles</td><td>Full application permissions granted to MI</td></tr>
+    <tr><td>Audit trail</td><td>Actions logged as the signed-in user's UPN</td><td>Actions logged as the managed identity</td></tr>
+    <tr><td>Use case</td><td>Interactive web usage (enforced — 401 without tokens)</td><td>CLI-only — automated/scheduled assessments</td></tr>
+    <tr><td><code>/chat</code> API</td><td><strong>Required</strong> — requests without tokens are rejected (401)</td><td>N/A — CLI scripts don't use the <code>/chat</code> endpoint</td></tr>
+  </table>
+</section>
+
+<!-- ──── 10. MSAL.js Configuration ──── -->
+<section class="section" id="msal-config">
+  <h2>⚙️ 10. MSAL.js Configuration</h2>
+
+  <h3>Library</h3>
+  <ul>
+    <li><strong>Version</strong>: MSAL.js v5.6.3 (<code>@azure/msal-browser</code>)</li>
+    <li><strong>Hosting</strong>: Self-hosted at <code>/msal-browser.min.js</code> (served by FastAPI)</li>
+    <li><strong>Why self-hosted</strong>: The Microsoft CDN URL for v2.38.3 returned 404 (version removed). Self-hosting eliminates CDN dependency.</li>
+  </ul>
+
+  <h3>Auth Flow</h3>
+  <ul>
+    <li><strong>Protocol</strong>: OAuth 2.0 Authorization Code Flow with PKCE</li>
+    <li><strong>Method</strong>: <code>loginRedirect()</code> / <code>handleRedirectPromise()</code> (not popup — Edge InPrivate blocks popups)</li>
+    <li><strong>Token cache</strong>: <code>sessionStorage</code> (scoped to browser tab)</li>
+  </ul>
+
+  <h3>Configuration Object</h3>
+  <div class="config-block">
+    <pre><code>const MSAL_CONFIG = {
+  auth: {
+    clientId: "ffb6f10d-6991-430e-b3d6-23a0101a92b1",  // App Registration
+    authority: "https://login.microsoftonline.com/4a3eb5f4-...",  // Tenant
+    redirectUri: window.location.origin,  // Must match SPA redirect URIs
+  },
+  cache: { cacheLocation: "sessionStorage" }
+};</code></pre>
+  </div>
+
+  <h3>Token Acquisition</h3>
+  <div class="config-block">
+    <pre><code>// Graph token (delegated)
+const GRAPH_SCOPES = [
+  "User.Read", "Directory.Read.All",
+  "Policy.Read.All", "RoleManagement.Read.All",
+  "AuditLog.Read.All",                    // v33: sign-in activity
+  "UserAuthenticationMethod.Read.All",     // v33: MFA details
+  "IdentityRiskyUser.Read.All",            // v33: risky users
+];
+
+// ARM token (delegated)
+const ARM_SCOPES = ["https://management.azure.com/user_impersonation"];
+
+// Silent first → redirect fallback
+const resp = await msalInstance.acquireTokenSilent({
+  scopes: GRAPH_SCOPES, account: currentAccount
+});</code></pre>
+  </div>
+</section>
+
+<!-- ──── 11. Troubleshooting ──── -->
+<section class="section" id="troubleshooting">
+  <h2>🔧 11. Troubleshooting</h2>
+
+  <table class="data-table">
+    <tr><th>Symptom</th><th>Likely Cause</th><th>Fix</th></tr>
+    <tr><td>"MSAL library failed to load" (red text)</td><td>CDN 404 or ad-blocker</td><td>Self-hosted at <code>/msal-browser.min.js</code> (current setup)</td></tr>
+    <tr><td>Login button does nothing (no redirect)</td><td>Redirect URIs under "Web" platform instead of "SPA"</td><td>Move to SPA platform: Portal &gt; App Registration &gt; Authentication</td></tr>
+    <tr><td>Popup blocked in InPrivate</td><td><code>loginPopup()</code> blocked by browser</td><td>Switch to <code>loginRedirect()</code> (current setup)</td></tr>
+    <tr><td>"Chat: using managed identity" in logs</td><td>SPA didn't send tokens</td><td>Check MSAL init, user login state, token acquisition</td></tr>
+    <tr><td>"AADSTS50011: Reply URL mismatch"</td><td>Missing redirect URI in App Registration</td><td>Add the exact URL to SPA redirect URIs</td></tr>
+    <tr><td>"AADSTS65001: Consent required"</td><td>Admin consent not granted</td><td>Click "Grant admin consent" in API permissions</td></tr>
+    <tr><td>Permissions work in SPA but not MI</td><td>MI has application perms, not delegated</td><td>Grant app role assignments to MI via <code>az rest</code></td></tr>
+  </table>
+</section>
+
+<!-- ──── 12. Reference IDs ──── -->
+<section class="section" id="reference-ids">
+  <h2>🏷️ 12. Reference IDs</h2>
+
+  <h3>Tenant</h3>
+  <table class="data-table">
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Tenant ID</td><td><code>4a3eb5f4-1ec6-4a73-bb03-1ca63cb52d67</code></td></tr>
+    <tr><td>Tenant domain</td><td><code>MngEnvMCAP250477.onmicrosoft.com</code></td></tr>
+  </table>
+
+  <h3>App Registration</h3>
+  <table class="data-table">
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Display name</td><td><code>EnterpriseSecurityIQ-SPA</code></td></tr>
+    <tr><td>Application (client) ID</td><td><code>ffb6f10d-6991-430e-b3d6-23a0101a92b1</code></td></tr>
+    <tr><td>Object ID</td><td><code>fe171c21-b3a1-480d-a5f5-41e7c515d843</code></td></tr>
+  </table>
+
+  <h3>Service Principal (SPN)</h3>
+  <table class="data-table">
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Display name</td><td><code>EnterpriseSecurityIQ-SPA</code></td></tr>
+    <tr><td>Object ID</td><td><code>1b42cfa1-b40a-4488-8f75-3ce3de2a11e6</code></td></tr>
+    <tr><td>Application ID</td><td><code>ffb6f10d-6991-430e-b3d6-23a0101a92b1</code></td></tr>
+  </table>
+
+  <h3>Managed Identity</h3>
+  <table class="data-table">
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Name</td><td><code>ESIQNew-identity</code></td></tr>
+    <tr><td>Client ID</td><td><code>d5d10273-4a8b-4251-9b9d-00fe035df97a</code></td></tr>
+    <tr><td>Principal ID</td><td><code>d742617c-6f14-4215-be65-e1f7b68866de</code></td></tr>
+  </table>
+
+  <h3>Infrastructure</h3>
+  <table class="data-table">
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Container App</td><td><code>esiqnew-agent</code></td></tr>
+    <tr><td>FQDN</td><td><code>esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io</code></td></tr>
+    <tr><td>ACR</td><td><code>esiqnewacr.azurecr.io</code></td></tr>
+    <tr><td>Image</td><td><code>esiqnew-agent:v33</code></td></tr>
+    <tr><td>Foundry Agent</td><td><code>asst_N4hpInCl30eZHaim3vtJTZiT</code></td></tr>
+    <tr><td>Resource Group</td><td><code>ESIQNew-RG</code></td></tr>
+    <tr><td>Region</td><td><code>northeurope</code></td></tr>
+  </table>
+
+  <h3>Microsoft Graph SPN (Permission Target)</h3>
+  <table class="data-table">
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Object ID</td><td><code>8bd0732c-62ce-469b-a109-a0e8cb2985ca</code></td></tr>
+    <tr><td>App Role: Directory.Read.All</td><td><code>7ab1d382-f21e-4acd-a863-ba3e13f7da61</code></td></tr>
+    <tr><td>App Role: Policy.Read.All</td><td><code>246dd0d5-5bd0-4def-940b-0421030a5b68</code></td></tr>
+    <tr><td>App Role: RoleManagement.Read.All</td><td><code>c7fbd983-d9aa-4fa7-84b8-17382c103bc4</code></td></tr>
+    <tr><td>App Role: AuditLog.Read.All</td><td><code>b0afded3-3588-46d8-8b3d-9842eff778da</code></td></tr>
+    <tr><td>App Role: UserAuthenticationMethod.Read.All</td><td><code>38d9df27-64da-44fd-b7c5-a6fbac20248f</code></td></tr>
+    <tr><td>App Role: IdentityRiskyUser.Read.All</td><td><code>dc5007c0-2d7d-4c42-879c-2dab87571379</code></td></tr>
+  </table>
+
+  <h3>Code Files Reference</h3>
+  <table class="data-table">
+    <tr><th>File</th><th>Role</th></tr>
+    <tr><td><code>webapp/index.html</code></td><td>SPA — MSAL.js config, login flow, token acquisition, chat UI</td></tr>
+    <tr><td><code>webapp/msal-browser.min.js</code></td><td>Self-hosted MSAL.js v5.6.3 library</td></tr>
+    <tr><td><code>AIAgent/app/auth.py</code></td><td><code>UserTokenCredential</code>, <code>ComplianceCredentials</code>, <code>_request_creds</code> context var</td></tr>
+    <tr><td><code>AIAgent/app/api.py</code></td><td><code>/chat</code> endpoint — token passthrough, credential setup</td></tr>
+    <tr><td><code>AIAgent/app/agent.py</code></td><td>14 tool functions, <code>_get_creds()</code> helper, system prompt</td></tr>
+  </table>
+</section>
+
+</main>
+
+<!-- ════════ FOOTER ════════ -->
+<footer>
+  <p>PostureIQ — Authentication Architecture · Author: Murali Chillakuru</p>
+  <p style="margin-top:.3rem">2 identities · 11 Graph permissions · 6 application permissions · 2 auth modes · 12 reference IDs</p>
+</footer>
+
+<button class="back-top" id="backTop" aria-label="Back to top">↑</button>
+
+<script>
+const toggle=document.getElementById('themeToggle'),root=document.documentElement;
+function setTheme(t){root.dataset.theme=t;toggle.textContent=t==='dark'?'☀️ Light':'🌙 Dark';localStorage.setItem('esiq-theme',t)}
+toggle.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark'));
+setTheme(localStorage.getItem('esiq-theme')||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const el=e.target,t=+el.dataset.target;let c=0;const d=Math.max(1,Math.floor(30/(t||1)));const iv=setInterval(()=>{c+=d;if(c>=t){el.textContent=(t>100?'~':'')+t;clearInterval(iv)}else{el.textContent=c}},16);io.unobserve(el)}})},{threshold:.5});
+document.querySelectorAll('.num[data-target]').forEach(el=>io.observe(el));
+const pills=document.querySelectorAll('.nav-pill[href]'),sections=[];
+pills.forEach(p=>{const id=p.getAttribute('href')?.slice(1);if(id){const s=document.getElementById(id);if(s)sections.push({el:s,pill:p})}});
+const spy=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const m=sections.find(s=>s.el===e.target);if(m)m.pill.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px',threshold:0});
+sections.forEach(s=>spy.observe(s.el));
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('progressBar').style.width=(window.scrollY/h*100)+'%'});
+const btn=document.getElementById('backTop');
+window.addEventListener('scroll',()=>{btn.classList.toggle('show',window.scrollY>400)});
+btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>

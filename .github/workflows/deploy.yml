@@ -1,0 +1,75 @@
+name: Build & Deploy to Azure Container Apps
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'AIAgent/app/**'
+      - 'AIAgent/main.py'
+      - 'AIAgent/requirements.txt'
+      - 'AIAgent/Dockerfile'
+      - 'webapp/**'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag (e.g. v32-hotfix). Defaults to commit SHA.'
+        required: false
+
+permissions:
+  id-token: write   # Required for OIDC login
+  contents: read
+
+env:
+  ACR_NAME: esiqnewacr
+  CONTAINER_APP: esiqnew-agent
+  RESOURCE_GROUP: ESIQNew-RG
+  IMAGE_NAME: esiqnew-agent
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Determine image tag
+        id: tag
+        run: |
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            echo "IMAGE_TAG=${{ github.event.inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "IMAGE_TAG=sha-$(echo ${{ github.sha }} | cut -c1-7)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build image in ACR
+        run: |
+          az acr build \
+            --registry ${{ env.ACR_NAME }} \
+            --image ${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.IMAGE_TAG }} \
+            --file AIAgent/Dockerfile \
+            . \
+            --no-logs \
+            --build-arg CACHEBUST=$(date +%Y%m%d%H%M%S)
+
+      - name: Deploy to Container App
+        run: |
+          az containerapp update \
+            --name ${{ env.CONTAINER_APP }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --image ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.IMAGE_TAG }} \
+            -o table
+
+      - name: Verify deployment
+        run: |
+          FQDN=$(az containerapp show \
+            --name ${{ env.CONTAINER_APP }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --query "properties.configuration.ingress.fqdn" -o tsv)
+          echo "Deployed to: https://$FQDN"
+          echo "Image tag: ${{ steps.tag.outputs.IMAGE_TAG }}"

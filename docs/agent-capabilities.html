@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostureIQ — Agent Capabilities &amp; Resource Coverage</title>
+<meta name="description" content="Complete technical reference for PostureIQ: 68 collectors, 200+ evidence types, 11 frameworks, 525 controls, 120 evaluation functions.">
+<meta name="author" content="Murali Chillakuru">
+<style>
+:root {
+    --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-tertiary:#1C2128;--bg-card:#21262D;--bg-card-hover:#282E36;--bg-inset:#0D1117;
+    --border-primary:#30363D;--border-secondary:#21262D;--border-accent:#1F6FEB;
+    --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;--text-link:#58A6FF;
+    --ms-blue:#0078D4;--ms-green:#107C10;--ms-red:#D13438;--ms-yellow:#FFB900;--ms-orange:#F7630C;--ms-teal:#00B7C3;
+    --accent-blue:#1F6FEB;--accent-blue-light:#388BFD;--accent-green:#3FB950;--accent-green-bg:rgba(63,185,80,.12);
+    --accent-orange:#D29922;--accent-orange-bg:rgba(210,153,34,.12);--accent-red:#F85149;--accent-red-bg:rgba(248,81,73,.12);
+    --accent-purple:#A371F7;--accent-purple-bg:rgba(163,113,247,.12);--accent-cyan:#39D2C0;--accent-cyan-bg:rgba(57,210,192,.12);
+    --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);--shadow-lg:0 8px 24px rgba(0,0,0,.5);
+    --radius:8px;--radius-lg:12px;
+    --font-sans:'Segoe UI Variable','Segoe UI',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+    --font-mono:'Cascadia Code','Fira Code','Consolas','Monaco',monospace;
+    --max-width:1200px;
+}
+[data-theme="light"]{
+    --bg-primary:#F6F8FA;--bg-secondary:#FFFFFF;--bg-tertiary:#F0F2F5;--bg-card:#FFFFFF;--bg-card-hover:#F6F8FA;--bg-inset:#F0F2F5;
+    --border-primary:#D0D7DE;--border-secondary:#E1E4E8;--border-accent:#0078D4;
+    --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;--text-link:#0969DA;
+    --accent-blue:#0969DA;--accent-blue-light:#0078D4;--accent-green:#1A7F37;--accent-green-bg:rgba(26,127,55,.08);
+    --accent-orange:#9A6700;--accent-orange-bg:rgba(154,103,0,.08);--accent-red:#CF222E;--accent-red-bg:rgba(207,34,46,.08);
+    --accent-purple:#8250DF;--accent-purple-bg:rgba(130,80,223,.08);--accent-cyan:#0E8A8A;--accent-cyan-bg:rgba(14,138,138,.08);
+    --shadow-sm:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.1);--shadow-lg:0 8px 24px rgba(0,0,0,.12);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(31,111,235,.4)}
+a{color:var(--text-link);text-decoration:none;transition:color .15s}a:hover{text-decoration:underline;color:var(--accent-blue-light)}
+code{font-family:var(--font-mono);font-size:.85em;background:var(--bg-inset);padding:2px 7px;border-radius:4px;color:var(--accent-cyan);border:1px solid var(--border-secondary)}
+pre{background:var(--bg-inset);border:1px solid var(--border-primary);border-radius:var(--radius);padding:20px 24px;overflow-x:auto;margin:1rem 0;line-height:1.6}
+pre code{background:none;border:none;padding:0;font-size:.9rem;color:var(--text-primary)}
+.skip-nav{position:absolute;top:-100%;left:16px;padding:12px 24px;background:var(--accent-blue);color:#fff;font-size:14px;font-weight:600;border-radius:0 0 8px 8px;z-index:10000;text-decoration:none;transition:top .2s}
+.skip-nav:focus{top:0}
+:focus-visible{outline:2px solid var(--accent-blue);outline-offset:2px;border-radius:2px}
+button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--ms-blue),var(--ms-teal));z-index:1001;width:0%;transition:width 80ms linear}
+.hero{position:relative;padding:90px 0 70px;background:linear-gradient(145deg,var(--bg-primary) 0%,#0D2137 50%,var(--bg-primary) 100%);border-bottom:1px solid var(--border-primary);overflow:hidden}
+[data-theme="light"] .hero{background:linear-gradient(145deg,#EBF3FE 0%,#D4E6FC 50%,#EBF3FE 100%)}
+.hero::before{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(31,111,235,.08) 0%,transparent 70%)}
+.hero::after{content:'';position:absolute;bottom:-150px;left:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(163,113,247,.06) 0%,transparent 70%)}
+.hero-inner{max-width:var(--max-width);margin:0 auto;padding:0 32px;position:relative;z-index:1}
+.hero-label{display:inline-flex;align-items:center;gap:8px;background:rgba(31,111,235,.15);border:1px solid rgba(31,111,235,.3);padding:6px 16px;border-radius:20px;font-size:.8rem;color:var(--accent-blue-light);letter-spacing:.5px;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-size:2.6rem;font-weight:700;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;margin-bottom:16px}
+.hero p.subtitle{font-size:1.1rem;color:var(--text-secondary);max-width:750px;line-height:1.7;margin-bottom:24px}
+.hero-meta{display:flex;gap:24px;flex-wrap:wrap;font-size:.85rem;color:var(--text-muted)}
+.hero-meta span{display:flex;align-items:center;gap:6px}
+.stats-bar{max-width:var(--max-width);margin:-34px auto 40px;padding:0 32px;position:relative;z-index:2}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:22px 24px}
+.stat-item{text-align:center}
+.stat-number{font-size:1.8rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.stat-number.blue{color:var(--accent-blue)}.stat-number.green{color:var(--accent-green)}.stat-number.purple{color:var(--accent-purple)}.stat-number.orange{color:var(--accent-orange)}.stat-number.cyan{color:var(--accent-cyan)}.stat-number.red{color:var(--accent-red)}.stat-number.teal{color:var(--ms-teal)}
+.stat-label{font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-top:6px}
+.sticky-nav{position:sticky;top:0;background:rgba(13,17,23,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-primary);z-index:100}
+[data-theme="light"] .sticky-nav{background:rgba(255,255,255,.92)}
+.sticky-nav-inner{max-width:var(--max-width);margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:2px;overflow-x:auto;scrollbar-width:none}
+.sticky-nav-inner::-webkit-scrollbar{display:none}
+.nav-pill{display:inline-block;padding:12px 12px;font-size:.8rem;color:var(--text-secondary);white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;cursor:pointer}
+.nav-pill:hover{color:var(--text-primary);text-decoration:none}
+.nav-pill.active{color:var(--accent-blue-light);border-bottom-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;padding:6px 14px;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);color:var(--text-secondary);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font-sans);white-space:nowrap}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--accent-blue)}
+.container{max-width:var(--max-width);margin:0 auto;padding:0 32px 80px}
+.section{margin-bottom:56px;scroll-margin-top:60px}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border-primary)}
+.section-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.section-icon.blue{background:rgba(31,111,235,.15);border:1px solid rgba(31,111,235,.3)}
+.section-icon.green{background:var(--accent-green-bg);border:1px solid rgba(63,185,80,.3)}
+.section-icon.purple{background:var(--accent-purple-bg);border:1px solid rgba(163,113,247,.3)}
+.section-icon.orange{background:var(--accent-orange-bg);border:1px solid rgba(210,153,34,.3)}
+.section-icon.cyan{background:var(--accent-cyan-bg);border:1px solid rgba(57,210,192,.3)}
+.section-icon.red{background:var(--accent-red-bg);border:1px solid rgba(248,81,73,.3)}
+.section-header h2{font-size:1.5rem;font-weight:600}
+.section-desc{color:var(--text-secondary);margin-bottom:24px;font-size:.95rem;line-height:1.7}
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border-primary);margin-bottom:16px}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.data-table thead th{text-align:left;padding:10px 14px;background:var(--bg-tertiary);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);border-bottom:2px solid var(--border-primary)}
+.data-table tbody td{padding:10px 14px;border-bottom:1px solid var(--border-secondary);vertical-align:top;color:var(--text-secondary)}
+.data-table tbody tr:last-child td{border-bottom:none}
+.data-table tbody tr:hover{background:var(--bg-card-hover)}
+.data-table .tool-name{color:var(--accent-cyan);font-family:var(--font-mono);font-size:.82rem}
+.data-table .script-name{color:var(--accent-purple);font-family:var(--font-mono);font-size:.82rem}
+.collector-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;transition:border-color .2s}
+.collector-card:hover{border-color:var(--border-accent)}
+.collector-card summary{padding:14px 20px;cursor:pointer;display:flex;align-items:center;gap:10px;font-weight:600;font-size:.92rem;list-style:none}
+.collector-card summary::-webkit-details-marker{display:none}
+.collector-card summary::before{content:'▸';color:var(--accent-blue);font-size:14px;transition:transform .2s}
+.collector-card[open] summary::before{transform:rotate(90deg)}
+.collector-card summary:hover{background:var(--bg-card-hover)}
+.collector-card-body{padding:0 20px 20px;border-top:1px solid var(--border-secondary)}
+.priority-badge{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:.68rem;font-weight:700;letter-spacing:.3px;font-family:var(--font-mono);margin-left:auto}
+.priority-badge.p10{background:rgba(31,111,235,.15);color:var(--accent-blue-light)}
+.priority-badge.p20{background:rgba(31,111,235,.12);color:var(--accent-blue-light)}
+.priority-badge.p30{background:rgba(163,113,247,.12);color:var(--accent-purple)}
+.file-link{font-family:var(--font-mono);font-size:.78rem;color:var(--accent-cyan)}
+.evidence-tag{display:inline-block;padding:2px 8px;margin:2px;border-radius:4px;font-size:.72rem;font-family:var(--font-mono);background:var(--bg-inset);border:1px solid var(--border-secondary);color:var(--accent-cyan)}
+.collector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;list-style:none;margin-bottom:16px}
+.collector-grid li{font-size:.85rem;color:var(--text-secondary);padding:8px 12px;background:var(--bg-card);border:1px solid var(--border-secondary);border-radius:6px;transition:border-color .15s}
+.collector-grid li:hover{border-color:var(--border-accent)}
+.coll-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;font-size:.7rem;font-weight:700;color:#fff;margin-right:8px;flex-shrink:0}
+.coll-num.azure{background:var(--accent-blue)}.coll-num.entra{background:var(--accent-purple)}
+.framework-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:32px}
+.framework-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);padding:20px;text-align:center;transition:border-color .15s,transform .15s}
+.framework-card:hover{border-color:var(--border-accent);transform:translateY(-2px)}
+.framework-count{font-size:1.6rem;font-weight:700;color:var(--accent-blue)}
+.framework-name{font-size:.75rem;font-weight:600;margin-top:4px;color:var(--text-secondary)}
+.domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.domain-card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);padding:20px;border-top:3px solid var(--accent-blue);transition:all .2s}
+.domain-card:hover{border-color:var(--accent-blue-light);transform:translateY(-2px)}
+.domain-icon{font-size:1.8rem;margin-bottom:10px}
+.domain-card h4{font-size:.92rem;margin-bottom:4px;font-weight:600}
+.domain-checks{font-size:.8rem;color:var(--accent-blue-light);font-weight:600}
+.domain-detail{font-size:.72rem;color:var(--text-muted);margin-top:4px}
+.diagram-container{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:24px;margin-bottom:24px;overflow-x:auto;box-shadow:var(--shadow-sm)}
+.diagram-container .mermaid{text-align:center}
+.diagram-title{font-size:1rem;font-weight:600;margin-bottom:12px;color:var(--accent-blue-light)}
+.diagram-explanation{margin-top:16px;padding:16px;background:var(--bg-tertiary);border-radius:var(--radius);font-size:.88rem;color:var(--text-secondary);line-height:1.7}
+.diagram-explanation ol{margin:8px 0 0 20px}.diagram-explanation li{margin-bottom:6px}
+.safety-banner{background:linear-gradient(135deg,rgba(63,185,80,.12) 0%,rgba(63,185,80,.05) 100%);border:1px solid rgba(63,185,80,.25);color:var(--text-primary);border-radius:var(--radius-lg);padding:32px;display:grid;grid-template-columns:60px 1fr;gap:20px;align-items:start}
+.safety-icon{width:52px;height:52px;background:rgba(63,185,80,.15);border:1px solid rgba(63,185,80,.3);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.safety-banner h3{font-size:1.15rem;margin-bottom:14px;color:var(--accent-green)}
+.safety-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0}
+.safety-list li{font-size:.88rem;color:var(--text-secondary);padding-left:24px;position:relative}
+.safety-list li::before{content:'🛡️';position:absolute;left:0;font-size:.75rem}
+.perm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:16px}
+.perm-block{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius);overflow:hidden}
+.perm-block-header{padding:14px 20px;font-weight:600;font-size:.9rem;border-bottom:1px solid var(--border-primary)}
+.perm-block-header.azure{background:rgba(31,111,235,.1);color:var(--accent-blue-light)}
+.perm-block-header.graph{background:var(--accent-purple-bg);color:var(--accent-purple)}
+.info-box{border-radius:var(--radius);padding:16px 20px;margin:1rem 0;font-size:.92rem;border:1px solid}
+.info-box.blue{background:rgba(31,111,235,.08);border-color:rgba(31,111,235,.25);color:var(--text-secondary)}
+.info-box.green{background:var(--accent-green-bg);border-color:rgba(63,185,80,.25);color:var(--text-secondary)}
+.subsection{margin-bottom:32px}
+.subsection h3{font-size:1.05rem;margin-bottom:8px;color:var(--accent-blue-light);display:flex;align-items:center;gap:8px}
+.subsection h3 .num{color:var(--text-muted);font-size:.85rem;font-weight:400}
+.data-collected{font-size:.88rem;color:var(--text-secondary);margin:8px 0 16px;line-height:1.65}
+.data-collected strong{color:var(--text-primary)}
+.back-to-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--accent-blue);color:#fff;font-size:20px;border:none;cursor:pointer;opacity:0;visibility:hidden;transition:all .3s;z-index:999;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md)}
+.back-to-top.visible{opacity:1;visibility:visible}.back-to-top:hover{transform:scale(1.1)}
+.footer{text-align:center;padding:36px;color:var(--text-muted);font-size:.82rem;border-top:1px solid var(--border-primary);background:var(--bg-secondary)}
+@media(max-width:768px){.hero h1{font-size:1.7rem}.stats-grid{grid-template-columns:repeat(4,1fr)}.safety-list{grid-template-columns:1fr}.perm-grid{grid-template-columns:1fr}.domain-grid{grid-template-columns:repeat(2,1fr)}.safety-banner{grid-template-columns:1fr}.collector-grid{grid-template-columns:1fr}}
+@media print{.sticky-nav,.theme-toggle,.back-to-top,.skip-nav,.progress-bar{display:none!important}.container{padding:16px;max-width:100%}body{background:#fff;color:#000}.hero{background:#f0f4f8!important;padding:40px 0 30px}.data-table,.framework-card,.domain-card,.collector-card,.safety-banner,.perm-block,.diagram-container{border:1px solid #ccc;background:#fff}.stats-grid{background:#fff;border:1px solid #ccc}.stat-number,.framework-count{color:#0078D4!important}details{open:true}details[open] .collector-card-body{display:block}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}html{scroll-behavior:auto}}
+@media(forced-colors:active){.back-to-top,.theme-toggle,.nav-pill,.coll-num,.priority-badge{border:1px solid ButtonText;forced-color-adjust:none}.skip-nav:focus{background:Highlight;color:HighlightText}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+<div class="progress-bar" id="progressBar" role="progressbar" aria-label="Reading progress"></div>
+
+<!-- ═══════════ Hero ═══════════ -->
+<section class="hero">
+<div class="hero-inner">
+    <span class="hero-label">📋 Technical Reference</span>
+    <h1>Agent Capabilities &amp; Resource Coverage</h1>
+    <p class="subtitle">The deepest technical reference for EnterpriseSecurityIQ. Every collector, evidence type, evaluation function, and permission — verified against source code in <code>AIAgent/app/</code>.</p>
+    <div class="hero-meta">
+        <span>👤 Murali Chillakuru</span>
+        <span>📅 April 2026</span>
+        <span>🏷️ 68 Collectors · 200+ Evidence Types · 11 Frameworks · 525 Controls</span>
+    </div>
+</div>
+</section>
+
+<!-- ═══════════ Stats Bar ═══════════ -->
+<div class="stats-bar">
+<div class="stats-grid" role="list" aria-label="Key metrics">
+    <div class="stat-item" role="listitem"><div class="stat-number blue" data-target="50">0</div><div class="stat-label">Azure Collectors</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number purple" data-target="18">0</div><div class="stat-label">Entra Collectors</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number green" data-target="218">0</div><div class="stat-label">Evidence Types</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number orange" data-target="10">0</div><div class="stat-label">Eval Domains</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number cyan" data-target="113">0</div><div class="stat-label">Check Functions</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number teal" data-target="11">0</div><div class="stat-label">Frameworks</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number red" data-target="525">0</div><div class="stat-label">Controls</div></div>
+    <div class="stat-item" role="listitem"><div class="stat-number blue" data-target="14">0</div><div class="stat-label">Agent Tools</div></div>
+</div>
+</div>
+
+<!-- ═══════════ Sticky Nav ═══════════ -->
+<nav class="sticky-nav" aria-label="Section navigation">
+<div class="sticky-nav-inner">
+    <a class="nav-pill" href="#tools">Tools &amp; CLI</a>
+    <a class="nav-pill" href="#pipeline">Pipeline</a>
+    <a class="nav-pill" href="#azure-control">Azure Control</a>
+    <a class="nav-pill" href="#azure-data">Azure Data</a>
+    <a class="nav-pill" href="#standalone">Standalone</a>
+    <a class="nav-pill" href="#entra">Entra ID</a>
+    <a class="nav-pill" href="#evaluation">Evaluation</a>
+    <a class="nav-pill" href="#frameworks">Frameworks</a>
+    <a class="nav-pill" href="#permissions">Permissions</a>
+    <a class="nav-pill" href="#safety">Safety</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme">🌙 Dark</button>
+</div>
+</nav>
+
+<!-- EXEC SUMMARY -->
+<div class="container">
+<div style="background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.25);border-radius:8px;padding:16px 20px;margin:24px 0 0;font-size:.9rem;color:var(--text-secondary)">
+<strong>📋 Executive Summary</strong> — The deepest technical reference: every collector with SDK methods, evidence types, and data collected. 64 registered collectors, 218 evidence types, 10 evaluation domains, 113 check functions, and complete permission requirements.
+<div style="margin-top:8px;font-size:.82rem"><strong>Audience:</strong> Security engineers, integration developers · <strong>Prerequisites:</strong> <a href="architecture.html">Architecture</a> · <strong>Related:</strong> <a href="evaluation-rules.html">Evaluation Rules</a> · <a href="configuration-guide.html">Configuration Guide</a></div>
+</div>
+</div>
+
+<main id="main-content">
+<div class="container">
+
+<!-- ═══════════ 1. Tools & CLI ═══════════ -->
+<section class="section" id="tools">
+<div class="section-header"><div class="section-icon blue">🧰</div><h2>Agent Tools &amp; CLI Entry Points</h2></div>
+<p class="section-desc">14 Foundry agent tools (registered via <code>tools=[...]</code> in <code>main.py</code>) and 8 CLI scripts.</p>
+<div class="table-wrap">
+<table class="data-table" aria-label="Agent tools and CLI scripts">
+<thead><tr><th>#</th><th>Capability</th><th>Agent Tool</th><th>CLI Script</th><th>Engine</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Query cached findings</td><td class="tool-name">query_results</td><td>—</td><td>In-memory session</td></tr>
+<tr><td>2</td><td>Live Azure / Entra queries</td><td class="tool-name">search_tenant</td><td class="script-name">run_query.py</td><td>query_engine.py + query_evaluators/</td></tr>
+<tr><td>3</td><td>Security risk gap analysis</td><td class="tool-name">analyze_risk</td><td class="script-name">run_risk_analysis.py</td><td>risk_orchestrator.py + risk_evaluators/</td></tr>
+<tr><td>4</td><td>Data security assessment</td><td class="tool-name">assess_data_security</td><td class="script-name">run_data_security.py</td><td>data_security_engine.py</td></tr>
+<tr><td>5</td><td>RBAC hierarchy report</td><td class="tool-name">generate_rbac_report</td><td class="script-name">run_rbac_report.py</td><td>rbac_orchestrator.py + rbac_evaluators/</td></tr>
+<tr><td>6</td><td>Report regeneration</td><td class="tool-name">generate_report</td><td>—</td><td>html_report.py, json_report.py</td></tr>
+<tr><td>7</td><td>M365 Copilot readiness</td><td class="tool-name">assess_copilot_readiness</td><td class="script-name">run_copilot_readiness.py</td><td>copilot_orchestrator.py + copilot_evaluators/</td></tr>
+<tr><td>8</td><td>AI agent security</td><td class="tool-name">assess_ai_agent_security</td><td class="script-name">run_ai_agent_security.py</td><td>aiagentsec_orchestrator.py + aiagentsec_evaluators/</td></tr>
+<tr><td>9</td><td>Permission check</td><td class="tool-name">check_permissions</td><td>—</td><td>auth.py → preflight_check()</td></tr>
+<tr><td>10</td><td>Run comparison</td><td class="tool-name">compare_runs</td><td>—</td><td>delta_report.py</td></tr>
+<tr><td>11</td><td>Exposure search</td><td class="tool-name">search_exposure</td><td>—</td><td>query_engine.py → ARG_TEMPLATES</td></tr>
+<tr><td>12</td><td>Custom report generation</td><td class="tool-name">generate_custom_report</td><td>—</td><td>Report generators (custom framework/format)</td></tr>
+<tr><td>13</td><td>PostureIQ compliance assessment</td><td class="tool-name">run_postureiq_assessment</td><td>—</td><td>postureiq_orchestrator.py + postureiq_evaluators/</td></tr>
+<tr><td>14</td><td>PostureIQ history</td><td class="tool-name">query_assessment_history</td><td>—</td><td>assessment_store.py (list, trend, detail, compare)</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- ═══════════ 2. Pipeline Diagrams ═══════════ -->
+<section class="section" id="pipeline">
+<div class="section-header"><div class="section-icon purple">⚙️</div><h2>Assessment Pipeline</h2></div>
+<p class="section-desc">The orchestrator coordinates a 3-phase pipeline: collect → evaluate → report. Azure and Entra collectors run concurrently in batches.</p>
+
+<div class="diagram-container">
+<div class="diagram-title">Evidence Collection Flow</div>
+<div class="mermaid" data-seq-details='[
+{"overview":"The user or AI Agent initiates a full security assessment by calling the orchestrator entry point with Azure credentials and configuration.","dataFlow":"Credentials (tenant ID, client ID, authentication token) and the config (frameworks, suppressions, output preferences) are passed to postureiq_orchestrator.py.","keyPoints":["Single entry point for the entire evidence collection pipeline","Works identically whether invoked by a human, CI/CD system, or AI Agent","Config determines scope: which frameworks, collectors, and reports to run"],"whyItMatters":"A unified entry point prevents configuration drift across different invocation methods, ensuring every assessment follows the same deterministic workflow.","output":"An initialized orchestrator session ready to discover and execute collectors."},
+{"overview":"The orchestrator queries the collector registry to enumerate all available evidence collectors across Azure and Entra ID domains.","dataFlow":"The registry scans the collectors/ package via Python introspection and returns a sorted list of collector functions.","keyPoints":["49 Azure collectors and 17 Entra collectors are auto-discovered","Each collector self-declares its priority for execution ordering","Disabled collectors are filtered out based on configuration"],"whyItMatters":"Auto-discovery means adding a new collector requires only creating a Python module — no orchestrator code changes needed.","output":"A sorted manifest of 66 collector functions grouped by domain."},
+{"overview":"The registry returns the complete collector inventory: 49 Azure functions and 17 Entra functions, sorted by execution priority.","dataFlow":"Collector metadata (name, domain, priority, function reference) flows back to the orchestrator for batch scheduling.","keyPoints":["Priority numbers determine execution order — lower runs first","Azure and Entra groups are separated for independent parallel execution","The registry validates each collector has the required interface"],"whyItMatters":"Priority-based ordering ensures foundational evidence (tenant config, subscription metadata) is collected before anything that depends on it.","output":"Two priority-sorted lists ready for concurrent batch execution."},
+{"overview":"The orchestrator sends the first batch of 8 Azure collectors to run concurrently, targeting resources, RBAC, policy, and diagnostics.","dataFlow":"8 collector functions run in parallel via asyncio, each querying Azure Resource Manager APIs for their specific evidence domain.","keyPoints":["Batch size of 8 is tuned to stay within Azure API rate limits","Each collector operates independently with its own retry logic","Resource, RBAC, and policy collectors form the foundational first batch"],"whyItMatters":"Batching 8 at a time prevents API throttling while delivering 8x speedup over sequential execution for each batch cycle.","output":"Evidence arrays from the first 8 Azure collectors plus timing metadata."},
+{"overview":"Azure Batch 1 collectors return their evidence arrays along with execution timing data.","dataFlow":"EvidenceRecord objects with typed data (azure_resources, azure_rbac_assignments, azure_policy_state) flow back with millisecond timing.","keyPoints":["Evidence is typed for O(1) lookup during evaluation","Timing data enables performance profiling and bottleneck detection","Failed collectors return empty arrays with error details, not exceptions"],"whyItMatters":"Typed evidence and timing metadata make the system both fast (indexed lookups) and observable (performance dashboards).","output":"Merged evidence from Batch 1 plus timing telemetry."},
+{"overview":"The orchestrator dispatches Batch 2 of Azure collectors targeting activity logs, security center, and network configuration.","dataFlow":"The next 8 collectors query Azure APIs for security monitoring, network topology, and audit trail evidence.","keyPoints":["Activity log collectors gather the audit trail for change detection","Security center collectors assess Microsoft Defender for Cloud status","Network collectors map NSG rules, firewalls, and private endpoints"],"whyItMatters":"This batch covers the security monitoring and network layers — two critical domains that frequently surface high-severity compliance findings.","output":"Evidence arrays from Batch 2 covering security and network domains."},
+{"overview":"Azure Batch 2 collectors return their security and network evidence arrays with timing data.","dataFlow":"Network topology maps, security center assessments, and activity logs flow back as typed EvidenceRecord objects.","keyPoints":["Activity logs may contain thousands of entries requiring pagination","Security center data includes recommendation status and severity","Network evidence includes NSG effective rules, not just configured rules"],"whyItMatters":"Effective (computed) rules vs. configured rules is a critical distinction — the evaluation engine needs what Azure actually enforces, not just what was configured.","output":"Merged Batch 2 evidence ready for evaluation indexing."},
+{"overview":"The orchestrator dispatches remaining Azure collectors in subsequent batches until all 49 are complete.","dataFlow":"Remaining collector batches cover storage, databases, key vaults, app services, containers, and other specialized Azure resources.","keyPoints":["Batch execution continues until all 49 Azure collectors have run","Each batch maintains the same 8-concurrent limit","Checkpoint data accumulates after each batch completes"],"whyItMatters":"Completeness matters for compliance — missing even one collector could leave entire control families unassessed, creating blind spots in the security posture.","output":"Final Azure evidence arrays completing the full 49-collector sweep."},
+{"overview":"The final Azure collector batches return their evidence, completing the Azure collection phase.","dataFlow":"Remaining EvidenceRecord objects for storage, databases, key vaults, and specialized services flow back to the orchestrator.","keyPoints":["All 49 Azure collectors have now returned results","Total Azure evidence may contain 200+ distinct evidence types","Error summary shows which collectors, if any, failed or timed out"],"whyItMatters":"A complete evidence set is the foundation for accurate compliance scoring — gaps in collection directly translate to gaps in assessment coverage.","output":"Complete Azure evidence corpus ready for merging with Entra data."},
+{"overview":"Simultaneously, the orchestrator dispatches Entra ID Batch 1 targeting tenant configuration, users, user details, and conditional access.","dataFlow":"6 Entra collectors run concurrently via Microsoft Graph API, gathering identity and access management evidence.","keyPoints":["Batch size of 6 is lower than Azure due to tighter Graph API throttling","Tenant and user collectors provide the identity foundation","Conditional access policy collection is often the slowest Entra operation"],"whyItMatters":"Entra ID evidence is essential for assessing identity-based controls which represent 30-40% of most compliance frameworks.","output":"Identity and access evidence from Entra Batch 1."},
+{"overview":"Entra Batch 1 collectors return identity and access management evidence with timing data.","dataFlow":"Tenant configuration, user inventories, authentication method registrations, and conditional access policies flow back as typed records.","keyPoints":["User detail collection may paginate across thousands of directory objects","Conditional access policies include grant/session controls and assignments","Authentication method data reveals MFA adoption rates"],"whyItMatters":"This evidence directly feeds critical identity controls: MFA enforcement, conditional access coverage, and privileged user identification.","output":"Entra Batch 1 evidence merged into the growing evidence corpus."},
+{"overview":"The orchestrator dispatches Entra Batch 2 covering privileged roles, app registrations, and governance settings.","dataFlow":"Remaining Entra collectors query Graph API for PIM role assignments, app credential expiry, consent grants, and directory-level governance.","keyPoints":["PIM (Privileged Identity Management) data reveals who has elevated access","App registration collectors check credential expiry and excessive permissions","Governance collectors assess access reviews and entitlement management"],"whyItMatters":"Privileged access and app permissions are top attack vectors — these collectors surface the evidence needed to evaluate the highest-risk identity controls.","output":"Evidence from the final Entra collector batch."},
+{"overview":"Entra Batch 2 collectors return their final evidence arrays, completing the identity collection phase.","dataFlow":"Role assignment data, app registration metadata, and governance configuration flow back to the orchestrator.","keyPoints":["All 17 Entra collectors have now completed","Combined Entra evidence feeds identity, governance, and access control domains","Error summary captures any Graph API permission gaps"],"whyItMatters":"Complete Entra evidence ensures no identity-based compliance controls are left unassessed, which would create dangerous blind spots in the security evaluation.","output":"Full Entra evidence corpus ready for merging."},
+{"overview":"The orchestrator merges all Azure and Entra evidence into a unified store containing 200+ distinct evidence types.","dataFlow":"All EvidenceRecord objects from both domains are combined into a single ordered collection, deduplicated by type where applicable.","keyPoints":["200+ evidence types span Azure infrastructure, Entra identity, and cross-domain data","The merged store becomes the single source of truth for evaluation","A checkpoint is saved to disk after merging, enabling restart without re-collection"],"whyItMatters":"Merging evidence from both domains into one store enables cross-domain correlation during evaluation — critical for controls that span infrastructure and identity.","output":"A unified evidence store with 200+ types, checkpointed to disk."}
+]'>
+sequenceDiagram
+    participant U as User / Agent
+    participant O as postureiq_orchestrator.py
+    participant R as Registry
+    participant AZ as Azure Collectors (49)
+    participant EN as Entra Collectors (17)
+    participant EV as Evidence Store
+
+    U->>O: run_full_assessment(creds, config)
+    O->>R: discover_collectors()
+    R-->>O: 49 Azure + 17 Entra functions
+
+    par Azure Collection (batch_size=8)
+        O->>AZ: Batch 1: resources, rbac, policy, diagnostics...
+        AZ-->>O: evidence[] + timings
+        O->>AZ: Batch 2: activity_logs, security, network...
+        AZ-->>O: evidence[] + timings
+        O->>AZ: Batch N: remaining collectors
+        AZ-->>O: evidence[] + timings
+    and Entra Collection (batch_size=6)
+        O->>EN: Batch 1: tenant, users, user_details, CA...
+        EN-->>O: evidence[] + timings
+        O->>EN: Batch 2: roles, apps, governance...
+        EN-->>O: evidence[] + timings
+    end
+
+    O->>EV: Merge all evidence (200+ types)
+    Note over O,EV: Checkpoint saved after collection
+</div>
+<div class="diagram-explanation">
+<strong>How collection works:</strong>
+<ol>
+<li><strong>Discovery</strong> — <code>discover_collectors()</code> walks <code>collectors/azure/</code> and <code>collectors/entra/</code>, importing each module which triggers <code>@register_collector</code> decorators</li>
+<li><strong>Concurrent groups</strong> — Azure and Entra collector groups run in parallel via <code>asyncio.gather()</code></li>
+<li><strong>Batched execution</strong> — Within each group, collectors run in batches (default: 8 Azure, 6 Entra) to avoid API throttling</li>
+<li><strong>Error isolation</strong> — Each collector catches exceptions independently; failures produce access-denied markers, not pipeline failures</li>
+<li><strong>Checkpoint resume</strong> — After each batch, a checkpoint file is saved so interrupted assessments can resume</li>
+</ol>
+</div>
+</div>
+
+<div class="diagram-container">
+<div class="diagram-title">Evaluation Pipeline</div>
+<div class="mermaid" data-seq-details='[
+{"overview":"The evidence store passes all collected evidence along with framework selections to the evaluation engine for compliance analysis.","dataFlow":"The full evidence array and framework identifiers (e.g., NIST-800-53, CIS-Azure) are passed to postureiq_evaluators/engine.py via evaluate_all().","keyPoints":["Multiple frameworks can be evaluated in a single pass","Evidence is shared across frameworks to avoid redundant processing","The engine accepts both built-in and custom framework definitions"],"whyItMatters":"Single-pass multi-framework evaluation means one evidence collection run can satisfy compliance requirements across NIST, CIS, ISO, and any custom frameworks simultaneously.","output":"The evaluation engine begins processing with the full evidence set."},
+{"overview":"The engine indexes all evidence by type, building a hash map for O(1) lookups during control evaluation.","dataFlow":"The flat evidence array is transformed into a dictionary where keys are evidence-type strings and values are arrays of matching records.","keyPoints":["One-time O(n) indexing enables O(1) access for every subsequent lookup","Evidence types follow naming conventions like azure_nsg_rules or entra_conditional_access","The index is reused across all frameworks and controls"],"whyItMatters":"With 200+ evidence types and hundreds of controls, linear scanning would be prohibitively slow. Indexing makes evaluation speed independent of evidence volume.","output":"An indexed evidence dictionary ready for fast control evaluation."},
+{"overview":"For each selected framework, the engine loads the JSON mapping file that defines controls, expected evidence types, and evaluation thresholds.","dataFlow":"Framework JSON files from the postureiq_frameworks/ directory are loaded and parsed into control definition arrays.","keyPoints":["11 built-in frameworks cover standards like NIST, CIS, ISO, SOC 2, and more","Each control definition specifies domain, evidence_types, thresholds, and severity","Custom framework JSON files can be added without code changes"],"whyItMatters":"Declarative framework definitions in JSON separate compliance knowledge from evaluation code — framework updates require zero Python changes.","output":"Parsed control definitions for the current framework iteration."},
+{"overview":"The framework file returns control definitions with their mapped evidence types back to the engine.","dataFlow":"An array of control objects, each with control_id, domain, evidence_types array, threshold conditions, and severity classification flows back.","keyPoints":["Each control maps to one or more evidence types for evaluation","Threshold conditions define pass/fail criteria (boolean, numeric, pattern)","Severity classifications (critical/high/medium/low) feed weighted scoring"],"whyItMatters":"The mapping between controls and evidence types is what makes evaluation deterministic and auditable — every result traces back to specific data and criteria.","output":"Control definitions ready for domain-based dispatch."},
+{"overview":"For each control, the engine dispatches evaluation to the appropriate domain evaluator based on the control domain field.","dataFlow":"The control definition is routed to the matching evaluator module (e.g., identity_evaluator, network_evaluator) along with the evidence index.","keyPoints":["10 domain evaluators cover identity, network, encryption, logging, governance, and more","Dispatch uses a registry pattern for clean separation of evaluation logic","Each evaluator is independently testable and maintainable"],"whyItMatters":"Domain-based dispatch organizes 120+ check functions into focused, expert modules — making the system maintainable as new controls are added.","output":"The domain evaluator begins processing the control with indexed evidence."},
+{"overview":"The domain evaluator checks the indexed evidence against the control thresholds to determine compliance status.","dataFlow":"Relevant evidence records are fetched by type from the index, then threshold conditions are evaluated (e.g., MFA enabled for all admins, encryption at rest enforced).","keyPoints":["Threshold evaluation supports boolean, percentage, and regex pattern matching","Multi-evidence controls require ALL specified evidence types to be present","Every evaluation produces a deterministic result for the same input data"],"whyItMatters":"Deterministic threshold evaluation is essential for compliance — the same evidence must always produce the same finding, enabling reliable trend tracking over time.","output":"A preliminary compliance status for the control."},
+{"overview":"When primary evidence for a control is unavailable, the evaluator attempts to use compensating evidence as a fallback.","dataFlow":"The control definition includes optional compensating_evidence types. The evaluator requests these alternatives from the evidence index.","keyPoints":["Compensating evidence prevents false not_assessed results when primary data is missing","Alternative evidence sources may satisfy the same control intent","All compensating evidence usage is logged for full audit transparency"],"whyItMatters":"Real environments often have evidence gaps due to permissions or service limitations. Compensating evidence maximizes assessment coverage without sacrificing accuracy.","output":"Alternative evidence for re-evaluation, or confirmation no compensation exists."},
+{"overview":"When a control remains not_assessed, the engine attempts cross-domain fallback by re-dispatching to an evaluator in a different domain.","dataFlow":"The _CROSS_DOMAIN_MAP routes the control to an alternate domain evaluator that may have relevant evidence for a second evaluation attempt.","keyPoints":["Cross-domain mapping catches controls at the intersection of multiple security areas","The fallback path is fully recorded in finding metadata for auditability","This is the final attempt before permanently marking a control as not_assessed"],"whyItMatters":"Cross-domain fallback increases assessment coverage by 5-10% by recognizing that some controls can be satisfied by evidence from related but different security domains.","output":"The control is re-dispatched to a different domain for evaluation."},
+{"overview":"The domain evaluator returns the final FindingRecord with compliance status for each control back to the engine.","dataFlow":"FindingRecord objects containing control_id, status (compliant/non_compliant/not_assessed), severity, evidence_references, and remediation guidance flow back.","keyPoints":["Every control produces exactly one FindingRecord regardless of evaluation path","Status options: compliant, non_compliant, not_assessed, or suppressed","Evidence references enable drill-down from findings to source data"],"whyItMatters":"The FindingRecord is the atomic unit of assessment output — consistent structure ensures all downstream consumers (reports, scoring, dashboards) work uniformly.","output":"FindingRecord objects accumulated for all controls across all frameworks."},
+{"overview":"The engine passes all FindingRecords to the scoring engine for severity-weighted compliance score calculation.","dataFlow":"Complete FindingRecord arrays grouped by framework and domain are sent to the scoring engine with severity weight configuration.","keyPoints":["Severity weights: critical = 4x, high = 3x, medium = 2x, low = 1x","Scoring is computed per-framework, per-domain, and overall","Suppressed and not_assessed findings are handled separately in scoring math"],"whyItMatters":"Severity-weighted scoring ensures a single critical failure impacts the score far more than multiple low findings — reflecting actual security risk rather than issue count.","output":"Scoring computation begins with weighted analysis."},
+{"overview":"The scoring engine returns per-domain compliance scores and an overall weighted score for each framework.","dataFlow":"Percentage scores per domain (identity: 87%, network: 92%, etc.) plus framework-level and global scores flow back to the evaluation engine.","keyPoints":["Per-domain scores reveal which security areas need the most attention","Overall scores provide executive-level compliance summaries","Score deltas from previous assessments enable trend tracking"],"whyItMatters":"Granular per-domain scoring enables targeted remediation — teams can focus resources on the domains with the lowest scores rather than addressing findings randomly.","output":"Complete scoring data ready for report generation."}
+]'>
+sequenceDiagram
+    participant EV as Evidence Store
+    participant ENG as postureiq_evaluators/engine.py
+    participant FW as Framework Mappings (11)
+    participant DOM as Domain Evaluators (10)
+    participant SC as Scoring Engine
+
+    EV->>ENG: evaluate_all(evidence, frameworks)
+    ENG->>ENG: _index_evidence() → O(1) lookup by type
+
+    loop For each framework
+        ENG->>FW: Load JSON mapping (controls + domains)
+        FW-->>ENG: Control definitions with evidence_types
+
+        loop For each control
+            ENG->>DOM: Dispatch to domain evaluator
+            DOM->>DOM: Check evidence against thresholds
+            alt Primary evidence missing
+                DOM->>ENG: Try compensating_evidence
+            end
+            alt Status = not_assessed
+                ENG->>DOM: Cross-domain fallback
+            end
+            DOM-->>ENG: FindingRecord[] + status
+        end
+    end
+
+    ENG->>SC: Severity-weighted scoring
+    Note over SC: critical=4, high=3, medium=2, low=1
+    SC-->>ENG: Per-domain scores + overall score
+</div>
+<div class="diagram-explanation">
+<strong>How evaluation works:</strong>
+<ol>
+<li><strong>Evidence indexing</strong> — All evidence records are indexed by <code>EvidenceType</code> into a dict for O(1) lookup</li>
+<li><strong>Framework loading</strong> — 11 JSON mapping files define controls with <code>domain</code>, <code>evidence_types</code>, <code>handler</code>, and <code>compensating_evidence</code></li>
+<li><strong>Domain dispatch</strong> — <code>DOMAIN_EVALUATORS</code> maps each domain to its evaluator module (10 domains → 113 check functions)</li>
+<li><strong>Cross-domain fallback</strong> — If primary evaluator returns <code>not_assessed</code>, <code>_CROSS_DOMAIN_MAP</code> re-dispatches (e.g., storage_security → network)</li>
+<li><strong>Scoring</strong> — Severity-weighted with partial credit (50%); <code>missing_evidence</code> excluded from compliance percentage</li>
+</ol>
+</div>
+</div>
+
+<div class="diagram-container">
+<div class="diagram-title">Agent Tool Invocation Flow</div>
+<div class="mermaid" data-seq-details='[
+{"overview":"The user sends a natural language request to the Microsoft Foundry platform, describing what security assessment or query they want to perform.","dataFlow":"A free-text message (e.g., Run a NIST assessment on my tenant or Show me risky service principals) is sent to the Foundry chat interface.","keyPoints":["Natural language eliminates the need to know CLI commands or API parameters","Foundry supports multi-turn conversations for refining requests","The request is interpreted by the Foundry LLM before reaching the agent"],"whyItMatters":"Natural language access democratizes security assessment — compliance officers, managers, and developers can all run assessments without learning the tool CLI.","output":"A natural language request delivered to the Foundry platform for processing."},
+{"overview":"Microsoft Foundry interprets the request and selects the appropriate agent tool function to invoke, mapping natural language intent to a specific capability.","dataFlow":"The Foundry LLM analyzes the request, matches it to one of the defined tool functions (run_postureiq_assessment, search_tenant, analyze_risk, etc.), and calls it with extracted parameters.","keyPoints":["Tool selection is based on the agent.yaml tool definitions and descriptions","Parameters are automatically extracted from natural language (e.g., framework name, resource type)","Multi-step requests may chain multiple tool invocations"],"whyItMatters":"Automatic tool selection means users do not need to know which function to call — the AI maps intent to capability, reducing the learning curve to near zero.","output":"A specific tool function call with extracted parameters."},
+{"overview":"The selected agent tool initializes credentials by creating a ComplianceCredentials object for Azure and Microsoft Graph API access.","dataFlow":"The agent calls ComplianceCredentials() which wraps the Azure Identity SDK credential chain for both ARM and Graph endpoints.","keyPoints":["ComplianceCredentials provides a unified wrapper for both Azure ARM and Microsoft Graph clients","The credential object is created fresh for each tool invocation to ensure token validity","Managed Identity is the preferred credential source in production"],"whyItMatters":"Centralized credential management ensures all API calls use the same authenticated context, preventing partial-authentication failures mid-assessment.","output":"A ComplianceCredentials request sent to the authentication subsystem."},
+{"overview":"The ComplianceCredentials class initializes DefaultAzureCredential, which tries multiple authentication methods in order until one succeeds.","dataFlow":"DefaultAzureCredential attempts: Managed Identity, Azure CLI, Visual Studio, environment variables, and interactive browser — in that priority order.","keyPoints":["DefaultAzureCredential provides zero-config authentication in most environments","In production (Azure), Managed Identity is used automatically","In development, Azure CLI or VS Code credentials are preferred"],"whyItMatters":"The credential chain eliminates hardcoded secrets and adapts automatically to the execution environment — production uses Managed Identity, developers use CLI tokens.","output":"Successfully authenticated credential object."},
+{"overview":"The initialized credentials are returned to the agent, providing both ARM and Graph API clients ready for use.","dataFlow":"Two pre-configured API clients flow back: one for Azure Resource Manager operations and one for Microsoft Graph queries.","keyPoints":["ARM client enables queries against Azure subscriptions, resource groups, and resources","Graph client enables queries against Entra ID (users, groups, policies, roles)","Both clients have automatic retry and rate-limit handling built in"],"whyItMatters":"Pre-configured clients with retry logic ensure resilient API communication throughout the assessment, even under rate-limiting conditions.","output":"Authenticated ARM and Graph clients ready for evidence collection."},
+{"overview":"For run_postureiq_assessment: the agent dispatches all 68 collectors (Azure ARM + Microsoft Graph) to gather comprehensive tenant evidence.","dataFlow":"49 Azure collectors query ARM APIs for infrastructure evidence; 17 Entra collectors query Graph APIs for identity evidence; 2 cross-domain collectors handle overlapping areas.","keyPoints":["Collectors run in concurrent batches to maximize throughput","Each collector targets specific evidence types (NSG rules, CA policies, role assignments, etc.)","Collection phase takes 2-5 minutes depending on tenant size"],"whyItMatters":"Comprehensive evidence collection is the foundation of accurate compliance assessment — missing evidence leads to missing findings and false sense of security.","output":"Collection requests dispatched to Azure and Graph APIs."},
+{"overview":"Azure ARM and Microsoft Graph APIs return raw evidence data from all 68 collectors.","dataFlow":"JSON responses containing resource configurations, policy states, user attributes, role assignments, and more flow back to the agent.","keyPoints":["Evidence is automatically typed and tagged for efficient indexing","Failed API calls return error metadata without blocking other collectors","Large result sets are automatically paginated and merged"],"whyItMatters":"Raw API evidence provides the ground truth for compliance evaluation — every finding traces back to actual Azure/Entra configuration data.","output":"Complete raw evidence corpus from all 68 collectors."},
+{"overview":"The agent runs evaluate_all() on the collected evidence, applying all selected compliance frameworks to produce findings.","dataFlow":"Evidence is indexed by type, then each framework control is evaluated via domain dispatch, producing FindingRecord objects with compliance statuses.","keyPoints":["Multi-framework evaluation in a single pass (NIST, CIS, ISO, etc.)","Severity-weighted scoring produces per-domain and overall scores","Deterministic evaluation ensures reproducible results"],"whyItMatters":"In-process evaluation means the AI Agent delivers complete compliance results in a single conversation turn — no need to wait for separate batch processing.","output":"FindingRecord arrays with compliance statuses and severity scores."},
+{"overview":"The agent runs report generators to create formatted output from the evaluation results.","dataFlow":"FindingRecords and scores are passed to report generators that produce HTML dashboards, JSON/SARIF for CI/CD, Excel for auditors, and other formats.","keyPoints":["Report format is determined by the assessment configuration","HTML reports include interactive charts and expandable finding details","SARIF output integrates directly with GitHub Code Scanning"],"whyItMatters":"Rich formatted reports make findings actionable for different audiences — executives see dashboards, engineers see specific findings, auditors see formal evidence.","output":"Formatted reports in the requested output formats."},
+{"overview":"The agent returns a Markdown-formatted summary of the assessment results to Microsoft Foundry for display to the user.","dataFlow":"A concise Markdown summary with overall score, top findings by severity, domain breakdown, and links to full reports flows back to Foundry.","keyPoints":["Markdown format renders natively in the Foundry chat interface","Summary highlights the most critical findings requiring immediate attention","Full detailed reports are saved to the output directory for download"],"whyItMatters":"A conversational summary makes results immediately consumable — the user gets actionable intelligence without opening separate report files.","output":"Markdown assessment summary delivered to the Foundry chat."},
+{"overview":"For search_tenant: the agent executes an Azure Resource Graph (ARG) KQL query or Microsoft Graph query based on the search intent.","dataFlow":"The natural language request is translated into a KQL query (for Azure resources) or a Graph API query (for identity objects), then executed against the tenant.","keyPoints":["ARG KQL queries can search across all subscriptions in the tenant","Graph queries target users, groups, apps, roles, and policies","Query results are automatically paginated for large result sets"],"whyItMatters":"Direct tenant search enables real-time investigation — users can explore their Azure and Entra environments with natural language without writing KQL or Graph queries.","output":"Query dispatched to Azure Resource Graph or Microsoft Graph API."},
+{"overview":"The API returns query results matching the search criteria.","dataFlow":"Resource records, user objects, policy configurations, or other matching entities flow back from the ARG or Graph API.","keyPoints":["Results include full resource properties for detailed inspection","ARG results span all subscriptions the credential has access to","Graph results respect directory-level permissions and scoping"],"whyItMatters":"Complete query results enable thorough investigation — partial results could miss critical resources or identity objects that need attention.","output":"Full query result set ready for formatting."},
+{"overview":"The agent formats the search results and returns them to Microsoft Foundry for display.","dataFlow":"Raw query results are transformed into a readable Markdown table or structured list with key properties highlighted.","keyPoints":["Results are formatted for readability in the Foundry chat interface","Large result sets are summarized with option to export full data","Key properties (name, type, location, status) are highlighted"],"whyItMatters":"Formatted results provide immediate insight without requiring the user to parse raw JSON — enabling faster investigation and decision-making.","output":"Formatted search results delivered to the Foundry chat."},
+{"overview":"For analyze_risk: the agent performs targeted evidence collection focused on known risk indicators and threat patterns.","dataFlow":"Instead of running all 68 collectors, the agent selectively invokes collectors relevant to risk assessment — privileged roles, stale accounts, excessive permissions, exposed services.","keyPoints":["Targeted collection is faster than a full assessment (30-60 seconds vs. 2-5 minutes)","Risk-specific collectors focus on high-impact areas: identity, exposure, and configuration drift","Collection scope adapts based on the specific risk question asked"],"whyItMatters":"Targeted collection enables rapid risk answers during incident response or ad-hoc security reviews without the overhead of a full compliance assessment.","output":"Risk-focused evidence collection dispatched to relevant APIs."},
+{"overview":"APIs return risk-relevant indicators including privileged access data, exposure metrics, and configuration anomalies.","dataFlow":"Evidence specifically relevant to risk scoring flows back: over-privileged accounts, public endpoints, missing encryption, stale credentials, and similar risk signals.","keyPoints":["Risk indicators are categorized by threat type (privilege escalation, data exposure, lateral movement)","Each indicator includes current state and recommended baseline","Historical comparison data enables trend detection when available"],"whyItMatters":"Focused risk indicators surface the most dangerous conditions in the tenant — the data that would take hours to find manually through Azure Portal.","output":"Risk indicator evidence ready for severity scoring."},
+{"overview":"The agent applies severity scoring to the collected risk indicators, producing a prioritized risk analysis.","dataFlow":"Each risk indicator is scored based on severity (critical/high/medium/low), blast radius (how many resources affected), and exploitability (how easy to exploit).","keyPoints":["Three-dimensional scoring: severity, blast radius, and exploitability","Risk scores are calibrated against industry benchmarks and known attack patterns","The highest-scored risks are flagged for immediate attention"],"whyItMatters":"Multi-dimensional risk scoring goes beyond simple pass/fail — it reveals which risks are most likely to be exploited and would cause the most damage.","output":"Scored and prioritized risk analysis results."},
+{"overview":"The agent returns a formatted risk analysis report to Microsoft Foundry for display to the user.","dataFlow":"A Markdown risk report with severity-ranked findings, risk scores, affected resources, and remediation recommendations flows back to Foundry.","keyPoints":["Risk findings are ranked by composite risk score (severity x blast radius x exploitability)","Each finding includes specific remediation steps and Azure Portal deep links","Critical risks are highlighted with clear urgency indicators"],"whyItMatters":"Actionable risk reports enable immediate response — security teams can start remediation on the highest-risk items directly from the chat conversation.","output":"Risk analysis report delivered to the Foundry chat."},
+{"overview":"Microsoft Foundry delivers the formatted response (assessment summary, search results, or risk analysis) back to the user in the chat interface.","dataFlow":"The agent response (Markdown formatted) is rendered in the Foundry chat UI with proper formatting, tables, links, and highlighting.","keyPoints":["Foundry renders Markdown with full formatting support","Users can ask follow-up questions to drill deeper into results","The conversation context is maintained for multi-turn investigations"],"whyItMatters":"The final conversational delivery completes the natural language security assessment loop — from question to actionable answer in a single chat interaction.","output":"Formatted security intelligence displayed to the user in the Foundry chat."}
+]'>
+sequenceDiagram
+    participant User as User
+    participant F as Microsoft Foundry
+    participant A as agent.py (TOOLS)
+    participant CR as ComplianceCredentials
+    participant API as Azure ARM / MS Graph
+
+    User->>F: Natural language request
+    F->>A: Select and call tool function
+    A->>CR: ComplianceCredentials()
+    CR->>CR: DefaultAzureCredential
+    CR-->>A: ARM client + Graph client
+
+    alt run_postureiq_assessment
+        A->>API: 68 collectors (ARM + Graph)
+        API-->>A: Raw evidence
+        A->>A: evaluate_all() → findings
+        A->>A: Generate reports
+        A-->>F: Markdown summary
+    else search_tenant
+        A->>API: ARG KQL or Graph query
+        API-->>A: Results
+        A-->>F: Formatted results
+    else analyze_risk
+        A->>API: Targeted evidence collection
+        API-->>A: Risk indicators
+        A->>A: Severity scoring
+        A-->>F: Risk analysis report
+    end
+
+    F-->>User: Formatted response
+</div>
+<div class="diagram-explanation">
+<strong>How agent tools work:</strong>
+<ol>
+<li><strong>Tool registration</strong> — Each tool is an <code>async</code> function with <code>Annotated</code> type hints, registered in the <code>TOOLS</code> list</li>
+<li><strong>Authentication</strong> — <code>ComplianceCredentials</code> creates a unified credential for both ARM and Graph operations</li>
+<li><strong>Session state</strong> — Assessment results are cached in <code>_session_state</code> (thread-safe with <code>asyncio.Lock</code>)</li>
+<li><strong>Evidence reuse</strong> — Risk analysis and data security tools reuse cached evidence when available</li>
+</ol>
+</div>
+</div>
+</section>
+
+<!-- ═══════════ 3. Azure Control Plane ═══════════ -->
+<section class="section" id="azure-control">
+<div class="section-header"><div class="section-icon blue">☁️</div><h2>Azure Resource Coverage — Control Plane</h2></div>
+<p class="section-desc">39 registered control-plane collectors via <code>@register_collector</code>. All use read-only ARM SDK methods (<code>list()</code>, <code>get()</code>). Sorted by priority (lower = runs earlier).</p>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">1</span> Resources &amp; Management Groups <span class="priority-badge p10">P10</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/resources.py</span></p>
+<div class="table-wrap"><table class="data-table"><thead><tr><th>Resource Type</th><th>SDK Method</th><th>Evidence Type</th></tr></thead><tbody>
+<tr><td>Management Groups</td><td><code>ManagementGroupsAPI.management_groups.list()</code></td><td><span class="evidence-tag">azure-resource</span></td></tr>
+<tr><td>Resource Groups</td><td><code>ResourceManagementClient.resource_groups.list()</code></td><td><span class="evidence-tag">azure-resource-group</span></td></tr>
+<tr><td>All ARM Resources</td><td><code>ResourceManagementClient.resources.list()</code></td><td><span class="evidence-tag">azure-resource</span></td></tr>
+</tbody></table></div>
+<p class="data-collected"><strong>Data Collected:</strong> Resource names, types, locations, tags, resource group membership, management group hierarchy.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">2</span> RBAC <span class="priority-badge p20">P20</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/rbac.py</span></p>
+<div class="table-wrap"><table class="data-table"><thead><tr><th>Resource Type</th><th>SDK Method</th><th>Evidence Type</th></tr></thead><tbody>
+<tr><td>Role Assignments</td><td><code>AuthorizationManagementClient.role_assignments.list_for_subscription()</code></td><td><span class="evidence-tag">azure-role-assignment</span></td></tr>
+<tr><td>Role Definitions</td><td><code>AuthorizationManagementClient.role_definitions.get_by_id()</code></td><td><span class="evidence-tag">azure-role-assignment</span></td></tr>
+</tbody></table></div>
+<p class="data-collected"><strong>Data Collected:</strong> Role name, principal type, scope level (MG/Sub/RG/Resource), privileged flag, custom flag. 19 privileged role names tracked. Cached role definition resolution to avoid N+1 API calls.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">3</span> Azure Policy <span class="priority-badge p30">P30</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/policy.py</span></p>
+<div class="table-wrap"><table class="data-table"><thead><tr><th>Resource Type</th><th>SDK Method</th><th>Evidence Type</th></tr></thead><tbody>
+<tr><td>Policy Assignments</td><td><code>PolicyClient.policy_assignments.list()</code></td><td><span class="evidence-tag">azure-policy-assignment</span></td></tr>
+<tr><td>Policy Definitions</td><td><code>PolicyClient.policy_definitions.list()</code></td><td><span class="evidence-tag">azure-policy-definition</span></td></tr>
+</tbody></table></div>
+<p class="data-collected"><strong>Data Collected:</strong> Enforcement mode, policy vs. initiative distinction, display name, policy type (BuiltIn/Custom).</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">4</span> Diagnostic Settings <span class="priority-badge p10">P40</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/diagnostics.py</span> — Scans 17 resource types for diagnostic configuration</p>
+<p class="data-collected"><strong>Evidence:</strong> <span class="evidence-tag">azure-diagnostic-setting</span><br><strong>Data Collected:</strong> Whether diagnostics are configured per resource, Log Analytics workspace destination, storage/Event Hub destinations. Covers KeyVault, NSGs, AppGateway, SQL, Storage, WebApps, VMs, AKS, Firewall, LB, PublicIP, VNetGW, CDN, EventHub, ServiceBus, IoTHub, ACR.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">5</span> Activity Logs &amp; Resource Locks <span class="priority-badge p10">P50</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/activity_logs.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-activity-log</span> <span class="evidence-tag">azure-activity-event</span> <span class="evidence-tag">azure-resource-lock</span><br>
+<strong>Data Collected:</strong> 90-day activity log events, failed operations, write/delete operations, caller details, timestamps. Resource lock levels (CanNotDelete/ReadOnly).</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">6</span> Security &amp; Key Vault <span class="priority-badge p10">P60</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/security.py</span> — Includes data-plane vault expiry audit</p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-keyvault</span> <span class="evidence-tag">azure-keyvault-secret-expiry</span> <span class="evidence-tag">azure-keyvault-cert-expiry</span> <span class="evidence-tag">azure-keyvault-key-expiry</span> <span class="evidence-tag">azure-managed-identity</span><br>
+<strong>Data Collected:</strong> Soft-delete, purge protection, RBAC auth mode, network ACLs. Per-vault secret/cert/key expiry audit with 30-day warning window. Managed identity count.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">7</span> Network Security <span class="priority-badge p10">P70</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/network.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-nsg-rule</span> <span class="evidence-tag">azure-virtual-network</span> <span class="evidence-tag">azure-storage-security</span><br>
+<strong>Data Collected:</strong> NSG direction, access, priority, source/dest, internet-exposed ports. VNet address space, subnet count, DDoS protection. Storage HTTPS/TLS/blob access/shared key/network firewall.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">8</span> Network Expanded <span class="priority-badge p10">P71</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/network_expanded.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-firewall</span> <span class="evidence-tag">azure-route-table</span> <span class="evidence-tag">azure-nsg-flow-log</span><br>
+<strong>Data Collected:</strong> Firewall threat intel mode, SKU tier, rule collections. Route tables with default NVA routes, BGP. NSG flow logs with retention and traffic analytics.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">9</span> Policy Compliance <span class="priority-badge p10">P80</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/policy_compliance.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-policy-compliance</span><br>
+<strong>Data Collected:</strong> Compliant/non-compliant resource counts per policy, compliance state summaries.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">10</span> Defender Plans <span class="priority-badge p10">P90</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/defender_plans.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-defender-pricing</span> <span class="evidence-tag">azure-auto-provisioning</span> <span class="evidence-tag">azure-security-contact</span><br>
+<strong>Data Collected:</strong> Pricing tier (Free/Standard) per plan, auto-provisioning status, alert notification settings. 7 critical plans tracked.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">11</span> Defender Advanced <span class="priority-badge p10">P91</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/defender_advanced.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-secure-score</span> <span class="evidence-tag">azure-security-assessment</span> <span class="evidence-tag">azure-regulatory-compliance</span> <span class="evidence-tag">azure-jit-policy</span> <span class="evidence-tag">azure-security-alert</span><br>
+<strong>Data Collected:</strong> Secure score percentage, unhealthy assessments, regulatory standard pass rates, JIT access policies, security alerts.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">12</span> Microsoft Sentinel <span class="priority-badge p10">P92</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/sentinel.py</span> — 187 lines, full Sentinel audit</p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-sentinel-workspace</span> <span class="evidence-tag">azure-sentinel-connector</span> <span class="evidence-tag">azure-sentinel-rule</span> <span class="evidence-tag">azure-sentinel-incident</span> <span class="evidence-tag">azure-sentinel-automation</span> <span class="evidence-tag">azure-sentinel-watchlist</span><br>
+<strong>Data Collected:</strong> Connectors, analytics rules, incidents, automation rules, watchlists per workspace.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">13</span> Compute Resources <span class="priority-badge p10">P100</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/compute.py</span> — Parallel extension fetch with Semaphore(8)</p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-vm-config</span> <span class="evidence-tag">azure-webapp-config</span> <span class="evidence-tag">azure-sql-server</span> <span class="evidence-tag">azure-aks-cluster</span><br>
+<strong>Data Collected:</strong> VM disk encryption, managed identity, MDE extension, boot diag. WebApp HTTPS/TLS/FTP/managed identity. SQL AD admin/auditing/TDE. AKS RBAC/AAD/network policy/private cluster/Defender.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">14</span> Monitoring Infrastructure <span class="priority-badge p10">P110</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/monitoring.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-log-analytics</span> <span class="evidence-tag">azure-alert-rule</span> <span class="evidence-tag">azure-action-group</span><br>
+<strong>Data Collected:</strong> Workspace retention days, SKU, metric/activity/scheduled alerts, action group receivers (email, SMS, webhook).</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">15</span> Additional Services <span class="priority-badge p10">P120</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/additional_services.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-private-endpoint</span> <span class="evidence-tag">azure-recovery-vault</span> <span class="evidence-tag">azure-disk-encryption-set</span><br>
+<strong>Data Collected:</strong> Private endpoint connections, Recovery Services vault config, disk encryption set details.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">16</span> AI Services <span class="priority-badge p10">P130</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/ai_services.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-cognitive-account</span> <span class="evidence-tag">azure-ai-deployment</span> <span class="evidence-tag">azure-ml-workspace</span><br>
+<strong>Data Collected:</strong> Cognitive account SKU, kind, public network access. OpenAI deployment model names. ML workspace encryption and identity settings.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">17</span> Azure Functions <span class="priority-badge p10">P135</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/functions.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-function-app</span> <span class="evidence-tag">azure-function-detail</span> <span class="evidence-tag">azure-function-slot</span><br>
+<strong>Data Collected:</strong> HTTPS enforcement, TLS version, managed identity, runtime stack, CORS settings, deployment slot configurations.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">18</span> Storage Accounts <span class="priority-badge p10">P140</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/storage.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-storage-account</span><br>
+<strong>Data Collected:</strong> Encryption, soft delete, versioning, lifecycle management, blob service properties, infrastructure encryption.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">19</span> DNS &amp; Traffic Manager <span class="priority-badge p10">P140</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/dns.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-dns-zone</span> <span class="evidence-tag">azure-private-dns-zone</span> <span class="evidence-tag">azure-traffic-manager</span><br>
+<strong>Data Collected:</strong> Zone types, record set counts, Traffic Manager monitoring protocol, routing methods.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">20</span> Front Door &amp; CDN <span class="priority-badge p10">P142</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/frontdoor_cdn.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-front-door</span> <span class="evidence-tag">azure-waf-policy</span> <span class="evidence-tag">azure-cdn-profile</span> <span class="evidence-tag">azure-cdn-endpoint</span><br>
+<strong>Data Collected:</strong> WAF mode (Prevention/Detection), managed rule sets, custom rules, CDN origin security, HTTPS enforcement.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">21</span> Messaging (Service Bus &amp; Event Hubs) <span class="priority-badge p10">P145</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/messaging.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-servicebus-namespace</span> <span class="evidence-tag">azure-servicebus-queue</span> <span class="evidence-tag">azure-servicebus-topic</span> <span class="evidence-tag">azure-eventhub-namespace</span> <span class="evidence-tag">azure-eventhub</span><br>
+<strong>Data Collected:</strong> TLS version, local auth, public network access, private endpoints, Kafka support, auto-inflate.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">22</span> Containers (ACR &amp; Container Apps) <span class="priority-badge p10">P150</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/containers.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-container-registry</span> <span class="evidence-tag">azure-container-app</span><br>
+<strong>Data Collected:</strong> ACR trust, quarantine, retention, encryption. Container Apps ingress, VNet, managed identity.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">23</span> Data Analytics (Synapse, ADF, Databricks) <span class="priority-badge p10">P150</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/data_analytics.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-synapse-workspace</span> <span class="evidence-tag">azure-synapse-sql-pool</span> <span class="evidence-tag">azure-synapse-spark-pool</span> <span class="evidence-tag">azure-data-factory</span> <span class="evidence-tag">azure-databricks-workspace</span><br>
+<strong>Data Collected:</strong> Managed VNet, public access, CMK encryption, managed identity, no-public-IP policy (Databricks).</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">24</span> Redis, IoT Hub &amp; Logic Apps <span class="priority-badge p10">P155</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/redis_iot_logic.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-redis-cache</span> <span class="evidence-tag">azure-iot-hub</span> <span class="evidence-tag">azure-logic-app</span><br>
+<strong>Data Collected:</strong> TLS version, SSL enforcement, public access, private endpoints, shared access policies.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">25</span> Databases (CosmosDB, PostgreSQL, MySQL) <span class="priority-badge p10">P160</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/databases.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-cosmosdb-account</span> <span class="evidence-tag">azure-database-server</span><br>
+<strong>Data Collected:</strong> Cosmos DB consistency, public access, local auth, TLS, VNet filtering. PostgreSQL/MySQL flexible server config.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">26</span> AKS Deep Configuration <span class="priority-badge p10">P160</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/aks_in_cluster.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-aks-cluster-config</span> <span class="evidence-tag">azure-aks-addon</span> <span class="evidence-tag">azure-aks-node-pool</span><br>
+<strong>Data Collected:</strong> RBAC, AAD profile, network policy, private cluster, authorized IPs, Defender, OIDC issuer, auto-upgrade, node pool FIPS, encryption at host.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">27</span> Batch &amp; Container Instances <span class="priority-badge p10">P165</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/batch_aci.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-batch-account</span> <span class="evidence-tag">azure-container-instance</span><br>
+<strong>Data Collected:</strong> Pool allocation mode, encryption key source, authentication modes, container group OS type, IP type, VNet integration.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">28</span> Managed Disks &amp; Snapshots <span class="priority-badge p10">P170</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/managed_disks.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-managed-disk</span> <span class="evidence-tag">azure-snapshot</span> <span class="evidence-tag">azure-disk-encryption-set</span><br>
+<strong>Data Collected:</strong> Encryption type, DES ID, network access policy, public network access, auto key rotation.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">29</span> Purview &amp; DLP <span class="priority-badge p10">P170</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/purview_dlp.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-purview-account</span> <span class="evidence-tag">m365-sensitivity-label</span> <span class="evidence-tag">m365-dlp-sensitivity-label</span><br>
+<strong>Data Collected:</strong> Purview public network, managed resource group, sensitivity label priorities and tooltips.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">30</span> Application Gateway <span class="priority-badge p10">P170</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/app_gateway.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-app-gateway</span> <span class="evidence-tag">azure-waf-policy</span><br>
+<strong>Data Collected:</strong> Application Gateways + WAF policies.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">31</span> ML &amp; Cognitive Services Extended <span class="priority-badge p10">P175</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/ml_cognitive.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-ml-workspace</span> <span class="evidence-tag">azure-ml-compute</span> <span class="evidence-tag">azure-cognitive-account</span><br>
+<strong>Data Collected:</strong> HBI workspace, compute types, network ACLs, IP/VNet rules, private endpoint count, CMK.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">32</span> API Management <span class="priority-badge p10">P180</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/api_management.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-apim-instance</span><br>
+<strong>Data Collected:</strong> VNet type, client certificates, hostname configs, subscription requirements.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">33</span> Azure Arc &amp; Hybrid <span class="priority-badge p10">P180</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/arc_hybrid.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-arc-server</span> <span class="evidence-tag">azure-arc-extension</span> <span class="evidence-tag">azure-arc-kubernetes</span><br>
+<strong>Data Collected:</strong> Agent version, OS type/version, connectivity status, extension auto-upgrade, K8s distribution.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">34</span> SharePoint &amp; OneDrive <span class="priority-badge p10">P180</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/sharepoint_onedrive.py</span> — 366 lines, complex site enumeration</p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">spo-site-inventory</span> <span class="evidence-tag">spo-site-permissions</span> <span class="evidence-tag">spo-sharing-links</span> <span class="evidence-tag">spo-tenant-sharing-config</span> <span class="evidence-tag">spo-label-summary</span> plus warnings<br>
+<strong>Data Collected:</strong> Site enumeration, permissions, sharing links, tenant sharing config, label summary via Graph Sites API.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">35</span> M365 Sensitivity Labels <span class="priority-badge p10">P182</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/m365_sensitivity_labels.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">m365-sensitivity-label-definition</span> <span class="evidence-tag">m365-label-summary</span> <span class="evidence-tag">m365-label-policy-summary</span> <span class="evidence-tag">m365-dlp-label-integration</span><br>
+<strong>Data Collected:</strong> Sensitivity label definitions, policies, DLP integration.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">36</span> Copilot Studio <span class="priority-badge p10">P185</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/copilot_studio.py</span> — 370 lines, uses raw HTTP via aiohttp against Power Platform API</p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">pp-environment</span> <span class="evidence-tag">pp-dlp-policy</span> <span class="evidence-tag">copilot-studio-bot</span> <span class="evidence-tag">pp-custom-connector</span> <span class="evidence-tag">m365-copilot-settings</span> <span class="evidence-tag">m365-audit-config</span> <span class="evidence-tag">copilot-studio-summary</span><br>
+<strong>Data Collected:</strong> Power Platform environments, DLP policies, Copilot Studio bots, custom connectors, M365 Copilot settings.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">37</span> Backup &amp; Disaster Recovery <span class="priority-badge p10">P185</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/backup_dr.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-recovery-vault</span> <span class="evidence-tag">azure-backup-policy</span> <span class="evidence-tag">azure-backup-item</span><br>
+<strong>Data Collected:</strong> Vault encryption, immutability, soft delete, cross-region restore, storage redundancy, backup health status.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">38</span> Foundry Configuration <span class="priority-badge p10">P188</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/foundry_config.py</span> — <strong>1,081 lines</strong>, largest collector. Uses SDK + raw ARM REST for Foundry-specific APIs.</p>
+<p><strong>Evidence (16 types):</strong> <span class="evidence-tag">azure-ai-service</span> <span class="evidence-tag">azure-ai-workspace</span> <span class="evidence-tag">azure-openai-deployment</span> <span class="evidence-tag">azure-openai-content-filter</span> <span class="evidence-tag">azure-ai-compute</span> <span class="evidence-tag">azure-ai-datastore</span> <span class="evidence-tag">azure-ai-endpoint</span> <span class="evidence-tag">azure-ai-connection</span> <span class="evidence-tag">azure-ai-serverless-endpoint</span> <span class="evidence-tag">azure-ai-workspace-diagnostics</span> <span class="evidence-tag">azure-ai-registry</span> <span class="evidence-tag">foundry-project</span> <span class="evidence-tag">foundry-agent-application</span> <span class="evidence-tag">foundry-agent-deployment</span> <span class="evidence-tag">foundry-capability-host</span> <span class="evidence-tag">foundry-config-summary</span><br>
+<strong>Data Collected:</strong> AI Services, workspaces, OpenAI deployments + content filters, compute, datastores, endpoints, connections, registries, Foundry projects + agent applications + deployments + capability hosts.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">39</span> Cost &amp; Billing <span class="priority-badge p10">P190</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/cost_billing.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-budget</span> <span class="evidence-tag">azure-advisor-cost-recommendation</span><br>
+<strong>Data Collected:</strong> Budget amount, time grain, current spend, notification thresholds, cost savings impact.</p>
+</div>
+</details>
+</section>
+
+<!-- ═══════════ 4. Azure Data Plane ═══════════ -->
+<section class="section" id="azure-data">
+<div class="section-header"><div class="section-icon orange">🔑</div><h2>Azure Resource Coverage — Data Plane</h2></div>
+<p class="section-desc">8 registered data-plane collectors for deep sub-resource auditing. These access resource-specific APIs beyond ARM management plane.</p>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">40</span> Storage Data Plane <span class="priority-badge p10">P200</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/storage_data_plane.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-storage-container</span><br>
+<strong>Data Collected:</strong> Blob container enumeration per storage account, public access levels.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">41</span> SQL Server Detailed <span class="priority-badge p10">P210</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/sql_detailed.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-sql-detailed</span><br>
+<strong>Data Collected:</strong> Vulnerability assessment, advanced threat protection, TDE protectors, auditing, firewall rules per server.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">42</span> AI Content Safety <span class="priority-badge p10">P210</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/ai_content_safety.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-ai-deployment-safety</span> <span class="evidence-tag">azure-ai-governance</span> <span class="evidence-tag">azure-content-safety-blocklist</span><br>
+<strong>Data Collected:</strong> Content filter presence per AI deployment, blocklist enumeration via REST data-plane.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">43</span> CosmosDB Data Plane <span class="priority-badge p10">P215</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/cosmosdb_data_plane.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-cosmosdb-account</span> <span class="evidence-tag">azure-cosmosdb-database</span> <span class="evidence-tag">azure-cosmosdb-container</span> <span class="evidence-tag">azure-cosmosdb-role-assignment</span><br>
+<strong>Data Collected:</strong> Databases, containers, partition keys, indexing policies, TTL, RBAC role assignments via REST.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">44</span> WebApp Detailed <span class="priority-badge p10">P220</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/webapp_detailed.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-webapp-detailed</span><br>
+<strong>Data Collected:</strong> Auth settings, IP restrictions, CORS configuration, connection strings per web app.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">45</span> APIM Data Plane <span class="priority-badge p10">P220</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/apim_data_plane.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-apim-service</span> <span class="evidence-tag">azure-apim-api</span> <span class="evidence-tag">azure-apim-product</span> <span class="evidence-tag">azure-apim-subscription</span> <span class="evidence-tag">azure-apim-certificate</span> <span class="evidence-tag">azure-apim-named-value</span> <span class="evidence-tag">azure-apim-backend</span><br>
+<strong>Data Collected:</strong> APIs, products, subscriptions, certificates, named values, backends per APIM instance.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">46</span> RDBMS Detailed (PostgreSQL/MySQL) <span class="priority-badge p10">P230</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/rdbms_detailed.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-database-config</span><br>
+<strong>Data Collected:</strong> Firewall rules, server parameters per PostgreSQL/MySQL flexible server.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num azure">47</span> ACR Data Plane <span class="priority-badge p10">P240</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/azure/acr_data_plane.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">azure-acr-repository</span><br>
+<strong>Data Collected:</strong> Repository-level ACR audit via data-plane SDK (ContainerRegistryClient).</p>
+</div>
+</details>
+</section>
+
+<!-- ═══════════ M365 Compliance (registered as Entra) ═══════════ -->
+<div class="info-box blue" style="max-width:var(--max-width);margin:0 auto 24px;padding:0 32px;box-sizing:content-box">
+<strong>Note:</strong> 5 M365 compliance collectors live in <code>azure/m365_compliance.py</code> but register with <code>source="entra"</code> — they participate in the Entra pipeline. Evidence types: <code>m365-label-analytics</code>, <code>m365-dlp-alert-metrics</code>, <code>m365-retention-label/summary</code>, <code>m365-irm-status/settings</code>, <code>m365-ediscovery-case/summary</code>.
+</div>
+
+<!-- ═══════════ 5. Standalone ═══════════ -->
+<section class="section" id="standalone">
+<div class="section-header"><div class="section-icon cyan">🔧</div><h2>Standalone Collectors (Not Auto-Registered)</h2></div>
+<p class="section-desc">2 collectors that are intentionally NOT part of the auto-discovery pipeline. They are called directly by specific engines.</p>
+
+<details class="collector-card" open>
+<summary><span class="coll-num azure">S1</span> RBAC Collector — <code>rbac_orchestrator.py</code></summary>
+<div class="collector-card-body">
+<p>Called directly by <code>run_rbac_report.py</code> and the <code>generate_rbac_report</code> agent tool. Uses <code>rbac_evaluators/</code> for modular evaluation. Returns a hierarchical tree (not flat evidence).</p>
+<p><strong>6-Phase Process:</strong></p>
+<ol style="color:var(--text-secondary);font-size:.88rem;line-height:1.8;margin-left:20px">
+<li>Build management group tree</li>
+<li>MG-level assignments + PIM eligibility</li>
+<li>Per-subscription assignments + RGs + resources</li>
+<li>Attach subscriptions to MG tree</li>
+<li>Resolve principal display names via Graph <code>getByIds</code> (batch 1000)</li>
+<li>Expand group memberships (transitive members)</li>
+</ol>
+</div>
+</details>
+
+<details class="collector-card" open>
+<summary><span class="coll-num entra">S2</span> AI Identity Collector — <code>ai_identity.py</code> (419 lines)</summary>
+<div class="collector-card-body">
+<p>Called directly by the AI Agent Security engine. Identifies AI-related service principals using Microsoft AI app IDs + display name heuristics.</p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">entra-ai-service-principal</span> <span class="evidence-tag">entra-ai-consent-grant</span> <span class="evidence-tag">entra-cross-tenant-policy</span></p>
+</div>
+</details>
+</section>
+
+<!-- ═══════════ 6. Entra ID ═══════════ -->
+<section class="section" id="entra">
+<div class="section-header"><div class="section-icon purple">🔐</div><h2>Microsoft Entra ID Resource Coverage</h2></div>
+<p class="section-desc">12 registered Entra collectors via Microsoft Graph API (all read-only GET requests). Plus 5 M365 compliance collectors.</p>
+
+<details class="collector-card">
+<summary><span class="coll-num entra">1</span> Tenant &amp; Organization <span class="priority-badge p10">P10</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/entra/tenant.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">entra-tenant-info</span><br>
+<strong>Data Collected:</strong> Tenant ID, display name, verified domains, license plans (P1/P2 detection), on-premises sync status.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num entra">2</span> Users &amp; Groups <span class="priority-badge p20">P20</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/entra/users.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">entra-user-summary</span> <span class="evidence-tag">entra-group-summary</span><br>
+<strong>Data Collected:</strong> Total users, member vs. guest, synced, enabled/disabled, guest-to-member ratio, group counts.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num entra">3</span> User Details &amp; MFA <span class="priority-badge p30">P30</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/entra/user_details.py</span> — 241 lines, custom pagination</p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">entra-user-detail</span> <span class="evidence-tag">entra-user-lifecycle-summary</span> <span class="evidence-tag">entra-mfa-registration</span> <span class="evidence-tag">entra-mfa-summary</span> <span class="evidence-tag">entra-oauth2-grant</span><br>
+<strong>Data Collected:</strong> Per-user stale status (90-day threshold), sign-in activity, MFA registration stats, default MFA method, OAuth2 grants with scope analysis.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num entra">4</span> Conditional Access <span class="priority-badge p10">P40</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/entra/conditional_access.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">entra-conditional-access-policy</span><br>
+<strong>Data Collected:</strong> State (enabled/disabled/report-only), MFA requirement, device compliance, target users/groups/roles, grant/session controls.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num entra">5</span> Directory Roles &amp; PIM <span class="priority-badge p10">P50</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/entra/roles.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">entra-role-definition</span> <span class="evidence-tag">entra-role-assignment</span> <span class="evidence-tag">entra-pim-eligible-assignment</span> <span class="evidence-tag">entra-directory-role-member</span><br>
+<strong>Data Collected:</strong> Role definitions, active assignments, PIM eligible assignments, role members. 10 privileged roles tracked.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num entra">6</span> Applications &amp; Service Principals <span class="priority-badge p10">P60</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/entra/applications.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">entra-application</span> <span class="evidence-tag">entra-service-principal</span><br>
+<strong>Data Collected:</strong> Sign-in audience, credential counts (password + key), expired/expiring credentials, multi-tenant status.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num entra">7</span> Workload Identity Federation <span class="priority-badge p10">P65</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/entra/workload_identity.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">entra-federated-credential</span> <span class="evidence-tag">entra-managed-identity-sp</span> <span class="evidence-tag">entra-workload-credential-review</span><br>
+<strong>Data Collected:</strong> Federated credential issuer, subject, audiences; managed identity SP status; password vs. federation comparison.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num entra">8</span> Risk Policies &amp; Auth Strength <span class="priority-badge p10">P66</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/entra/risk_policies.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">entra-named-location</span> <span class="evidence-tag">entra-auth-methods-policy</span> <span class="evidence-tag">entra-auth-strength-policy</span><br>
+<strong>Data Collected:</strong> Named locations, auth methods policy, custom auth strength policies.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num entra">9</span> Security Policies <span class="priority-badge p10">P70</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/entra/security_policies.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">entra-security-defaults</span> <span class="evidence-tag">entra-authorization-policy</span> <span class="evidence-tag">entra-cross-tenant-policy</span> <span class="evidence-tag">entra-cross-tenant-partner</span> <span class="evidence-tag">entra-auth-method-config</span><br>
+<strong>Data Collected:</strong> Security defaults, MSOL PowerShell blocked, guest role, invitation restrictions, cross-tenant settings.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num entra">10</span> Identity Governance <span class="priority-badge p10">P80</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/entra/governance.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">entra-pim-policy</span> <span class="evidence-tag">entra-pim-policy-rule</span> <span class="evidence-tag">entra-access-review</span> <span class="evidence-tag">entra-access-package</span> <span class="evidence-tag">entra-terms-of-use</span><br>
+<strong>Data Collected:</strong> PIM activation duration, MFA requirement, access review scope/status, access package visibility, ToU acceptance.</p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num entra">11</span> Identity Protection <span class="priority-badge p10">P90</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/entra/identity_protection.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">entra-risky-user</span> <span class="evidence-tag">entra-risky-service-principal</span> <span class="evidence-tag">entra-risk-detection</span> <span class="evidence-tag">entra-risk-summary</span><br>
+<strong>Data Collected:</strong> Risk level, risk state, compromised status, risk event type, IP address, timestamps. <em>Requires Entra ID P2.</em></p>
+</div>
+</details>
+
+<details class="collector-card">
+<summary><span class="coll-num entra">12</span> Audit &amp; Sign-In Logs <span class="priority-badge p10">P100</span></summary>
+<div class="collector-card-body">
+<p><span class="file-link">collectors/entra/audit_logs.py</span></p>
+<p><strong>Evidence:</strong> <span class="evidence-tag">entra-signin-summary</span> <span class="evidence-tag">entra-directory-audit-summary</span> <span class="evidence-tag">entra-named-location</span><br>
+<strong>Data Collected:</strong> Total sign-ins, failure rate, CA-blocked, MFA success rate, risk sign-ins, audit categories. <em>Requires Entra ID P1/P2.</em></p>
+</div>
+</details>
+</section>
+
+<!-- ═══════════ 7. Evaluation ═══════════ -->
+<section class="section" id="evaluation">
+<div class="section-header"><div class="section-icon green">📊</div><h2>Compliance Evaluation</h2></div>
+<p class="section-desc">10 evaluation domains with 113 check functions. Engine dispatches per-control to domain evaluators, with cross-domain fallback and severity-weighted scoring.</p>
+
+<div class="domain-grid">
+<div class="domain-card"><div class="domain-icon">🔑</div><h4>Access Control</h4><div class="domain-checks">8 check functions</div><div class="domain-detail">Privileged access, least privilege, CA, custom owners, account management, managed identity hygiene</div></div>
+<div class="domain-card"><div class="domain-icon">🪪</div><h4>Identity &amp; Auth</h4><div class="domain-checks">22 check functions</div><div class="domain-detail">MFA, lifecycle, apps, guests, OAuth2, risky users, cross-tenant, named locations, legacy auth</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-green)"><div class="domain-icon">🛡️</div><h4>Data Protection</h4><div class="domain-checks">22 check functions</div><div class="domain-detail">Encryption, Key Vault, VM/WebApp/SQL/AKS/CosmosDB/Functions/messaging/Redis/analytics/Purview</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-orange)"><div class="domain-icon">📋</div><h4>Logging</h4><div class="domain-checks">13 check functions</div><div class="domain-detail">Diagnostics ≥80%, threat detection, flow logs, activity analysis, sign-in monitoring, retention</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-cyan)"><div class="domain-icon">🌐</div><h4>Network Security</h4><div class="domain-checks">16 check functions</div><div class="domain-detail">Segmentation, NSGs, storage firewalls, Azure Firewall, routes, DNS, AKS, APIM, Front Door/CDN</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-purple)"><div class="domain-icon">⚖️</div><h4>Governance</h4><div class="domain-checks">21 check functions</div><div class="domain-detail">Policy compliance, Defender, locks, PIM, access reviews, AI governance, regulatory compliance</div></div>
+<div class="domain-card" style="border-top-color:var(--accent-red)"><div class="domain-icon">🚨</div><h4>Incident Response</h4><div class="domain-checks">6 check functions</div><div class="domain-detail">Security contacts, detection, alerting, investigation readiness, Sentinel, alert response</div></div>
+<div class="domain-card" style="border-top-color:var(--ms-teal)"><div class="domain-icon">🔄</div><h4>Change Management</h4><div class="domain-checks">4 check functions</div><div class="domain-detail">Change control policies, resource lock governance, change tracking, policy enforcement</div></div>
+<div class="domain-card" style="border-top-color:var(--ms-yellow)"><div class="domain-icon">💾</div><h4>Business Continuity</h4><div class="domain-checks">4 check functions</div><div class="domain-detail">Backup configuration, geo-redundancy, VM availability, database resilience</div></div>
+<div class="domain-card" style="border-top-color:var(--ms-orange)"><div class="domain-icon">📦</div><h4>Asset Management</h4><div class="domain-checks">4 check functions</div><div class="domain-detail">Asset inventory, classification/tagging, authorized software, application inventory</div></div>
+</div>
+</section>
+
+<!-- ═══════════ 8. Frameworks ═══════════ -->
+<section class="section" id="frameworks">
+<div class="section-header"><div class="section-icon orange">📑</div><h2>Compliance Frameworks</h2></div>
+<p class="section-desc">11 frameworks with 525 total controls. Each maps to evaluation domains via JSON mapping files.</p>
+
+<div class="framework-grid">
+<div class="framework-card"><div class="framework-count">83</div><div class="framework-name">NIST 800-53</div></div>
+<div class="framework-card"><div class="framework-count">69</div><div class="framework-name">FedRAMP</div></div>
+<div class="framework-card"><div class="framework-count">53</div><div class="framework-name">CIS Benchmarks</div></div>
+<div class="framework-card"><div class="framework-count">53</div><div class="framework-name">MCSB</div></div>
+<div class="framework-card"><div class="framework-count">51</div><div class="framework-name">PCI DSS</div></div>
+<div class="framework-card"><div class="framework-count">51</div><div class="framework-name">ISO 27001</div></div>
+<div class="framework-card"><div class="framework-count">47</div><div class="framework-name">SOC 2</div></div>
+<div class="framework-card"><div class="framework-count">43</div><div class="framework-name">HIPAA</div></div>
+<div class="framework-card"><div class="framework-count">29</div><div class="framework-name">NIST CSF</div></div>
+<div class="framework-card"><div class="framework-count">24</div><div class="framework-name">CSA CCM</div></div>
+<div class="framework-card"><div class="framework-count">22</div><div class="framework-name">GDPR</div></div>
+</div>
+</section>
+
+<!-- ═══════════ 9. Permissions ═══════════ -->
+<section class="section" id="permissions">
+<div class="section-header"><div class="section-icon red">🔒</div><h2>Required Permissions</h2></div>
+<p class="section-desc">All operations are strictly read-only. No PUT, POST, PATCH, or DELETE calls.</p>
+
+<div class="perm-grid">
+<div class="perm-block">
+<div class="perm-block-header azure">Azure RBAC Roles</div>
+<div class="table-wrap" style="border:none;border-radius:0"><table class="data-table"><thead><tr><th>Role</th><th>Scope</th><th>Purpose</th></tr></thead><tbody>
+<tr><td><strong>Reader</strong></td><td>Subscription</td><td>All ARM resource enumeration</td></tr>
+<tr><td><strong>Security Reader</strong></td><td>Subscription</td><td>Defender, security contacts, auto-provisioning</td></tr>
+<tr><td>Key Vault Secrets User</td><td>Key Vault</td><td>Secret expiry audit</td></tr>
+<tr><td>Key Vault Certificates Officer</td><td>Key Vault</td><td>Certificate expiry audit</td></tr>
+<tr><td>Key Vault Crypto User</td><td>Key Vault</td><td>Key expiry audit</td></tr>
+</tbody></table></div>
+</div>
+<div class="perm-block">
+<div class="perm-block-header graph">Microsoft Graph API Permissions</div>
+<div class="table-wrap" style="border:none;border-radius:0"><table class="data-table"><thead><tr><th>Permission</th><th>Purpose</th></tr></thead><tbody>
+<tr><td><code>Directory.Read.All</code></td><td>Tenant info, OAuth2 grants, directory roles</td></tr>
+<tr><td><code>User.Read.All</code></td><td>Users, group membership</td></tr>
+<tr><td><code>Group.Read.All</code></td><td>Groups</td></tr>
+<tr><td><code>Application.Read.All</code></td><td>App registrations, service principals</td></tr>
+<tr><td><code>RoleManagement.Read.All</code></td><td>Roles, PIM eligibility, PIM policies</td></tr>
+<tr><td><code>Policy.Read.All</code></td><td>CA policies, security defaults, auth policy</td></tr>
+<tr><td><code>AuditLog.Read.All</code></td><td>Sign-in logs, directory audits</td></tr>
+<tr><td><code>UserAuthenticationMethod.Read.All</code></td><td>MFA registration details</td></tr>
+<tr><td><code>IdentityRiskEvent.Read.All</code></td><td>Risk detections</td></tr>
+<tr><td><code>IdentityRiskyUser.Read.All</code></td><td>Risky users</td></tr>
+<tr><td><code>IdentityRiskyServicePrincipal.Read.All</code></td><td>Risky service principals</td></tr>
+<tr><td><code>AccessReview.Read.All</code></td><td>Access reviews</td></tr>
+<tr><td><code>EntitlementManagement.Read.All</code></td><td>Access packages</td></tr>
+<tr><td><code>Agreement.Read.All</code></td><td>Terms of use</td></tr>
+<tr><td><code>InformationProtection.Read</code></td><td>Sensitivity labels (Purview)</td></tr>
+</tbody></table></div>
+</div>
+</div>
+</section>
+
+<!-- ═══════════ 10. Safety ═══════════ -->
+<section class="section" id="safety">
+<div class="section-header"><div class="section-icon green">✅</div><h2>Safety Guarantees</h2></div>
+<div class="safety-banner">
+<div class="safety-icon">🛡️</div>
+<div>
+<h3>All Operations Are Strictly Read-Only</h3>
+<ul class="safety-list">
+<li>No PUT, POST, PATCH, or DELETE calls — ever</li>
+<li>Azure SDK methods are exclusively <code>list()</code> and <code>get()</code></li>
+<li>Graph API calls are exclusively <code>GET</code> requests</li>
+<li>No resource state is modified, created, or deleted</li>
+<li>No secret values are read — only metadata (expiry dates, counts)</li>
+<li>PII is summarized (counts, rates) not exported in full</li>
+<li>All evidence is stored locally in the output directory</li>
+<li>Deterministic UUID5 IDs ensure reproducible outputs</li>
+</ul>
+</div>
+</div>
+</section>
+
+</div><!-- /.container -->
+</main>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+<footer class="footer">
+    <strong>PostureIQ</strong> — Agent Capabilities &amp; Resource Coverage<br>
+    Author: Murali Chillakuru · Generated from source code analysis · April 2026
+</footer>
+
+<script>
+// Theme detection and toggle
+(function(){
+    var saved=localStorage.getItem('enterprisesecurityiq-theme');
+    var theme=saved||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');
+    document.documentElement.setAttribute('data-theme',theme);
+    var btn=document.getElementById('themeToggle');
+    if(btn)btn.textContent=theme==='dark'?'🌙 Dark':'☀️ Light';
+})();
+document.getElementById('themeToggle').addEventListener('click',function(){
+    var html=document.documentElement;
+    var current=html.getAttribute('data-theme')||'dark';
+    var next=current==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('enterprisesecurityiq-theme',next);
+    this.textContent=next==='dark'?'🌙 Dark':'☀️ Light';
+    // Re-initialize mermaid with correct theme
+    if(typeof mermaid!=='undefined'){
+        mermaid.initialize({startOnLoad:false,theme:next==='dark'?'dark':'default',
+            themeVariables:next==='dark'?{primaryColor:'#1F6FEB',primaryTextColor:'#E6EDF3',lineColor:'#388BFD',secondaryColor:'#21262D'}:
+            {primaryColor:'#0969DA',primaryTextColor:'#1F2328',lineColor:'#0969DA',secondaryColor:'#F6F8FA'}});
+        document.querySelectorAll('.mermaid[data-processed]').forEach(function(el){el.removeAttribute('data-processed');});
+        mermaid.run();
+    }
+});
+// Reading progress
+window.addEventListener('scroll',function(){
+    var h=document.documentElement;
+    var pct=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;
+    document.getElementById('progressBar').style.width=pct+'%';
+});
+// Animated counters
+document.querySelectorAll('.stat-number[data-target]').forEach(function(el){
+    var target=parseInt(el.getAttribute('data-target'));
+    var dur=1200;var start=null;
+    function animate(ts){
+        if(!start)start=ts;
+        var p=Math.min((ts-start)/dur,1);
+        var ease=1-Math.pow(1-p,3);
+        el.textContent=Math.round(ease*target).toLocaleString();
+        if(p<1)requestAnimationFrame(animate);
+        else el.textContent=target>=200?target+'+':target;
+    }
+    requestAnimationFrame(animate);
+});
+// Nav scroll-spy
+(function(){
+    var secs=document.querySelectorAll('section[id]');
+    var pills=document.querySelectorAll('.nav-pill[href]');
+    if(!secs.length||!pills.length)return;
+    var obs=new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+            if(e.isIntersecting){
+                var id=e.target.getAttribute('id');
+                pills.forEach(function(p){p.classList.toggle('active',p.getAttribute('href')==='#'+id)});
+            }
+        });
+    },{rootMargin:'-20% 0px -70% 0px'});
+    secs.forEach(function(s){obs.observe(s)});
+})();
+// Back to top
+(function(){
+    var btn=document.getElementById('backToTop');
+    window.addEventListener('scroll',function(){btn.classList.toggle('visible',window.scrollY>300)});
+    btn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+})();
+// Mermaid init
+document.addEventListener('DOMContentLoaded',function(){
+    var theme=document.documentElement.getAttribute('data-theme')||'dark';
+    mermaid.initialize({startOnLoad:true,theme:theme==='dark'?'dark':'default',
+        themeVariables:theme==='dark'?{primaryColor:'#1F6FEB',primaryTextColor:'#E6EDF3',lineColor:'#388BFD',secondaryColor:'#21262D'}:
+        {primaryColor:'#0969DA',primaryTextColor:'#1F2328',lineColor:'#0969DA',secondaryColor:'#F6F8FA'}});
+});
+</script>
+<script src="seq-engine.js"></script>
+</body>
+</html>

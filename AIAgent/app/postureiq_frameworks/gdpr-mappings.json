@@ -1,0 +1,331 @@
+{
+  "framework": "GDPR",
+  "version": "1.0",
+  "controls": [
+    {
+      "control_id": "GDPR-Art25-1",
+      "title": "Data Protection by Design",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-keyvault",
+        "azure-policy-assignment",
+        "azure-storage-queue",
+        "azure-storage-security"
+      ],
+      "evaluation_logic": "check_storage_security",
+      "rationale": "Implement data protection principles from the outset of system design",
+      "recommendation": "Design systems with privacy-by-default settings and encryption enabled"
+    },
+    {
+      "control_id": "GDPR-Art25-2",
+      "title": "Data Protection by Default",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-keyvault",
+        "azure-storage-security"
+      ],
+      "evaluation_logic": "check_key_vault_security",
+      "rationale": "Apply appropriate technical and organizational measures",
+      "recommendation": "Use minimum required personal data with strong access controls"
+    },
+    {
+      "control_id": "GDPR-Art32-1",
+      "title": "Security of Processing",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-sql-server",
+        "azure-sql-database",
+        "azure-sql-auditing",
+        "azure-sql-tde",
+        "azure-sql-firewall",
+        "azure-sql-vulnerability",
+        "azure-vm-config",
+        "azure-disk-encryption-set",
+        "azure-sql-advanced-threat"
+      ],
+      "evaluation_logic": "check_sql_security",
+      "rationale": "Implement appropriate security measures for personal data processing",
+      "recommendation": "Use encryption, pseudonymization, and regular security assessments",
+      "compensating_evidence": [
+        "azure-sql-advanced-threat"
+      ]
+    },
+    {
+      "control_id": "GDPR-Art32-2",
+      "title": "Restoration of Availability",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-recovery-vault",
+        "azure-policy-compliance"
+      ],
+      "evaluation_logic": "check_backup_recovery",
+      "rationale": "Ensure ability to restore data availability after incidents",
+      "recommendation": "Implement automated backups with tested recovery procedures"
+    },
+    {
+      "control_id": "GDPR-Art33",
+      "title": "Breach Notification",
+      "domain": "logging",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-activity-log",
+        "azure-alert-rule"
+      ],
+      "evaluation_logic": "check_activity_logs",
+      "rationale": "Notify supervisory authority of personal data breaches",
+      "recommendation": "Establish 72-hour notification procedures with documented breach investigations"
+    },
+    {
+      "control_id": "GDPR-Art34",
+      "title": "Communication to Data Subjects",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-activity-log"
+      ],
+      "evaluation_logic": "check_activity_logs",
+      "rationale": "Notify individuals of high-risk data breaches",
+      "recommendation": "Document communication procedures and maintain notification records"
+    },
+    {
+      "control_id": "GDPR-Art15",
+      "title": "Right of Access",
+      "domain": "access",
+      "severity": "high",
+      "evidence_types": [
+        "azure-sql-server",
+        "azure-sql-database",
+        "azure-sql-auditing",
+        "azure-storage-security",
+        "azure-sql-tde",
+        "azure-sql-firewall",
+        "azure-sql-vulnerability",
+        "azure-sql-advanced-threat"
+      ],
+      "evaluation_logic": "check_sql_security",
+      "rationale": "Individuals must access their personal data within 30 days",
+      "recommendation": "Implement systems to retrieve and present personal data upon request",
+      "compensating_evidence": [
+        "azure-sql-advanced-threat"
+      ]
+    },
+    {
+      "control_id": "GDPR-Art20",
+      "title": "Right to Data Portability",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-queue",
+        "azure-storage-security"
+      ],
+      "evaluation_logic": "check_storage_security",
+      "rationale": "Provide personal data in machine-readable format",
+      "recommendation": "Establish export capabilities for all personal data"
+    },
+    {
+      "control_id": "GDPR-Art17",
+      "title": "Right to Erasure",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-sql-server",
+        "azure-sql-database",
+        "azure-sql-auditing",
+        "azure-storage-security",
+        "azure-sql-tde",
+        "azure-sql-firewall",
+        "azure-sql-vulnerability",
+        "azure-sql-advanced-threat"
+      ],
+      "evaluation_logic": "check_sql_security",
+      "rationale": "Individuals can request deletion of personal data",
+      "recommendation": "Implement automated erasure processes with audit trails",
+      "compensating_evidence": [
+        "azure-sql-advanced-threat"
+      ]
+    },
+    {
+      "control_id": "GDPR-Art5-1",
+      "title": "Data Quality and Integrity",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-diagnostic-setting",
+        "azure-sql-server",
+        "azure-sql-database",
+        "azure-sql-auditing",
+        "azure-sql-tde",
+        "azure-sql-firewall",
+        "azure-sql-vulnerability",
+        "azure-sql-advanced-threat"
+      ],
+      "evaluation_logic": "check_sql_security",
+      "rationale": "Maintain accurate and complete personal data",
+      "recommendation": "Implement data validation and verification procedures",
+      "compensating_evidence": [
+        "azure-sql-advanced-threat"
+      ]
+    },
+    {
+      "control_id": "GDPR-Art6",
+      "title": "Lawfulness of Processing",
+      "domain": "governance",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-policy-compliance",
+        "azure-role-assignment"
+      ],
+      "evaluation_logic": "check_policy_compliance",
+      "rationale": "Process personal data only with lawful basis",
+      "recommendation": "Document legal basis for all data processing activities"
+    },
+    {
+      "control_id": "GDPR-Art14",
+      "title": "Transparency and Consent",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "entra-user-detail"
+      ],
+      "evaluation_logic": "check_user_lifecycle",
+      "rationale": "Provide transparency and obtain consent for processing",
+      "recommendation": "Maintain consent records and privacy notices"
+    },
+    {
+      "control_id": "GDPR-Art35",
+      "title": "Data Impact Assessment",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-compliance",
+        "azure-defender-pricing"
+      ],
+      "evaluation_logic": "check_policy_compliance",
+      "rationale": "Assess risks of high-risk processing activities",
+      "recommendation": "Conduct DIAs for processing of sensitive personal data"
+    },
+    {
+      "control_id": "GDPR-Art37",
+      "title": "Data Protection Officer",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "entra-role-assignment",
+        "azure-activity-log"
+      ],
+      "evaluation_logic": "check_account_management",
+      "rationale": "Designate a Data Protection Officer for oversight",
+      "recommendation": "Assign DPO with authority to oversee compliance"
+    },
+    {
+      "control_id": "GDPR-Art28",
+      "title": "Processor Contracts",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource"
+      ],
+      "evaluation_logic": "check_policy_compliance",
+      "rationale": "Ensure processors provide adequate guarantees",
+      "recommendation": "Require signed data processing agreements with all processors"
+    },
+    {
+      "control_id": "GDPR-Art33b",
+      "title": "Notification of a Personal Data Breach to Supervisory Authority",
+      "domain": "incident_response",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-alert-rule",
+        "entra-risk-summary"
+      ],
+      "evaluation_logic": "check_incident_detection",
+      "rationale": "GDPR requires breach notification within 72 hours; automated detection is essential.",
+      "recommendation": "Enable Defender and configure alert rules for breach detection."
+    },
+    {
+      "control_id": "GDPR-Art33(2)",
+      "title": "Breach Notification Infrastructure",
+      "domain": "incident_response",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-action-group",
+        "azure-alert-rule",
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_incident_alerting",
+      "rationale": "Alerting infrastructure must enable timely breach notification.",
+      "recommendation": "Configure action groups with multiple notification channels."
+    },
+    {
+      "control_id": "GDPR-Art34b",
+      "title": "Communication of a Personal Data Breach to Data Subject",
+      "domain": "incident_response",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_security_contact_config",
+      "rationale": "Security contacts must be configured for breach communication workflows.",
+      "recommendation": "Configure security contacts with alert notifications for breach communication."
+    },
+    {
+      "control_id": "GDPR-Art32(1)(c)",
+      "title": "Availability and Resilience of Processing Systems",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-recovery-vault",
+        "azure-vm-config",
+        "azure-sql-server"
+      ],
+      "evaluation_logic": "check_backup_configuration",
+      "rationale": "GDPR requires ability to restore availability and access to personal data.",
+      "recommendation": "Deploy Recovery Services vaults and configure backup for data stores."
+    },
+    {
+      "control_id": "GDPR-Art32(1)(d)",
+      "title": "Data Redundancy",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-account",
+        "azure-cosmosdb-account"
+      ],
+      "evaluation_logic": "check_geo_redundancy",
+      "rationale": "Personal data storage must be geo-redundant for resilience.",
+      "recommendation": "Use geo-redundant replication for storage containing personal data."
+    },
+    {
+      "control_id": "GDPR-Art30(1)",
+      "title": "Records of Processing Activities",
+      "domain": "asset_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource",
+        "azure-resource-group",
+        "azure-managed-identity"
+      ],
+      "evaluation_logic": "check_asset_inventory",
+      "rationale": "GDPR requires maintaining records of all processing activities.",
+      "recommendation": "Maintain asset inventory as foundation for processing records."
+    },
+    {
+      "control_id": "GDPR-Art25(2)",
+      "title": "Data Classification for Data Minimisation",
+      "domain": "asset_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource",
+        "azure-resource-group"
+      ],
+      "evaluation_logic": "check_classification_tagging",
+      "rationale": "Data classification supports data minimisation principles.",
+      "recommendation": "Apply data classification tags to identify personal data stores."
+    }
+  ]
+}

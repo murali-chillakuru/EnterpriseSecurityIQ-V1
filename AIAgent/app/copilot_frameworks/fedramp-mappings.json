@@ -1,0 +1,378 @@
+{
+  "unable_to_assess": [
+    "CA-2",
+    "RA-3"
+  ],
+  "broad_site_membership": [
+    "AC-6",
+    "AC-6(1)"
+  ],
+  "everyone_permissions": [
+    "AC-3",
+    "AC-6"
+  ],
+  "anonymous_link_exposure": [
+    "AC-3",
+    "SC-7"
+  ],
+  "external_sharing_posture": [
+    "AC-4",
+    "SC-7"
+  ],
+  "no_sharepoint_advanced_management": [
+    "AC-6",
+    "CA-7"
+  ],
+  "no_sam_restricted_access_control": [
+    "AC-3",
+    "AC-6"
+  ],
+  "no_sam_site_lifecycle_policy": [
+    "MP-6",
+    "SI-12"
+  ],
+  "no_sam_dag_reports": [
+    "AC-6",
+    "CA-7"
+  ],
+  "high_permission_blast_radius": [
+    "AC-6",
+    "AC-6(1)"
+  ],
+  "external_sharing_risk_score": [
+    "AC-4",
+    "SC-7"
+  ],
+  "label_api_inaccessible": [
+    "CA-2",
+    "RA-3"
+  ],
+  "no_labels_defined": [
+    "RA-2",
+    "MP-4"
+  ],
+  "insufficient_labels": [
+    "RA-2"
+  ],
+  "no_mandatory_labeling": [
+    "MP-4",
+    "AC-3"
+  ],
+  "no_auto_labeling": [
+    "RA-2",
+    "SI-4"
+  ],
+  "low_site_label_coverage": [
+    "RA-2",
+    "MP-4"
+  ],
+  "no_default_label": [
+    "MP-4",
+    "CM-2"
+  ],
+  "mandatory_labeling_incomplete_scope": [
+    "MP-4"
+  ],
+  "labels_without_encryption": [
+    "SC-28",
+    "SC-13"
+  ],
+  "labels_without_site_group_settings": [
+    "AC-3"
+  ],
+  "no_dlp_policies": [
+    "AC-4",
+    "SC-7"
+  ],
+  "no_label_based_dlp": [
+    "AC-4"
+  ],
+  "incomplete_workload_coverage": [
+    "AC-4",
+    "CM-7"
+  ],
+  "no_endpoint_dlp": [
+    "AC-4",
+    "MP-7"
+  ],
+  "rss_not_configured": [
+    "AC-3",
+    "AC-4"
+  ],
+  "rcd_not_configured": [
+    "AC-3",
+    "AC-4"
+  ],
+  "ca_unable_to_assess": [
+    "CA-2"
+  ],
+  "no_copilot_ca_policy": [
+    "AC-3",
+    "AC-2"
+  ],
+  "copilot_deployment_scope_denied": [
+    "CA-2"
+  ],
+  "copilot_deployment_unknown": [
+    "CM-2",
+    "CA-2"
+  ],
+  "no_copilot_license": [
+    "CM-8"
+  ],
+  "copilot_licenses_unassigned": [
+    "CM-8",
+    "AC-2"
+  ],
+  "low_copilot_license_utilization": [
+    "CM-8"
+  ],
+  "no_access_reviews": [
+    "AC-2(3)",
+    "AC-6(7)"
+  ],
+  "no_information_barriers": [
+    "AC-4",
+    "AC-3"
+  ],
+  "no_mfa_enforcement": [
+    "IA-2(1)",
+    "IA-2(2)"
+  ],
+  "no_pim_configured": [
+    "AC-2(7)",
+    "AC-6(2)"
+  ],
+  "no_named_locations": [
+    "AC-17",
+    "SC-7"
+  ],
+  "no_signin_risk_policy": [
+    "SI-4",
+    "AC-7"
+  ],
+  "no_device_compliance": [
+    "CM-8",
+    "AC-19"
+  ],
+  "stale_accounts_detected": [
+    "AC-2(3)",
+    "PS-4"
+  ],
+  "excessive_global_admins": [
+    "AC-6(5)",
+    "AC-5"
+  ],
+  "shared_accounts_detected": [
+    "AC-2",
+    "IA-4"
+  ],
+  "no_group_based_licensing": [
+    "AC-2"
+  ],
+  "no_session_signin_frequency": [
+    "AC-11",
+    "AC-12"
+  ],
+  "no_persistent_browser_control": [
+    "AC-11",
+    "AC-12"
+  ],
+  "mailbox_delegation_fullaccess": [
+    "AC-3",
+    "AC-6"
+  ],
+  "shared_mailbox_over_delegated": [
+    "AC-6",
+    "AC-6(1)"
+  ],
+  "ib_segments_not_assigned": [
+    "AC-4"
+  ],
+  "disabled_users_with_copilot_license": [
+    "AC-2(3)",
+    "PS-4"
+  ],
+  "no_app_protection_policies": [
+    "AC-19",
+    "MP-5"
+  ],
+  "app_protection_platform_gaps": [
+    "AC-19"
+  ],
+  "hybrid_accounts_stale_sync": [
+    "AC-2",
+    "IA-4"
+  ],
+  "no_copilot_license_segmentation": [
+    "AC-2",
+    "CM-3"
+  ],
+  "no_legal_hold_configured": [
+    "AU-11",
+    "SI-12"
+  ],
+  "stale_content_exposure": [
+    "MP-6",
+    "SI-12"
+  ],
+  "retention_assessment_needed": [
+    "AU-11",
+    "SI-12"
+  ],
+  "no_m365_backup": [
+    "CP-9",
+    "CP-6"
+  ],
+  "audit_logging_unknown": [
+    "AU-2",
+    "AU-3"
+  ],
+  "copilot_interaction_audit": [
+    "AU-2",
+    "AU-12"
+  ],
+  "no_alert_policies": [
+    "SI-4",
+    "IR-5"
+  ],
+  "no_defender_cloud_apps": [
+    "SI-4",
+    "AC-4"
+  ],
+  "no_copilot_usage_analytics": [
+    "AU-6",
+    "CA-7"
+  ],
+  "copilot_audit_events_not_analyzed": [
+    "AU-6",
+    "AU-6(1)"
+  ],
+  "no_prompt_pattern_monitoring": [
+    "SI-4",
+    "SI-4(4)"
+  ],
+  "copilot_security_incidents_detected": [
+    "IR-4",
+    "IR-5"
+  ],
+  "copilot_plugins_unrestricted": [
+    "CM-7",
+    "SA-9"
+  ],
+  "data_residency_unverified": [
+    "SA-9(5)",
+    "SC-7"
+  ],
+  "no_ediscovery_configured": [
+    "AU-11",
+    "IR-4"
+  ],
+  "no_insider_risk_policies": [
+    "PM-12",
+    "SI-4"
+  ],
+  "no_communication_compliance": [
+    "SI-4",
+    "AU-2"
+  ],
+  "no_dspm_for_ai": [
+    "RA-3",
+    "PM-16"
+  ],
+  "dspm_oversharing_not_reviewed": [
+    "AC-6",
+    "RA-3"
+  ],
+  "unmanaged_copilot_agents": [
+    "CM-7",
+    "SA-9"
+  ],
+  "agent_over_permissioned": [
+    "AC-6",
+    "SA-9"
+  ],
+  "no_regulatory_framework_mapping": [
+    "CA-2",
+    "PL-2"
+  ],
+  "multi_geo_copilot_residency": [
+    "SA-9(5)"
+  ],
+  "no_rai_policy": [
+    "PM-9",
+    "PL-2"
+  ],
+  "cross_tenant_access_not_assessed": [
+    "CA-2",
+    "AC-20"
+  ],
+  "cross_tenant_access_permissive": [
+    "AC-20",
+    "AC-4"
+  ],
+  "no_agent_approval_workflow": [
+    "CM-3",
+    "CM-7"
+  ],
+  "ungoverned_external_connectors": [
+    "SA-9",
+    "CM-7"
+  ],
+  "external_connector_review_needed": [
+    "SA-9",
+    "AC-6"
+  ],
+  "no_prompt_guardrails": [
+    "SI-4",
+    "CM-7"
+  ],
+  "no_continuous_access_evaluation": [
+    "AC-2(12)",
+    "SI-4"
+  ],
+  "no_token_protection": [
+    "SC-23",
+    "IA-5"
+  ],
+  "no_phishing_resistant_mfa": [
+    "IA-2(6)",
+    "IA-5(2)"
+  ],
+  "no_authentication_context": [
+    "AC-3(13)",
+    "IA-10"
+  ],
+  "workload_identity_unprotected": [
+    "IA-9",
+    "SI-4"
+  ],
+  "no_compliant_network_check": [
+    "SC-7",
+    "AC-17"
+  ],
+  "unauthorized_ai_apps_detected": [
+    "CM-7",
+    "SA-9"
+  ],
+  "ai_consent_grants_detected": [
+    "AC-6",
+    "SA-9"
+  ],
+  "shadow_copilot_agents_detected": [
+    "CM-7",
+    "SA-9"
+  ],
+  "no_ai_app_governance": [
+    "PM-16",
+    "SI-4"
+  ],
+  "ai_apps_overpermissioned": [
+    "AC-6",
+    "AC-6(1)"
+  ],
+  "no_ai_dlp_web_restrictions": [
+    "AC-4",
+    "SC-7"
+  ]
+}

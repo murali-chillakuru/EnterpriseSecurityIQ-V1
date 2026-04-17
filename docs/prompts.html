@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostureIQ — Usage Guide</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+/* ── Reset & Variables ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-code:#0D1117;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#484F58;
+  --border-primary:#30363D;--border-subtle:#21262D;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --shadow-lg:0 8px 32px rgba(0,0,0,.4);--shadow-md:0 4px 16px rgba(0,0,0,.3);
+  --radius-lg:16px;--radius-md:12px;--radius-sm:8px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',monospace;
+  --max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-code:#F6F8FA;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8B949E;
+  --border-primary:#D0D7DE;--border-subtle:#E8EBEF;
+  --shadow-lg:0 8px 32px rgba(0,0,0,.08);--shadow-md:0 4px 16px rgba(0,0,0,.06);
+}
+
+/* ── Skip Nav ── */
+.skip-nav{position:absolute;top:-100%;left:1rem;padding:.5rem 1rem;background:var(--accent-blue);color:#fff;border-radius:var(--radius-sm);z-index:9999;font-weight:600}
+.skip-nav:focus{top:1rem}
+
+/* ── Globals ── */
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--bg-code);padding:2px 6px;border-radius:4px;border:1px solid var(--border-subtle)}
+
+/* ── Reading-Progress Bar ── */
+.reading-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple),var(--accent-cyan));z-index:10001;transition:width .15s}
+
+/* ── Hero ── */
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,#0D1117 0%,#161B22 50%,#1C2128 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+[data-theme="light"] .hero{background:linear-gradient(135deg,#f0f4ff 0%,#e8f0fe 50%,#dbe7fd 100%)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:600px;height:600px;background:radial-gradient(circle,var(--accent-blue),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-purple),transparent 70%);bottom:-150px;left:-50px}
+.hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{font-size:1.15rem;color:var(--text-secondary);max-width:800px;margin:0 auto 1rem}
+.author-tag{display:inline-block;padding:6px 16px;border-radius:20px;font-size:.85rem;font-weight:600;border:1px solid var(--accent-purple);color:var(--accent-purple);margin-top:1rem}
+
+/* ── Stats Bar ── */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;max-width:1200px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);position:relative;z-index:10}
+.stat{text-align:center}
+.stat-value{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent-blue),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-label{font-size:.75rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}
+
+/* ── Layout ── */
+.container{max-width:var(--max-width);margin:0 auto;padding:2rem}
+
+/* ── Sticky Nav ── */
+.sticky-nav{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);padding:.6rem 1rem;backdrop-filter:blur(12px)}
+.nav-inner{display:flex;gap:.5rem;max-width:1200px;margin:0 auto;overflow-x:auto;scrollbar-width:none;align-items:center}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-pill{padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:600;white-space:nowrap;border:1px solid var(--border-primary);background:transparent;color:var(--text-secondary);cursor:pointer;transition:all .2s}
+.nav-pill:hover,.nav-pill.active{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue);text-decoration:none}
+.theme-toggle{margin-left:auto;background:transparent;border:1px solid var(--border-primary);color:var(--text-secondary);padding:6px 12px;border-radius:20px;cursor:pointer;font-size:.85rem;white-space:nowrap;transition:all .2s}
+.theme-toggle:hover{color:var(--accent-orange);border-color:var(--accent-orange)}
+
+/* ── Sections ── */
+section{margin-bottom:3rem;scroll-margin-top:80px}
+section h2{font-size:1.8rem;font-weight:700;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--border-primary);display:flex;align-items:center;gap:.5rem}
+section h2 .icon{font-size:1.4rem}
+section h3{font-size:1.2rem;font-weight:600;margin:1.5rem 0 .75rem;color:var(--accent-blue)}
+
+/* ── Info Box ── */
+.info-box{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.25rem 1.5rem;margin:1rem 0}
+.info-box.tip{border-left:4px solid var(--accent-green)}
+.info-box.warn{border-left:4px solid var(--accent-orange)}
+.info-box.error{border-left:4px solid var(--accent-red)}
+.info-box.info{border-left:4px solid var(--accent-blue)}
+.info-box strong{display:block;margin-bottom:.4rem}
+
+/* ── Code Blocks ── */
+pre{background:var(--bg-code);border:1px solid var(--border-primary);border-radius:var(--radius-sm);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.6;margin:1rem 0}
+
+/* ── Tables ── */
+.table-wrap{overflow-x:auto;margin:1rem 0;border-radius:var(--radius-md);border:1px solid var(--border-primary)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{background:var(--bg-secondary);padding:.7rem 1rem;text-align:left;font-weight:600;color:var(--text-primary);border-bottom:2px solid var(--border-primary);position:sticky;top:0}
+td{padding:.6rem 1rem;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary)}
+tr:hover td{background:rgba(31,111,235,.04)}
+
+/* ── Card Grid ── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1rem 0}
+.card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.25rem;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.card-icon{font-size:1.6rem;margin-bottom:.5rem}
+.card h4{font-size:1rem;font-weight:700;margin-bottom:.5rem;color:var(--text-primary)}
+.card p{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.card code{font-size:.8rem}
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:600}
+.badge-blue{background:rgba(31,111,235,.15);color:var(--accent-blue)}
+.badge-purple{background:rgba(163,113,247,.15);color:var(--accent-purple)}
+.badge-green{background:rgba(63,185,80,.15);color:var(--accent-green)}
+.badge-orange{background:rgba(210,153,34,.15);color:var(--accent-orange)}
+.badge-cyan{background:rgba(57,210,192,.15);color:var(--accent-cyan)}
+
+/* ── Accordion ── */
+details{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-sm);margin:.75rem 0}
+details>summary{padding:.8rem 1rem;cursor:pointer;font-weight:600;color:var(--text-primary);list-style:none;display:flex;align-items:center;gap:.5rem}
+details>summary::before{content:'▸';font-size:.85rem;color:var(--accent-blue);transition:transform .2s}
+details[open]>summary::before{transform:rotate(90deg)}
+details>summary::-webkit-details-marker{display:none}
+details>.detail-body{padding:0 1rem 1rem}
+
+/* ── Diagram Container ── */
+.diagram-container{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.5rem;margin:1.5rem 0;overflow-x:auto}
+.diagram-container h4{margin-bottom:1rem;color:var(--accent-purple)}
+.diagram-explanation{background:var(--bg-secondary);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:1rem 1.25rem;margin-top:1rem;font-size:.88rem;color:var(--text-secondary);line-height:1.7}
+.diagram-explanation ol{padding-left:1.25rem}
+.diagram-explanation li{margin:.4rem 0}
+
+/* ── CLI Script Table ── */
+.cli-table code{background:var(--bg-code);padding:2px 8px;border-radius:4px;font-size:.82rem}
+
+/* ── Back to Top ── */
+.back-top{position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--accent-blue);color:#fff;border:none;font-size:1.2rem;cursor:pointer;opacity:0;transition:opacity .3s,transform .3s;transform:translateY(20px);z-index:999;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md)}
+.back-top.visible{opacity:1;transform:translateY(0)}
+.back-top:hover{background:var(--accent-purple)}
+
+/* ── Footer ── */
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.82rem;border-top:1px solid var(--border-primary);margin-top:3rem}
+
+/* ── Print ── */
+@media print{
+  .sticky-nav,.back-top,.theme-toggle,.reading-progress{display:none!important}
+  body{background:#fff;color:#000}
+  .hero{background:#f5f5f5!important;padding:2rem}
+  .card,.info-box,details,.diagram-container{break-inside:avoid}
+}
+
+/* ── Accessibility ── */
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(forced-colors:active){.nav-pill,.badge,.card{border:1px solid CanvasText}}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-nav">Skip to main content</a>
+<div class="reading-progress" id="readingProgress"></div>
+
+<!-- ── Hero ── -->
+<header class="hero">
+  <h1>PostureIQ — Usage Guide</h1>
+  <p class="subtitle">Step-by-step instructions for running compliance assessments, specialized analyses, and the Foundry agent — all 10 CLI scripts, authentication workflows, selective patterns, output navigation, and troubleshooting.</p>
+  <div class="author-tag">Author: Murali Chillakuru</div>
+</header>
+
+<!-- ── Stats Bar ── -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-value" data-target="10">0</div><div class="stat-label">CLI Scripts</div></div>
+  <div class="stat"><div class="stat-value" data-target="12">0</div><div class="stat-label">Agent Tools</div></div>
+  <div class="stat"><div class="stat-value" data-target="4">0</div><div class="stat-label">Auth Modes</div></div>
+  <div class="stat"><div class="stat-value" data-target="11">0</div><div class="stat-label">Frameworks</div></div>
+  <div class="stat"><div class="stat-value" data-target="64">0</div><div class="stat-label">Collectors</div></div>
+  <div class="stat"><div class="stat-value" data-target="3">0</div><div class="stat-label">SIEM Targets</div></div>
+</div>
+
+<!-- ── Sticky Nav ── -->
+<nav class="sticky-nav" aria-label="Section navigation">
+  <div class="nav-inner">
+    <a href="#prerequisites" class="nav-pill">Prerequisites</a>
+    <a href="#quickstart" class="nav-pill">Quick Start</a>
+    <a href="#auth" class="nav-pill">Auth</a>
+    <a href="#assessment" class="nav-pill">Assessment</a>
+    <a href="#specialized" class="nav-pill">Analyses</a>
+    <a href="#patterns" class="nav-pill">Patterns</a>
+    <a href="#integrations" class="nav-pill">Integrations</a>
+    <a href="#agent" class="nav-pill">Agent</a>
+    <a href="#results" class="nav-pill">Results</a>
+    <a href="#troubleshooting" class="nav-pill">Troubleshoot</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">☀ / ☾</button>
+  </div>
+</nav>
+
+<!-- ── Main Content ── -->
+<main id="main" class="container">
+
+<!-- EXEC SUMMARY -->
+<div style="background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.25);border-radius:8px;padding:16px 20px;margin:0 0 24px;font-size:.9rem;color:var(--text-secondary)">
+<strong>📋 Executive Summary</strong> — Step-by-step usage guide for all 10 CLI scripts, 4 authentication workflows, selective assessment patterns, multi-tenant support, and the Foundry agent. The canonical "how to run it" reference.
+<div style="margin-top:8px;font-size:.82rem"><strong>Audience:</strong> Operators, security analysts · <strong>Prerequisites:</strong> Python 3.10+, Azure auth · <strong>Related:</strong> <a href="configuration-guide.html">Configuration Guide</a> · <a href="troubleshooting.html">Troubleshooting</a> · <a href="ci-cd-integration.html">CI/CD Integration</a></div>
+</div>
+
+<!-- ══════════════════════════ Prerequisites ══════════════════════════ -->
+<section id="prerequisites">
+  <h2><span class="icon">📋</span> Prerequisites</h2>
+
+  <h3>Install Python Dependencies</h3>
+  <pre>
+# Python 3.10+ required (3.12 recommended)
+cd AIAgent
+pip install -r requirements.txt</pre>
+
+  <h3>Authenticate to Azure</h3>
+  <div class="info-box tip">
+    <strong>✅ Unified Credential</strong>
+    The engine uses a single <code>DefaultAzureCredential</code> for both ARM and Graph — no separate consent flows, no browser popups, no <code>Connect-MgGraph</code>.
+  </div>
+  <pre>
+# Interactive
+az login --tenant "4a3eb5f4-1ec6-4a73-bb03-1ca63cb52d67"
+
+# Service Principal (CI/CD)
+export AZURE_TENANT_ID="4a3eb5f4-..."
+export AZURE_CLIENT_ID="&lt;client-id&gt;"
+export AZURE_CLIENT_SECRET="&lt;secret&gt;"
+
+# App Registration (dedicated)
+export ENTERPRISESECURITYIQ_APP_CLIENT_ID="&lt;app-id&gt;"
+export ENTERPRISESECURITYIQ_APP_CLIENT_SECRET="&lt;app-secret&gt;"
+export ENTERPRISESECURITYIQ_AUTH_MODE="appregistration"</pre>
+
+  <h3>Required Permissions</h3>
+  <p><strong>Azure RBAC:</strong> <code>Reader</code> role on target subscriptions.</p>
+  <p><strong>Microsoft Graph</strong> (application or delegated):</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Permission</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>User.Read.All</code></td><td>User details, MFA status, stale account detection</td></tr>
+        <tr><td><code>Directory.Read.All</code></td><td>Tenant info, roles, groups, applications, service principals</td></tr>
+        <tr><td><code>Policy.Read.All</code></td><td>Conditional Access, auth methods, security policies</td></tr>
+        <tr><td><code>RoleManagement.Read.All</code></td><td>Directory role assignments, PIM eligibility</td></tr>
+        <tr><td><code>Application.Read.All</code></td><td>App registrations, OAuth grants</td></tr>
+        <tr><td><code>AuditLog.Read.All</code></td><td>Sign-in logs, directory audit logs</td></tr>
+        <tr><td><code>SecurityEvents.Read.All</code></td><td>Security alerts, risky users</td></tr>
+        <tr><td><code>IdentityRiskyUser.Read.All</code></td><td>Risky user details</td></tr>
+        <tr><td><code>Group.Read.All</code></td><td>Group membership and inventory</td></tr>
+        <tr><td><code>IdentityRiskEvent.Read.All</code></td><td>Risk detections</td></tr>
+        <tr><td><code>AccessReview.Read.All</code></td><td>Access review status</td></tr>
+        <tr><td><code>EntitlementManagement.Read.All</code></td><td>Governance data</td></tr>
+        <tr><td><code>InformationProtection.Read</code></td><td>Sensitivity labels (Purview)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:.5rem;color:var(--text-secondary);font-size:.88rem"><strong>Sufficient Entra Roles:</strong> Global Administrator, Global Reader, Security Administrator, Security Reader, Compliance Administrator</p>
+</section>
+
+<!-- ══════════════════════════ Quick Start ══════════════════════════ -->
+<section id="quickstart">
+  <h2><span class="icon">🚀</span> Quick Start</h2>
+  <pre>
+cd AIAgent
+
+# Interactive — prompts for tenant ID and framework selection
+python run_assessment.py
+
+# Non-interactive
+python run_assessment.py --tenant "4a3eb5f4-..." --framework FedRAMP</pre>
+
+  <div class="diagram-container">
+    <h4>Assessment Pipeline</h4>
+    <div class="mermaid" data-seq-details='[{"overview":"The user invokes the assessment from the command line, specifying a tenant ID, authentication mode, and target compliance framework. This is the entry point for the entire security assessment pipeline.","dataFlow":"CLI arguments (tenant ID, framework name, auth mode) flow from the user terminal to the run_assessment.py script.","keyPoints":["Supports multiple frameworks: FedRAMP, NIST 800-53, CIS, ISO 27001, and more","Tenant ID identifies the Azure AD directory to assess","Non-interactive mode enables CI/CD integration"],"whyItMatters":"A clear entry point with explicit parameters ensures reproducible assessments and enables automation in DevOps pipelines.","output":"Parsed configuration object with tenant, framework, and authentication settings"},{"overview":"The assessment script delegates authentication to the ComplianceCredentials module, passing the tenant ID and chosen auth mode. This separates authentication logic from assessment logic.","dataFlow":"Tenant ID and auth mode string flow from run_assessment.py to the ComplianceCredentials class constructor.","keyPoints":["Four auth modes supported: interactive, service principal, managed identity, and CLI","Separation of concerns keeps auth logic isolated and testable","Auth mode can be overridden via environment variables"],"whyItMatters":"Centralizing authentication in a dedicated module prevents credential handling from leaking into business logic and simplifies security audits.","output":"Initialized ComplianceCredentials instance ready for token acquisition"},{"overview":"ComplianceCredentials uses DefaultAzureCredential to obtain tokens for both Azure Resource Manager (ARM) and Microsoft Graph APIs. A single credential chain handles multiple token audiences.","dataFlow":"Token requests flow from ComplianceCredentials to the Azure Identity SDK, which tries multiple credential sources in order.","keyPoints":["DefaultAzureCredential tries managed identity, CLI, environment variables, and more","Both ARM and Graph tokens come from the same credential chain","Token caching reduces repeated authentication calls"],"whyItMatters":"Using DefaultAzureCredential provides a unified authentication experience across local development, CI/CD, and production environments without code changes.","output":"Valid OAuth tokens for ARM and Microsoft Graph scopes"},{"overview":"A preflight check probes three Microsoft Graph endpoints to verify the credential has sufficient permissions before starting the full assessment.","dataFlow":"Test queries are sent to Graph API endpoints; success or failure responses are recorded for each probe.","keyPoints":["Probes users, groups, and directory roles endpoints","Fails fast if critical permissions are missing","Provides actionable error messages listing missing permissions"],"whyItMatters":"Catching permission gaps early avoids wasting time on a partial assessment that would fail midway through collection.","output":"Permission validation report indicating pass or fail for each required scope"},{"overview":"ComplianceCredentials returns the authenticated credentials and a permission status summary back to the assessment script.","dataFlow":"Credential objects and a permission status dictionary flow from ComplianceCredentials back to run_assessment.py.","keyPoints":["Includes both ARM and Graph credential handles","Permission status flags each scope as granted or denied","The script can decide whether to proceed or abort based on status"],"whyItMatters":"Returning structured permission status allows the caller to make informed decisions about whether the assessment can produce meaningful results.","output":"Tuple of credential handles and permission status dictionary"},{"overview":"The assessment script passes the parsed configuration and validated credentials to the Orchestrator, which manages the entire pipeline lifecycle.","dataFlow":"Config object and credentials flow from run_assessment.py to the Orchestrator.run() method.","keyPoints":["Orchestrator is the central coordinator for collect-evaluate-report phases","Config includes framework selections, output paths, and batch sizes","Credentials are shared across all collectors"],"whyItMatters":"The Orchestrator pattern decouples the pipeline phases, making each phase independently testable and replaceable.","output":"Orchestrator instance initialized and ready to execute the pipeline"},{"overview":"The Orchestrator calls discover_collectors() to scan the collector registry, finding all functions decorated with @register_collector. This yields 68 collector functions sorted by priority.","dataFlow":"The registry is scanned and returns a sorted list of 68 collector function references with their metadata (priority, category, API type).","keyPoints":["Collectors self-register via the @register_collector decorator","Priority values (P10-P240) control execution order","Discovery is dynamic — adding a new collector requires no orchestrator changes"],"whyItMatters":"Dynamic discovery with decorator-based registration makes the system highly extensible. New collectors are automatically included without modifying orchestration code.","output":"Sorted list of 68 collector function references with priority and category metadata"},{"overview":"The 47 Azure collectors execute in configurable batches, querying ARM and data-plane APIs for resource configurations, policies, and security settings.","dataFlow":"ARM API calls flow from each Azure collector to Azure Resource Manager; responses containing resource configurations flow back.","keyPoints":["Batch size defaults to 8 concurrent collectors","Covers compute, storage, networking, databases, key vaults, and more","Priority ordering ensures foundational data is collected first"],"whyItMatters":"Batched concurrent execution balances throughput against API throttling limits, ensuring fast collection without triggering rate-limit errors.","output":"Raw Azure evidence objects covering 47 resource and policy categories"},{"overview":"The 17 Entra collectors plus 2 standalone collectors query Microsoft Graph for identity, directory, and conditional access configurations.","dataFlow":"Graph API calls flow from Entra collectors to Microsoft Graph; directory and identity configuration data flows back.","keyPoints":["Covers users, groups, roles, conditional access, MFA, and app registrations","Batch size defaults to 6 concurrent collectors","Standalone collectors handle cross-cutting concerns like license status"],"whyItMatters":"Entra (Azure AD) is the identity backbone — assessing conditional access, MFA, and privileged roles is critical for any compliance framework.","output":"Raw Entra evidence objects covering identity and directory configurations"},{"overview":"All collectors return their raw evidence to the Orchestrator, which aggregates it into a unified evidence pool indexed by evidence type.","dataFlow":"Individual evidence objects from all 64 collectors flow back to the Orchestrator and are merged into a single dictionary keyed by evidence type.","keyPoints":["Evidence is deduplicated and indexed by type code","Failed collectors are logged but do not block the pipeline","A checkpoint is saved after collection for potential resume"],"whyItMatters":"Aggregating evidence into a single pool with consistent indexing allows evaluators to access any evidence type without knowing which collector produced it.","output":"Unified evidence dictionary containing 200+ evidence types"},{"overview":"The Orchestrator passes the evidence pool and framework mappings to the Evaluation Engine, which determines compliance status for each control.","dataFlow":"The evidence dictionary and framework-to-control mapping tables flow from the Orchestrator to the Evaluation Engine.","keyPoints":["Framework mappings link each compliance control to specific evaluation functions","Multiple frameworks can be evaluated in a single pass","Evidence is matched to controls via type codes"],"whyItMatters":"Separating evaluation from collection allows the same evidence to be assessed against multiple frameworks simultaneously, avoiding redundant data gathering.","output":"Evaluation context initialized with evidence and framework mappings"},{"overview":"Approximately 120 check functions across 10 security domains analyze the evidence, applying domain-specific logic to determine pass, fail, or not-applicable status for each control.","dataFlow":"Evidence items flow into domain-specific check functions; each function produces a finding record with severity, status, and remediation guidance.","keyPoints":["10 domains: access control, identity, data protection, network, logging, and more","Cross-domain fallback handles controls that span multiple domains","Suppressions from configuration are applied to filter known exceptions"],"whyItMatters":"Domain-specialized evaluation functions encode deep security expertise, ensuring consistent and thorough compliance assessment beyond simple configuration checks.","output":"Finding records with status, severity, evidence references, and remediation steps"},{"overview":"The Evaluation Engine returns the complete set of findings and per-control results back to the Orchestrator.","dataFlow":"Arrays of FindingRecord objects and aggregated control result summaries flow from the Evaluation Engine to the Orchestrator.","keyPoints":["Each finding includes severity, status, evidence reference, and remediation","Control results aggregate findings into per-control compliance scores","Summary statistics are computed for each domain and framework"],"whyItMatters":"Structured finding records with consistent schemas enable downstream report generators and SIEM integrations to consume results without custom parsing.","output":"Complete findings array and control results summary with compliance scores"},{"overview":"The Orchestrator passes all findings and control results to the Report Generators, which produce output in multiple formats.","dataFlow":"Findings array and control results flow from the Orchestrator to 29 report generator modules.","keyPoints":["29 report modules cover different output formats and views","Per-framework subfolders organize output by compliance standard","Report generation runs after all evaluation is complete"],"whyItMatters":"Multi-format reporting ensures results are consumable by diverse stakeholders — HTML for executives, JSON for automation, Excel for auditors.","output":"Report generation process initiated across all configured formats"},{"overview":"The Report Generators produce HTML dashboards, Markdown summaries, Excel workbooks, and JSON exports for each assessed framework.","dataFlow":"Formatted report files are written to the output directory; file paths flow back to the Orchestrator.","keyPoints":["HTML includes interactive charts and drill-down capability","Excel workbooks have per-domain worksheets with conditional formatting","JSON exports support OSCAL and SARIF standards for tooling integration"],"whyItMatters":"Providing multiple output formats maximizes the utility of assessment results across technical teams, management, and external auditors.","output":"Complete set of report files in HTML, Markdown, Excel, and JSON formats"},{"overview":"The Orchestrator returns the output directory path to the assessment script, signaling that all phases have completed successfully.","dataFlow":"The output directory path string flows from the Orchestrator back to run_assessment.py.","keyPoints":["Output directory uses a timestamped folder name for uniqueness","Contains per-framework subfolders and root-level summary files","Exit code indicates success or failure for CI/CD integration"],"whyItMatters":"Returning a single output path simplifies downstream consumption — CI/CD pipelines and users can reliably locate all generated artifacts.","output":"Absolute path to the timestamped output directory"},{"overview":"The assessment script prints a summary to the console showing the overall compliance score, per-framework breakdowns, and the output location.","dataFlow":"Summary statistics and the output path flow from run_assessment.py to the user terminal as formatted text.","keyPoints":["Displays overall compliance percentage and letter grade","Shows per-framework pass/fail/not-applicable counts","Includes the output directory path for easy access to full reports"],"whyItMatters":"An immediate console summary gives users instant feedback on their security posture without requiring them to open report files.","output":"Formatted console output with compliance score, framework summaries, and output directory path"}]'>
+sequenceDiagram
+    participant U as User / CLI
+    participant A as run_assessment.py
+    participant C as ComplianceCredentials
+    participant O as Orchestrator
+    participant Col as 64 Collectors
+    participant Ev as Evaluators
+    participant R as Report Generators
+
+    U->>A: python run_assessment.py --tenant ... --framework FedRAMP
+    A->>C: authenticate(tenant_id, auth_mode)
+    C->>C: DefaultAzureCredential (ARM + Graph)
+    C->>C: preflight_check()
+    C-->>A: credentials + permission status
+    A->>O: run(config, credentials)
+    O->>Col: discover_collectors() → 68 functions
+    par Azure Collectors (batches)
+        Col->>Col: 47 Azure collectors (P10-P240)
+    and Entra Collectors (batches)
+        Col->>Col: 17 Entra collectors + 2 standalone
+    end
+    Col-->>O: raw evidence
+    O->>Ev: evaluate(evidence, framework_mappings)
+    Ev->>Ev: ~120 check functions × 10 domains
+    Ev-->>O: findings + control results
+    O->>R: generate_reports(findings, results)
+    R-->>O: HTML + MD + Excel + JSON
+    O-->>A: output directory path
+    A-->>U: Summary + compliance score
+    </div>
+    <div class="diagram-explanation">
+      <strong>How it works:</strong>
+      <ol>
+        <li><strong>Authenticate</strong> — <code>ComplianceCredentials</code> obtains <code>DefaultAzureCredential</code> for both ARM and Graph (no popup), then runs a preflight check probing 3 Graph endpoints.</li>
+        <li><strong>Discover</strong> — The orchestrator calls <code>discover_collectors()</code> which scans the registry of <code>@register_collector</code>-decorated functions, returning 68 collector functions sorted by priority.</li>
+        <li><strong>Collect</strong> — Azure and Entra collector groups run <em>concurrently</em>. Within each group, collectors execute in configurable batch sizes (default: 8 Azure, 6 Entra).</li>
+        <li><strong>Evaluate</strong> — ~120 evaluation functions across 10 domains analyze the collected evidence. Cross-domain fallback (28 routes) fills gaps. Suppressions are applied.</li>
+        <li><strong>Report</strong> — Per-framework subfolders get HTML, Markdown, and Excel reports. JSON exports (findings, control results, evidence) go to the root output directory.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ Authentication ══════════════════════════ -->
+<section id="auth">
+  <h2><span class="icon">🔐</span> Authentication</h2>
+  <p>Handled by <code>ComplianceCredentials</code> (<code>app/auth.py</code>) with 4 modes. Both ARM and Graph use the same <code>DefaultAzureCredential</code>.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">💻</div>
+      <h4>Azure CLI <span class="badge badge-green">Interactive</span></h4>
+      <p>Run <code>az login --tenant "..."</code> then launch the assessment. Picks up the cached CLI token automatically.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚙️</div>
+      <h4>Service Principal <span class="badge badge-blue">CI/CD</span></h4>
+      <p>Set <code>AZURE_TENANT_ID</code>, <code>AZURE_CLIENT_ID</code>, <code>AZURE_CLIENT_SECRET</code> environment variables. Ideal for pipelines.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📱</div>
+      <h4>App Registration <span class="badge badge-purple">Dedicated</span></h4>
+      <p>Set <code>ENTERPRISESECURITYIQ_APP_CLIENT_ID</code> + <code>_SECRET</code> + <code>AUTH_MODE=appregistration</code>. Uses a dedicated app for isolation.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">☁️</div>
+      <h4>Managed Identity <span class="badge badge-cyan">Azure-hosted</span></h4>
+      <p>When running in Azure (Container Apps, App Service, VM), managed identity is used automatically. No env vars needed.</p>
+    </div>
+  </div>
+
+  <details>
+    <summary>Preflight Validation Details</summary>
+    <div class="detail-body">
+      <p>Before collection starts, <code>preflight_check()</code> probes 3 Graph endpoints:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Probe</th><th>Endpoint</th><th>Permission</th><th>On 403</th><th>On 401</th></tr></thead>
+          <tbody>
+            <tr><td>Users</td><td><code>/users?$top=1</code></td><td><code>User.Read.All</code></td><td>Warning</td><td>Blocking</td></tr>
+            <tr><td>Conditional Access</td><td><code>/identity/conditionalAccess/policies</code></td><td><code>Policy.Read.All</code></td><td>Warning</td><td>Blocking</td></tr>
+            <tr><td>Role Management</td><td><code>/roleManagement/directory/roleAssignments</code></td><td><code>RoleManagement.Read.All</code></td><td>Warning</td><td>Blocking</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:.5rem;font-size:.88rem;color:var(--text-secondary)">403 = assessment continues with reduced scope (missing evidence). 401 = assessment stops with actionable error.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ══════════════════════════ Full Assessment ══════════════════════════ -->
+<section id="assessment">
+  <h2><span class="icon">📊</span> Full Compliance Assessment</h2>
+
+  <h3>Single Framework</h3>
+  <pre>python run_assessment.py --tenant "..." --framework FedRAMP</pre>
+
+  <h3>Multiple Frameworks</h3>
+  <pre>python run_assessment.py --tenant "..." --framework FedRAMP NIST-800-53 CIS</pre>
+  <p style="color:var(--text-secondary);font-size:.88rem">Each framework gets its own subfolder with dedicated reports.</p>
+
+  <h3>All 11 Frameworks</h3>
+  <pre>python run_assessment.py --tenant "..." --framework all</pre>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Framework</th><th>Controls</th></tr></thead>
+      <tbody>
+        <tr><td>NIST-800-53</td><td>83</td></tr>
+        <tr><td>FedRAMP</td><td>69</td></tr>
+        <tr><td>CIS</td><td>53</td></tr>
+        <tr><td>MCSB</td><td>53</td></tr>
+        <tr><td>PCI-DSS</td><td>51</td></tr>
+        <tr><td>ISO-27001</td><td>51</td></tr>
+        <tr><td>SOC2</td><td>47</td></tr>
+        <tr><td>HIPAA</td><td>43</td></tr>
+        <tr><td>NIST-CSF</td><td>29</td></tr>
+        <tr><td>CSA-CCM</td><td>24</td></tr>
+        <tr><td>GDPR</td><td>22</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>With Config File</h3>
+  <pre>ENTERPRISESECURITYIQ_CONFIG=../config/enterprisesecurityiq.config.json \
+  python run_assessment.py --tenant "..."</pre>
+</section>
+
+<!-- ══════════════════════════ Specialized Analyses ══════════════════════════ -->
+<section id="specialized">
+  <h2><span class="icon">🔍</span> Specialized Analyses</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🛡️</div>
+      <h4>RBAC Analysis</h4>
+      <pre style="margin:.5rem 0;font-size:.82rem">python run_rbac_report.py --tenant "..."</pre>
+      <p>Role assignments, privilege sprawl, PIM eligibility, custom role risk, Entra directory roles.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">⚠️</div>
+      <h4>Risk Analysis</h4>
+      <pre style="margin:.5rem 0;font-size:.82rem">python run_risk_analysis.py --tenant "..."</pre>
+      <p>5 categories: Identity, Network, Defender, Config, Data. Severity-weighted scoring.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🔒</div>
+      <h4>Data Security</h4>
+      <pre style="margin:.5rem 0;font-size:.82rem">python run_data_security.py --tenant "..."</pre>
+      <p>7 categories: Storage Exposure, Database Security, Key/Secret Hygiene, Encryption, Classification, Lifecycle, DLP.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🤖</div>
+      <h4>M365 Copilot Readiness</h4>
+      <pre style="margin:.5rem 0;font-size:.82rem">python run_copilot_readiness.py --tenant "..."</pre>
+      <p>Oversharing, Sensitivity Labels, DLP, Retention, Access Governance, Lifecycle, Audit readiness.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🧠</div>
+      <h4>AI Agent Security</h4>
+      <pre style="margin:.5rem 0;font-size:.82rem">python run_ai_agent_security.py --tenant "..."</pre>
+      <p>Copilot Studio (5 checks), Foundry (20+), Custom Agents (3), Entra AI Identity (3+).</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🔎</div>
+      <h4>Query Engine</h4>
+      <pre style="margin:.5rem 0;font-size:.82rem">python run_query.py --query "non-compliant in FedRAMP"</pre>
+      <p>Natural language queries against past assessment results — evidence, findings, controls.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ Patterns ══════════════════════════ -->
+<section id="patterns">
+  <h2><span class="icon">🎯</span> Selective Assessment Patterns</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Azure-Only (No Entra)</h4>
+      <pre style="font-size:.82rem">{
+  "collectors": {
+    "azureEnabled": true,
+    "entraEnabled": false
+  }
+}</pre>
+    </div>
+    <div class="card">
+      <h4>Entra-Only (No Azure)</h4>
+      <pre style="font-size:.82rem">{
+  "collectors": {
+    "azureEnabled": false,
+    "entraEnabled": true
+  }
+}</pre>
+    </div>
+    <div class="card">
+      <h4>Subscription Filter</h4>
+      <pre style="font-size:.82rem">{
+  "auth": {
+    "subscriptionFilter": [
+      "d33fc1a7-xxxx-...",
+      "0eb177bd-xxxx-..."
+    ]
+  }
+}</pre>
+      <p style="margin-top:.5rem">Or: <code>export AZURE_SUBSCRIPTION_FILTER="id1,id2"</code></p>
+    </div>
+    <div class="card">
+      <h4>Large Tenant (50K+ Users)</h4>
+      <pre style="font-size:.82rem">{
+  "collectors": {
+    "userSampleLimit": 5000,
+    "azureBatchSize": 6,
+    "entraBatchSize": 4,
+    "collectorTimeout": 600
+  }
+}</pre>
+    </div>
+  </div>
+
+  <h3>Multi-Tenant Assessment</h3>
+  <pre>python run_assessment.py --tenant "primary" \
+  --additional-tenants "tenant-2" "tenant-3" --framework FedRAMP</pre>
+  <p style="color:var(--text-secondary);font-size:.88rem">Or set <code>"additionalTenants": ["tenant-2", "tenant-3"]</code> in config JSON. Each tenant's evidence is collected separately, then combined for cross-tenant evaluation.</p>
+</section>
+
+<!-- ══════════════════════════ Integrations ══════════════════════════ -->
+<section id="integrations">
+  <h2><span class="icon">🔗</span> Integrations</h2>
+
+  <h3>Continuous Monitoring</h3>
+  <pre>{
+  "continuousMonitoring": {
+    "enabled": true,
+    "intervalMinutes": 1440,
+    "collectors": ["defender", "policy", "rbac"],
+    "frameworks": ["FedRAMP"],
+    "alertOnRegression": true,
+    "minScoreThreshold": 80
+  }
+}</pre>
+  <p style="color:var(--text-secondary);font-size:.88rem">Scores stored to <code>.trends.json</code>. Detects regressions between runs.</p>
+
+  <h3>Remediation Plans</h3>
+  <pre>{
+  "remediation": {
+    "enabled": true,
+    "includeAzCli": true,
+    "includePowerShell": true,
+    "includeArmSnippets": false
+  }
+}</pre>
+  <p style="color:var(--text-secondary);font-size:.88rem">Generates fix scripts for encryption, TLS, network rules, MFA, diagnostics, database hardening, Key Vault, CMK, and private endpoints.</p>
+
+  <h3>SIEM Export</h3>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🏢</div>
+      <h4>Azure Sentinel</h4>
+      <p>DCE endpoint + DCR immutable ID. Batch uploads via <code>LogsIngestionClient</code>.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📡</div>
+      <h4>Splunk</h4>
+      <p>HEC endpoint. Token via <code>SPLUNK_HEC_TOKEN</code> env var.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔌</div>
+      <h4>Generic Webhook</h4>
+      <p>Any endpoint. Bearer token via <code>SIEM_WEBHOOK_TOKEN</code> env var.</p>
+    </div>
+  </div>
+
+  <details>
+    <summary>SIEM Configuration Examples</summary>
+    <div class="detail-body">
+      <h4 style="margin:1rem 0 .5rem">Sentinel</h4>
+      <pre>{
+  "siemIntegration": {
+    "sentinel": {
+      "enabled": true,
+      "endpointUrl": "https://&lt;dce&gt;.ingest.monitor.azure.com",
+      "workspaceId": "&lt;workspace-id&gt;",
+      "dcrImmutableId": "&lt;dcr-immutable-id&gt;",
+      "dcrStreamName": "Custom-EnterpriseSecurityIQ_CL",
+      "batchSize": 100
+    }
+  }
+}</pre>
+      <h4 style="margin:1rem 0 .5rem">Splunk</h4>
+      <pre>export SPLUNK_HEC_TOKEN="&lt;your-token&gt;"</pre>
+      <pre>{
+  "siemIntegration": {
+    "splunk": {
+      "enabled": true,
+      "endpointUrl": "https://splunk-hec:8088/services/collector"
+    }
+  }
+}</pre>
+      <h4 style="margin:1rem 0 .5rem">Generic Webhook</h4>
+      <pre>export SIEM_WEBHOOK_TOKEN="&lt;your-token&gt;"</pre>
+      <pre>{
+  "siemIntegration": {
+    "generic": {
+      "enabled": true,
+      "endpointUrl": "https://your-siem/api/events"
+    }
+  }
+}</pre>
+    </div>
+  </details>
+
+  <h3>Data Residency Validation</h3>
+  <pre>{
+  "dataResidency": {
+    "enabled": true,
+    "allowedRegions": ["eastus", "westus2"],
+    "allowedRegionGroups": ["US"]
+  }
+}</pre>
+  <p style="color:var(--text-secondary);font-size:.88rem">Checks resource locations, storage replication targets, CosmosDB multi-region writes, backup vault regions, CDN endpoints, and cross-region flows.</p>
+
+  <h3>Determinism Checks</h3>
+  <pre>
+# Full assessment determinism
+python run_assessment_determinism_check.py --tenant "..."
+
+# Copilot Readiness determinism
+python run_cr_determinism_check.py --tenant "..."
+
+# RBAC report determinism
+python run_rbac_determinism_check.py --tenant "..."</pre>
+  <p style="color:var(--text-secondary);font-size:.88rem">Runs two assessments and compares output — used for CI regression testing.</p>
+</section>
+
+<!-- ══════════════════════════ Foundry Agent ══════════════════════════ -->
+<section id="agent">
+  <h2><span class="icon">🤖</span> Foundry Agent</h2>
+  <p>PostureIQ runs as a <strong>Microsoft Foundry hosted agent</strong> with 12 registered tools, accepting requests via the Foundry <code>responses</code> protocol (v1) on port 8088.</p>
+
+  <h3>Local Development</h3>
+  <pre>cd AIAgent
+pip install -r requirements.txt
+python main.py
+# Agent listens on http://localhost:8088</pre>
+
+  <h3>Docker</h3>
+  <pre>cd AIAgent
+docker build -t enterprisesecurityiq .
+docker run -p 8088:8088 \
+  -e AZURE_TENANT_ID="..." \
+  -e AZURE_CLIENT_ID="..." \
+  -e AZURE_CLIENT_SECRET="..." \
+  enterprisesecurityiq</pre>
+
+  <h3>Agent Tools (12)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Tool</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>run_assessment</code></td><td>Full compliance assessment</td></tr>
+        <tr><td><code>query_results</code></td><td>Query past assessment results</td></tr>
+        <tr><td><code>search_tenant</code></td><td>Search tenant for specific resources</td></tr>
+        <tr><td><code>analyze_risk</code></td><td>Security risk analysis</td></tr>
+        <tr><td><code>assess_data_security</code></td><td>Data security posture assessment</td></tr>
+        <tr><td><code>generate_rbac_report</code></td><td>RBAC analysis report</td></tr>
+        <tr><td><code>assess_copilot_readiness</code></td><td>M365 Copilot readiness</td></tr>
+        <tr><td><code>assess_ai_agent_security</code></td><td>AI agent security assessment</td></tr>
+        <tr><td><code>generate_report</code></td><td>Generate specific report formats</td></tr>
+        <tr><td><code>check_permissions</code></td><td>Verify access permissions</td></tr>
+        <tr><td><code>compare_runs</code></td><td>Compare two assessment runs</td></tr>
+        <tr><td><code>search_exposure</code></td><td>Search for security exposure patterns</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════════════════ Reviewing Results ══════════════════════════ -->
+<section id="results">
+  <h2><span class="icon">📂</span> Reviewing Results</h2>
+
+  <h3>Navigate Output Directory</h3>
+  <pre>
+# Windows
+start output\20260327_151401\FedRAMP\compliance-report.html
+
+# macOS
+open output/20260327_151401/FedRAMP/compliance-report.html
+
+# Linux
+xdg-open output/20260327_151401/FedRAMP/compliance-report.html</pre>
+
+  <h3>Quick JSON Check</h3>
+  <pre>
+# Python
+python -c "
+import json
+r = json.load(open('output/&lt;timestamp&gt;/control-results.json'))
+for c in r: print(f\"{c['ControlId']:12} {c['Status']:18} {c['Domain']}\")
+"
+
+# jq
+jq '.[] | {ControlId, Status, Domain}' output/&lt;timestamp&gt;/control-results.json</pre>
+
+  <h3>Report Types</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Report</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td><code>compliance-report.html</code></td><td>Full interactive audit — sidebar nav, search, filters</td></tr>
+        <tr><td><code>executive-summary.html</code></td><td>Management presentations — one-page compliance ring</td></tr>
+        <tr><td><code>gaps-report.html</code></td><td>Remediation planning — non-compliant findings with roadmap</td></tr>
+        <tr><td><code>{framework}-report.xlsx</code></td><td>Data analysis — 3-sheet Excel workbook</td></tr>
+        <tr><td><code>methodology-report.html</code></td><td>Auditor handoff — explains assessment methodology</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Output File Tree</h3>
+  <pre>
+output/20260327_151401/
+├── FedRAMP/
+│   ├── compliance-report.html / .md
+│   ├── executive-summary.html / .md
+│   ├── gaps-report.html / .md
+│   ├── FedRAMP-report.xlsx
+│   └── oscal-results.json
+├── NIST-800-53/
+│   └── ... (same structure)
+├── methodology-report.html
+├── findings.json / .csv
+├── control-results.json / .csv
+├── evidence.json
+├── all-evidence.json
+├── access-denied.json
+└── .checkpoint.json</pre>
+
+  <details>
+    <summary>Full Output File Reference</summary>
+    <div class="detail-body">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>File</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>compliance-report.html/md</code></td><td>Full interactive compliance report</td></tr>
+            <tr><td><code>executive-summary.html/md</code></td><td>One-page executive summary with compliance ring</td></tr>
+            <tr><td><code>gaps-report.html/md</code></td><td>Non-compliant findings with remediation roadmap</td></tr>
+            <tr><td><code>{framework}-report.xlsx</code></td><td>Excel: Compliance, Gap Analysis, Executive Summary sheets</td></tr>
+            <tr><td><code>methodology-report.html</code></td><td>Assessment methodology (for auditors)</td></tr>
+            <tr><td><code>oscal-results.json</code></td><td>NIST OSCAL assessment results (if enabled)</td></tr>
+            <tr><td><code>findings.json/csv</code></td><td>All individual findings</td></tr>
+            <tr><td><code>control-results.json/csv</code></td><td>Per-control status summary</td></tr>
+            <tr><td><code>evidence.json</code></td><td>Normalized evidence records</td></tr>
+            <tr><td><code>all-evidence.json</code></td><td>Complete evidence dataset</td></tr>
+            <tr><td><code>access-denied.json</code></td><td>Collectors blocked by insufficient permissions</td></tr>
+            <tr><td><code>.checkpoint.json</code></td><td>Collection checkpoint (auto-removed on success)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- ══════════════════════════ Troubleshooting ══════════════════════════ -->
+<section id="troubleshooting">
+  <h2><span class="icon">🔧</span> Troubleshooting</h2>
+
+  <details open>
+    <summary>Check Authentication</summary>
+    <div class="detail-body">
+      <pre>
+# Verify Azure CLI login
+az account show --query '{tenant:tenantId, subscription:name}'
+
+# List accessible subscriptions
+az account list --query '[].{name:name, id:id, state:state}' -o table</pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Assessment Runs Slow</summary>
+    <div class="detail-body">
+      <p>Large tenants may take 10+ minutes. To speed up:</p>
+      <pre>{
+  "collectors": {
+    "userSampleLimit": 5000,
+    "azureBatchSize": 6,
+    "entraBatchSize": 4,
+    "collectorTimeout": 120
+  }
+}</pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Sign-In Logs Return 0 Records</summary>
+    <div class="detail-body">
+      <p>Expected if the tenant lacks Entra ID P1/P2 license. The assessment continues with <code>missing_evidence</code> status for sign-in log controls.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Collector Timeout</summary>
+    <div class="detail-body">
+      <p>If collectors timeout on large subscriptions:</p>
+      <pre>{ "collectors": { "collectorTimeout": 600 } }</pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Permission Errors</summary>
+    <div class="detail-body">
+      <p>Assessment continues despite permission failures. Check <code>access-denied.json</code> in the output for details. The methodology report also lists permission gaps.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Resume After Failure</summary>
+    <div class="detail-body">
+      <p>With <code>checkpointEnabled: true</code> (default), the assessment saves progress to <code>.checkpoint.json</code>. Re-run the same command and it resumes from the last checkpoint. The checkpoint is auto-removed on success.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Missing Evidence Types</summary>
+    <div class="detail-body">
+      <p>If controls show <code>missing_evidence</code>, check:</p>
+      <ol style="padding-left:1.25rem;margin:.5rem 0;color:var(--text-secondary)">
+        <li><strong>Permissions</strong> — verify <code>access-denied.json</code> for 403 errors</li>
+        <li><strong>Collector toggles</strong> — ensure <code>azureEnabled</code>/<code>entraEnabled</code> are true</li>
+        <li><strong>Resource existence</strong> — some evidence requires specific Azure resources (e.g., Sentinel, Purview)</li>
+      </ol>
+    </div>
+  </details>
+
+  <div class="info-box info">
+    <strong>📘 Full Troubleshooting Guide</strong>
+    See <a href="troubleshooting.html">troubleshooting.html</a> for comprehensive diagnostic steps, error code reference, and advanced recovery procedures.
+  </div>
+</section>
+
+</main>
+
+<!-- ── Back to Top ── -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0})" aria-label="Back to top">↑</button>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>PostureIQ Usage Guide — Author: Murali Chillakuru</p>
+  <p style="margin-top:.25rem">10 CLI Scripts · 12 Agent Tools · 4 Auth Modes · 11 Frameworks · 525 Controls · 64 Collectors</p>
+</footer>
+
+<script>
+/* ── Theme Toggle ── */
+function toggleTheme(){
+  const t=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';
+  document.documentElement.setAttribute('data-theme',t==='light'?'light':'');
+  if(t==='light') document.documentElement.setAttribute('data-theme','light');
+  else document.documentElement.removeAttribute('data-theme');
+  localStorage.setItem('esiq-theme',t);
+}
+(function(){const s=localStorage.getItem('esiq-theme');if(s==='light')document.documentElement.setAttribute('data-theme','light')})();
+
+/* ── Mermaid Init ── */
+mermaid.initialize({
+  startOnLoad:true,
+  theme:document.documentElement.getAttribute('data-theme')==='light'?'default':'dark',
+  securityLevel:'loose',
+  sequence:{mirrorActors:false,actorMargin:50}
+});
+
+/* ── Animated Counters ── */
+document.querySelectorAll('.stat-value[data-target]').forEach(el=>{
+  const target=+el.dataset.target;
+  let current=0;
+  const step=Math.max(1,Math.ceil(target/40));
+  const timer=setInterval(()=>{current+=step;if(current>=target){current=target;clearInterval(timer)}el.textContent=current},30);
+});
+
+/* ── Scroll-Spy ── */
+const pills=document.querySelectorAll('.nav-pill[href^="#"]');
+const sections=document.querySelectorAll('section[id]');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      pills.forEach(p=>p.classList.remove('active'));
+      const a=document.querySelector('.nav-pill[href="#'+e.target.id+'"]');
+      if(a) a.classList.add('active');
+    }
+  });
+},{rootMargin:'-20% 0px -70% 0px'});
+sections.forEach(s=>obs.observe(s));
+
+/* ── Back-to-Top ── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('backTop').classList.toggle('visible',window.scrollY>400);
+});
+
+/* ── Reading Progress ── */
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  document.getElementById('readingProgress').style.width=(window.scrollY/h*100)+'%';
+});
+</script>
+<script src="seq-engine.js"></script>
+</body>
+</html>

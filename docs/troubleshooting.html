@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostureIQ — Troubleshooting Guide</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-code:#0D1117;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#484F58;
+  --border-primary:#30363D;--border-subtle:#21262D;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --shadow-lg:0 8px 32px rgba(0,0,0,.4);--shadow-md:0 4px 16px rgba(0,0,0,.3);
+  --radius-lg:16px;--radius-md:12px;--radius-sm:8px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',monospace;
+  --max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-code:#F6F8FA;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8B949E;
+  --border-primary:#D0D7DE;--border-subtle:#E8EBEF;
+  --shadow-lg:0 8px 32px rgba(0,0,0,.08);--shadow-md:0 4px 16px rgba(0,0,0,.06);
+}
+.skip-nav{position:absolute;top:-100%;left:1rem;padding:.5rem 1rem;background:var(--accent-blue);color:#fff;border-radius:var(--radius-sm);z-index:9999;font-weight:600}
+.skip-nav:focus{top:1rem}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--bg-code);padding:2px 6px;border-radius:4px;border:1px solid var(--border-subtle)}
+.reading-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-red),var(--accent-orange),var(--accent-green));z-index:10001;transition:width .15s}
+
+/* Hero */
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,#0D1117 0%,#161B22 50%,#1C2128 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+[data-theme="light"] .hero{background:linear-gradient(135deg,#fff5f5 0%,#fef2e8 50%,#f0fdf4 100%)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:600px;height:600px;background:radial-gradient(circle,var(--accent-red),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-orange),transparent 70%);bottom:-150px;left:-50px}
+.hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-red),var(--accent-orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{font-size:1.15rem;color:var(--text-secondary);max-width:800px;margin:0 auto 1rem}
+.author-tag{display:inline-block;padding:6px 16px;border-radius:20px;font-size:.85rem;font-weight:600;border:1px solid var(--accent-purple);color:var(--accent-purple);margin-top:1rem}
+
+/* Stats */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;max-width:1200px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);position:relative;z-index:10}
+.stat{text-align:center}
+.stat-value{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent-orange),var(--accent-red));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-label{font-size:.75rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}
+
+/* Layout */
+.container{max-width:var(--max-width);margin:0 auto;padding:2rem}
+
+/* Nav */
+.sticky-nav{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);padding:.6rem 1rem;backdrop-filter:blur(12px)}
+.nav-inner{display:flex;gap:.5rem;max-width:1200px;margin:0 auto;overflow-x:auto;scrollbar-width:none;align-items:center}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-pill{padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:600;white-space:nowrap;border:1px solid var(--border-primary);background:transparent;color:var(--text-secondary);cursor:pointer;transition:all .2s}
+.nav-pill:hover,.nav-pill.active{background:var(--accent-red);color:#fff;border-color:var(--accent-red);text-decoration:none}
+.theme-toggle{margin-left:auto;background:transparent;border:1px solid var(--border-primary);color:var(--text-secondary);padding:6px 12px;border-radius:20px;cursor:pointer;font-size:.85rem;white-space:nowrap;transition:all .2s}
+.theme-toggle:hover{color:var(--accent-orange);border-color:var(--accent-orange)}
+
+/* Sections */
+section{margin-bottom:3rem;scroll-margin-top:80px}
+section h2{font-size:1.8rem;font-weight:700;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--border-primary);display:flex;align-items:center;gap:.5rem}
+section h2 .icon{font-size:1.4rem}
+section h3{font-size:1.2rem;font-weight:600;margin:1.5rem 0 .75rem;color:var(--accent-orange)}
+
+/* Info Boxes */
+.info-box{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.25rem 1.5rem;margin:1rem 0}
+.info-box.tip{border-left:4px solid var(--accent-green)}
+.info-box.warn{border-left:4px solid var(--accent-orange)}
+.info-box.error{border-left:4px solid var(--accent-red)}
+.info-box.info{border-left:4px solid var(--accent-blue)}
+.info-box strong{display:block;margin-bottom:.4rem}
+
+/* Code */
+pre{background:var(--bg-code);border:1px solid var(--border-primary);border-radius:var(--radius-sm);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.6;margin:1rem 0}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:1rem 0;border-radius:var(--radius-md);border:1px solid var(--border-primary)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{background:var(--bg-secondary);padding:.7rem 1rem;text-align:left;font-weight:600;color:var(--text-primary);border-bottom:2px solid var(--border-primary);position:sticky;top:0}
+td{padding:.6rem 1rem;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary)}
+tr:hover td{background:rgba(31,111,235,.04)}
+
+/* Cards */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin:1rem 0}
+.card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.25rem;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.card-icon{font-size:1.6rem;margin-bottom:.5rem}
+.card h4{font-size:1rem;font-weight:700;margin-bottom:.5rem;color:var(--text-primary)}
+.card p{font-size:.85rem;color:var(--text-secondary);line-height:1.5}
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:600}
+.badge-red{background:rgba(248,81,73,.15);color:var(--accent-red)}
+.badge-orange{background:rgba(210,153,34,.15);color:var(--accent-orange)}
+.badge-green{background:rgba(63,185,80,.15);color:var(--accent-green)}
+.badge-blue{background:rgba(31,111,235,.15);color:var(--accent-blue)}
+
+/* Accordion */
+details{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-sm);margin:.75rem 0}
+details>summary{padding:.8rem 1rem;cursor:pointer;font-weight:600;color:var(--text-primary);list-style:none;display:flex;align-items:center;gap:.5rem}
+details>summary::before{content:'▸';font-size:.85rem;color:var(--accent-red);transition:transform .2s}
+details[open]>summary::before{transform:rotate(90deg)}
+details>summary::-webkit-details-marker{display:none}
+details>.detail-body{padding:0 1rem 1rem}
+
+/* Diagram */
+.diagram-container{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.5rem;margin:1.5rem 0;overflow-x:auto}
+.diagram-container h4{margin-bottom:1rem;color:var(--accent-purple)}
+.diagram-explanation{background:var(--bg-secondary);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:1rem 1.25rem;margin-top:1rem;font-size:.88rem;color:var(--text-secondary);line-height:1.7}
+.diagram-explanation ol{padding-left:1.25rem}
+.diagram-explanation li{margin:.4rem 0}
+
+/* Severity Indicators */
+.severity-row{display:flex;align-items:center;gap:.75rem;padding:.5rem 0}
+.severity-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.severity-dot.critical{background:var(--accent-red)}
+.severity-dot.high{background:var(--accent-orange)}
+.severity-dot.medium{background:var(--accent-cyan)}
+.severity-dot.low{background:var(--accent-green)}
+
+/* Back to top */
+.back-top{position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--accent-red);color:#fff;border:none;font-size:1.2rem;cursor:pointer;opacity:0;transition:opacity .3s,transform .3s;transform:translateY(20px);z-index:999;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md)}
+.back-top.visible{opacity:1;transform:translateY(0)}
+.back-top:hover{background:var(--accent-orange)}
+
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.82rem;border-top:1px solid var(--border-primary);margin-top:3rem}
+@media print{.sticky-nav,.back-top,.theme-toggle,.reading-progress{display:none!important}body{background:#fff;color:#000}.hero{background:#f5f5f5!important;padding:2rem}.card,.info-box,details,.diagram-container{break-inside:avoid}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(forced-colors:active){.nav-pill,.badge,.card{border:1px solid CanvasText}}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-nav">Skip to main content</a>
+<div class="reading-progress" id="readingProgress"></div>
+
+<header class="hero">
+  <h1>Troubleshooting Guide</h1>
+  <p class="subtitle">Comprehensive diagnostic reference — authentication, collector failures, retry logic, checkpoint recovery, evaluation, report generation, PDF export, logging, SIEM, and error code reference.</p>
+  <div class="author-tag">Author: Murali Chillakuru</div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-value" data-target="15">0</div><div class="stat-label">Diagnostic Topics</div></div>
+  <div class="stat"><div class="stat-value" data-target="3">0</div><div class="stat-label">Max Retries</div></div>
+  <div class="stat"><div class="stat-value" data-target="64">0</div><div class="stat-label">Collectors</div></div>
+  <div class="stat"><div class="stat-value" data-target="16">0</div><div class="stat-label">Error Patterns</div></div>
+  <div class="stat"><div class="stat-value" data-target="5">0</div><div class="stat-label">Log Levels</div></div>
+</div>
+
+<nav class="sticky-nav" aria-label="Section navigation">
+  <div class="nav-inner">
+    <a href="#auth" class="nav-pill">Auth</a>
+    <a href="#preflight" class="nav-pill">Preflight</a>
+    <a href="#collectors" class="nav-pill">Collectors</a>
+    <a href="#retry" class="nav-pill">Retry</a>
+    <a href="#checkpoint" class="nav-pill">Checkpoint</a>
+    <a href="#evaluation" class="nav-pill">Evaluation</a>
+    <a href="#reports" class="nav-pill">Reports</a>
+    <a href="#pdf" class="nav-pill">PDF</a>
+    <a href="#logging" class="nav-pill">Logging</a>
+    <a href="#siem" class="nav-pill">SIEM</a>
+    <a href="#residency" class="nav-pill">Residency</a>
+    <a href="#errors" class="nav-pill">Errors</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">☀ / ☾</button>
+  </div>
+</nav>
+
+<main id="main" class="container">
+
+<!-- EXEC SUMMARY -->
+<div style="background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.25);border-radius:8px;padding:16px 20px;margin:0 0 24px;font-size:.9rem;color:var(--text-secondary)">
+<strong>📋 Executive Summary</strong> — Diagnostic reference for all failure modes: authentication errors, collector failures, retry/rate-limiting, checkpoint recovery, evaluation issues, report generation, PDF export, SIEM export, and error codes.
+<div style="margin-top:8px;font-size:.82rem"><strong>Audience:</strong> Operators, support engineers · <strong>Prerequisites:</strong> <a href="configuration-guide.html">Configuration Guide</a> · <strong>Related:</strong> <a href="prompts.html">Usage Guide</a> · <a href="ci-cd-integration.html">CI/CD Integration</a></div>
+</div>
+
+<!-- ══════ Authentication ══════ -->
+<section id="auth">
+  <h2><span class="icon">🔐</span> Authentication Issues</h2>
+
+  <div class="diagram-container">
+    <h4>Credential Resolution Order</h4>
+    <div class="mermaid" data-seq-details='[{"overview":"The application initiates authentication by calling DefaultAzureCredential. This is the entry point for the credential chain that tries multiple methods in priority order.","dataFlow":"The Assessment Engine sends an authenticate() request to the DefaultAzureCredential handler.","keyPoints":["DefaultAzureCredential is the recommended approach for Azure SDK authentication","It abstracts away the complexity of choosing the right credential type","The same code works in local development, CI/CD, and production Azure environments"],"whyItMatters":"Using DefaultAzureCredential ensures your application can authenticate seamlessly across different environments without code changes.","output":"Authentication request initiated"},{"overview":"DefaultAzureCredential first checks environment variables for service principal credentials. This is the highest-priority credential type in the chain.","dataFlow":"DAC queries the process environment for AZURE_CLIENT_ID, AZURE_TENANT_ID, and AZURE_CLIENT_SECRET variables.","keyPoints":["Environment variables are checked before any network calls","All three variables must be present: CLIENT_ID, TENANT_ID, and CLIENT_SECRET","This method is commonly used in CI/CD pipelines and container deployments"],"whyItMatters":"Environment variable credentials are the fastest to resolve and work in any environment, making them ideal for automated pipelines.","output":"Environment variable lookup result"},{"overview":"When all required environment variables are found, a ClientSecretCredential is constructed and returned as the active credential.","dataFlow":"The environment returns the credential values to DAC, which constructs a ClientSecretCredential token provider.","keyPoints":["No network call is needed to create the credential object","Token acquisition happens lazily on first API call","The credential is cached for subsequent requests in the same session"],"whyItMatters":"Successful environment variable resolution means authentication is resolved without probing any endpoints, providing the fastest path to a working credential.","output":"ClientSecretCredential instance ready for token acquisition"},{"overview":"When no environment variables are found, DAC probes the managed identity endpoint available in Azure-hosted environments like Container Apps or App Service.","dataFlow":"DAC sends an HTTP request to the Azure Instance Metadata Service (IMDS) endpoint to check for managed identity availability.","keyPoints":["Managed identity eliminates the need to store secrets in code or configuration","The IMDS endpoint is only available inside Azure compute resources","System-assigned and user-assigned managed identities are both supported"],"whyItMatters":"Managed identity is the most secure credential type because no secrets are stored or transmitted — Azure handles token issuance internally.","output":"Managed identity endpoint probe result"},{"overview":"When the managed identity endpoint responds, a ManagedIdentityCredential is created and returned as the active credential.","dataFlow":"The IMDS endpoint returns a confirmation to DAC, which constructs a ManagedIdentityCredential.","keyPoints":["Tokens are automatically rotated by the Azure platform","No secret rotation or certificate management is required","This is the recommended approach for production Azure workloads"],"whyItMatters":"Managed identity provides zero-secret authentication, eliminating an entire class of credential leakage risks.","output":"ManagedIdentityCredential instance ready for use"},{"overview":"When not running in Azure, DAC falls back to checking the local Azure CLI cache for an active login session.","dataFlow":"DAC invokes the Azure CLI to check for cached authentication tokens from a previous az login command.","keyPoints":["Requires the Azure CLI to be installed locally","The az login session must not have expired","This is the primary method for local development scenarios"],"whyItMatters":"CLI credential fallback enables developers to run the assessment locally without configuring service principals or environment variables.","output":"Azure CLI cache probe result"},{"overview":"When the CLI has a valid cached session, an AzureCliCredential is created and returned as the active credential.","dataFlow":"The CLI returns cached token information to DAC, which constructs an AzureCliCredential.","keyPoints":["CLI tokens typically expire after 1 hour and can be refreshed","Run az account show to verify the active account and tenant","Ensure the logged-in account has the required permissions for the assessment"],"whyItMatters":"AzureCliCredential bridges the gap between development and production, letting developers test with their own identity before deploying with managed identity.","output":"AzureCliCredential instance using the cached CLI session"},{"overview":"When all credential types fail, DAC raises a CredentialUnavailableError. The assessment cannot proceed without valid authentication.","dataFlow":"DAC returns a CredentialUnavailableError to the application, indicating no usable credential was found in the chain.","keyPoints":["Check that at least one authentication method is configured","Run az login for local development or set environment variables for CI/CD","Review the error message for details on which credential types were attempted"],"whyItMatters":"This error means the assessment has no way to authenticate to Azure or Microsoft Graph, and all data collection will fail.","output":"CredentialUnavailableError exception raised to the caller"}]'>
+sequenceDiagram
+    participant App as Assessment Engine
+    participant DAC as DefaultAzureCredential
+    participant Env as Environment Variables
+    participant MI as Managed Identity
+    participant CLI as Azure CLI Cache
+    participant AR as App Registration
+
+    App->>DAC: authenticate()
+    DAC->>Env: AZURE_CLIENT_ID + SECRET?
+    alt Env vars present
+        Env-->>DAC: ClientSecretCredential ✅
+    else No env vars
+        DAC->>MI: Managed identity endpoint?
+        alt Running in Azure
+            MI-->>DAC: ManagedIdentityCredential ✅
+        else Not in Azure
+            DAC->>CLI: az login cache?
+            alt CLI authenticated
+                CLI-->>DAC: AzureCliCredential ✅
+            else No CLI session
+                DAC-->>App: CredentialUnavailableError ❌
+            end
+        end
+    end
+    Note right of DAC: If AUTH_MODE=appregistration,<br/>uses dedicated app creds
+    </div>
+    <div class="diagram-explanation">
+      <strong>How credential resolution works:</strong>
+      <ol>
+        <li><strong>Environment Variables</strong> — Checked first. If <code>AZURE_CLIENT_ID</code>, <code>AZURE_TENANT_ID</code>, <code>AZURE_CLIENT_SECRET</code> are all set, a <code>ClientSecretCredential</code> is created.</li>
+        <li><strong>Managed Identity</strong> — If running in Azure (Container Apps, App Service, VM), the managed identity endpoint is probed.</li>
+        <li><strong>Azure CLI</strong> — Falls back to the cached <code>az login</code> session. Ensure it hasn't expired.</li>
+        <li><strong>App Registration</strong> — When <code>AUTH_MODE=appregistration</code>, uses <code>ENTERPRISESECURITYIQ_APP_CLIENT_ID</code> + <code>_SECRET</code> instead.</li>
+      </ol>
+    </div>
+  </div>
+
+  <details open>
+    <summary>"DefaultAzureCredential failed"</summary>
+    <div class="detail-body">
+      <pre>az login --tenant &lt;TENANT_ID&gt;
+az account show --query '{tenant:tenantId, subscription:name}'</pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>"Insufficient privileges to complete the operation"</summary>
+    <div class="detail-body">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Scope</th><th>Role</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>Subscription</td><td><strong>Reader</strong></td><td>Azure resource collection</td></tr>
+            <tr><td>Subscription</td><td><strong>Security Reader</strong></td><td>Defender, security recommendations</td></tr>
+            <tr><td>Entra ID</td><td><strong>Global Reader</strong></td><td>Users, roles, CA, apps</td></tr>
+            <tr><td>Entra ID</td><td><strong>Security Reader</strong></td><td>Identity protection, sign-in logs</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:.88rem;color:var(--text-secondary);margin-top:.5rem"><strong>Sufficient Entra Roles:</strong> Global Administrator, Global Reader, Security Administrator, Security Reader, Compliance Administrator</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Graph API 403 — Permission-to-Collector Mapping</summary>
+    <div class="detail-body">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Collector</th><th>Required Permission</th></tr></thead>
+          <tbody>
+            <tr><td><code>collect_entra_audit_logs</code></td><td><code>AuditLog.Read.All</code></td></tr>
+            <tr><td><code>collect_entra_identity_protection</code></td><td><code>IdentityRiskEvent.Read.All</code></td></tr>
+            <tr><td><code>collect_entra_governance</code></td><td><code>AccessReview.Read.All</code>, <code>EntitlementManagement.Read.All</code></td></tr>
+            <tr><td><code>collect_entra_workload_identity</code></td><td><code>Application.Read.All</code></td></tr>
+            <tr><td><code>collect_entra_risk_policies</code></td><td><code>IdentityRiskEvent.Read.All</code>, <code>IdentityRiskyUser.Read.All</code></td></tr>
+            <tr><td><code>collect_entra_sensitivity_labels</code></td><td><code>InformationProtection.Read</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box tip">
+        <strong>✅ Non-Blocking</strong>
+        The engine continues when collectors fail — affected controls show <code>missing_evidence</code> status. Check <code>access-denied.json</code> for details.
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>Sentinel & Defender Collector Permissions</summary>
+    <div class="detail-body">
+      <p><strong>Security Reader</strong> role on the subscription + registered resource providers:</p>
+      <pre>az provider register --namespace Microsoft.SecurityInsights
+az provider register --namespace Microsoft.Security</pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Purview / Arc / Cost Management Collectors</summary>
+    <div class="detail-body">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Collector</th><th>Requirements</th></tr></thead>
+          <tbody>
+            <tr><td><code>purview_dlp</code></td><td>Reader on Purview + <code>InformationProtection.Read</code> + Purview provisioned</td></tr>
+            <tr><td><code>arc_hybrid</code></td><td>Reader on subscription + machines registered in Azure Arc</td></tr>
+            <tr><td><code>cost_billing</code></td><td>Reader or Cost Management Reader + budgets at subscription scope</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- ══════ Preflight ══════ -->
+<section id="preflight">
+  <h2><span class="icon">🔍</span> Preflight Check Failures</h2>
+
+  <div class="diagram-container">
+    <h4>Preflight Probe Sequence</h4>
+    <div class="mermaid" data-seq-details='[{"overview":"The credential checker begins by testing Azure Resource Manager connectivity. This verifies the credential has basic Azure access before testing Graph permissions.","dataFlow":"The ComplianceCredentials checker sends a List Subscriptions request to the ARM API.","keyPoints":["This is the first preflight check and tests basic Azure authentication","A successful response confirms the credential can access Azure resources","The subscription list also determines the scope for Azure collectors"],"whyItMatters":"ARM access is fundamental — without it, none of the Azure resource collectors (Defender, Sentinel, Network, etc.) can function.","output":"ARM connectivity validated with subscription list"},{"overview":"ARM returns the list of subscriptions the credential has access to. This confirms Azure authentication works and reveals the assessment scope.","dataFlow":"ARM returns the subscription list to the credential checker, confirming Reader-level access.","keyPoints":["The number of subscriptions determines how many Azure resource collectors will run","Subscription filtering can limit scope via the subscriptionFilter config option","If zero subscriptions are returned, Azure collectors will produce no evidence"],"whyItMatters":"The subscription list defines the Azure resource boundary for the entire assessment. Missing subscriptions mean missing security findings.","output":"List of accessible Azure subscriptions"},{"overview":"The checker probes the Graph Users endpoint with a minimal request to verify User.Read.All permission without retrieving bulk data.","dataFlow":"A lightweight GET request is sent to /users with $top=1 to test read access with minimal data transfer.","keyPoints":["The $top=1 parameter minimizes data transfer during the probe","This tests the User.Read.All application permission","User data feeds multiple collectors: MFA status, risky users, guest accounts, and more"],"whyItMatters":"User.Read.All is the most broadly used Graph permission in the assessment. Without it, over a dozen collectors lose their primary data source.","output":"Graph Users endpoint probe sent"},{"overview":"A 200 OK response confirms the credential has User.Read.All permission. All user-related collectors will function normally.","dataFlow":"Graph returns a successful response with one user record, confirming full read access to the directory.","keyPoints":["User.Read.All enables collectors for MFA, risky users, guest accounts, and more","This is the best-case outcome for the users endpoint probe","No further action is needed for user-related permissions"],"whyItMatters":"Confirmed User.Read.All permission means the assessment can fully evaluate identity security posture including MFA coverage and risky user detection.","output":"User.Read.All permission confirmed"},{"overview":"A 403 Forbidden response means the credential lacks User.Read.All permission. The assessment continues but user-related collectors will produce access-denied markers.","dataFlow":"Graph returns a 403 status code, indicating insufficient permissions for the users endpoint.","keyPoints":["The assessment continues despite the 403 — this is a warning, not a blocker","Affected collectors will create access-denied evidence markers","Controls dependent on user data will show missing_evidence status in the report"],"whyItMatters":"Reduced user data scope means the assessment cannot fully evaluate identity security. MFA coverage, risky users, and guest account analysis will be incomplete.","output":"Warning recorded — user-related collectors will have limited data"},{"overview":"A 401 Unauthorized response means the credential itself is invalid for Graph access. This is a blocking error that halts the assessment.","dataFlow":"DAC returns a 401 status code, indicating the credential cannot authenticate to Microsoft Graph at all.","keyPoints":["A 401 is a blocking error — the assessment cannot continue","The credential may be expired, revoked, or misconfigured for Graph access","Verify the credential with az rest --method GET --url https://graph.microsoft.com/v1.0/me"],"whyItMatters":"A blocking credential failure means zero Graph data can be collected. The assessment would produce an almost empty report with no identity security findings.","output":"Blocking error — assessment halted due to invalid credential"},{"overview":"The checker probes the Conditional Access policies endpoint to verify Policy.Read.All permission for CA policy evaluation.","dataFlow":"A GET request is sent to /identity/conditionalAccess/policies to test Conditional Access read access.","keyPoints":["Conditional Access policies are critical for evaluating authentication security posture","This permission is separate from User.Read.All and must be granted independently","CA data feeds the conditional access coverage and gap analysis collectors"],"whyItMatters":"Conditional Access policies define how authentication is enforced. Without this data, the assessment cannot evaluate MFA enforcement, device compliance, or location-based restrictions.","output":"Graph Conditional Access endpoint probe sent"},{"overview":"A 200 OK response confirms Policy.Read.All permission. Conditional Access collectors will function normally and evaluate all CA policies.","dataFlow":"Graph returns a successful response with CA policy data, confirming full read access.","keyPoints":["Policy.Read.All enables evaluation of all Conditional Access policies","The assessment can now analyze MFA enforcement, device compliance requirements, and more","CA policy gaps will be identified and reported with specific remediation guidance"],"whyItMatters":"Full CA policy access enables the assessment to identify authentication gaps such as users or apps not covered by MFA requirements.","output":"Policy.Read.All permission confirmed"},{"overview":"A 403 Forbidden response means CA policy data is unavailable. The assessment continues but Conditional Access analysis will be skipped.","dataFlow":"Graph returns a 403 status code for the Conditional Access endpoint, indicating insufficient permissions.","keyPoints":["CA-related collectors will produce access-denied markers","The assessment continues with reduced scope in the authentication domain","Request Policy.Read.All in the app registration to enable CA analysis"],"whyItMatters":"Without CA policy data, the assessment cannot identify gaps in authentication enforcement — a critical blind spot for identity security posture.","output":"Warning recorded — Conditional Access analysis unavailable"},{"overview":"The checker probes the Role Management endpoint to verify RoleManagement.Read.All permission for directory role evaluation.","dataFlow":"A GET request is sent to /roleManagement/directory/roleAssignments to test role assignment read access.","keyPoints":["Directory role assignments reveal who has privileged access in the tenant","This permission is essential for evaluating least-privilege and PIM usage","Role data feeds the RBAC analysis, Global Admin count, and standing access collectors"],"whyItMatters":"Understanding who holds privileged roles is fundamental to security assessment. Without this data, the tool cannot evaluate over-privileged accounts or PIM adoption.","output":"Graph Role Management endpoint probe sent"},{"overview":"A 200 OK response confirms RoleManagement.Read.All permission. Directory role collectors will function normally.","dataFlow":"Graph returns a successful response with role assignment data, confirming full read access to directory roles.","keyPoints":["RoleManagement.Read.All enables analysis of all Entra ID role assignments","The assessment can identify over-privileged accounts and standing admin access","PIM (Privileged Identity Management) adoption analysis becomes available"],"whyItMatters":"Confirmed role management access means the assessment can fully evaluate least-privilege compliance and identify accounts with excessive standing privileges.","output":"RoleManagement.Read.All permission confirmed"},{"overview":"A 403 Forbidden response means directory role data is unavailable. The assessment continues but RBAC and privilege analysis will be limited.","dataFlow":"Graph returns a 403 status code for the Role Management endpoint, indicating insufficient permissions.","keyPoints":["RBAC-related collectors will produce access-denied markers","The assessment continues but cannot evaluate privileged role assignments","Request RoleManagement.Read.All in the app registration to enable role analysis"],"whyItMatters":"Without role assignment data, the assessment cannot identify who has Global Admin or other high-privilege roles — a critical gap in security visibility.","output":"Warning recorded — directory role analysis unavailable"}]'>
+sequenceDiagram
+    participant C as ComplianceCredentials
+    participant ARM as ARM API
+    participant G1 as Graph /users
+    participant G2 as Graph /conditionalAccess
+    participant G3 as Graph /roleManagement
+
+    C->>ARM: List subscriptions
+    ARM-->>C: ✅ subscriptions list
+    C->>G1: GET /users?$top=1
+    alt 200 OK
+        G1-->>C: ✅ User.Read.All confirmed
+    else 403 Forbidden
+        G1-->>C: ⚠️ Warning — reduced scope
+    else 401 Unauthorized
+        G1-->>C: ❌ Blocking — credential invalid
+    end
+    C->>G2: GET /identity/conditionalAccess/policies
+    alt 200 OK
+        G2-->>C: ✅ Policy.Read.All confirmed
+    else 403
+        G2-->>C: ⚠️ Warning — CA data unavailable
+    end
+    C->>G3: GET /roleManagement/directory/roleAssignments
+    alt 200 OK
+        G3-->>C: ✅ RoleManagement.Read.All confirmed
+    else 403
+        G3-->>C: ⚠️ Warning — role data unavailable
+    end
+    </div>
+    <div class="diagram-explanation">
+      <strong>Preflight probes 3 Graph endpoints before collection begins:</strong>
+      <ol>
+        <li><strong>Users</strong> — Tests <code>User.Read.All</code>. A 403 means user-related collectors will produce access-denied markers.</li>
+        <li><strong>Conditional Access</strong> — Tests <code>Policy.Read.All</code>. A 403 means CA policy data will be unavailable.</li>
+        <li><strong>Role Management</strong> — Tests <code>RoleManagement.Read.All</code>. A 403 means directory role data is missing.</li>
+      </ol>
+      <p><strong>403</strong> = warning, assessment continues with reduced scope. <strong>401</strong> = blocking error, assessment stops.</p>
+    </div>
+  </div>
+
+  <div class="info-box warn">
+    <strong>⚠️ 401 Errors During Preflight</strong>
+    If you get a 401 during preflight, the credential is not valid for Graph access. Verify with:
+    <pre style="margin-top:.5rem">az rest --method GET --url "https://graph.microsoft.com/v1.0/me"</pre>
+  </div>
+</section>
+
+<!-- ══════ Collectors ══════ -->
+<section id="collectors">
+  <h2><span class="icon">📡</span> Collector Failures</h2>
+
+  <div class="diagram-container">
+    <h4>Collector Error Handling Flow</h4>
+    <div class="mermaid">
+flowchart TD
+    A[Collector Invoked] --> B{API Call}
+    B -->|200 OK| C[Return Evidence]
+    B -->|401/403| D[AccessDeniedError]
+    B -->|429| E[Read Retry-After Header]
+    B -->|500+| F{Retry Count < 3?}
+    B -->|Timeout| G{Has _partial_evidence?}
+
+    D --> H[Create access-denied marker]
+    H --> I[success=True, pipeline continues]
+
+    E --> J[Wait Retry-After seconds]
+    J --> B
+
+    F -->|Yes| K[Exponential Backoff]
+    K --> B
+    F -->|No| L[Hard Failure: success=False]
+
+    G -->|Yes| M[Return partial data]
+    G -->|No| L
+
+    C --> N[Collector Complete ✅]
+    I --> N
+    M --> N
+    L --> O[Collector Failed ❌]
+
+    style C fill:#3FB950,color:#fff
+    style I fill:#D29922,color:#fff
+    style M fill:#39D2C0,color:#fff
+    style L fill:#F85149,color:#fff
+    </div>
+    <div class="diagram-explanation">
+      <strong>Three possible outcomes for every collector:</strong>
+      <ol>
+        <li><strong>Success</strong> (green) — Evidence records returned normally.</li>
+        <li><strong>Access Denied</strong> (orange) — 401/403 creates an access-denied marker. Treated as success — the pipeline continues and affected controls show <code>missing_evidence</code>.</li>
+        <li><strong>Hard Failure</strong> (red) — After 3 retries with exponential backoff, the collector is marked as failed. 429 responses use <code>Retry-After</code> header for backoff timing.</li>
+        <li><strong>Partial Recovery</strong> (cyan) — If a collector times out but has a <code>_partial_evidence</code> attribute, partial results are preserved.</li>
+      </ol>
+    </div>
+  </div>
+
+  <details>
+    <summary>Timeout Errors</summary>
+    <div class="detail-body">
+      <p><strong>Log pattern:</strong> <code>WARNING: &lt;collector&gt; collector timed out after &lt;N&gt;s</code></p>
+      <p>Code default: 600s. Shipped config: 300s. Fix:</p>
+      <pre>{ "collectors": { "collectorTimeout": 900 } }</pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Module Import Failures</summary>
+    <div class="detail-body">
+      <p><strong>Log pattern:</strong> <code>WARNING: Failed to import collector module &lt;name&gt;</code></p>
+      <p>If a collector module has a syntax error or missing dependency, it's skipped during <code>discover_collectors()</code>. The pipeline continues with a reduced collector count.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Large Tenant Optimization</summary>
+    <div class="detail-body">
+      <pre>{
+  "collectors": {
+    "subscriptionFilter": ["sub-id-1", "sub-id-2"],
+    "userSampleLimit": 5000,
+    "azureBatchSize": 4,
+    "entraBatchSize": 3,
+    "collectorTimeout": 600
+  }
+}</pre>
+      <p style="font-size:.88rem;color:var(--text-secondary)">Each evidence record adds ~1-2 KB. Monitor memory usage on large tenants.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ══════ Retry ══════ -->
+<section id="retry">
+  <h2><span class="icon">🔄</span> Retry Logic & Rate Limiting</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Parameter</th><th>Value</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td>Max retries</td><td><strong>3</strong></td><td><code>base.py: MAX_RETRIES</code></td></tr>
+        <tr><td>Initial backoff</td><td><strong>2 seconds</strong></td><td><code>base.py: RETRY_BACKOFF</code></td></tr>
+        <tr><td>Backoff multiplier</td><td><strong>2×</strong> (2s → 4s → 8s)</td><td>Exponential</td></tr>
+        <tr><td>429 handling</td><td><strong>Retry-After header</strong></td><td>Waits specified duration</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box warn">
+    <strong>⚠️ HTTP 429 — Rate Limiting</strong>
+    <p>Graph 429 log: <code>WARNING: Graph 429 throttled (attempt N/3), retrying in &lt;N&gt;s</code></p>
+    <p>To reduce 429 frequency, lower batch sizes (controls concurrent API calls):</p>
+    <pre style="margin-top:.5rem">{ "collectors": { "azureBatchSize": 2, "entraBatchSize": 2 } }</pre>
+    <p style="margin-top:.5rem;font-size:.88rem">Code defaults: azureBatchSize=8, entraBatchSize=6. Shipped config: 4, 3.</p>
+  </div>
+</section>
+
+<!-- ══════ Checkpoint ══════ -->
+<section id="checkpoint">
+  <h2><span class="icon">💾</span> Checkpoint & Resume</h2>
+
+  <div class="diagram-container">
+    <h4>Checkpoint Lifecycle</h4>
+    <div class="mermaid" data-seq-details='[{"overview":"The orchestrator checks the output directory for an existing checkpoint file from a previous interrupted run. This enables resume-from-failure capability.","dataFlow":"The Orchestrator reads the filesystem looking for a .checkpoint.json file in the current output directory.","keyPoints":["Checkpoint detection happens automatically at the start of every assessment run","The checkpoint file stores evidence, completed collectors, and failed collectors","If no checkpoint exists, the assessment starts fresh with all collectors"],"whyItMatters":"Checkpoint recovery prevents wasted work when long-running assessments are interrupted by network issues, timeouts, or system restarts.","output":"Checkpoint file existence check result"},{"overview":"When a checkpoint file exists, the orchestrator loads the previously collected evidence and the set of completed collectors to resume where it left off.","dataFlow":"The filesystem returns the checkpoint data containing serialized evidence records and the completed/failed collector sets.","keyPoints":["Evidence from completed collectors is restored without re-running those collectors","The completed set tells the orchestrator which collectors to skip","Failed collectors from the previous run are retried in the resumed session"],"whyItMatters":"Loading checkpoint state means the assessment can skip potentially dozens of already-successful API calls, saving significant time and avoiding redundant rate-limit consumption.","output":"Restored evidence records and completed collector set"},{"overview":"The orchestrator dispatches the remaining collectors in batches, respecting the configured batch size for concurrent execution.","dataFlow":"The Orchestrator sends collector execution requests to the collector pool, which makes API calls to Azure and Graph endpoints.","keyPoints":["Only collectors not in the completed set are dispatched","Batch size is controlled by azureBatchSize and entraBatchSize config options","Each collector runs independently and can succeed, fail, or produce partial results"],"whyItMatters":"Batch execution with checkpoint awareness means resumed runs only process the remaining work, making recovery from failures efficient and predictable.","output":"Collector batch dispatched for execution"},{"overview":"Collectors return evidence records containing the raw data retrieved from Azure and Graph APIs. Each record includes metadata about the source and collection status.","dataFlow":"Completed collectors return evidence records to the orchestrator, including success status, data payload, and timing metadata.","keyPoints":["Each evidence record maps to a specific security control or data point","Failed collectors return error information instead of evidence","Partial evidence may be returned if a collector times out mid-collection"],"whyItMatters":"Evidence records are the foundation of the entire assessment — every finding, score, and recommendation traces back to specific evidence collected in this step.","output":"Evidence records with collection metadata"},{"overview":"After each collector batch completes, the orchestrator saves an updated checkpoint with all evidence collected so far plus the current completed and failed sets.","dataFlow":"The Orchestrator writes the updated checkpoint state to .checkpoint.json, including all evidence, completed collectors, and failed collectors.","keyPoints":["Checkpoints are saved after every batch, not just at the end","The checkpoint includes evidence, completed set, and failed set","If the process crashes between batches, only the current batch is lost"],"whyItMatters":"Frequent checkpoint saves minimize data loss on failure. Even if the assessment crashes, at most one batch of collector work needs to be repeated.","output":"Updated .checkpoint.json with current assessment state"},{"overview":"When all collectors have completed successfully, the orchestrator deletes the checkpoint file to signal a clean completion with no pending work.","dataFlow":"The Orchestrator sends a delete command to remove .checkpoint.json from the output directory.","keyPoints":["Checkpoint deletion confirms the collection phase completed fully","If .checkpoint.json persists after a run, it means the run was interrupted","A subsequent run finding no checkpoint will start fresh from the beginning"],"whyItMatters":"Clean checkpoint removal is the definitive signal that collection succeeded. Persistent checkpoint files serve as a built-in indicator of incomplete assessments.","output":"Checkpoint file deleted — collection phase complete"}]'>
+sequenceDiagram
+    participant O as Orchestrator
+    participant FS as .checkpoint.json
+    participant C as Collectors
+
+    O->>FS: Check for existing checkpoint
+    alt Checkpoint exists
+        FS-->>O: Load evidence + completed set
+        Note over O: Skip already-completed collectors
+    else No checkpoint
+        Note over O: Start fresh
+    end
+
+    loop For each collector batch
+        O->>C: Run collectors
+        C-->>O: Evidence records
+        O->>FS: Save checkpoint (evidence + completed + failed)
+    end
+
+    alt All collectors complete
+        O->>FS: Delete .checkpoint.json ✅
+    else Interrupted
+        Note over FS: .checkpoint.json preserved for resume
+    end
+    </div>
+    <div class="diagram-explanation">
+      <strong>Checkpoint lifecycle:</strong>
+      <ol>
+        <li><strong>Check</strong> — On startup, the orchestrator looks for <code>.checkpoint.json</code> in the output directory.</li>
+        <li><strong>Resume</strong> — If found, loads evidence and the completed collector set. Already-completed collectors are skipped.</li>
+        <li><strong>Save</strong> — After each batch, the checkpoint is updated with current state.</li>
+        <li><strong>Cleanup</strong> — After successful collection, the checkpoint file is deleted. If it persists, the last run didn't complete.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🔄</div>
+      <h4>Resume After Failure</h4>
+      <p>Re-run the same command. Completed collectors are skipped automatically.</p>
+      <pre style="margin-top:.5rem;font-size:.82rem"># Same command resumes
+python run_assessment.py \
+  --tenant "..." --framework FedRAMP</pre>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚠️</div>
+      <h4>Corrupt Checkpoint</h4>
+      <p>If <code>.checkpoint.json</code> is malformed, the engine logs a warning and starts fresh — it does NOT crash.</p>
+      <p style="font-size:.82rem;margin-top:.5rem"><code>WARNING: Checkpoint corrupt, starting fresh run</code></p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <h4>Delta Mode</h4>
+      <p>The orchestrator also supports delta/incremental mode via <code>.last_run.json</code>, tracking resource IDs and timestamps for change detection.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ Evaluation ══════ -->
+<section id="evaluation">
+  <h2><span class="icon">📊</span> Evaluation Issues</h2>
+
+  <details open>
+    <summary>All Controls Show "missing_evidence"</summary>
+    <div class="detail-body">
+      <ol style="padding-left:1.25rem;color:var(--text-secondary)">
+        <li>Check <code>access-denied.json</code> for 403 errors</li>
+        <li>Verify <code>azureEnabled</code>/<code>entraEnabled</code> are both true</li>
+        <li>Check subscription filter isn't too restrictive</li>
+        <li>Search logs for <code>ERROR</code> entries indicating collector failures</li>
+        <li>Confirm required Azure resources exist (Sentinel, Purview, Defender for Cloud)</li>
+      </ol>
+    </div>
+  </details>
+
+  <details>
+    <summary>Unexpectedly Low Scores</summary>
+    <div class="detail-body">
+      <p>Scores use severity-weighted calculations: <code>critical=4, high=3, medium=2, low=1</code></p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Domain</th><th>Threshold</th><th>Default</th><th>Impact</th></tr></thead>
+          <tbody>
+            <tr><td>Access</td><td><code>max_subscription_owners</code></td><td>3</td><td>More owners → non-compliant</td></tr>
+            <tr><td>Identity</td><td><code>min_mfa_percent</code></td><td>90.0</td><td>Below 90% → non-compliant</td></tr>
+            <tr><td>Identity</td><td><code>max_stale_days</code></td><td>90</td><td>Inactive &gt; 90 days → flagged</td></tr>
+            <tr><td>Logging</td><td><code>diagnostic_coverage_target</code></td><td>80.0</td><td>Below 80% → partial</td></tr>
+            <tr><td>Governance</td><td><code>policy_compliance_target</code></td><td>80.0</td><td>Below 80% → non-compliant</td></tr>
+            <tr><td>Data Protection</td><td><code>max_key_age_days</code></td><td>365</td><td>Keys older → non-compliant</td></tr>
+            <tr><td>Network</td><td><code>max_open_management_ports</code></td><td>0</td><td>Any open → non-compliant</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <pre style="margin-top:.75rem">{
+  "thresholds": {
+    "max_subscription_owners": 5,
+    "min_mfa_percent": 80.0
+  }
+}</pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Cross-Domain Fallback Surprises</summary>
+    <div class="detail-body">
+      <p>The evaluation engine has <strong>28 cross-domain fallback routes</strong>. If a primary evaluator lacks evidence, the <code>_CROSS_DOMAIN_MAP</code> redirects to an alternative domain. Enable <code>DEBUG</code> logging to trace:</p>
+      <pre>DEBUG: Cross-domain fallback: governance → access (control AC-2)</pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Suppressions Hiding Findings</summary>
+    <div class="detail-body">
+      <p>If expected findings are missing, check for active suppression rules. Suppressions use control ID glob patterns and resource regex matching with expiry dates. See <a href="suppressions-guide.html">Suppressions Guide</a>.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ══════ Reports ══════ -->
+<section id="reports">
+  <h2><span class="icon">📄</span> Report Generation Issues</h2>
+
+  <div class="info-box tip">
+    <strong>✅ Fault Isolation</strong>
+    Report generation is wrapped in <code>_safe()</code> error handling — one failing report won't block others. Each report type is generated independently.
+  </div>
+
+  <details>
+    <summary>Empty or Missing Reports</summary>
+    <div class="detail-body">
+      <p><strong>Log pattern:</strong> <code>ERROR: Report '&lt;type&gt;' failed for &lt;framework&gt;: &lt;error&gt;</code></p>
+      <p>Common causes: missing evidence, framework mapping not found, template rendering error.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Excel Report Errors</summary>
+    <div class="detail-body">
+      <pre>pip install openpyxl</pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Multi-Tenant Report Failures</summary>
+    <div class="detail-body">
+      <p><strong>Log pattern:</strong> <code>ERROR: Tenant &lt;id&gt; failed: &lt;error&gt;</code></p>
+      <p>The engine continues to the next tenant — per-tenant errors are non-blocking.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ══════ PDF ══════ -->
+<section id="pdf">
+  <h2><span class="icon">📑</span> PDF Export (Playwright)</h2>
+  <p>PDF generation uses <strong>Playwright</strong> with headless Chromium. It's always optional — failures are logged but never crash the assessment.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🌐</div>
+      <h4>Chromium Not Installed <span class="badge badge-red">Common</span></h4>
+      <p><code>WARNING: [PDF] Chromium launch failed</code></p>
+      <pre style="margin-top:.5rem;font-size:.82rem">pip install playwright
+playwright install chromium</pre>
+    </div>
+    <div class="card">
+      <div class="card-icon">📄</div>
+      <h4>Single File Failure</h4>
+      <p><code>WARNING: [PDF] Failed to convert &lt;file&gt;</code></p>
+      <p>Remaining HTML files continue to be converted.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <h4>HTML Not Found</h4>
+      <p><code>WARNING: [PDF] HTML file not found</code></p>
+      <p>The report generator likely failed silently for that report type.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📦</div>
+      <h4>Batch Mode Fallback</h4>
+      <p><code>convert_all_html_to_pdf()</code> reuses one browser. If batch fails, falls back to individual <code>html_to_pdf()</code> calls.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ Logging ══════ -->
+<section id="logging">
+  <h2><span class="icon">📋</span> Logging & Diagnostics</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Setting</th><th>Default</th><th>Options</th></tr></thead>
+      <tbody>
+        <tr><td>Logger name</td><td><code>enterprisesecurityiq</code></td><td>—</td></tr>
+        <tr><td>Default level</td><td><code>INFO</code></td><td><code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, <code>CRITICAL</code></td></tr>
+        <tr><td>Output</td><td><code>stdout</code> (StreamHandler)</td><td>No file logging by default</td></tr>
+        <tr><td>Format</td><td>Text</td><td>Set <code>ENTERPRISESECURITYIQ_LOG_FORMAT=json</code> for structured JSON</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Enable Debug Logging</h3>
+  <pre>export ENTERPRISESECURITYIQ_LOG_LEVEL=DEBUG
+# Or in config: { "logLevel": "DEBUG" }</pre>
+
+  <h3>Log Level Reference</h3>
+  <div class="severity-row"><span class="severity-dot low"></span> <strong>DEBUG</strong> — Verbose trace: collector progress, evaluation dispatch, fallback paths</div>
+  <div class="severity-row"><span class="severity-dot" style="background:var(--accent-blue)"></span> <strong>INFO</strong> — Normal operations: phase start/complete, summary counts</div>
+  <div class="severity-row"><span class="severity-dot medium"></span> <strong>WARNING</strong> — Degraded: access denied, timeout with partial data, Graph 429</div>
+  <div class="severity-row"><span class="severity-dot high"></span> <strong>ERROR</strong> — Failures: collector hard failure, report error, PDF error</div>
+  <div class="severity-row"><span class="severity-dot critical"></span> <strong>CRITICAL</strong> — Fatal: preflight 401, invalid config, unrecoverable</div>
+
+  <h3>Structured JSON Logging</h3>
+  <pre>export ENTERPRISESECURITYIQ_LOG_FORMAT=json</pre>
+  <pre>{"timestamp":"2026-03-27T15:14:01Z","level":"WARNING","logger":"enterprisesecurityiq","message":"Access Denied for 3 collectors: ..."}</pre>
+</section>
+
+<!-- ══════ SIEM ══════ -->
+<section id="siem">
+  <h2><span class="icon">📡</span> SIEM Export Issues</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🏢</div>
+      <h4>Sentinel Export Fails</h4>
+      <div class="table-wrap" style="margin-top:.5rem">
+        <table style="font-size:.82rem">
+          <tbody>
+            <tr><td><strong>Endpoint</strong></td><td>Must be DCE, not workspace URL</td></tr>
+            <tr><td><strong>DCR ID</strong></td><td>Must match existing Data Collection Rule</td></tr>
+            <tr><td><strong>Stream Name</strong></td><td>Must match DCR stream</td></tr>
+            <tr><td><strong>Role</strong></td><td>Monitoring Metrics Publisher on DCR</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📡</div>
+      <h4>Splunk HEC Errors</h4>
+      <div class="table-wrap" style="margin-top:.5rem">
+        <table style="font-size:.82rem">
+          <tbody>
+            <tr><td><strong>Token</strong></td><td>Set <code>SPLUNK_HEC_TOKEN</code> env var</td></tr>
+            <tr><td><strong>Endpoint</strong></td><td>Verify reachable from agent network</td></tr>
+            <tr><td><strong>Index</strong></td><td>HEC enabled + target index exists</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔌</div>
+      <h4>Generic Webhook Errors</h4>
+      <div class="table-wrap" style="margin-top:.5rem">
+        <table style="font-size:.82rem">
+          <tbody>
+            <tr><td><strong>Token</strong></td><td>Set <code>SIEM_WEBHOOK_TOKEN</code> env var</td></tr>
+            <tr><td><strong>Endpoint</strong></td><td>Verify URL reachable</td></tr>
+            <tr><td><strong>Response</strong></td><td>Check for non-2xx in logs</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ Residency ══════ -->
+<section id="residency">
+  <h2><span class="icon">🌍</span> Data Residency Issues</h2>
+
+  <details>
+    <summary>All Resources Flagged as Non-Compliant</summary>
+    <div class="detail-body">
+      <p>Use <strong>exact Azure region names</strong> (lowercase, no spaces):</p>
+      <pre>✅ eastus, westus2, northeurope
+❌ East US, West US 2, North Europe</pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Supported Region Groups (17)</summary>
+    <div class="detail-body">
+      <p>US, Europe, AsiaPacific, Canada, UK, Australia, Brazil, India, Japan, Korea, SouthAfrica, UAE, Switzerland, Germany, France, Norway, Sweden</p>
+    </div>
+  </details>
+</section>
+
+<!-- ══════ Error Reference ══════ -->
+<section id="errors">
+  <h2><span class="icon">📋</span> Error Code Reference</h2>
+
+  <h3>Log Error Patterns</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pattern</th><th>Source</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;collector&gt; collector timed out after &lt;N&gt;s</code></td><td>Orchestrator</td><td>Exceeded <code>collectorTimeout</code></td></tr>
+        <tr><td><code>&lt;collector&gt; collector error: &lt;fn&gt; — &lt;msg&gt;</code></td><td>Orchestrator</td><td>Hard failure after 3 retries</td></tr>
+        <tr><td><code>Access Denied for &lt;N&gt; collectors</code></td><td>Orchestrator</td><td>Collectors returned 401/403</td></tr>
+        <tr><td><code>Report '&lt;type&gt;' failed for &lt;fw&gt;</code></td><td>Orchestrator</td><td>Report generator crashed</td></tr>
+        <tr><td><code>PDF generation failed</code></td><td>Orchestrator</td><td>Playwright/Chromium error</td></tr>
+        <tr><td><code>SARIF export failed</code></td><td>Orchestrator</td><td>SARIF format export error</td></tr>
+        <tr><td><code>Remediation playbooks failed</code></td><td>Orchestrator</td><td>Remediation engine error</td></tr>
+        <tr><td><code>Drift report HTML failed</code></td><td>Orchestrator</td><td>Drift comparison error</td></tr>
+        <tr><td><code>Tenant &lt;id&gt; failed</code></td><td>Orchestrator</td><td>Multi-tenant per-tenant failure</td></tr>
+        <tr><td><code>Assessment failed: &lt;msg&gt;</code></td><td>Agent</td><td>Top-level error (returned to caller)</td></tr>
+        <tr><td><code>Graph 429 throttled (attempt N/3)</code></td><td>Base Collector</td><td>Graph API rate limit</td></tr>
+        <tr><td><code>[&lt;collector&gt;] Access Denied (&lt;code&gt;)</code></td><td>Base Collector</td><td>Specific API permission failure</td></tr>
+        <tr><td><code>[&lt;collector&gt;] Failed after &lt;N&gt; attempts</code></td><td>Base Collector</td><td>Final hard failure</td></tr>
+        <tr><td><code>Graph pagination error</code></td><td>Base Collector</td><td>Pagination interrupted</td></tr>
+        <tr><td><code>[PDF] Chromium launch failed</code></td><td>PDF Export</td><td>Missing Chromium</td></tr>
+        <tr><td><code>[PDF] Failed to convert &lt;file&gt;</code></td><td>PDF Export</td><td>Single file conversion error</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>HTTP Status Codes</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Code</th><th>Meaning</th><th>Assessment Impact</th></tr></thead>
+      <tbody>
+        <tr><td><strong>200</strong></td><td>OK</td><td>Normal operation</td></tr>
+        <tr><td><strong>401</strong></td><td>Unauthorized</td><td><span class="badge badge-red">Blocking</span> credential invalid</td></tr>
+        <tr><td><strong>403</strong></td><td>Forbidden</td><td><span class="badge badge-orange">Non-blocking</span> access-denied marker</td></tr>
+        <tr><td><strong>404</strong></td><td>Not Found</td><td>Resource/API skipped</td></tr>
+        <tr><td><strong>429</strong></td><td>Too Many Requests</td><td><span class="badge badge-blue">Auto-retry</span> with Retry-After</td></tr>
+        <tr><td><strong>500+</strong></td><td>Server Error</td><td><span class="badge badge-orange">Retry</span> exponential backoff (3 attempts)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0})" aria-label="Back to top">↑</button>
+
+<footer>
+  <p>PostureIQ Troubleshooting Guide — Author: Murali Chillakuru</p>
+  <p style="margin-top:.25rem">15 Diagnostic Topics · 16 Error Patterns · 3 Retries · 5 Log Levels</p>
+</footer>
+
+<script>
+function toggleTheme(){const t=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';if(t==='light')document.documentElement.setAttribute('data-theme','light');else document.documentElement.removeAttribute('data-theme');localStorage.setItem('esiq-theme',t)}
+(function(){if(localStorage.getItem('esiq-theme')==='light')document.documentElement.setAttribute('data-theme','light')})();
+mermaid.initialize({startOnLoad:true,theme:document.documentElement.getAttribute('data-theme')==='light'?'default':'dark',securityLevel:'loose',sequence:{mirrorActors:false,actorMargin:50},flowchart:{curve:'basis'}});
+document.querySelectorAll('.stat-value[data-target]').forEach(el=>{const t=+el.dataset.target;let c=0;const s=Math.max(1,Math.ceil(t/40));const i=setInterval(()=>{c+=s;if(c>=t){c=t;clearInterval(i)}el.textContent=c},30)});
+const pills=document.querySelectorAll('.nav-pill[href^="#"]');const secs=document.querySelectorAll('section[id]');
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const a=document.querySelector('.nav-pill[href="#'+e.target.id+'"]');if(a)a.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px'});
+secs.forEach(s=>obs.observe(s));
+window.addEventListener('scroll',()=>{document.getElementById('backTop').classList.toggle('visible',window.scrollY>400);const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('readingProgress').style.width=(window.scrollY/h*100)+'%'});
+</script>
+<script src="seq-engine.js"></script>
+</body>
+</html>

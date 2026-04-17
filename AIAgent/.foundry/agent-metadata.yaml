@@ -1,0 +1,7 @@
+defaultEnvironment: dev
+environments:
+  dev:
+    projectEndpoint: ""
+    agentName: enterprisesecurityiq-agent
+    azureContainerRegistry: ""
+    testCases: []

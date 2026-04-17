@@ -1,0 +1,914 @@
+{
+  "framework": "FedRAMP",
+  "version": "1.0",
+  "controls": [
+    {
+      "control_id": "FedRAMP-AC-2",
+      "title": "Account Management",
+      "domain": "access",
+      "severity": "high",
+      "evidence_types": [
+        "azure-role-assignment",
+        "entra-role-assignment"
+      ],
+      "evaluation_logic": "check_account_management",
+      "rationale": "Privileged access must be separated and limited to reduce risk of unauthorized actions.",
+      "recommendation": "Limit subscription-level Owners to â‰¤3, privileged roles to â‰¤20%, Global Admins to â‰¤5."
+    },
+    {
+      "control_id": "FedRAMP-AC-2(3)",
+      "title": "Disable Inactive Accounts",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-user-lifecycle-summary",
+        "entra-user-detail"
+      ],
+      "evaluation_logic": "check_user_lifecycle",
+      "rationale": "Inactive accounts increase attack surface and must be disabled or removed.",
+      "recommendation": "Disable accounts inactive for 90+ days. Keep stale rate below 20%. Remove stale guests."
+    },
+    {
+      "control_id": "FedRAMP-AC-2(4)",
+      "title": "Automated Audit Actions",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "entra-access-review",
+        "entra-role-assignment"
+      ],
+      "evaluation_logic": "check_access_reviews",
+      "rationale": "Automated access reviews ensure timely removal of unnecessary privileges.",
+      "recommendation": "Configure access reviews for all privileged roles."
+    },
+    {
+      "control_id": "FedRAMP-AC-2(7)",
+      "title": "Privileged User Accounts",
+      "domain": "governance",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-pim-eligible-assignment",
+        "entra-pim-policy-rule"
+      ],
+      "evaluation_logic": "check_pim_configuration",
+      "rationale": "PIM ensures just-in-time privileged access with MFA and time limits.",
+      "recommendation": "Require MFA and justification for all PIM activations. Limit to 8 hours maximum."
+    },
+    {
+      "control_id": "FedRAMP-AC-6",
+      "title": "Least Privilege",
+      "domain": "access",
+      "severity": "high",
+      "evidence_types": [
+        "azure-role-assignment",
+        "entra-role-assignment"
+      ],
+      "evaluation_logic": "check_least_privilege",
+      "rationale": "Least privilege reduces blast radius of compromised accounts.",
+      "recommendation": "Limit sub-level Contributors to â‰¤10. Eliminate Management Group Owners. Cap high-priv Entra roles to â‰¤10."
+    },
+    {
+      "control_id": "FedRAMP-AC-6(10)",
+      "title": "Prohibit Non-Privileged Users from Executing Privileged Functions",
+      "domain": "identity",
+      "severity": "medium",
+      "evidence_types": [
+        "entra-oauth2-grant",
+        "entra-application"
+      ],
+      "evaluation_logic": "check_oauth2_consent_governance",
+      "rationale": "Excessive OAuth consent grants can expose data to unauthorized applications.",
+      "recommendation": "Limit high-privilege OAuth scopes to â‰¤5. Admin-consented grants to â‰¤20."
+    },
+    {
+      "control_id": "FedRAMP-AC-17",
+      "title": "Remote Access",
+      "domain": "access",
+      "severity": "high",
+      "evidence_types": [
+        "azure-role-assignment",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_access_enforcement",
+      "rationale": "Remote access must be controlled through RBAC and Conditional Access.",
+      "recommendation": "Enable RBAC and Conditional Access policies for all remote access."
+    },
+    {
+      "control_id": "FedRAMP-AC-20",
+      "title": "Use of External Information Systems",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-user-detail",
+        "entra-access-review",
+        "entra-cross-tenant-policy",
+        "entra-cross-tenant-partner"
+      ],
+      "evaluation_logic": "check_guest_user_review",
+      "rationale": "External user access must be reviewed and stale guests removed.",
+      "recommendation": "Review and remove stale guest accounts. Configure access reviews for guests."
+    },
+    {
+      "control_id": "FedRAMP-AU-2",
+      "title": "Audit Events",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_logging_enabled",
+      "rationale": "Diagnostic logging must cover â‰¥80% of resources for proper audit trail.",
+      "recommendation": "Enable diagnostic settings on all resources. Target â‰¥80% coverage."
+    },
+    {
+      "control_id": "FedRAMP-AU-3",
+      "title": "Content of Audit Records",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-activity-log",
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_activity_log_audit_trail",
+      "rationale": "Activity logs provide audit trail of administrative operations.",
+      "recommendation": "Review activity logs for high failure rates. Ensure log completeness."
+    },
+    {
+      "control_id": "FedRAMP-AU-6",
+      "title": "Audit Review, Analysis, and Reporting",
+      "domain": "logging",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_audit_review",
+      "rationale": "Logs must be exported to a centralized analysis platform.",
+      "recommendation": "Configure Log Analytics export for all diagnostic settings."
+    },
+    {
+      "control_id": "FedRAMP-AU-6(1)",
+      "title": "Process Integration",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-log-analytics",
+        "azure-alert-rule",
+        "azure-action-group"
+      ],
+      "evaluation_logic": "check_monitoring_coverage",
+      "rationale": "Monitoring infrastructure must have adequate retention, alerts, and notifications.",
+      "recommendation": "Set Log Analytics retention â‰¥90 days. Enable alert rules. Configure action groups with receivers."
+    },
+    {
+      "control_id": "FedRAMP-AU-12",
+      "title": "Audit Generation",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "entra-signin-summary",
+        "entra-risk-summary"
+      ],
+      "evaluation_logic": "check_signin_log_monitoring",
+      "rationale": "Sign-in activities must be monitored for risky and anomalous behavior.",
+      "recommendation": "Monitor high-risk sign-ins. Remediate risk detections promptly."
+    },
+    {
+      "control_id": "FedRAMP-AU-12(1)",
+      "title": "System-Wide / Time-Correlated Audit Trail",
+      "domain": "logging",
+      "severity": "medium",
+      "evidence_types": [
+        "entra-directory-audit-summary"
+      ],
+      "evaluation_logic": "check_directory_audit_logging",
+      "rationale": "Directory audit logs provide visibility into identity-related changes.",
+      "recommendation": "Ensure directory audit logging is active and reviewed."
+    },
+    {
+      "control_id": "FedRAMP-CA-2",
+      "title": "Security Assessments",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-compliance"
+      ],
+      "evaluation_logic": "check_policy_compliance_state",
+      "rationale": "Policy compliance provides continuous assessment of resource configurations.",
+      "recommendation": "Maintain â‰¥80% policy compliance rate."
+    },
+    {
+      "control_id": "FedRAMP-CA-7",
+      "title": "Continuous Monitoring",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_continuous_monitoring",
+      "rationale": "Continuous monitoring requires active policies and diagnostic settings.",
+      "recommendation": "Enable policies and diagnostic settings for continuous monitoring."
+    },
+    {
+      "control_id": "FedRAMP-CM-2",
+      "title": "Baseline Configuration",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_baseline_configuration",
+      "rationale": "Azure Policy enforces baseline configuration standards.",
+      "recommendation": "Maintain â‰¥5 policies or â‰¥1 initiative for baseline enforcement."
+    },
+    {
+      "control_id": "FedRAMP-CM-7(2)",
+      "title": "Prevent Program Execution - Containers",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-acr-repository",
+        "azure-aks-cluster"
+      ],
+      "evaluation_logic": "check_aks_security",
+      "rationale": "AKS clusters must enforce RBAC, AAD, network policies, and private access.",
+      "recommendation": "Enable RBAC, AAD integration, network policy, private cluster mode, and Defender."
+    },
+    {
+      "control_id": "FedRAMP-CM-8",
+      "title": "Information System Component Inventory",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource-lock",
+        "azure-resource"
+      ],
+      "evaluation_logic": "check_resource_locks",
+      "rationale": "Resource locks protect critical resources from accidental deletion or modification.",
+      "recommendation": "Apply CanNotDelete or ReadOnly locks to critical resources."
+    },
+    {
+      "control_id": "FedRAMP-IA-2",
+      "title": "Identification and Authentication (Organizational Users)",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-conditional-access-policy",
+        "entra-tenant-info"
+      ],
+      "evaluation_logic": "check_user_authentication",
+      "rationale": "MFA must be enforced for all users to prevent credential-based attacks.",
+      "recommendation": "Enforce MFA via Conditional Access for all users and applications."
+    },
+    {
+      "control_id": "FedRAMP-IA-2(1)",
+      "title": "Multi-Factor Authentication to Privileged Accounts",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-mfa-summary",
+        "entra-mfa-registration"
+      ],
+      "evaluation_logic": "check_mfa_registration_coverage",
+      "rationale": "MFA registration must cover â‰¥90% of users with 100% admin coverage.",
+      "recommendation": "Enforce MFA registration. Target â‰¥90% coverage. All admins must be registered."
+    },
+    {
+      "control_id": "FedRAMP-IA-2(2)",
+      "title": "Multi-Factor Authentication to Non-Privileged Accounts",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-security-defaults",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_mfa_all_users",
+      "rationale": "MFA for non-privileged accounts prevents lateral movement.",
+      "recommendation": "Ensure Conditional Access enforces MFA for all user types.",
+      "compensating_evidence": [
+        "entra-security-defaults"
+      ]
+    },
+    {
+      "control_id": "FedRAMP-IA-5",
+      "title": "Authenticator Management",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-mfa-registration",
+        "entra-application"
+      ],
+      "evaluation_logic": "check_authenticator_management",
+      "rationale": "Authenticators (passwords, MFA, app credentials) must be properly managed.",
+      "recommendation": "Ensure all admins have MFA. Rotate expired app credentials. Set default MFA methods."
+    },
+    {
+      "control_id": "FedRAMP-RA-5",
+      "title": "Vulnerability Scanning",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing"
+      ],
+      "evaluation_logic": "check_vulnerability_scanning",
+      "rationale": "Defender for Cloud provides vulnerability scanning for VMs and SQL.",
+      "recommendation": "Enable Defender for VMs and SQL for vulnerability assessment."
+    },
+    {
+      "control_id": "FedRAMP-RA-5(5)",
+      "title": "Privileged Access Vulnerability Scanning",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing"
+      ],
+      "evaluation_logic": "check_defender_security_posture",
+      "rationale": "Defender security posture provides vulnerability insights.",
+      "recommendation": "Enable Defender for continuous security posture assessment."
+    },
+    {
+      "control_id": "FedRAMP-SC-7",
+      "title": "Boundary Protection",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-api-management",
+        "azure-virtual-network",
+        "azure-resource",
+        "azure-policy-assignment",
+        "azure-nsg-rule",
+        "azure-app-service-network"
+      ],
+      "evaluation_logic": "check_network_segmentation",
+      "rationale": "Network segmentation controls traffic flow between security zones.",
+      "recommendation": "Deploy VNets with NSGs for network segmentation.",
+      "compensating_evidence": [
+        "azure-waf-policy",
+        "azure-firewall"
+      ]
+    },
+    {
+      "control_id": "FedRAMP-SC-7(5)",
+      "title": "Deny by Default / Allow by Exception",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-nsg-rule",
+        "azure-app-service-network",
+        "azure-virtual-network"
+      ],
+      "evaluation_logic": "check_nsg_rules",
+      "rationale": "NSG rules must not expose management ports (RDP/SSH) to the internet.",
+      "recommendation": "Block internet exposure of RDP (3389) and SSH (22). Enable DDoS protection.",
+      "compensating_evidence": [
+        "azure-waf-policy",
+        "azure-firewall"
+      ]
+    },
+    {
+      "control_id": "FedRAMP-SC-7(8)",
+      "title": "Route Traffic to Authenticated Proxy Servers",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-queue",
+        "azure-storage-security"
+      ],
+      "evaluation_logic": "check_storage_security",
+      "rationale": "Storage accounts must enforce HTTPS, TLS 1.2+, and network restrictions.",
+      "recommendation": "Enforce HTTPS, TLS 1.2, disable public blob access, disable shared key, add firewall rules."
+    },
+    {
+      "control_id": "FedRAMP-SC-7(11)",
+      "title": "Restrict Incoming Communications Traffic",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-firewall"
+      ],
+      "evaluation_logic": "check_firewall_protection",
+      "rationale": "Azure Firewall must use threat intelligence and proper rule collections.",
+      "recommendation": "Set threat intelligence to Deny/Alert. Configure rule collections. Use Standard+ SKU."
+    },
+    {
+      "control_id": "FedRAMP-SC-7(13)",
+      "title": "Isolation of Security Tools",
+      "domain": "network",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-route-table",
+        "azure-nsg-flow-log"
+      ],
+      "evaluation_logic": "check_route_table_security",
+      "rationale": "Route tables must direct traffic through security appliances.",
+      "recommendation": "Route default traffic to NVA/firewall. Disable BGP propagation. Enable flow logs."
+    },
+    {
+      "control_id": "FedRAMP-SC-8",
+      "title": "Transmission Confidentiality and Integrity",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-webapp-config",
+        "azure-storage-security",
+        "azure-sql-server"
+      ],
+      "evaluation_logic": "check_data_in_transit_encryption",
+      "rationale": "Data in transit must be encrypted using TLS 1.2+.",
+      "recommendation": "Enforce HTTPS and TLS 1.2+ on all web apps, storage accounts, and SQL servers."
+    },
+    {
+      "control_id": "FedRAMP-SC-8(1)",
+      "title": "Cryptographic or Alternate Physical Protection",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-webapp-auth",
+        "azure-webapp-tls",
+        "azure-webapp-diagnostic",
+        "azure-webapp-config"
+      ],
+      "evaluation_logic": "check_webapp_security",
+      "rationale": "Web apps must enforce HTTPS, TLS 1.2, disable FTP, disable remote debugging.",
+      "recommendation": "Enable HTTPS enforcement, TLS 1.2+, disable FTP and remote debug, use managed identity."
+    },
+    {
+      "control_id": "FedRAMP-SC-12",
+      "title": "Cryptographic Key Establishment and Management",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-keyvault"
+      ],
+      "evaluation_logic": "check_keyvault_security",
+      "rationale": "Key Vaults must have soft delete, purge protection, RBAC, and restricted network access.",
+      "recommendation": "Enable soft delete, purge protection, RBAC auth, and network restrictions on all Key Vaults."
+    },
+    {
+      "control_id": "FedRAMP-SC-28",
+      "title": "Protection of Information at Rest",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-vm-config",
+        "azure-sql-server",
+        "azure-storage-security",
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_data_at_rest_encryption",
+      "rationale": "Data at rest must be encrypted using platform or customer-managed keys.",
+      "recommendation": "Encrypt all VM disks and enable TDE on SQL databases."
+    },
+    {
+      "control_id": "FedRAMP-SC-28(1)",
+      "title": "Cryptographic Protection",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-registry",
+        "azure-aks-cluster",
+        "azure-vm-config"
+      ],
+      "evaluation_logic": "check_vm_security",
+      "rationale": "VMs must have encrypted disks, managed identity, boot diagnostics, and MDE.",
+      "recommendation": "Encrypt OS/data disks, assign managed identity, enable boot diagnostics and MDE."
+    },
+    {
+      "control_id": "FedRAMP-SC-28(2)",
+      "title": "Offline Storage",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-sql-server",
+        "azure-sql-tde",
+        "azure-sql-database",
+        "azure-sql-firewall",
+        "azure-sql-auditing",
+        "azure-sql-vulnerability",
+        "azure-sql-advanced-threat"
+      ],
+      "evaluation_logic": "check_sql_security",
+      "rationale": "SQL Servers must have AD admin, auditing, TDE, network restrictions, and TLS 1.2.",
+      "recommendation": "Set Azure AD admin, enable auditing, enable TDE, restrict public access, enforce TLS 1.2.",
+      "compensating_evidence": [
+        "azure-sql-advanced-threat"
+      ]
+    },
+    {
+      "control_id": "FedRAMP-SI-4",
+      "title": "Information System Monitoring",
+      "domain": "governance",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-auto-provisioning",
+        "azure-sql-advanced-threat",
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_defender_plans",
+      "rationale": "Defender for Cloud provides comprehensive security monitoring and alerting.",
+      "recommendation": "Enable all Defender plans. Configure auto-provisioning. Set security contacts."
+    },
+    {
+      "control_id": "FedRAMP-SI-4(5)",
+      "title": "System-Generated Alerts",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-risky-user"
+      ],
+      "evaluation_logic": "check_risky_users",
+      "rationale": "Risky user detections must be monitored and remediated.",
+      "recommendation": "Remediate compromised users immediately. Investigate high-risk users."
+    },
+    {
+      "control_id": "FedRAMP-AC-6(9)",
+      "title": "Managed Identity Hygiene",
+      "domain": "access",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-managed-identity",
+        "azure-role-assignment"
+      ],
+      "evaluation_logic": "check_managed_identity_hygiene",
+      "rationale": "Managed identities must be actively used and monitored; orphaned identities expand attack surface.",
+      "recommendation": "Review user-assigned managed identities. Remove orphaned identities. Prefer managed identities over service principals."
+    },
+    {
+      "control_id": "FedRAMP-SC-28(2)b",
+      "title": "AI Services Data Protection",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-cognitive-account"
+      ],
+      "evaluation_logic": "check_ai_services_security",
+      "rationale": "Cognitive Services accounts must enforce network isolation, managed identity auth, and encryption.",
+      "recommendation": "Disable public access, disable local auth, enable CMK encryption, and use managed identities on all AI accounts."
+    },
+    {
+      "control_id": "FedRAMP-CM-8(4)",
+      "title": "Resource Group Governance",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource-group"
+      ],
+      "evaluation_logic": "check_resource_group_governance",
+      "rationale": "Resource groups must be tagged consistently for inventory, cost management, and governance.",
+      "recommendation": "Apply mandatory tags (environment, owner, cost-center) to all resource groups."
+    },
+    {
+      "control_id": "FedRAMP-SA-9(5)",
+      "title": "AI Model Deployment Governance",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-ai-deployment"
+      ],
+      "evaluation_logic": "check_ai_governance",
+      "rationale": "AI model deployments must have content filtering and rate limits for responsible AI governance.",
+      "recommendation": "Assign content filter policies and configure rate limits on all AI model deployments."
+    },
+    {
+      "control_id": "FedRAMP-SC-7(21)",
+      "title": "ML Workspace Network Isolation",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-ml-workspace"
+      ],
+      "evaluation_logic": "check_ml_network_security",
+      "rationale": "ML workspaces must use private endpoints and disable public access to protect training data and models.",
+      "recommendation": "Disable public network access. Configure private endpoints. Enable managed identity."
+    },
+    {
+      "control_id": "FedRAMP-SC-28(3)",
+      "title": "Storage Account Data Protection",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-account"
+      ],
+      "evaluation_logic": "check_storage_account_security",
+      "rationale": "Storage accounts must enforce encryption, TLS 1.2, soft delete, and network isolation.",
+      "recommendation": "Enable HTTPS-only, TLS 1.2, soft delete, and configure firewall rules."
+    },
+    {
+      "control_id": "FedRAMP-CM-7(3)",
+      "title": "Container Registry Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-registry"
+      ],
+      "evaluation_logic": "check_container_registry_security",
+      "rationale": "Container registries must disable admin access, enforce network isolation, and enable content trust.",
+      "recommendation": "Disable admin user. Enable private endpoints. Enable content trust."
+    },
+    {
+      "control_id": "FedRAMP-SC-7(22)",
+      "title": "Container App Network Security",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-app"
+      ],
+      "evaluation_logic": "check_container_app_network",
+      "rationale": "Container Apps must enforce HTTPS ingress and use managed identities.",
+      "recommendation": "Disable insecure ingress. Enable managed identity."
+    },
+    {
+      "control_id": "FedRAMP-SC-28(4)",
+      "title": "Cosmos DB Data Protection",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-cosmosdb-account"
+      ],
+      "evaluation_logic": "check_cosmosdb_security",
+      "rationale": "Cosmos DB must disable local auth, enforce network isolation, and use CMK encryption.",
+      "recommendation": "Disable local auth. Use private endpoints. Enable CMK encryption."
+    },
+    {
+      "control_id": "FedRAMP-SC-28(5)",
+      "title": "Database Server Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-database-server"
+      ],
+      "evaluation_logic": "check_database_server_security",
+      "rationale": "Database servers must disable public access, enable HA, and configure geo-redundant backups.",
+      "recommendation": "Disable public access. Enable zone-redundant HA. Enable geo-redundant backup."
+    },
+    {
+      "control_id": "FedRAMP-SC-7(23)",
+      "title": "Application Gateway WAF Protection",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-app-gateway"
+      ],
+      "evaluation_logic": "check_app_gateway_security",
+      "rationale": "Application Gateways must enable WAF in Prevention mode with TLS 1.2.",
+      "recommendation": "Enable WAF in Prevention mode. Set minimum TLS to 1.2. Use HTTPS listeners."
+    },
+    {
+      "control_id": "FedRAMP-SC-7(24)",
+      "title": "WAF Policy Configuration",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-waf-policy"
+      ],
+      "evaluation_logic": "check_waf_policy",
+      "rationale": "WAF policies must use Prevention mode with managed OWASP rule sets.",
+      "recommendation": "Set WAF policy to Prevention mode. Configure OWASP managed rule sets."
+    },
+    {
+      "control_id": "FedRAMP-SC-8(2)",
+      "title": "API Management Network Security",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-apim-instance"
+      ],
+      "evaluation_logic": "check_apim_network_security",
+      "rationale": "APIM must disable legacy TLS/SSL, use VNet integration, and enable managed identity.",
+      "recommendation": "Disable TLS 1.0/1.1. Configure VNet integration. Enable managed identity."
+    },
+    {
+      "control_id": "FedRAMP-SC-28(4)b",
+      "title": "Storage Container Public Access Control",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-storage-container"
+      ],
+      "evaluation_logic": "check_storage_container_security",
+      "rationale": "Individual storage containers must not permit anonymous public access.",
+      "recommendation": "Set all container access levels to Private. Configure lifecycle policies."
+    },
+    {
+      "control_id": "FedRAMP-AU-6(3)",
+      "title": "SQL Server Advanced Threat Protection and Auditing",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-sql-detailed"
+      ],
+      "evaluation_logic": "check_sql_detailed_security",
+      "rationale": "SQL Servers must enable ATP, vulnerability assessment, and per-database auditing.",
+      "recommendation": "Enable ATP and vulnerability assessment. Verify per-database auditing and TDE."
+    },
+    {
+      "control_id": "FedRAMP-AC-17(2)",
+      "title": "Web Application Authentication and Access Control",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-webapp-detailed"
+      ],
+      "evaluation_logic": "check_webapp_detailed_security",
+      "rationale": "Web Apps must enable authentication, restrict CORS, and configure IP restrictions.",
+      "recommendation": "Enable App Service Auth. Restrict CORS origins. Configure IP restrictions."
+    },
+    {
+      "control_id": "FedRAMP-AU-12(3)",
+      "title": "Database Server Configuration Auditing",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-database-config"
+      ],
+      "evaluation_logic": "check_database_config_security",
+      "rationale": "Database servers must enforce secure transport and enable audit logging.",
+      "recommendation": "Enable require_secure_transport. Enable log_checkpoints and audit logging."
+    },
+    {
+      "control_id": "FedRAMP-SA-10(1)",
+      "title": "Container Registry Image Integrity",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-acr-repository"
+      ],
+      "evaluation_logic": "check_acr_repository_security",
+      "rationale": "Container registries must enforce tag immutability and clean up stale images.",
+      "recommendation": "Enable tag immutability. Remove stale repositories."
+    },
+    {
+      "control_id": "FedRAMP-IR-4",
+      "title": "Incident Handling",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-alert-rule",
+        "entra-risk-summary"
+      ],
+      "evaluation_logic": "check_incident_detection",
+      "rationale": "FedRAMP requires automated incident detection mechanisms.",
+      "recommendation": "Enable Defender for Cloud and configure alert rules for incident detection."
+    },
+    {
+      "control_id": "FedRAMP-IR-5",
+      "title": "Incident Monitoring",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-action-group",
+        "azure-alert-rule",
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_incident_alerting",
+      "rationale": "FedRAMP requires alerting infrastructure for incident notification.",
+      "recommendation": "Configure action groups with receivers linked to alert rules."
+    },
+    {
+      "control_id": "FedRAMP-IR-6",
+      "title": "Incident Reporting",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_security_contact_config",
+      "rationale": "Security contacts must enable incident reporting to US-CERT within required timelines.",
+      "recommendation": "Configure security contacts with alert notifications enabled."
+    },
+    {
+      "control_id": "FedRAMP-IR-8",
+      "title": "Incident Response Plan",
+      "domain": "incident_response",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-diagnostic-setting",
+        "azure-log-analytics",
+        "azure-activity-log"
+      ],
+      "evaluation_logic": "check_incident_investigation_readiness",
+      "rationale": "IR plan requires logging infrastructure for forensic investigation.",
+      "recommendation": "Deploy Log Analytics with diagnostic coverage for investigation."
+    },
+    {
+      "control_id": "FedRAMP-CM-3",
+      "title": "Configuration Change Control",
+      "domain": "change_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "azure-policy-definition"
+      ],
+      "evaluation_logic": "check_change_control_policies",
+      "rationale": "FedRAMP requires documented and enforced configuration change control.",
+      "recommendation": "Assign policies with deny effects for unauthorized changes."
+    },
+    {
+      "control_id": "FedRAMP-CM-5",
+      "title": "Access Restrictions for Change",
+      "domain": "change_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource-lock",
+        "azure-resource-group"
+      ],
+      "evaluation_logic": "check_resource_lock_governance",
+      "rationale": "Resource locks restrict unauthorized changes to production systems.",
+      "recommendation": "Apply resource locks on production resource groups."
+    },
+    {
+      "control_id": "FedRAMP-CP-2",
+      "title": "Contingency Plan",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-recovery-vault",
+        "azure-vm-config",
+        "azure-sql-server"
+      ],
+      "evaluation_logic": "check_backup_configuration",
+      "rationale": "FedRAMP requires contingency plans with backup infrastructure.",
+      "recommendation": "Deploy Recovery Services vaults with soft delete."
+    },
+    {
+      "control_id": "FedRAMP-CP-6",
+      "title": "Alternate Storage Site",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-account",
+        "azure-cosmosdb-account"
+      ],
+      "evaluation_logic": "check_geo_redundancy",
+      "rationale": "FedRAMP requires geo-redundant storage for data protection.",
+      "recommendation": "Use GRS/RA-GRS for storage and multi-region databases."
+    },
+    {
+      "control_id": "FedRAMP-CP-9",
+      "title": "System Backup",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-vm-config"
+      ],
+      "evaluation_logic": "check_vm_availability",
+      "rationale": "VMs must use availability zones for system resilience.",
+      "recommendation": "Deploy VMs in availability zones or availability sets."
+    },
+    {
+      "control_id": "FedRAMP-CM-8(1)",
+      "title": "Asset Inventory Updates",
+      "domain": "asset_management",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource",
+        "azure-resource-group",
+        "azure-managed-identity"
+      ],
+      "evaluation_logic": "check_asset_inventory",
+      "rationale": "FedRAMP requires current and accurate asset inventory.",
+      "recommendation": "Ensure automated resource discovery and inventory."
+    },
+    {
+      "control_id": "FedRAMP-AC-12",
+      "title": "Session Termination",
+      "domain": "access",
+      "severity": "medium",
+      "evidence_types": [
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_session_management",
+      "rationale": "FedRAMP requires session termination after inactivity.",
+      "recommendation": "Configure CA policies with sign-in frequency controls."
+    },
+    {
+      "control_id": "FedRAMP-AU-11",
+      "title": "Audit Record Retention",
+      "domain": "logging",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-log-analytics",
+        "azure-nsg-flow-log"
+      ],
+      "evaluation_logic": "check_log_retention_analysis",
+      "rationale": "FedRAMP requires audit record retention per NARA schedules.",
+      "recommendation": "Configure Log Analytics retention to at least 90 days."
+    },
+    {
+      "control_id": "FedRAMP-AT-2",
+      "title": "Security Awareness Training",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "entra-terms-of-use",
+        "azure-policy-compliance",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_security_awareness",
+      "rationale": "FedRAMP requires security awareness training for personnel.",
+      "recommendation": "Configure Terms of Use and enforce CA policy acceptance."
+    }
+  ]
+}

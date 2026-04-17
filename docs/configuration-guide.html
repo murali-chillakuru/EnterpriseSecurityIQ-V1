@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Configuration Guide — PostureIQ</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-hover:#252D38;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --border-primary:#30363D;--border-accent:#1F6FEB33;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --accent-pink:#DB61A2;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.5);
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',Consolas,monospace;
+  --transition-fast:.18s ease;--transition-med:.3s ease;
+  color-scheme:dark;
+  --max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-hover:#F0F3F6;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;
+  --border-primary:#D0D7DE;--border-accent:#0969DA22;
+  --accent-blue:#0969DA;--accent-purple:#8250DF;--accent-green:#1A7F37;
+  --accent-orange:#BF8700;--accent-cyan:#1B7C83;--accent-red:#CF222E;
+  --accent-pink:#BF3989;
+  --shadow-sm:0 1px 3px rgba(31,35,40,.08);--shadow-md:0 4px 12px rgba(31,35,40,.1);
+  --shadow-lg:0 8px 24px rgba(31,35,40,.12);
+  color-scheme:light
+}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none;transition:color var(--transition-fast)}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--bg-secondary);padding:2px 6px;border-radius:4px}
+pre{background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.7rem .9rem;border:1px solid var(--border-primary);text-align:left;font-size:.88rem}
+th{background:var(--bg-secondary);color:var(--text-primary);font-weight:600;white-space:nowrap}
+tr:nth-child(even){background:var(--bg-secondary)}
+.skip-nav{position:absolute;top:-100%;left:1rem;background:var(--accent-blue);color:#fff;padding:.5rem 1rem;border-radius:var(--radius-sm);z-index:9999;font-weight:600}.skip-nav:focus{top:1rem}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple),var(--accent-cyan));z-index:10001;transition:width .1s linear;width:0}
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:500px;height:500px;background:radial-gradient(circle,var(--accent-blue),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-purple),transparent 70%);bottom:-150px;left:-80px}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{color:var(--text-secondary);font-size:1.05rem;max-width:680px;margin:0 auto .8rem}
+.hero .author{color:var(--text-muted);font-size:.85rem}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;max-width:960px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);position:relative;z-index:10}
+.stat{text-align:center}.stat .num{font-size:1.6rem;font-weight:700;display:block}.stat .lbl{color:var(--text-secondary);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.nav-wrap{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);backdrop-filter:blur(12px)}
+.nav-inner{display:flex;align-items:center;gap:.5rem;max-width:1200px;margin:0 auto;padding:.6rem 1rem;overflow-x:auto;scrollbar-width:thin}
+.nav-pill{padding:.35rem .75rem;border-radius:20px;font-size:.78rem;font-weight:500;color:var(--text-secondary);white-space:nowrap;transition:all var(--transition-fast);border:1px solid transparent;cursor:pointer;text-decoration:none}
+.nav-pill:hover{color:var(--text-primary);background:var(--bg-hover);text-decoration:none}
+.nav-pill.active{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:20px;padding:.35rem .75rem;font-size:.78rem;cursor:pointer;color:var(--text-secondary);transition:all var(--transition-fast);white-space:nowrap}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--text-primary)}
+.content{max-width:var(--max-width);margin:0 auto;padding:2rem 1.5rem 4rem}
+.section{margin-bottom:3.5rem;scroll-margin-top:80px}
+.section h2{font-size:1.5rem;font-weight:700;margin-bottom:.3rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent-blue);display:inline-block}
+.section h3{font-size:1.15rem;font-weight:600;margin:1.8rem 0 .8rem;color:var(--accent-purple)}
+.section p,.section li{color:var(--text-secondary);font-size:.92rem}
+.section ul,.section ol{padding-left:1.4rem;margin:.6rem 0}.section li{margin-bottom:.3rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin:1rem 0}
+.card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;transition:all var(--transition-fast)}
+.card:hover{border-color:var(--accent-blue);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.card .card-title{font-weight:600;font-size:.95rem;margin-bottom:.3rem}
+.card .card-count{font-size:1.3rem;font-weight:700;color:var(--accent-blue)}
+.card .card-desc{color:var(--text-secondary);font-size:.82rem;margin-top:.3rem}
+.accent-blue .card-count,.accent-blue .num{color:var(--accent-blue)}
+.accent-purple .card-count,.accent-purple .num{color:var(--accent-purple)}
+.accent-green .card-count,.accent-green .num{color:var(--accent-green)}
+.accent-orange .card-count,.accent-orange .num{color:var(--accent-orange)}
+.accent-cyan .card-count,.accent-cyan .num{color:var(--accent-cyan)}
+.accent-red .card-count,.accent-red .num{color:var(--accent-red)}
+.accent-pink .card-count,.accent-pink .num{color:var(--accent-pink)}
+details{margin:1rem 0;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);overflow:hidden}
+details>summary{padding:.8rem 1rem;font-weight:600;cursor:pointer;color:var(--text-primary);transition:background var(--transition-fast);font-size:.92rem}
+details>summary:hover{background:var(--bg-hover)}
+details[open]>summary{border-bottom:1px solid var(--border-primary)}
+details .detail-body{padding:1rem}
+.mermaid-wrap{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.5rem;margin:1.5rem 0;overflow-x:auto}
+.mermaid{display:flex;justify-content:center}
+.diagram-explanation{margin-top:1rem;padding:1rem;background:var(--bg-secondary);border-radius:var(--radius-sm);border-left:3px solid var(--accent-purple)}
+.diagram-explanation h4{font-size:.9rem;color:var(--accent-purple);margin-bottom:.5rem}
+.diagram-explanation p,.diagram-explanation li{font-size:.84rem;color:var(--text-secondary)}
+.config-block{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;margin:1rem 0}
+.config-block h4{font-size:.95rem;margin-bottom:.8rem;color:var(--accent-cyan)}
+.config-block pre{background:var(--bg-secondary);margin-bottom:.8rem}
+.priority-box{display:flex;align-items:center;gap:.8rem;padding:1rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);margin:.8rem 0}
+.priority-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0}
+.priority-1{background:rgba(248,81,73,.15);color:var(--accent-red)}
+.priority-2{background:rgba(210,153,34,.15);color:var(--accent-orange)}
+.priority-3{background:rgba(139,148,158,.15);color:var(--text-secondary)}
+.safety-banner{background:linear-gradient(135deg,rgba(31,111,235,.08),rgba(163,113,247,.08));border:1px solid var(--border-accent);border-radius:var(--radius-lg);padding:1.5rem;margin:2rem 0}
+.safety-banner h3{color:var(--accent-blue);margin-bottom:.8rem}
+.safety-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.6rem}
+.safety-item{display:flex;align-items:flex-start;gap:.4rem;font-size:.82rem;color:var(--text-secondary)}
+.safety-item .check{color:var(--accent-green);font-weight:700;flex-shrink:0}
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.8rem;border-top:1px solid var(--border-primary)}
+.back-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;border-radius:50%;background:var(--accent-blue);color:#fff;border:none;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all var(--transition-med);box-shadow:var(--shadow-md);z-index:999}
+.back-top.show{opacity:1;pointer-events:auto}.back-top:hover{transform:scale(1.1)}
+@media print{.nav-wrap,.theme-toggle,.back-top,.progress-bar{display:none!important}.hero{padding:2rem 1rem}.content{max-width:100%}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:0s!important;animation-duration:0s!important}}
+@media(forced-colors:active){.nav-pill.active{border:2px solid ButtonText}.card{border:1px solid ButtonText}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<a class="skip-nav" href="#main">Skip to content</a>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ════════ HERO ════════ -->
+<header class="hero">
+  <h1>Configuration Guide</h1>
+  <p class="subtitle">Authentication modes, collector tuning, evaluation thresholds, SIEM integration, data residency, continuous monitoring, and all environment variable overrides</p>
+  <p class="author">Author: Murali Chillakuru — PostureIQ</p>
+</header>
+
+<!-- ════════ STATS BAR ════════ -->
+<div class="stats-bar">
+  <div class="stat accent-blue"><span class="num" data-target="4">0</span><span class="lbl">Auth Modes</span></div>
+  <div class="stat accent-purple"><span class="num" data-target="17">0</span><span class="lbl">Thresholds</span></div>
+  <div class="stat accent-green"><span class="num" data-target="11">0</span><span class="lbl">Frameworks</span></div>
+  <div class="stat accent-orange"><span class="num" data-target="525">0</span><span class="lbl">Controls</span></div>
+  <div class="stat accent-cyan"><span class="num" data-target="12">0</span><span class="lbl">Env Vars</span></div>
+  <div class="stat accent-red"><span class="num" data-target="42">0</span><span class="lbl">DS Categories</span></div>
+</div>
+
+<!-- ════════ NAV ════════ -->
+<nav class="nav-wrap" aria-label="Section navigation">
+  <div class="nav-inner">
+    <a class="nav-pill" href="#loading">Loading</a>
+    <a class="nav-pill" href="#top-level">Settings</a>
+    <a class="nav-pill" href="#auth">Auth</a>
+    <a class="nav-pill" href="#collectors">Collectors</a>
+    <a class="nav-pill" href="#thresholds">Thresholds</a>
+    <a class="nav-pill" href="#monitoring">Monitoring</a>
+    <a class="nav-pill" href="#siem">SIEM</a>
+    <a class="nav-pill" href="#residency">Residency</a>
+    <a class="nav-pill" href="#env-vars">Env Vars</a>
+    <a class="nav-pill" href="#frameworks">Frameworks</a>
+    <a class="nav-pill" href="#running">Running</a>
+    <a class="nav-pill" href="#output">Output</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀️ Light</button>
+  </div>
+</nav>
+
+<!-- ════════ CONTENT ════════ -->
+<main class="content" id="main">
+
+<!-- EXEC SUMMARY -->
+<div style="background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.25);border-radius:8px;padding:16px 20px;margin:0 0 24px;font-size:.9rem;color:var(--text-secondary)">
+<strong>📋 Executive Summary</strong> — Complete configuration reference: authentication modes, collector tuning, 17 evaluation thresholds, SIEM integration, data residency, continuous monitoring, and all environment variable overrides.
+<div style="margin-top:8px;font-size:.82rem"><strong>Audience:</strong> Administrators, DevOps engineers · <strong>Prerequisites:</strong> <a href="architecture.html">Architecture</a> · <strong>Related:</strong> <a href="evaluation-rules.html">Evaluation Rules</a> · <a href="ci-cd-integration.html">CI/CD Integration</a> · <a href="prompts.html">Usage Guide</a></div>
+</div>
+
+<!-- ── Configuration Loading ── -->
+<section class="section" id="loading">
+<h2>Configuration Loading</h2>
+<p>The main configuration file is <code>config/enterprisesecurityiq.config.json</code>. Copy <code>examples/sample-config.json</code> as a starting point.</p>
+
+<div class="mermaid-wrap">
+<div class="mermaid" data-seq-details='[{"overview":"The user or CI system optionally sets the ENTERPRISESECURITYIQ_CONFIG environment variable to point to a custom configuration file path. If not set, the tool uses default paths.","dataFlow":"User sets an environment variable that will later be read by config.py during initialization","keyPoints":["This variable is optional — the tool works without it","The value should be an absolute or relative path to a JSON config file","CI/CD pipelines commonly use this to specify environment-specific configs"],"whyItMatters":"Allowing config file path via environment variable enables flexible deployment across different environments without code changes","output":"An environment variable stored in the system, ready to be read by config.py"},{"overview":"The user optionally sets Azure-specific environment variables like AZURE_TENANT_ID, AZURE_CLIENT_ID, and others. These can override values from the config file.","dataFlow":"User sets Azure credential and configuration environment variables that config.py will check later","keyPoints":["Common variables include AZURE_TENANT_ID, AZURE_CLIENT_ID, and AZURE_CLIENT_SECRET","Environment variables have the highest priority in the config chain","This supports secret injection in CI/CD without storing credentials in files"],"whyItMatters":"Environment variable overrides enable secure credential management and per-environment customization without modifying config files","output":"Azure-related environment variables stored in the system"},{"overview":"The config.py module calls from_env() to begin the configuration loading process. This is the entry point that orchestrates reading from files, defaults, and environment overrides.","dataFlow":"Internal call within config.py that initiates the multi-source configuration loading sequence","keyPoints":["from_env() is the primary factory method for creating AssessmentConfig","It checks for ENTERPRISESECURITYIQ_CONFIG first to find a config file","If no config file is found, it falls back to dataclass defaults"],"whyItMatters":"Centralizing config loading in a single method ensures consistent behavior and a clear priority chain across all deployment scenarios","output":"Initiates the config loading process — no direct output yet"},{"overview":"If a config file path was found (via ENTERPRISESECURITYIQ_CONFIG or default path), config.py calls from_file() to read and parse the JSON configuration file.","dataFlow":"config.py reads the JSON file and maps camelCase keys to snake_case Python dataclass fields","keyPoints":["JSON keys use camelCase (e.g., tenantId) and are converted to snake_case (e.g., tenant_id)","The file typically lives at config/enterprisesecurityiq.config.json","Only fields present in the JSON are loaded — missing fields keep their defaults"],"whyItMatters":"File-based configuration provides a persistent, version-controllable way to define assessment settings","output":"A partially populated configuration object with values from the JSON file"},{"overview":"The config JSON file returns its values to config.py. During this transfer, key names are automatically converted from camelCase (JSON convention) to snake_case (Python convention).","dataFlow":"JSON file contents are parsed, key names are transformed, and values are mapped to dataclass fields","keyPoints":["camelCase to snake_case conversion is automatic","Threshold values are loaded by iterating ThresholdConfig dataclass fields dynamically","Invalid or unknown keys are silently ignored"],"whyItMatters":"Automatic naming convention translation means JSON files follow standard JSON conventions while Python code uses idiomatic naming","output":"Python dictionary with snake_case keys and their corresponding values from the config file"},{"overview":"For any configuration fields not found in the JSON file, config.py uses the default values defined in the Python dataclass definitions (AssessmentConfig, AuthConfig, etc.).","dataFlow":"Python reads default values from dataclass field definitions for any fields not already set by the config file","keyPoints":["Defaults are defined directly in the dataclass field declarations","This ensures every field has a valid value even with an empty config file","Default thresholds provide reasonable out-of-the-box behavior"],"whyItMatters":"Dataclass defaults guarantee the tool always has a complete, valid configuration — users only need to override what differs from defaults","output":"A fully populated configuration object with file values plus defaults for unset fields"},{"overview":"Config.py checks environment variables that can override both file-loaded and default values. This is the highest priority layer in the configuration chain.","dataFlow":"config.py queries specific environment variable names and applies any found values over the current configuration","keyPoints":["Environment variables override both file values and defaults","Variable names follow a consistent pattern (e.g., AZURE_TENANT_ID, ENTERPRISESECURITYIQ_FRAMEWORKS)","Only environment variables that are actually set cause overrides"],"whyItMatters":"Environment variable overrides are the highest priority, enabling runtime customization and secure credential injection in CI/CD","output":"A request to the environment for specific variable values"},{"overview":"Environment variables return their values to config.py, which applies them as overrides. Any value set as an environment variable takes precedence over file and default values.","dataFlow":"The operating system returns environment variable values to config.py, which updates the configuration object","keyPoints":["Only set variables cause overrides — unset variables are skipped","This enables per-deployment customization without file changes","Secrets and credentials should always be passed this way, never in config files"],"whyItMatters":"The override mechanism completes the three-tier priority chain: env vars beat file values beat defaults","output":"Updated configuration fields reflecting environment variable overrides"},{"overview":"Config.py constructs and returns the final AssessmentConfig object with all values resolved from the three-tier priority chain. This object is used throughout the assessment run.","dataFlow":"config.py creates an immutable AssessmentConfig dataclass instance and passes it to the assessment engine","keyPoints":["The final config merges values from env vars, file, and defaults","AssessmentConfig is a frozen dataclass — immutable after creation","All sub-configs (AuthConfig, CollectorConfig, ThresholdConfig) are nested inside"],"whyItMatters":"A single, immutable configuration object ensures consistent behavior throughout the entire assessment run","output":"A complete, immutable AssessmentConfig object ready for use by the assessment engine"}]'>
+sequenceDiagram
+    participant U as User / CI
+    participant ENV as Environment Vars
+    participant CFG as Config JSON File
+    participant PY as config.py
+    participant AC as AssessmentConfig
+
+    U->>ENV: Set ENTERPRISESECURITYIQ_CONFIG (optional)
+    U->>ENV: Set AZURE_TENANT_ID, etc. (optional)
+    PY->>PY: from_env() called
+    alt ENTERPRISESECURITYIQ_CONFIG is set
+        PY->>CFG: from_file(path)
+        CFG-->>PY: JSON values (camelCase → snake_case)
+    else No config file
+        PY->>PY: Use dataclass defaults
+    end
+    PY->>ENV: Check override env vars
+    ENV-->>PY: Override file/default values
+    PY->>AC: Final AssessmentConfig
+    Note over AC: Thresholds loaded via<br/>field iteration (snake_case keys)
+</div>
+<div class="diagram-explanation">
+<h4>Loading Sequence Explained</h4>
+<ol>
+<li><code>from_env()</code> checks if <code>ENTERPRISESECURITYIQ_CONFIG</code> is set — if so, calls <code>from_file()</code> first</li>
+<li><code>from_file()</code> reads JSON, maps camelCase keys to snake_case dataclass fields</li>
+<li>Thresholds are loaded dynamically by iterating <code>ThresholdConfig.__dataclass_fields__</code></li>
+<li>Environment variables override file-loaded values (highest priority)</li>
+<li>Any unset fields use Python dataclass defaults</li>
+</ol>
+</div>
+</div>
+
+<h3>Precedence Order</h3>
+<div class="priority-box"><div class="priority-num priority-1">1</div><div><strong>Environment Variables</strong> — Override everything<br/><span style="font-size:.82rem;color:var(--text-secondary)">AZURE_TENANT_ID, ENTERPRISESECURITYIQ_FRAMEWORKS, etc.</span></div></div>
+<div class="priority-box"><div class="priority-num priority-2">2</div><div><strong>Config JSON File</strong> — from_file() values<br/><span style="font-size:.82rem;color:var(--text-secondary)">config/enterprisesecurityiq.config.json</span></div></div>
+<div class="priority-box"><div class="priority-num priority-3">3</div><div><strong>Python Dataclass Defaults</strong> — Code-level defaults<br/><span style="font-size:.82rem;color:var(--text-secondary)">AssessmentConfig, AuthConfig, CollectorConfig, ThresholdConfig</span></div></div>
+</section>
+
+<!-- ── Top-Level Settings ── -->
+<section class="section" id="top-level">
+<h2>Top-Level Settings</h2>
+<div class="config-block">
+<h4>Example</h4>
+<pre>{
+  "name": "Q1 2026 FedRAMP High Assessment",
+  "frameworks": ["FedRAMP", "NIST-800-53"],
+  "logLevel": "INFO",
+  "outputFormats": ["json", "html", "md"],
+  "outputDir": "./output",
+  "checkpointEnabled": true,
+  "additionalTenants": []
+}</pre>
+</div>
+<table>
+<thead><tr><th>Key</th><th>Type</th><th>Code Default</th><th>Config JSON</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>name</code></td><td>string</td><td><code>"EnterpriseSecurityIQ Assessment"</code></td><td>same</td><td>Human-readable assessment name</td></tr>
+<tr><td><code>frameworks</code></td><td>string[]</td><td><code>["FedRAMP"]</code></td><td>same</td><td><strong>Required.</strong> Compliance frameworks to evaluate</td></tr>
+<tr><td><code>logLevel</code></td><td>string</td><td><code>"INFO"</code></td><td>same</td><td>Min log level: DEBUG, INFO, WARNING, ERROR</td></tr>
+<tr><td><code>outputFormats</code></td><td>string[]</td><td><code>["json", "html"]</code></td><td><code>["json", "html", "md"]</code></td><td>Report formats: json, html, md, oscal</td></tr>
+<tr><td><code>outputDir</code></td><td>string</td><td><code>"output"</code></td><td>same</td><td>Base directory; timestamped subfolder per run</td></tr>
+<tr><td><code>checkpointEnabled</code></td><td>bool</td><td><code>true</code></td><td>same</td><td>Save progress to .checkpoint.json for resume</td></tr>
+<tr><td><code>additionalTenants</code></td><td>string[]</td><td><code>[]</code></td><td>same</td><td>Extra tenant IDs for multi-tenant assessments</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ── Authentication ── -->
+<section class="section" id="auth">
+<h2>Authentication</h2>
+
+<div class="config-block">
+<h4>Config Section</h4>
+<pre>"auth": {
+  "tenantId": "4a3eb5f4-1ec6-4a73-bb03-1ca63cb52d67",
+  "authMode": "auto",
+  "subscriptionFilter": []
+}</pre>
+</div>
+
+<h3>Auth Modes</h3>
+<div class="card-grid">
+  <div class="card accent-green">
+    <div class="card-title">auto (default)</div>
+    <div class="card-desc"><code>DefaultAzureCredential</code><br/>Chains: env vars → managed identity → Azure CLI → VS Code<br/><strong>Best for:</strong> Local dev, Azure-hosted workloads</div>
+  </div>
+  <div class="card accent-blue">
+    <div class="card-title">serviceprincipal</div>
+    <div class="card-desc"><code>ClientSecretCredential</code><br/>Requires: <code>AZURE_CLIENT_ID</code> + <code>AZURE_CLIENT_SECRET</code><br/><strong>Best for:</strong> CI/CD pipelines</div>
+  </div>
+  <div class="card accent-purple">
+    <div class="card-title">appregistration</div>
+    <div class="card-desc"><code>ClientSecretCredential</code><br/>Uses: <code>ENTERPRISESECURITYIQ_APP_CLIENT_ID</code> (falls back to <code>AZURE_CLIENT_ID</code>)<br/><strong>Best for:</strong> Dedicated app registration</div>
+  </div>
+  <div class="card accent-orange">
+    <div class="card-title">azurecli</div>
+    <div class="card-desc"><code>AzureCliCredential</code><br/>Requires: Active <code>az login</code> session<br/><strong>Best for:</strong> Force CLI-only auth</div>
+  </div>
+</div>
+
+<h3>Required Permissions</h3>
+<details>
+<summary>Azure RBAC &amp; MS Graph Permissions</summary>
+<div class="detail-body">
+<p><strong>Azure RBAC:</strong> <code>Reader</code> role on target subscriptions (for ARM collectors).</p>
+<p style="margin-top:.8rem"><strong>MS Graph Application Permissions:</strong></p>
+<table>
+<thead><tr><th>Permission</th><th>Used By</th></tr></thead>
+<tbody>
+<tr><td><code>User.Read.All</code></td><td>User listing, MFA status, stale account detection</td></tr>
+<tr><td><code>Directory.Read.All</code></td><td>Roles, groups, applications, service principals</td></tr>
+<tr><td><code>Policy.Read.All</code></td><td>Conditional Access, auth methods, security policies</td></tr>
+<tr><td><code>RoleManagement.Read.All</code></td><td>Directory role assignments, PIM eligibility</td></tr>
+<tr><td><code>AuditLog.Read.All</code></td><td>Audit logs, sign-in logs</td></tr>
+<tr><td><code>SecurityEvents.Read.All</code></td><td>Security alerts, risky users</td></tr>
+<tr><td><code>IdentityRiskyUser.Read.All</code></td><td>Risky user details</td></tr>
+<tr><td><code>Application.Read.All</code></td><td>App registrations, OAuth grants</td></tr>
+</tbody>
+</table>
+<p style="margin-top:.8rem"><strong>Sufficient Entra Roles:</strong> Global Administrator, Global Reader, Security Administrator, Security Reader, Compliance Administrator</p>
+</div>
+</details>
+
+<details>
+<summary>Preflight Check</summary>
+<div class="detail-body">
+<p><code>ComplianceCredentials.preflight_check()</code> validates access before collection:</p>
+<ul>
+<li><strong>ARM:</strong> Subscription listing</li>
+<li><strong>Graph (Users):</strong> User.Read.All</li>
+<li><strong>Graph (CA):</strong> Policy.Read.All</li>
+<li><strong>Graph (Roles):</strong> RoleManagement.Read.All</li>
+</ul>
+<p>403 responses → <strong>warnings</strong> (collection continues with reduced scope).<br/>401 responses → <strong>blocking errors</strong>.</p>
+<p>Returns: <code>ok</code>, <code>user</code>, <code>tenant</code>, <code>roles</code>, <code>arm_subs</code>, <code>graph_ok</code>, <code>warnings</code>, <code>errors</code></p>
+</div>
+</details>
+
+<details>
+<summary>Graph API Clients</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Method</th><th>API</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>get_graph_client()</code></td><td>v1.0</td><td>Standard: users, groups, apps, policies</td></tr>
+<tr><td><code>get_graph_beta_client()</code></td><td>beta</td><td>PIM, risky SPs, advanced Entra features</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+</section>
+
+<!-- ── Collectors ── -->
+<section class="section" id="collectors">
+<h2>Collector Configuration</h2>
+
+<div class="config-block">
+<h4>Config Section</h4>
+<pre>"collectors": {
+  "azureEnabled": true,
+  "entraEnabled": true,
+  "subscriptionFilter": [],
+  "azureBatchSize": 4,
+  "entraBatchSize": 3,
+  "collectorTimeout": 300,
+  "userSampleLimit": 0
+}</pre>
+</div>
+
+<table>
+<thead><tr><th>Field</th><th>Type</th><th>Config JSON</th><th>Code Default</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>azureEnabled</code></td><td>bool</td><td>true</td><td>True</td><td>Master toggle for all 49 Azure collectors</td></tr>
+<tr><td><code>entraEnabled</code></td><td>bool</td><td>true</td><td>True</td><td>Master toggle for all 17 Entra collectors</td></tr>
+<tr><td><code>subscriptionFilter</code></td><td>string[]</td><td>[]</td><td>[]</td><td>Alternate subscription filter location</td></tr>
+<tr><td><code>azureBatchSize</code></td><td>int</td><td style="color:var(--accent-orange)"><strong>4</strong></td><td style="color:var(--accent-orange)"><strong>8</strong></td><td>Max concurrent Azure collector coroutines</td></tr>
+<tr><td><code>entraBatchSize</code></td><td>int</td><td style="color:var(--accent-orange)"><strong>3</strong></td><td style="color:var(--accent-orange)"><strong>6</strong></td><td>Max concurrent Entra collector coroutines</td></tr>
+<tr><td><code>collectorTimeout</code></td><td>int</td><td style="color:var(--accent-orange)"><strong>300</strong></td><td style="color:var(--accent-orange)"><strong>600</strong></td><td>Per-collector timeout in seconds (0 = none)</td></tr>
+<tr><td><code>userSampleLimit</code></td><td>int</td><td>0</td><td>0</td><td>Max users (0 = all). Set for 50K+ tenants</td></tr>
+</tbody>
+</table>
+<p style="margin-top:.6rem;font-size:.85rem;color:var(--text-secondary)"><strong>Note:</strong> The shipped config JSON uses conservative values. Code defaults are more aggressive. When running from file, file values take effect.</p>
+</section>
+
+<!-- ── Thresholds ── -->
+<section class="section" id="thresholds">
+<h2>Evaluation Thresholds (18)</h2>
+<p>All numeric thresholds are configurable. The evaluation engine reads these at runtime to determine pass/fail boundaries.</p>
+
+<details open>
+<summary>Access Domain (5 thresholds)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Key</th><th>Default</th><th>Rule</th></tr></thead>
+<tbody>
+<tr><td><code>max_subscription_owners</code></td><td>3</td><td>Non-compliant if &gt; N Owner assignments per subscription</td></tr>
+<tr><td><code>max_privileged_percent</code></td><td>0.20</td><td>Non-compliant if privileged ratio &gt; 20%</td></tr>
+<tr><td><code>max_global_admins</code></td><td>5</td><td>Non-compliant if &gt; N Global Admins</td></tr>
+<tr><td><code>max_subscription_contributors</code></td><td>10</td><td>Non-compliant if &gt; N Contributor assignments</td></tr>
+<tr><td><code>max_entra_privileged_roles</code></td><td>10</td><td>Non-compliant if &gt; N privileged Entra roles</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<details open>
+<summary>Identity Domain (7 thresholds)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Key</th><th>Default</th><th>Rule</th></tr></thead>
+<tbody>
+<tr><td><code>min_mfa_percent</code></td><td>90.0</td><td>Non-compliant if MFA-registered &lt; N%</td></tr>
+<tr><td><code>max_no_default_mfa_percent</code></td><td>30.0</td><td>Non-compliant if &gt; N% without default MFA</td></tr>
+<tr><td><code>max_stale_percent</code></td><td>20.0</td><td>Non-compliant if stale accounts &gt; N%</td></tr>
+<tr><td><code>max_stale_guests</code></td><td>10</td><td>Non-compliant if &gt; N stale guests</td></tr>
+<tr><td><code>max_high_priv_oauth</code></td><td>5</td><td>Non-compliant if &gt; N high-priv OAuth apps</td></tr>
+<tr><td><code>max_admin_grants</code></td><td>20</td><td>Non-compliant if &gt; N admin-consented grants</td></tr>
+<tr><td><code>max_not_mfa_registered</code></td><td>10</td><td>Non-compliant if &gt; N users not MFA-registered</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<details open>
+<summary>Logging Domain (2 thresholds)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Key</th><th>Default</th><th>Rule</th></tr></thead>
+<tbody>
+<tr><td><code>diagnostic_coverage_target</code></td><td>80.0</td><td>Compliant if ≥ N% have diagnostic settings</td></tr>
+<tr><td><code>diagnostic_coverage_minimum</code></td><td>50.0</td><td>Partial if ≥ N% but below target</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<details open>
+<summary>Governance Domain (3 thresholds)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Key</th><th>Default</th><th>Rule</th></tr></thead>
+<tbody>
+<tr><td><code>min_policies_for_baseline</code></td><td>5</td><td>Non-compliant if &lt; N policy assignments</td></tr>
+<tr><td><code>min_tagging_percent</code></td><td>80.0</td><td>Non-compliant if &lt; N% tagged</td></tr>
+<tr><td><code>policy_compliance_target</code></td><td>80.0</td><td>Non-compliant if compliance &lt; N%</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<details open>
+<summary>Incident Response Domain (1 threshold)</summary>
+<div class="detail-body">
+<table>
+<thead><tr><th>Key</th><th>Default</th><th>Rule</th></tr></thead>
+<tbody>
+<tr><td><code>max_open_incidents</code></td><td>50</td><td>Alert fatigue flag if &gt; N open Sentinel incidents</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+</section>
+
+<!-- ── Continuous Monitoring ── -->
+<section class="section" id="monitoring">
+<h2>Continuous Monitoring &amp; Remediation</h2>
+
+<div class="config-block">
+<h4>Continuous Monitoring</h4>
+<pre>"continuousMonitoring": {
+  "enabled": false,
+  "intervalMinutes": 1440,
+  "collectors": [],
+  "frameworks": [],
+  "alertOnRegression": true,
+  "minScoreThreshold": 0
+}</pre>
+<table>
+<thead><tr><th>Field</th><th>Default</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>enabled</code></td><td>false</td><td>Enable continuous monitoring mode</td></tr>
+<tr><td><code>intervalMinutes</code></td><td>1440</td><td>Re-assessment interval (minimum 5 min)</td></tr>
+<tr><td><code>collectors</code></td><td>[]</td><td>Subset of collectors (empty = all)</td></tr>
+<tr><td><code>frameworks</code></td><td>[]</td><td>Subset of frameworks (empty = all)</td></tr>
+<tr><td><code>alertOnRegression</code></td><td>true</td><td>Flag score drops between runs</td></tr>
+<tr><td><code>minScoreThreshold</code></td><td>0</td><td>Min score (0–100); below triggers alerts</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="config-block">
+<h4>Remediation Engine</h4>
+<pre>"remediation": {
+  "enabled": false,
+  "includeAzCli": true,
+  "includePowerShell": false,
+  "includeArmSnippets": false
+}</pre>
+<table>
+<thead><tr><th>Field</th><th>Default</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>enabled</code></td><td>false</td><td>Generate remediation plans</td></tr>
+<tr><td><code>includeAzCli</code></td><td>true</td><td>Azure CLI remediation commands</td></tr>
+<tr><td><code>includePowerShell</code></td><td>false</td><td>PowerShell commands</td></tr>
+<tr><td><code>includeArmSnippets</code></td><td>false</td><td>ARM template snippets</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- ── SIEM Integration ── -->
+<section class="section" id="siem">
+<h2>SIEM Integration</h2>
+<p>Export findings to external SIEM/SOAR platforms.</p>
+
+<div class="card-grid">
+  <div class="card accent-blue">
+    <div class="card-title">Azure Sentinel</div>
+    <div class="card-desc">Data Collection Rules (DCR)<br/>Auth: DefaultAzureCredential<br/>Fields: endpointUrl, workspaceId, dcrImmutableId, dcrStreamName, batchSize</div>
+  </div>
+  <div class="card accent-green">
+    <div class="card-title">Splunk</div>
+    <div class="card-desc">HTTP Event Collector (HEC)<br/>Auth: <code>SPLUNK_HEC_TOKEN</code> env var<br/>Fields: endpointUrl, batchSize</div>
+  </div>
+  <div class="card accent-orange">
+    <div class="card-title">Generic Webhook</div>
+    <div class="card-desc">HTTPS POST<br/>Auth: <code>SIEM_WEBHOOK_TOKEN</code> env var<br/>Fields: endpointUrl, batchSize</div>
+  </div>
+</div>
+
+<details>
+<summary>Full SIEM Configuration JSON</summary>
+<div class="detail-body">
+<pre>"siemIntegration": {
+  "sentinel": {
+    "enabled": false,
+    "endpointUrl": "https://&lt;dce&gt;.ingest.monitor.azure.com",
+    "workspaceId": "&lt;workspace-id&gt;",
+    "dcrImmutableId": "&lt;dcr-immutable-id&gt;",
+    "dcrStreamName": "Custom-EnterpriseSecurityIQ_CL",
+    "batchSize": 100
+  },
+  "splunk": {
+    "enabled": false,
+    "endpointUrl": "https://splunk-hec:8088/services/collector",
+    "batchSize": 100
+  },
+  "generic": {
+    "enabled": false,
+    "endpointUrl": "https://your-siem/api/events",
+    "batchSize": 100
+  }
+}</pre>
+</div>
+</details>
+</section>
+
+<!-- ── Data Residency ── -->
+<section class="section" id="residency">
+<h2>Data Residency Validation</h2>
+
+<div class="config-block">
+<h4>Config Section</h4>
+<pre>"dataResidency": {
+  "enabled": false,
+  "allowedRegions": ["eastus", "westus2"],
+  "allowedRegionGroups": ["US"]
+}</pre>
+</div>
+
+<table>
+<thead><tr><th>Field</th><th>Default</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>enabled</code></td><td>false</td><td>Enable data residency validation</td></tr>
+<tr><td><code>allowedRegions</code></td><td>[]</td><td>Specific Azure regions</td></tr>
+<tr><td><code>allowedRegionGroups</code></td><td>[]</td><td>Region groups (see below)</td></tr>
+</tbody>
+</table>
+
+<p style="margin-top:.8rem"><strong>Available Region Groups:</strong> US, Europe, AsiaPacific, Canada, UK, Australia, Brazil, India, Japan, Korea, SouthAfrica, UAE, Switzerland, Germany, France, Norway, Sweden</p>
+
+<p style="margin-top:.6rem;font-size:.85rem;color:var(--text-secondary)">Validates: resource locations, storage replication targets, CosmosDB multi-region writes, backup vault locations, CDN origins, Front Door backends.</p>
+</section>
+
+<!-- ── Env Vars ── -->
+<section class="section" id="env-vars">
+<h2>Environment Variable Overrides</h2>
+<p>Environment variables take highest precedence over both config file and code defaults.</p>
+
+<table>
+<thead><tr><th>Variable</th><th>Maps To</th><th>Format</th></tr></thead>
+<tbody>
+<tr><td><code>ENTERPRISESECURITYIQ_CONFIG</code></td><td>Config file path</td><td>File path; loaded first if exists</td></tr>
+<tr><td><code>AZURE_TENANT_ID</code></td><td><code>auth.tenantId</code></td><td>UUID string</td></tr>
+<tr><td><code>AZURE_CLIENT_ID</code></td><td>SP app ID</td><td>UUID (for <code>serviceprincipal</code> mode)</td></tr>
+<tr><td><code>AZURE_CLIENT_SECRET</code></td><td>SP secret</td><td>String (for <code>serviceprincipal</code> mode)</td></tr>
+<tr><td><code>ENTERPRISESECURITYIQ_APP_CLIENT_ID</code></td><td>App reg ID</td><td>UUID (for <code>appregistration</code> mode)</td></tr>
+<tr><td><code>ENTERPRISESECURITYIQ_APP_CLIENT_SECRET</code></td><td>App reg secret</td><td>String (for <code>appregistration</code> mode)</td></tr>
+<tr><td><code>ENTERPRISESECURITYIQ_AUTH_MODE</code></td><td><code>auth.authMode</code></td><td>auto | serviceprincipal | appregistration | azurecli</td></tr>
+<tr><td><code>AZURE_SUBSCRIPTION_FILTER</code></td><td><code>collectors.subscriptionFilter</code></td><td>Comma-separated sub IDs</td></tr>
+<tr><td><code>ENTERPRISESECURITYIQ_FRAMEWORKS</code></td><td><code>frameworks</code></td><td>Comma-separated names</td></tr>
+<tr><td><code>ENTERPRISESECURITYIQ_LOG_LEVEL</code></td><td><code>logLevel</code></td><td>DEBUG | INFO | WARNING | ERROR</td></tr>
+<tr><td><code>SPLUNK_HEC_TOKEN</code></td><td>Splunk HEC auth</td><td>Token string</td></tr>
+<tr><td><code>SIEM_WEBHOOK_TOKEN</code></td><td>Generic webhook auth</td><td>Token string</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ── Frameworks ── -->
+<section class="section" id="frameworks">
+<h2>Available Frameworks (11)</h2>
+<p>525 total controls across 11 compliance frameworks:</p>
+
+<div class="card-grid">
+  <div class="card accent-blue"><div class="card-count">83</div><div class="card-title">NIST-800-53</div><div class="card-desc">SP 800-53 Rev 5</div></div>
+  <div class="card accent-purple"><div class="card-count">69</div><div class="card-title">FedRAMP</div><div class="card-desc">High Baseline</div></div>
+  <div class="card accent-green"><div class="card-count">53</div><div class="card-title">CIS</div><div class="card-desc">Azure Foundations</div></div>
+  <div class="card accent-green"><div class="card-count">53</div><div class="card-title">MCSB</div><div class="card-desc">Cloud Security Benchmark</div></div>
+  <div class="card accent-cyan"><div class="card-count">51</div><div class="card-title">PCI-DSS</div><div class="card-desc">v4.0</div></div>
+  <div class="card accent-cyan"><div class="card-count">51</div><div class="card-title">ISO-27001</div><div class="card-desc">ISO/IEC 27001:2022</div></div>
+  <div class="card accent-orange"><div class="card-count">47</div><div class="card-title">SOC2</div><div class="card-desc">Type II</div></div>
+  <div class="card accent-orange"><div class="card-count">43</div><div class="card-title">HIPAA</div><div class="card-desc">Security Rule</div></div>
+  <div class="card accent-red"><div class="card-count">29</div><div class="card-title">NIST-CSF</div><div class="card-desc">Cybersecurity Framework</div></div>
+  <div class="card accent-red"><div class="card-count">24</div><div class="card-title">CSA-CCM</div><div class="card-desc">Cloud Security Alliance</div></div>
+  <div class="card accent-pink"><div class="card-count">22</div><div class="card-title">GDPR</div><div class="card-desc">Data Protection Regulation</div></div>
+</div>
+</section>
+
+<!-- ── Running ── -->
+<section class="section" id="running">
+<h2>Running an Assessment</h2>
+
+<h3>Prerequisites</h3>
+<ol>
+<li><strong>Python 3.10+</strong> (3.12 recommended)</li>
+<li>Install dependencies: <code>cd AIAgent &amp;&amp; pip install -r requirements.txt</code></li>
+<li>Authenticate: <code>az login</code>, environment variables, or managed identity</li>
+</ol>
+
+<h3>CLI Commands</h3>
+<pre># Interactive (prompts for tenant)
+python run_copilot_readiness.py
+
+# CLI arguments
+python run_copilot_readiness.py --tenant "4a3eb5f4-..." --fail-on-severity high
+
+# Using config file
+ENTERPRISESECURITYIQ_CONFIG=../config/enterprisesecurityiq.config.json python run_data_security.py</pre>
+
+<h3>All CLI Scripts</h3>
+<table>
+<thead><tr><th>Script</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>run_copilot_readiness.py</code></td><td>M365 Copilot readiness evaluation</td></tr>
+<tr><td><code>run_rbac_report.py</code></td><td>RBAC analysis report</td></tr>
+<tr><td><code>run_query.py</code></td><td>Query past assessment results</td></tr>
+<tr><td><code>run_risk_analysis.py</code></td><td>Security risk analysis (5 categories)</td></tr>
+<tr><td><code>run_data_security.py</code></td><td>Data security posture assessment</td></tr>
+<tr><td><code>run_copilot_readiness.py</code></td><td>M365 Copilot readiness evaluation</td></tr>
+<tr><td><code>run_ai_agent_security.py</code></td><td>AI agent security assessment</td></tr>
+<tr><td><code>run_cr_determinism_check.py</code></td><td>Verify Copilot Readiness determinism</td></tr>
+<tr><td><code>run_rbac_determinism_check.py</code></td><td>Verify RBAC report determinism</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ── Output ── -->
+<section class="section" id="output">
+<h2>Output Files</h2>
+<p>Each run creates a timestamped directory under <code>output/</code>.</p>
+
+<pre>output/20260327_151401/
+├── FedRAMP/
+│   ├── compliance-report.html / .md
+│   ├── executive-summary.html / .md
+│   ├── gaps-report.html / .md
+│   ├── FedRAMP-report.xlsx
+│   └── oscal-results.json         (if oscal format enabled)
+├── NIST-800-53/
+│   └── ... (same structure)
+├── methodology-report.html
+├── findings.json / .csv
+├── control-results.json / .csv
+├── evidence.json
+├── all-evidence.json
+├── access-denied.json
+└── .checkpoint.json               (removed on success)</pre>
+
+<table>
+<thead><tr><th>File</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>compliance-report.html/md</code></td><td>Full interactive compliance report with sidebar, search, filters</td></tr>
+<tr><td><code>executive-summary.html/md</code></td><td>One-page executive summary with compliance ring, metrics, top risks</td></tr>
+<tr><td><code>gaps-report.html/md</code></td><td>Non-compliant findings with remediation roadmap</td></tr>
+<tr><td><code>{framework}-report.xlsx</code></td><td>Excel: Compliance Report, Gap Analysis, Executive Summary sheets</td></tr>
+<tr><td><code>methodology-report.html</code></td><td>Assessment methodology (for auditors)</td></tr>
+<tr><td><code>oscal-results.json</code></td><td>NIST OSCAL assessment results</td></tr>
+<tr><td><code>findings.json/csv</code></td><td>All individual findings</td></tr>
+<tr><td><code>control-results.json/csv</code></td><td>Per-control status summary</td></tr>
+<tr><td><code>evidence.json</code></td><td>Normalized evidence records</td></tr>
+<tr><td><code>all-evidence.json</code></td><td>Complete evidence dataset</td></tr>
+<tr><td><code>access-denied.json</code></td><td>Collectors blocked by insufficient permissions</td></tr>
+<tr><td><code>.checkpoint.json</code></td><td>Collection checkpoint (auto-removed on success)</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ── Safety Banner ── -->
+<div class="safety-banner">
+<h3>Configuration Highlights</h3>
+<div class="safety-grid">
+  <div class="safety-item"><span class="check">✓</span> 4 authentication modes with preflight validation</div>
+  <div class="safety-item"><span class="check">✓</span> 18 configurable evaluation thresholds</div>
+  <div class="safety-item"><span class="check">✓</span> 11 compliance frameworks, 525 controls</div>
+  <div class="safety-item"><span class="check">✓</span> Env vars override all file/default settings</div>
+  <div class="safety-item"><span class="check">✓</span> SIEM export: Sentinel, Splunk, generic webhook</div>
+  <div class="safety-item"><span class="check">✓</span> Data residency with 17 region groups</div>
+  <div class="safety-item"><span class="check">✓</span> Continuous monitoring with regression detection</div>
+  <div class="safety-item"><span class="check">✓</span> Checkpoint/resume for interrupted runs</div>
+</div>
+</div>
+
+</main>
+
+<footer>
+  <p>PostureIQ — Configuration Guide · Author: Murali Chillakuru</p>
+  <p style="margin-top:.3rem">4 auth modes · 17 thresholds · 11 frameworks · 525 controls · 12 env vars</p>
+</footer>
+
+<button class="back-top" id="backTop" aria-label="Back to top">↑</button>
+
+<script>
+const toggle=document.getElementById('themeToggle'),root=document.documentElement;
+function setTheme(t){root.dataset.theme=t;toggle.textContent=t==='dark'?'☀️ Light':'🌙 Dark';localStorage.setItem('esiq-theme',t)}
+toggle.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark'));
+setTheme(localStorage.getItem('esiq-theme')||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const el=e.target,t=+el.dataset.target;let c=0;const d=Math.max(1,Math.floor(30/(t||1)));const iv=setInterval(()=>{c+=d;if(c>=t){el.textContent=(t>100?'~':'')+t;clearInterval(iv)}else{el.textContent=c}},16);io.unobserve(el)}})},{threshold:.5});
+document.querySelectorAll('.num[data-target]').forEach(el=>io.observe(el));
+const pills=document.querySelectorAll('.nav-pill[href]'),sections=[];
+pills.forEach(p=>{const id=p.getAttribute('href')?.slice(1);if(id){const s=document.getElementById(id);if(s)sections.push({el:s,pill:p})}});
+const spy=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const m=sections.find(s=>s.el===e.target);if(m)m.pill.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px',threshold:0});
+sections.forEach(s=>spy.observe(s.el));
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('progressBar').style.width=(window.scrollY/h*100)+'%'});
+const btn=document.getElementById('backTop');
+window.addEventListener('scroll',()=>{btn.classList.toggle('show',window.scrollY>400)});
+btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+mermaid.initialize({startOnLoad:true,theme:root.dataset.theme==='light'?'default':'dark',securityLevel:'loose',sequence:{mirrorActors:false,messageMargin:40}});
+</script>
+<script src="seq-engine.js"></script>
+</body>
+</html>

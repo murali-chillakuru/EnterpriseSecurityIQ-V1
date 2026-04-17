@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostureIQ — Suppressions Guide</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-code:#0D1117;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#484F58;
+  --border-primary:#30363D;--border-subtle:#21262D;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --shadow-lg:0 8px 32px rgba(0,0,0,.4);--shadow-md:0 4px 16px rgba(0,0,0,.3);
+  --radius-lg:16px;--radius-md:12px;--radius-sm:8px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',monospace;
+  --max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-code:#F6F8FA;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8B949E;
+  --border-primary:#D0D7DE;--border-subtle:#E8EBEF;
+  --shadow-lg:0 8px 32px rgba(0,0,0,.08);--shadow-md:0 4px 16px rgba(0,0,0,.06);
+}
+.skip-nav{position:absolute;top:-100%;left:1rem;padding:.5rem 1rem;background:var(--accent-blue);color:#fff;border-radius:var(--radius-sm);z-index:9999;font-weight:600}.skip-nav:focus{top:1rem}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.85em;background:var(--bg-code);padding:2px 6px;border-radius:4px;border:1px solid var(--border-subtle)}
+.reading-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-orange),var(--accent-red),var(--accent-purple));z-index:10001;transition:width .15s}
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,#0D1117 0%,#161B22 50%,#1C2128 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+[data-theme="light"] .hero{background:linear-gradient(135deg,#fef3c7 0%,#fde68a 50%,#fef9c3 100%)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:600px;height:600px;background:radial-gradient(circle,var(--accent-orange),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-red),transparent 70%);bottom:-150px;left:-50px}
+.hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-orange),var(--accent-red));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{font-size:1.15rem;color:var(--text-secondary);max-width:800px;margin:0 auto 1rem}
+.author-tag{display:inline-block;padding:6px 16px;border-radius:20px;font-size:.85rem;font-weight:600;border:1px solid var(--accent-purple);color:var(--accent-purple);margin-top:1rem}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;max-width:1000px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);position:relative;z-index:10}
+.stat{text-align:center}.stat-value{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent-orange),var(--accent-red));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.stat-label{font-size:.72rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}
+.container{max-width:var(--max-width);margin:0 auto;padding:2rem}
+.sticky-nav{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);padding:.6rem 1rem;backdrop-filter:blur(12px)}
+.nav-inner{display:flex;gap:.5rem;max-width:1200px;margin:0 auto;overflow-x:auto;scrollbar-width:none;align-items:center}.nav-inner::-webkit-scrollbar{display:none}
+.nav-pill{padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:600;white-space:nowrap;border:1px solid var(--border-primary);background:transparent;color:var(--text-secondary);cursor:pointer;transition:all .2s}
+.nav-pill:hover,.nav-pill.active{background:var(--accent-orange);color:#fff;border-color:var(--accent-orange);text-decoration:none}
+.theme-toggle{margin-left:auto;background:transparent;border:1px solid var(--border-primary);color:var(--text-secondary);padding:6px 12px;border-radius:20px;cursor:pointer;font-size:.85rem;white-space:nowrap;transition:all .2s}.theme-toggle:hover{color:var(--accent-orange);border-color:var(--accent-orange)}
+section{margin-bottom:3rem;scroll-margin-top:80px}
+section h2{font-size:1.8rem;font-weight:700;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--border-primary);display:flex;align-items:center;gap:.5rem}
+section h2 .icon{font-size:1.4rem}
+section h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 .75rem;color:var(--accent-cyan)}
+.info-box{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.25rem 1.5rem;margin:1rem 0}
+.info-box.tip{border-left:4px solid var(--accent-green)}.info-box.warn{border-left:4px solid var(--accent-orange)}.info-box.info{border-left:4px solid var(--accent-blue)}.info-box.danger{border-left:4px solid var(--accent-red)}
+.info-box strong{display:block;margin-bottom:.4rem}
+pre{background:var(--bg-code);border:1px solid var(--border-primary);border-radius:var(--radius-sm);padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;line-height:1.6;margin:1rem 0;color:var(--text-primary)}
+.table-wrap{overflow-x:auto;margin:1rem 0;border-radius:var(--radius-md);border:1px solid var(--border-primary)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{background:var(--bg-secondary);padding:.7rem 1rem;text-align:left;font-weight:600;color:var(--text-primary);border-bottom:2px solid var(--border-primary);position:sticky;top:0}
+td{padding:.6rem 1rem;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary)}
+tr:hover td{background:rgba(31,111,235,.04)}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin:1rem 0}
+.card{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.25rem;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.card h4{font-size:1rem;font-weight:700;margin-bottom:.5rem;color:var(--text-primary)}.card p{font-size:.85rem;color:var(--text-secondary);line-height:1.5}.card pre{font-size:.78rem;margin-top:.5rem}
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:600}
+.badge-green{background:rgba(63,185,80,.15);color:var(--accent-green)}.badge-orange{background:rgba(210,153,34,.15);color:var(--accent-orange)}.badge-red{background:rgba(248,81,73,.15);color:var(--accent-red)}.badge-blue{background:rgba(31,111,235,.15);color:var(--accent-blue)}
+details{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-sm);margin:.75rem 0}
+details>summary{padding:.8rem 1rem;cursor:pointer;font-weight:600;color:var(--text-primary);list-style:none;display:flex;align-items:center;gap:.5rem}
+details>summary::before{content:'▸';font-size:.85rem;color:var(--accent-orange);transition:transform .2s}
+details[open]>summary::before{transform:rotate(90deg)}
+details>summary::-webkit-details-marker{display:none}
+details>.detail-body{padding:0 1rem 1rem}
+/* Matching flow */
+.flow-steps{display:flex;flex-direction:column;gap:1rem;margin:1.5rem 0}
+.flow-step{display:flex;gap:1rem;align-items:start;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1rem 1.25rem;transition:border-color .2s}
+.flow-step:hover{border-color:var(--accent-orange)}
+.flow-num{flex-shrink:0;width:36px;height:36px;border-radius:50%;background:var(--accent-orange);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem}
+.flow-content h4{font-size:.95rem;font-weight:700;margin-bottom:.25rem;color:var(--text-primary)}.flow-content p{font-size:.85rem;color:var(--text-secondary)}
+.back-top{position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:var(--accent-orange);color:#fff;border:none;font-size:1.2rem;cursor:pointer;opacity:0;transition:opacity .3s,transform .3s;transform:translateY(20px);z-index:999;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md)}.back-top.visible{opacity:1;transform:translateY(0)}.back-top:hover{background:var(--accent-red)}
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.82rem;border-top:1px solid var(--border-primary);margin-top:3rem}
+@media print{.sticky-nav,.back-top,.theme-toggle,.reading-progress{display:none!important}body{background:#fff;color:#000}.hero{background:#f5f5f5!important;padding:2rem}.card,.info-box,details{break-inside:avoid}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(forced-colors:active){.nav-pill,.badge,.card,.flow-num{border:1px solid CanvasText}}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-nav">Skip to main content</a>
+<div class="reading-progress" id="readingProgress"></div>
+
+<header class="hero">
+  <h1>Suppressions Guide</h1>
+  <p class="subtitle">Mute accepted risks and false positives with expiry-aware, regex-based suppression rules — fully auditable, CI/CD-integrated.</p>
+  <div class="author-tag">Author: Murali Chillakuru</div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-value">4</div><div class="stat-label">Rule Fields</div></div>
+  <div class="stat"><div class="stat-value">2</div><div class="stat-label">Functions</div></div>
+  <div class="stat"><div class="stat-value">3</div><div class="stat-label">CLI Scripts</div></div>
+  <div class="stat"><div class="stat-value">7</div><div class="stat-label">Day Expiry Warn</div></div>
+</div>
+
+<nav class="sticky-nav" aria-label="Section navigation">
+  <div class="nav-inner">
+    <a href="#overview" class="nav-pill">Overview</a>
+    <a href="#format" class="nav-pill">File Format</a>
+    <a href="#fields" class="nav-pill">Fields</a>
+    <a href="#matching" class="nav-pill">Matching</a>
+    <a href="#expiry" class="nav-pill">Expiry</a>
+    <a href="#audit" class="nav-pill">Audit Trail</a>
+    <a href="#examples" class="nav-pill">Examples</a>
+    <a href="#cicd" class="nav-pill">CI/CD</a>
+    <a href="#errors" class="nav-pill">Errors</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">☀ / ☾</button>
+  </div>
+</nav>
+
+<main id="main" class="container">
+
+<!-- EXEC SUMMARY -->
+<div style="background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.25);border-radius:8px;padding:16px 20px;margin:0 0 24px;font-size:.9rem;color:var(--text-secondary)">
+<strong>📋 Executive Summary</strong> — How to suppress specific compliance findings: JSON format, regex matching, expiration handling, audit trail, and CI/CD workflows. The canonical suppressions reference.
+<div style="margin-top:8px;font-size:.82rem"><strong>Audience:</strong> Security engineers, compliance managers · <strong>Prerequisites:</strong> <a href="evaluation-rules.html">Evaluation Rules</a> · <strong>Related:</strong> <a href="ci-cd-integration.html">CI/CD Integration</a></div>
+</div>
+
+<!-- ══════ Overview ══════ -->
+<section id="overview">
+  <h2><span class="icon">🔇</span> Overview</h2>
+  <p>The suppression system lives in <code>AIAgent/app/postureiq_evaluators/suppressions.py</code> and exposes two functions:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Function</th><th>Signature</th><th>Returns</th></tr></thead>
+      <tbody>
+        <tr><td><code>load_suppressions</code></td><td><code>(path: str) → list[dict]</code></td><td>Parsed rules array; <code>[]</code> on missing file or parse error</td></tr>
+        <tr><td><code>apply_suppressions</code></td><td><code>(findings, rules) → tuple</code></td><td><code>(active_findings, suppressed_findings)</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="info-box info">
+    <strong>💡 Two Input Formats Accepted</strong>
+    <code>load_suppressions</code> accepts both bare arrays (<code>[{...}]</code>) and envelope format (<code>{"suppressions": [{...}]}</code>).
+  </div>
+</section>
+
+<!-- ══════ File Format ══════ -->
+<section id="format">
+  <h2><span class="icon">📄</span> File Format</h2>
+  <p>Create <code>suppressions.json</code> in your working directory or pass a custom path via <code>--suppressions</code>.</p>
+  <pre>[
+  {
+    "control_id": "AC-6",
+    "resource": ".*",
+    "reason": "Accepted risk — JIT compensating control",
+    "expires": "2026-12-31"
+  },
+  {
+    "control_id": "SC-28.*",
+    "resource": ".*temp-storage.*",
+    "reason": "Temporary storage — no sensitive data",
+    "expires": "2026-06-30"
+  },
+  {
+    "control_id": "IA-5",
+    "reason": "Permanent exception — federated auth"
+  }
+]</pre>
+</section>
+
+<!-- ══════ Fields ══════ -->
+<section id="fields">
+  <h2><span class="icon">📋</span> Rule Fields</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Required</th><th>Type</th><th>Matching</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>control_id</code></td><td><span class="badge badge-red">Yes</span></td><td>string</td><td><code>re.fullmatch()</code></td><td>Control ID pattern — exact or regex</td></tr>
+        <tr><td><code>resource</code></td><td>No</td><td>string</td><td><code>re.search()</code> case-insensitive</td><td>Resource identifier regex. Default: <code>.*</code></td></tr>
+        <tr><td><code>reason</code></td><td><span class="badge badge-red">Yes</span></td><td>string</td><td>—</td><td>Human-readable justification</td></tr>
+        <tr><td><code>expires</code></td><td>No</td><td>string</td><td>ISO <code>YYYY-MM-DD</code></td><td>Expiry date. Omit for permanent</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="info-box warn">
+    <strong>⚠️ fullmatch vs search</strong>
+    The <code>control_id</code> uses <code>re.fullmatch()</code> — the <strong>entire</strong> control ID must match. Use <code>AC-6.*</code> to match <code>AC-6</code> and <code>AC-6.1</code>. The <code>resource</code> field uses <code>re.search()</code> — partial matches work.
+  </div>
+</section>
+
+<!-- ══════ Matching Logic ══════ -->
+<section id="matching">
+  <h2><span class="icon">🎯</span> Matching Logic</h2>
+  <p>Each finding is checked against rules <strong>in array order</strong>. First matching rule wins.</p>
+
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="flow-num">1</div>
+      <div class="flow-content">
+        <h4>Check Expiry</h4>
+        <p>If <code>expires</code> is set and the date has passed, the rule is <strong>skipped</strong>. Invalid date formats are also skipped with a WARNING log.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">2</div>
+      <div class="flow-content">
+        <h4>Match control_id (Two-Stage)</h4>
+        <p><strong>Stage A:</strong> Exact string equality (<code>rule.control_id == finding.ControlId</code>).<br>
+        <strong>Stage B:</strong> If no exact match → <code>re.fullmatch(rule.control_id, finding.ControlId)</code>.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">3</div>
+      <div class="flow-content">
+        <h4>Match resource</h4>
+        <p>If the rule has a <code>resource</code> field: <code>re.search(rule.resource, finding.ResourceId, re.IGNORECASE)</code>. If no <code>resource</code> field, matches all resources.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">4</div>
+      <div class="flow-content">
+        <h4>Both Must Pass</h4>
+        <p>A finding is suppressed only when both <code>control_id</code> and <code>resource</code> match (or <code>resource</code> is absent). Suppression fields are injected into the finding dict.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ Expiry ══════ -->
+<section id="expiry">
+  <h2><span class="icon">⏰</span> Expiry Handling</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Scenario</th><th>Behaviour</th><th>Log Level</th></tr></thead>
+      <tbody>
+        <tr><td><code>expires</code> in the past</td><td>Rule <strong>skipped</strong></td><td>WARNING</td></tr>
+        <tr><td><code>expires</code> within 7 days</td><td>Rule <strong>applied</strong>, warning logged</td><td>WARNING</td></tr>
+        <tr><td><code>expires</code> in the future</td><td>Rule applied normally</td><td>—</td></tr>
+        <tr><td><code>expires</code> missing</td><td><strong>Permanent</strong> — applies indefinitely</td><td>—</td></tr>
+        <tr><td>Invalid date format</td><td>Rule <strong>skipped</strong></td><td>WARNING</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════ Audit Trail ══════ -->
+<section id="audit">
+  <h2><span class="icon">📝</span> Audit Trail</h2>
+  <p>When a finding is suppressed, three fields are <strong>dynamically injected</strong> into the finding dict:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>suppressed_reason</code></td><td>string</td><td>The <code>reason</code> from the matching rule</td></tr>
+        <tr><td><code>suppressed_rule_index</code></td><td>int</td><td><strong>1-based</strong> index of the matching rule</td></tr>
+        <tr><td><code>suppressed_expires</code></td><td>string / null</td><td>The <code>expires</code> date from the rule</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="info-box tip">
+    <strong>✅ Full Audit Visibility</strong>
+    <p><strong>Active findings</strong> → compliance score + reports. <strong>Suppressed findings</strong> → JSON data exports for review. These fields are NOT part of the <code>FindingRecord</code> dataclass — injected at runtime.</p>
+  </div>
+</section>
+
+<!-- ══════ Examples ══════ -->
+<section id="examples">
+  <h2><span class="icon">📚</span> Pattern Examples</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h4>Single Control</h4>
+      <p>Suppress one control on all resources:</p>
+      <pre>{"control_id":"AC-6","reason":"JIT compensating control"}</pre>
+    </div>
+    <div class="card">
+      <h4>Control Family</h4>
+      <p>Suppress all SC-28.x controls:</p>
+      <pre>{"control_id":"SC-28.*","reason":"Family exempted"}</pre>
+    </div>
+    <div class="card">
+      <h4>Resource Pattern</h4>
+      <p>Suppress non-prod resources:</p>
+      <pre>{"control_id":".*","resource":".*-dev-.*|.*-test-.*","reason":"Non-prod","expires":"2026-12-31"}</pre>
+    </div>
+    <div class="card">
+      <h4>Temporary</h4>
+      <p>7-day exception with tracking:</p>
+      <pre>{"control_id":"IA-2","reason":"MFA rollout — ESIQ-1234","expires":"2026-04-18"}</pre>
+    </div>
+    <div class="card">
+      <h4>Framework-Specific</h4>
+      <p>Prefix-aware suppression:</p>
+      <pre>{"control_id":"NIST-AC-6","reason":"NIST-specific exception"}</pre>
+    </div>
+    <div class="card">
+      <h4>Escaped Dots</h4>
+      <p>PCI controls with literal dots:</p>
+      <pre>{"control_id":"PCI-8\\.3\\..*","reason":"SSO handles auth"}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ CI/CD ══════ -->
+<section id="cicd">
+  <h2><span class="icon">🔄</span> CI/CD Integration</h2>
+  <p>Commit <code>suppressions.json</code> to version control:</p>
+  <pre>repo/
+├── config/enterprisesecurityiq.config.json
+├── suppressions.json           ← Commit this
+└── AIAgent/</pre>
+
+  <h3>CLI Scripts Supporting --suppressions</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Script</th><th>Command Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>run_data_security.py</code></td><td><code>python run_data_security.py --tenant "..." --suppressions suppressions.json</code></td></tr>
+        <tr><td><code>run_copilot_readiness.py</code></td><td><code>python run_copilot_readiness.py --tenant "..." --suppressions suppressions.json</code></td></tr>
+        <tr><td><code>run_ai_agent_security.py</code></td><td><code>python run_ai_agent_security.py --tenant "..." --suppressions suppressions.json</code></td></tr>  
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Pipeline Example</h3>
+  <pre>      - name: Data Security with Suppressions
+        run: |
+          python run_data_security.py \
+            --tenant ${{ secrets.AZURE_TENANT_ID }} \
+            --suppressions ../suppressions.json \
+            --fail-on-severity critical</pre>
+
+  <h3>Review Workflow</h3>
+  <div class="flow-steps">
+    <div class="flow-step"><div class="flow-num">1</div><div class="flow-content"><h4>Initial Assessment</h4><p>Run full assessment and review all findings.</p></div></div>
+    <div class="flow-step"><div class="flow-num">2</div><div class="flow-content"><h4>Identify Accepted Risks</h4><p>Tag false positives and compensating controls.</p></div></div>
+    <div class="flow-step"><div class="flow-num">3</div><div class="flow-content"><h4>Create Rules</h4><p>Write <code>suppressions.json</code> with specific patterns and expiry dates.</p></div></div>
+    <div class="flow-step"><div class="flow-num">4</div><div class="flow-content"><h4>Re-Run</h4><p>Suppressed findings excluded from score, but present in JSON exports.</p></div></div>
+    <div class="flow-step"><div class="flow-num">5</div><div class="flow-content"><h4>Monitor Expiry</h4><p>Pipeline logs warn about rules expiring within 7 days.</p></div></div>
+    <div class="flow-step"><div class="flow-num">6</div><div class="flow-content"><h4>Clean Up</h4><p>Remove or update expired rules periodically.</p></div></div>
+  </div>
+</section>
+
+<!-- ══════ Errors ══════ -->
+<section id="errors">
+  <h2><span class="icon">⚠️</span> Error Handling</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Condition</th><th>Behaviour</th></tr></thead>
+      <tbody>
+        <tr><td>File not found</td><td>Returns <code>[]</code>, assessment runs without suppressions</td></tr>
+        <tr><td>Invalid JSON</td><td>Returns <code>[]</code>, warning logged</td></tr>
+        <tr><td>Missing <code>control_id</code></td><td>Rule skipped</td></tr>
+        <tr><td>Missing <code>reason</code></td><td>Rule still applied (reason defaults to empty)</td></tr>
+        <tr><td>Invalid regex in <code>control_id</code></td><td>Rule skipped, error logged</td></tr>
+        <tr><td>Invalid regex in <code>resource</code></td><td>Rule skipped, error logged</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0})" aria-label="Back to top">↑</button>
+<footer>
+  <p>PostureIQ — Suppressions Guide — Author: Murali Chillakuru</p>
+  <p style="margin-top:.25rem">4 Rule Fields · re.fullmatch() + re.search() · 7-Day Expiry Warnings · Full Audit Trail</p>
+</footer>
+
+<script>
+function toggleTheme(){const t=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';if(t==='light')document.documentElement.setAttribute('data-theme','light');else document.documentElement.removeAttribute('data-theme');localStorage.setItem('esiq-theme',t)}
+(function(){if(localStorage.getItem('esiq-theme')==='light')document.documentElement.setAttribute('data-theme','light')})();
+const pills=document.querySelectorAll('.nav-pill[href^="#"]');const secs=document.querySelectorAll('section[id]');
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const a=document.querySelector('.nav-pill[href="#'+e.target.id+'"]');if(a)a.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px'});
+secs.forEach(s=>obs.observe(s));
+window.addEventListener('scroll',()=>{document.getElementById('backTop').classList.toggle('visible',window.scrollY>400);const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('readingProgress').style.width=(window.scrollY/h*100)+'%'});
+</script>
+
+<script src="seq-engine.js"></script>
+</body>
+</html>

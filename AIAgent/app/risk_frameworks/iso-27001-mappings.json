@@ -1,0 +1,29 @@
+{
+  "framework": "ISO/IEC 27001",
+  "version": "2022",
+  "mappings": {
+    "dormant_accounts": ["A.5.18", "A.8.2"],
+    "overpermissioned_service_principals": ["A.5.15", "A.5.18"],
+    "expired_credentials": ["A.5.17", "A.8.5"],
+    "expiring_credentials": ["A.5.17", "A.8.5"],
+    "mfa_gaps": ["A.8.5", "A.5.17"],
+    "admin_proliferation": ["A.5.15", "A.8.2"],
+    "guest_user_risk": ["A.5.18", "A.5.19"],
+    "missing_guest_review": ["A.5.18", "A.5.19"],
+    "high_risk_users": ["A.8.16", "A.5.7"],
+    "medium_risk_users": ["A.8.16", "A.5.7"],
+    "open_management_ports": ["A.8.20", "A.8.21"],
+    "public_storage": ["A.8.3", "A.8.20"],
+    "webapp_transport_security": ["A.8.24", "A.8.20"],
+    "sql_firewall_exposure": ["A.8.20", "A.8.21"],
+    "disabled_plans": ["A.8.16", "A.8.8"],
+    "security_recommendations": ["A.8.8", "A.5.7"],
+    "low_secure_score": ["A.5.7", "A.5.35"],
+    "missing_diagnostics": ["A.8.15", "A.8.16"],
+    "policy_noncompliance": ["A.5.35", "A.5.36"],
+    "missing_tags": ["A.5.9", "A.5.10"],
+    "irm_not_assessed": ["A.6.1", "A.5.7"],
+    "no_irm_policies": ["A.6.1", "A.6.8"],
+    "active_irm_alerts": ["A.5.25", "A.6.8"]
+  }
+}

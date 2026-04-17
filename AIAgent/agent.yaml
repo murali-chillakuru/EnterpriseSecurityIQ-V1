@@ -1,0 +1,19 @@
+name: postureiq-agent
+description: >
+  PostureIQ AI Agent — multi-framework compliance assessment for Microsoft cloud services.
+  Supports FedRAMP, NIST 800-53, CIS, ISO 27001, PCI-DSS, MCSB, SOC 2, HIPAA, GDPR,
+  NIST CSF, and CSA CCM. Scans your tenant using unified DefaultAzureCredential for
+  both ARM and Graph operations (no browser popup), with preflight permissions checks,
+  then generates professional compliance reports with findings, gaps, and recommendations.
+template:
+  kind: hosted
+  protocols:
+    - name: responses
+      version: "1"
+  environment_variables:
+    - name: FOUNDRY_PROJECT_ENDPOINT
+      description: Microsoft Foundry project endpoint
+    - name: FOUNDRY_MODEL_DEPLOYMENT_NAME
+      description: Model deployment name (e.g. gpt-4o)
+    - name: AZURE_TENANT_ID
+      description: Target Azure AD tenant ID for compliance scanning

@@ -1,0 +1,48 @@
+# Git
+.git
+.github
+.gitignore
+
+# Documentation
+docs/
+examples/
+CHANGELOG.md
+README.md
+temp-ca.yaml
+
+# Infrastructure scripts (not needed in image)
+Infra-Foundary-New/
+POC-Foundry-New/
+
+# Config & schemas (not copied by Dockerfile)
+config/
+schemas/
+
+# Output artifacts
+output/
+
+# Python caches
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.ruff_cache
+.mypy_cache
+
+# AIAgent files NOT needed in image
+AIAgent/tests/
+AIAgent/Dockerfile
+AIAgent/README.md
+AIAgent/readme.html
+AIAgent/agent.yaml
+AIAgent/.foundry/
+AIAgent/run_*.py
+AIAgent/_apply_*.py
+AIAgent/_run_*.py
+
+# IDE / OS
+.vscode/
+*.swp
+*.swo
+Thumbs.db
+.DS_Store

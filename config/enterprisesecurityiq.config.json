@@ -1,0 +1,24 @@
+{
+  "$schema": "config.schema.json",
+  "name": "PostureIQ Assessment",
+  "frameworks": ["FedRAMP"],
+  "logLevel": "INFO",
+  "outputFormats": ["json", "html", "md"],
+  "outputDir": "./output",
+  "checkpointEnabled": true,
+  "additionalTenants": [],
+  "auth": {
+    "tenantId": "",
+    "authMode": "auto",
+    "subscriptionFilter": []
+  },
+  "collectors": {
+    "azureEnabled": true,
+    "entraEnabled": true,
+    "subscriptionFilter": [],
+    "azureBatchSize": 4,
+    "entraBatchSize": 3,
+    "collectorTimeout": 300,
+    "userSampleLimit": 0
+  }
+}

@@ -1,0 +1,399 @@
+{
+  "framework": "NIST Cybersecurity Framework 2.0",
+  "version": "2.0",
+  "controls": [
+    {
+      "control_id": "NIST-CSF-ID.RM-1",
+      "title": "Risk Assessment Program",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "azure-defender-pricing"
+      ],
+      "evaluation_logic": "check_policy_compliance",
+      "rationale": "Establish processes to identify and analyze cybersecurity risks",
+      "recommendation": "Implement annual risk assessments with documented mitigation strategies"
+    },
+    {
+      "control_id": "NIST-CSF-ID.AM-3",
+      "title": "Inventory of Hardware",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-registry",
+        "azure-aks-cluster",
+        "azure-resource",
+        "azure-vm-config"
+      ],
+      "evaluation_logic": "check_vm_security",
+      "rationale": "Maintain inventory of computing devices",
+      "recommendation": "Document all hardware assets with location and ownership"
+    },
+    {
+      "control_id": "NIST-CSF-PR.AC-1",
+      "title": "Access Control Policy",
+      "domain": "access",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-role-assignment",
+        "azure-role-assignment"
+      ],
+      "evaluation_logic": "check_account_management",
+      "rationale": "Enforce approved access and authorization policies",
+      "recommendation": "Implement role-based access control with least privilege"
+    },
+    {
+      "control_id": "NIST-CSF-PR.AC-3",
+      "title": "Remote Access Management",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "entra-conditional-access-policy",
+        "azure-nsg-rule"
+      ],
+      "evaluation_logic": "check_conditional_access",
+      "rationale": "Manage remote access and VPN configurations",
+      "recommendation": "Require MFA and device compliance for remote access"
+    },
+    {
+      "control_id": "NIST-CSF-PR.AC-5",
+      "title": "Access Restrictions",
+      "domain": "access",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-pim-eligible-assignment",
+        "azure-role-assignment"
+      ],
+      "evaluation_logic": "check_pim_configuration",
+      "rationale": "Restrict access to systems and information",
+      "recommendation": "Implement just-in-time access and privilege elevation"
+    },
+    {
+      "control_id": "NIST-CSF-PR.DS-1",
+      "title": "Data Security Measures",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-disk-encryption-set",
+        "azure-storage-queue",
+        "azure-storage-security"
+      ],
+      "evaluation_logic": "check_storage_security",
+      "rationale": "Protect data at rest with encryption",
+      "recommendation": "Enable encryption for all storage with managed key access"
+    },
+    {
+      "control_id": "NIST-CSF-PR.DS-2",
+      "title": "Data in Transit Protection",
+      "domain": "network",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-nsg-rule",
+        "azure-app-service-network",
+        "azure-private-endpoint"
+      ],
+      "evaluation_logic": "check_nsg_rules",
+      "rationale": "Protect data in transit with encryption",
+      "recommendation": "Use TLS 1.2+ for all communications",
+      "compensating_evidence": [
+        "azure-waf-policy",
+        "azure-firewall"
+      ]
+    },
+    {
+      "control_id": "NIST-CSF-PR.PS-1",
+      "title": "Personnel Security",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "entra-user-lifecycle-summary"
+      ],
+      "evaluation_logic": "check_user_lifecycle",
+      "rationale": "Screen and manage workforce security",
+      "recommendation": "Conduct background checks and security training"
+    },
+    {
+      "control_id": "NIST-CSF-PR.PT-1",
+      "title": "Protective Technology Deployment",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-sql-advanced-threat",
+        "azure-policy-compliance"
+      ],
+      "evaluation_logic": "check_defender_plans",
+      "rationale": "Deploy protective technologies including anti-malware",
+      "recommendation": "Enable Azure Defender and endpoint protection"
+    },
+    {
+      "control_id": "NIST-CSF-DE.AE-1",
+      "title": "Audit Logging",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-activity-log",
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_activity_logs",
+      "rationale": "Implement audit logging for system activities",
+      "recommendation": "Enable comprehensive audit logging with 90-day retention"
+    },
+    {
+      "control_id": "NIST-CSF-DE.AE-2",
+      "title": "Event Detection and Analysis",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-alert-rule",
+        "azure-defender-pricing"
+      ],
+      "evaluation_logic": "check_monitoring_alerts",
+      "rationale": "Detect and analyze suspicious events",
+      "recommendation": "Configure alerts for security events with 24/7 monitoring"
+    },
+    {
+      "control_id": "NIST-CSF-RS.RP-1",
+      "title": "Incident Response Planning",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-activity-log",
+        "azure-alert-rule"
+      ],
+      "evaluation_logic": "check_monitoring_alerts",
+      "rationale": "Establish incident response procedures",
+      "recommendation": "Document procedures with roles, responsibilities, and communication plans"
+    },
+    {
+      "control_id": "NIST-CSF-RS.AN-1",
+      "title": "Incident Analysis",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-activity-log",
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_activity_logs",
+      "rationale": "Analyze incidents to understand impact",
+      "recommendation": "Perform root cause analysis and document findings"
+    },
+    {
+      "control_id": "NIST-CSF-RC.RP-1",
+      "title": "Recovery Planning",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-recovery-vault",
+        "azure-policy-compliance"
+      ],
+      "evaluation_logic": "check_backup_recovery",
+      "rationale": "Establish recovery objectives and plans",
+      "recommendation": "Define RTO/RPO with tested backup and restore procedures"
+    },
+    {
+      "control_id": "NIST-CSF-RC.IM-1",
+      "title": "Recovery Implementation",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-recovery-vault",
+        "azure-policy-compliance"
+      ],
+      "evaluation_logic": "check_backup_recovery",
+      "rationale": "Execute recovery plans to restore functionality",
+      "recommendation": "Test recovery procedures quarterly with full restoration validation"
+    },
+    {
+      "control_id": "NIST-CSF-GV.RO-1",
+      "title": "Governance Framework",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "entra-access-review"
+      ],
+      "evaluation_logic": "check_policy_compliance",
+      "rationale": "Establish cybersecurity governance structure",
+      "recommendation": "Define roles, responsibilities, and accountability structures"
+    },
+    {
+      "control_id": "NIST-CSF-GV.RM-1",
+      "title": "Risk Strategy",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-sql-advanced-threat",
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_defender_plans",
+      "rationale": "Develop risk management strategy",
+      "recommendation": "Document risk tolerance and response strategies"
+    },
+    {
+      "control_id": "NIST-CSF-PR.MA-1",
+      "title": "Maintenance Schedule",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-container-registry",
+        "azure-aks-cluster",
+        "azure-policy-compliance",
+        "azure-vm-config"
+      ],
+      "evaluation_logic": "check_vm_security",
+      "rationale": "Maintain systems and equipment",
+      "recommendation": "Establish maintenance schedule with patching procedures"
+    },
+    {
+      "control_id": "NIST-CSF-PR.MA-2",
+      "title": "Update and Patch Management",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-registry",
+        "azure-aks-cluster",
+        "azure-policy-compliance",
+        "azure-vm-config"
+      ],
+      "evaluation_logic": "check_vm_security",
+      "rationale": "Manage system updates and patches",
+      "recommendation": "Apply security patches within 30 days of release"
+    },
+    {
+      "control_id": "NIST-CSF-ID.SC-1",
+      "title": "Supply Chain Risk Management",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource",
+        "azure-policy-compliance"
+      ],
+      "evaluation_logic": "check_policy_compliance",
+      "rationale": "Identify and manage supply chain risks",
+      "recommendation": "Assess third-party security controls and compliance"
+    },
+    {
+      "control_id": "NIST-CSF-RS.RP-1b",
+      "title": "Response Planning",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-alert-rule",
+        "entra-risk-summary"
+      ],
+      "evaluation_logic": "check_incident_detection",
+      "rationale": "NIST CSF requires incident response planning with detection capabilities.",
+      "recommendation": "Enable Defender for Cloud and configure alert rules."
+    },
+    {
+      "control_id": "NIST-CSF-RS.CO-1",
+      "title": "Response Communications",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-action-group",
+        "azure-alert-rule",
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_incident_alerting",
+      "rationale": "Response communications must notify stakeholders of incidents.",
+      "recommendation": "Configure action groups with email and SMS notification."
+    },
+    {
+      "control_id": "NIST-CSF-RS.CO-2",
+      "title": "Security Contact Coordination",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_security_contact_config",
+      "rationale": "Security contacts must be established for incident coordination.",
+      "recommendation": "Configure security contacts with alert notifications."
+    },
+    {
+      "control_id": "NIST-CSF-RS.AN-1b",
+      "title": "Investigation and Forensics",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-log-analytics",
+        "azure-diagnostic-setting",
+        "azure-activity-log"
+      ],
+      "evaluation_logic": "check_incident_investigation_readiness",
+      "rationale": "Investigation infrastructure must support forensic analysis.",
+      "recommendation": "Deploy Log Analytics and configure diagnostic settings."
+    },
+    {
+      "control_id": "NIST-CSF-PR.IP-3",
+      "title": "Configuration Change Control",
+      "domain": "change_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "azure-policy-definition"
+      ],
+      "evaluation_logic": "check_change_control_policies",
+      "rationale": "Configuration change control processes must be established.",
+      "recommendation": "Assign policies with deny effects for change control."
+    },
+    {
+      "control_id": "NIST-CSF-PR.IP-4",
+      "title": "Backups",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-recovery-vault",
+        "azure-vm-config",
+        "azure-sql-server"
+      ],
+      "evaluation_logic": "check_backup_configuration",
+      "rationale": "Backups of information are conducted and tested.",
+      "recommendation": "Deploy Recovery Services vaults with soft delete."
+    },
+    {
+      "control_id": "NIST-CSF-PR.IP-12",
+      "title": "Vulnerability and Availability Management",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-vm-config"
+      ],
+      "evaluation_logic": "check_vm_availability",
+      "rationale": "VM availability must be ensured through availability zones or sets.",
+      "recommendation": "Deploy VMs in availability zones or sets."
+    },
+    {
+      "control_id": "NIST-CSF-ID.AM-1",
+      "title": "Physical Devices and Systems Inventory",
+      "domain": "asset_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource",
+        "azure-resource-group",
+        "azure-managed-identity"
+      ],
+      "evaluation_logic": "check_asset_inventory",
+      "rationale": "Inventory of physical devices and systems within the organization.",
+      "recommendation": "Maintain comprehensive resource inventory."
+    },
+    {
+      "control_id": "NIST-CSF-ID.AM-2",
+      "title": "Software Platform and Application Inventory",
+      "domain": "asset_management",
+      "severity": "high",
+      "evidence_types": [
+        "entra-application",
+        "entra-service-principal"
+      ],
+      "evaluation_logic": "check_application_inventory",
+      "rationale": "Software platforms and applications must be inventoried.",
+      "recommendation": "Review app registrations and ensure service principal ownership."
+    }
+  ]
+}

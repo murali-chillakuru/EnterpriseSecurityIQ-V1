@@ -1,0 +1,143 @@
+id: /subscriptions/d33fc1a7-56aa-4c30-a4a0-98b1e04fafd0/resourceGroups/ESIQNew-RG/providers/Microsoft.App/containerapps/esiqnew-agent
+identity:
+  type: UserAssigned
+  userAssignedIdentities:
+    ? /subscriptions/d33fc1a7-56aa-4c30-a4a0-98b1e04fafd0/resourcegroups/ESIQNew-RG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ESIQNew-identity
+    : clientId: d5d10273-4a8b-4251-9b9d-00fe035df97a
+      principalId: d742617c-6f14-4215-be65-e1f7b68866de
+location: North Europe
+name: esiqnew-agent
+properties:
+  configuration:
+    activeRevisionsMode: Single
+    dapr: null
+    identitySettings: []
+    ingress:
+      additionalPortMappings: null
+      allowInsecure: false
+      clientCertificateMode: null
+      corsPolicy: null
+      customDomains: null
+      exposedPort: 0
+      external: true
+      fqdn: esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io
+      ipSecurityRestrictions: null
+      stickySessions: null
+      targetPort: 8088
+      traffic:
+      - latestRevision: true
+        weight: 100
+      transport: Auto
+    maxInactiveRevisions: 100
+    registries:
+    - identity: /subscriptions/d33fc1a7-56aa-4c30-a4a0-98b1e04fafd0/resourceGroups/ESIQNew-RG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ESIQNew-identity
+      passwordSecretRef: ''
+      server: esiqnewacr.azurecr.io
+      username: ''
+    runtime: null
+    secrets: null
+    service: null
+  customDomainVerificationId: 54A3861766BAEA52DA29F9C7FF865DDAB1F4B8E4C6C71F6C623522E55E9E9B4C
+  delegatedIdentities: []
+  environmentId: /subscriptions/d33fc1a7-56aa-4c30-a4a0-98b1e04fafd0/resourceGroups/ESIQNew-RG/providers/Microsoft.App/managedEnvironments/ESIQNew-env
+  eventStreamEndpoint: https://northeurope.azurecontainerapps.dev/subscriptions/d33fc1a7-56aa-4c30-a4a0-98b1e04fafd0/resourceGroups/ESIQNew-RG/containerApps/esiqnew-agent/eventstream
+  latestReadyRevisionName: esiqnew-agent--0000019
+  latestRevisionFqdn: esiqnew-agent--0000019.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io
+  latestRevisionName: esiqnew-agent--0000019
+  managedEnvironmentId: /subscriptions/d33fc1a7-56aa-4c30-a4a0-98b1e04fafd0/resourceGroups/ESIQNew-RG/providers/Microsoft.App/managedEnvironments/ESIQNew-env
+  outboundIpAddresses:
+  - 20.105.70.20
+  - 20.105.70.58
+  - 20.105.69.247
+  - 20.105.70.28
+  - 20.105.47.15
+  - 20.105.47.12
+  - 4.208.220.175
+  - 4.208.218.235
+  - 4.208.219.44
+  - 4.208.219.6
+  - 20.105.32.76
+  - 20.105.32.139
+  - 20.105.33.209
+  - 20.105.33.28
+  - 20.105.32.212
+  - 20.105.32.182
+  - 20.105.33.168
+  - 20.105.33.212
+  - 20.105.33.155
+  - 20.105.33.195
+  - 20.105.124.149
+  - 20.105.123.192
+  - 20.105.123.181
+  - 20.105.124.100
+  - 20.123.115.147
+  - 20.123.115.110
+  - 4.210.23.209
+  - 4.210.23.217
+  - 4.210.23.181
+  - 4.210.23.186
+  - 52.178.141.116
+  - 52.178.138.108
+  - 52.178.138.196
+  - 52.178.141.59
+  - 52.178.141.173
+  - 52.178.141.228
+  - 52.178.139.43
+  - 52.169.76.168
+  - 52.178.141.140
+  - 52.178.138.54
+  - 20.54.121.200
+  provisioningState: Succeeded
+  runningStatus: Running
+  template:
+    containers:
+    - env:
+      - name: AZURE_OPENAI_ENDPOINT
+        value: https://esiqnew-ai.cognitiveservices.azure.com/
+      - name: AZURE_OPENAI_API_VERSION
+        value: 2025-01-01-preview
+      - name: PRIMARY_MODEL
+        value: gpt-4.1
+      - name: FALLBACK_MODEL
+        value: gpt-5.1
+      - name: AZURE_CLIENT_ID
+        value: d5d10273-4a8b-4251-9b9d-00fe035df97a
+      - name: AZURE_TENANT_ID
+        value: 4a3eb5f4-1ec6-4a73-bb03-1ca63cb52d67
+      - name: AZURE_OPENAI_DEPLOYMENT
+        value: gpt-4.1
+      - name: FOUNDRY_PROJECT_ENDPOINT
+        value: https://esiqnew-ai.services.ai.azure.com/api/projects/ESIQNew-project
+      image: esiqnewacr.azurecr.io/esiqnew-agent:v19
+      name: esiqnew-agent
+      resources:
+        cpu: 1.0
+        ephemeralStorage: 4Gi
+        memory: 2Gi
+      volumeMounts:
+      - mountPath: /agent/output
+        volumeName: reportsvolume
+    initContainers: null
+    revisionSuffix: ''
+    scale:
+      cooldownPeriod: 300
+      maxReplicas: 1
+      minReplicas: 1
+      pollingInterval: 30
+      rules: null
+    serviceBinds: null
+    terminationGracePeriodSeconds: null
+    volumes:
+    - name: reportsvolume
+      storageName: esiqreports
+      storageType: AzureFile
+  workloadProfileName: Consumption
+resourceGroup: ESIQNew-RG
+systemData:
+  createdAt: '2026-04-12T18:54:04.1578194'
+  createdBy: admin@MngEnvMCAP250477.onmicrosoft.com
+  createdByType: User
+  lastModifiedAt: '2026-04-13T14:19:48.3201316'
+  lastModifiedBy: admin@MngEnvMCAP250477.onmicrosoft.com
+  lastModifiedByType: User
+type: Microsoft.App/containerApps

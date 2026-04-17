@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Deployment Log — New Foundry (ESIQNew)</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#0D1117;--bg-secondary:#161B22;--bg-card:#1C2128;--bg-hover:#252D38;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --border-primary:#30363D;--border-accent:#1F6FEB33;
+  --accent-blue:#1F6FEB;--accent-purple:#A371F7;--accent-green:#3FB950;
+  --accent-orange:#D29922;--accent-cyan:#39D2C0;--accent-red:#F85149;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.5);
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;
+  --font-sans:'Segoe UI Variable','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',Consolas,monospace;
+  --transition-fast:.18s ease;--transition-med:.3s ease;
+  color-scheme:dark;--max-width:1100px;
+}
+[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F6F8FA;--bg-card:#FFFFFF;--bg-hover:#F0F3F6;
+  --text-primary:#1F2328;--text-secondary:#656D76;--text-muted:#8C959F;
+  --border-primary:#D0D7DE;--border-accent:#0969DA22;
+  --accent-blue:#0969DA;--accent-purple:#8250DF;--accent-green:#1A7F37;
+  --accent-orange:#BF8700;--accent-cyan:#1B7C83;--accent-red:#CF222E;
+  --shadow-sm:0 1px 3px rgba(31,35,40,.08);--shadow-md:0 4px 12px rgba(31,35,40,.1);
+  --shadow-lg:0 8px 24px rgba(31,35,40,.12);
+  color-scheme:light
+}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.65;overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none;transition:color var(--transition-fast)}a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--bg-secondary);padding:2px 6px;border-radius:4px}
+pre{background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;overflow-x:auto;font-family:var(--font-mono);font-size:.85rem;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.7rem .9rem;border:1px solid var(--border-primary);text-align:left;font-size:.88rem}
+th{background:var(--bg-secondary);color:var(--text-primary);font-weight:600;white-space:nowrap}
+tr:nth-child(even){background:var(--bg-secondary)}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-purple),var(--accent-blue),var(--accent-cyan));z-index:10001;transition:width .1s linear;width:0}
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);overflow:hidden;border-bottom:1px solid var(--border-primary)}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;opacity:.08;pointer-events:none}
+.hero::before{width:500px;height:500px;background:radial-gradient(circle,var(--accent-green),transparent 70%);top:-200px;right:-100px}
+.hero::after{width:400px;height:400px;background:radial-gradient(circle,var(--accent-blue),transparent 70%);bottom:-150px;left:-80px}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,var(--accent-green),var(--accent-blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .subtitle{color:var(--text-secondary);font-size:1.05rem;max-width:680px;margin:0 auto .8rem}
+.hero .author{color:var(--text-muted);font-size:.85rem}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;max-width:960px;margin:-2rem auto 2rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);position:relative;z-index:10}
+.stat{text-align:center}.stat .num{font-size:1.6rem;font-weight:700;display:block}.stat .lbl{color:var(--text-secondary);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.nav-wrap{position:sticky;top:0;z-index:1000;background:var(--bg-secondary);border-bottom:1px solid var(--border-primary);backdrop-filter:blur(12px)}
+.nav-inner{display:flex;align-items:center;gap:.5rem;max-width:1200px;margin:0 auto;padding:.6rem 1rem;overflow-x:auto;scrollbar-width:thin}
+.nav-pill{padding:.35rem .75rem;border-radius:20px;font-size:.78rem;font-weight:500;color:var(--text-secondary);white-space:nowrap;transition:all var(--transition-fast);border:1px solid transparent;cursor:pointer;text-decoration:none}
+.nav-pill:hover{color:var(--text-primary);background:var(--bg-hover);text-decoration:none}
+.nav-pill.active{background:var(--accent-blue);color:#fff;border-color:var(--accent-blue)}
+.theme-toggle{margin-left:auto;background:var(--bg-card);border:1px solid var(--border-primary);border-radius:20px;padding:.35rem .75rem;font-size:.78rem;cursor:pointer;color:var(--text-secondary);transition:all var(--transition-fast);white-space:nowrap}
+.theme-toggle:hover{border-color:var(--accent-blue);color:var(--text-primary)}
+.content{max-width:var(--max-width);margin:0 auto;padding:2rem 1.5rem 4rem}
+.section{margin-bottom:3.5rem;scroll-margin-top:80px}
+.section h2{font-size:1.5rem;font-weight:700;margin-bottom:.3rem;padding-bottom:.5rem;border-bottom:2px solid var(--accent-green);display:inline-block}
+.section h3{font-size:1.15rem;font-weight:600;margin:1.8rem 0 .8rem;color:var(--accent-blue)}
+.section p,.section li{color:var(--text-secondary);font-size:.92rem}
+.section ul,.section ol{padding-left:1.4rem;margin:.6rem 0}.section li{margin-bottom:.3rem}
+.config-block{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;margin:1rem 0}
+.step{background:var(--bg-card);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:1.2rem;margin:1rem 0;border-left:3px solid var(--accent-green)}
+.step .step-title{font-weight:600;font-size:.95rem;margin-bottom:.5rem;color:var(--text-primary)}
+.step .step-cmd{background:var(--bg-secondary);border-radius:var(--radius-sm);padding:.6rem .8rem;font-family:var(--font-mono);font-size:.82rem;margin:.5rem 0;overflow-x:auto}
+.step .step-result{color:var(--accent-green);font-size:.85rem;font-weight:500;margin-top:.4rem}
+.step .step-note{color:var(--accent-orange);font-size:.82rem;margin-top:.3rem}
+.accent-blue .num{color:var(--accent-blue)}.accent-purple .num{color:var(--accent-purple)}.accent-green .num{color:var(--accent-green)}.accent-orange .num{color:var(--accent-orange)}.accent-cyan .num{color:var(--accent-cyan)}.accent-red .num{color:var(--accent-red)}
+footer{text-align:center;padding:2rem;color:var(--text-muted);font-size:.8rem;border-top:1px solid var(--border-primary)}
+.back-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;border-radius:50%;background:var(--accent-green);color:#fff;border:none;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all var(--transition-med);box-shadow:var(--shadow-md);z-index:999}
+.back-top.show{opacity:1;pointer-events:auto}.back-top:hover{transform:scale(1.1)}
+@media print{.nav-wrap,.theme-toggle,.back-top,.progress-bar{display:none!important}.hero{padding:2rem 1rem}.content{max-width:100%}}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+
+<header class="hero">
+  <h1>Deployment Log</h1>
+  <p class="subtitle">Step-by-step record of the New Foundry (ESIQNew) deployment — 16 steps, all succeeded.</p>
+  <p class="author">Author: Murali Chillakuru — April 12, 2026</p>
+</header>
+
+<div class="stats-bar">
+  <div class="stat accent-green"><span class="num" data-target="16">0</span><span class="lbl">Steps</span></div>
+  <div class="stat accent-blue"><span class="num" data-target="16">0</span><span class="lbl">Succeeded</span></div>
+  <div class="stat accent-red"><span class="num" data-target="0">0</span><span class="lbl">Failed</span></div>
+  <div class="stat accent-purple"><span class="num" data-target="14">0</span><span class="lbl">Resources</span></div>
+</div>
+
+<nav class="nav-wrap">
+  <div class="nav-inner">
+    <a class="nav-pill" href="#prereqs">Prerequisites</a>
+    <a class="nav-pill" href="#foundation">Foundation</a>
+    <a class="nav-pill" href="#ai">AI Services</a>
+    <a class="nav-pill" href="#supporting">Supporting</a>
+    <a class="nav-pill" href="#foundry">Foundry</a>
+    <a class="nav-pill" href="#identity">Identity</a>
+    <a class="nav-pill" href="#container">Container</a>
+    <button class="theme-toggle" id="themeToggle">☀️ Light</button>
+  </div>
+</nav>
+
+<main class="content">
+
+<section class="section" id="prereqs">
+  <h2>Prerequisites</h2>
+  <table>
+    <tr><th>Tool</th><th>Version</th></tr>
+    <tr><td>Azure CLI</td><td>2.77.0</td></tr>
+    <tr><td>ML Extension</td><td>v2.42.0</td></tr>
+    <tr><td>azd</td><td>v1.23.11</td></tr>
+    <tr><td>Subscription</td><td>AI (<code>d33fc1a7-56aa-4c30-a4a0-98b1e04fafd0</code>)</td></tr>
+    <tr><td>Tenant</td><td><code>4a3eb5f4-1ec6-4a73-bb03-1ca63cb52d67</code></td></tr>
+    <tr><td>User</td><td><code>admin@MngEnvMCAP250477.onmicrosoft.com</code></td></tr>
+  </table>
+</section>
+
+<section class="section" id="foundation">
+  <h2>Step 1 — Resource Group</h2>
+  <div class="step">
+    <div class="step-title">Step 1: Create Resource Group</div>
+    <div class="step-cmd">az group create --name "ESIQNew-RG" --location "swedencentral"</div>
+    <div class="step-result">✅ provisioningState: Succeeded</div>
+  </div>
+</section>
+
+<section class="section" id="ai">
+  <h2>Steps 2–4 — AI Services &amp; Models</h2>
+  <div class="step">
+    <div class="step-title">Step 2: AI Services (S0)</div>
+    <div class="step-cmd">az cognitiveservices account create --name "ESIQNew-AI" --kind "AIServices" --sku "S0"</div>
+    <div class="step-result">✅ Endpoint: https://swedencentral.api.cognitive.microsoft.com/</div>
+  </div>
+  <div class="step">
+    <div class="step-title">Step 3: Deploy gpt-4.1</div>
+    <div class="step-cmd">az cognitiveservices account deployment create --deployment-name "gpt-4.1" --model-name "gpt-4.1" --model-version "2025-04-14" --sku-capacity 30</div>
+    <div class="step-result">✅ Standard 30K TPM</div>
+  </div>
+  <div class="step">
+    <div class="step-title">Step 4: Deploy gpt-5.1</div>
+    <div class="step-cmd">az cognitiveservices account deployment create --deployment-name "gpt-5.1" --model-name "gpt-5.1" --model-version "2025-11-13" --sku-capacity 30</div>
+    <div class="step-result">✅ Standard 30K TPM</div>
+  </div>
+</section>
+
+<section class="section" id="supporting">
+  <h2>Steps 5–9 — Supporting Resources</h2>
+  <div class="step">
+    <div class="step-title">Step 5: Storage Account</div>
+    <div class="step-cmd">az storage account create --name "esiqnewstorage" --sku "Standard_LRS" --kind "StorageV2"</div>
+    <div class="step-result">✅ Succeeded</div>
+  </div>
+  <div class="step">
+    <div class="step-title">Step 6: Key Vault</div>
+    <div class="step-cmd">az keyvault create --name "ESIQNew-kv" --enable-rbac-authorization true</div>
+    <div class="step-result">✅ URI: https://esiqnew-kv.vault.azure.net/</div>
+  </div>
+  <div class="step">
+    <div class="step-title">Step 7: Log Analytics Workspace</div>
+    <div class="step-cmd">az monitor log-analytics workspace create --workspace-name "ESIQNew-law"</div>
+    <div class="step-result">✅ Succeeded</div>
+  </div>
+  <div class="step">
+    <div class="step-title">Step 8: Application Insights</div>
+    <div class="step-cmd">az monitor app-insights component create --app "ESIQNew-appinsights" --workspace "ESIQNew-law"</div>
+    <div class="step-result">✅ AppId: 202d6802-fce9-448f-9226-3fb451400908</div>
+  </div>
+  <div class="step">
+    <div class="step-title">Step 9: Container Registry</div>
+    <div class="step-cmd">az acr create --name "esiqnewacr" --sku "Basic"</div>
+    <div class="step-result">✅ Login: esiqnewacr.azurecr.io</div>
+  </div>
+</section>
+
+<section class="section" id="foundry">
+  <h2>Steps 10–12 — AI Foundry (Hub + Project)</h2>
+  <div class="step">
+    <div class="step-title">Step 10: AI Hub</div>
+    <div class="step-cmd">az ml workspace create --kind hub --name "ESIQNew-hub" --storage-account ... --key-vault ... --application-insights ... --container-registry ...</div>
+    <div class="step-result">✅ Created in 41s — MachineLearningServices/workspaces (kind: hub)</div>
+  </div>
+  <div class="step">
+    <div class="step-title">Step 11: AI Services Connection</div>
+    <div class="step-cmd">az ml connection create --file esiqnew-ai-connection.yaml --workspace-name "ESIQNew-hub"</div>
+    <div class="step-result">✅ {name: ESIQNew-AI, type: azure_ai_services}</div>
+  </div>
+  <div class="step">
+    <div class="step-title">Step 12: AI Project</div>
+    <div class="step-cmd">az ml workspace create --kind project --name "ESIQNew-project" --hub-id /subscriptions/.../ESIQNew-hub</div>
+    <div class="step-result">✅ Created in 46s — Now visible in ai.azure.com</div>
+  </div>
+</section>
+
+<section class="section" id="identity">
+  <h2>Steps 13–14 — Identity &amp; RBAC</h2>
+  <div class="step">
+    <div class="step-title">Step 13: Managed Identity</div>
+    <div class="step-cmd">az identity create --name "ESIQNew-identity"</div>
+    <div class="step-result">✅ Principal: d742617c-6f14-4215-be65-e1f7b68866de · Client: d5d10273-4a8b-4251-9b9d-00fe035df97a</div>
+  </div>
+  <div class="step">
+    <div class="step-title">Step 14: RBAC Assignments (5 roles)</div>
+    <table>
+      <tr><th>Role</th><th>Scope</th><th>Status</th></tr>
+      <tr><td>AcrPull</td><td>esiqnewacr</td><td style="color:var(--accent-green)">✅</td></tr>
+      <tr><td>Reader</td><td>Subscription</td><td style="color:var(--accent-green)">✅</td></tr>
+      <tr><td>Security Reader</td><td>Subscription</td><td style="color:var(--accent-green)">✅</td></tr>
+      <tr><td>Cognitive Services OpenAI User</td><td>ESIQNew-AI</td><td style="color:var(--accent-green)">✅</td></tr>
+      <tr><td>Azure AI Developer</td><td>ESIQNew-hub</td><td style="color:var(--accent-green)">✅</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="container">
+  <h2>Steps 15–16 — Container Deployment</h2>
+  <div class="step">
+    <div class="step-title">Step 15: Container Apps Environment</div>
+    <div class="step-cmd">az containerapp env create --name "ESIQNew-env" --location "northeurope"</div>
+    <div class="step-result">✅ Succeeded</div>
+    <div class="step-note">⚠️ swedencentral failed (AKSCapacityHeavyUsage) — used northeurope as fallback</div>
+  </div>
+  <div class="step">
+    <div class="step-title">Step 16a: ACR Build</div>
+    <div class="step-cmd">az acr build --registry "esiqnewacr" --image "esiqnew-agent:v1" --file "AIAgent/Dockerfile" "AIAgent/"</div>
+    <div class="step-result">✅ Image pushed: esiqnewacr.azurecr.io/esiqnew-agent:v1</div>
+  </div>
+  <div class="step">
+    <div class="step-title">Step 16b: Container App</div>
+    <div class="step-cmd">az containerapp create --name "esiqnew-agent" --environment "ESIQNew-env" --image "esiqnewacr.azurecr.io/esiqnew-agent:v1" --ingress external --target-port 8088</div>
+    <div class="step-result">✅ FQDN: esiqnew-agent.delightfulbush-cc9cf399.northeurope.azurecontainerapps.io</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>EnterpriseSecurityIQ — Deployment Log · 16 Steps · All Succeeded · Author: Murali Chillakuru · April 12, 2026</p>
+</footer>
+
+<button class="back-top" id="backTop">↑</button>
+
+<script>
+const toggle=document.getElementById('themeToggle'),root=document.documentElement;
+function setTheme(t){root.dataset.theme=t;toggle.textContent=t==='dark'?'☀️ Light':'🌙 Dark';localStorage.setItem('esiq-theme',t)}
+toggle.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark'));
+setTheme(localStorage.getItem('esiq-theme')||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const el=e.target,t=+el.dataset.target;let c=0;const d=Math.max(1,Math.floor(30/(t||1)));const iv=setInterval(()=>{c+=d;if(c>=t){el.textContent=t;clearInterval(iv)}else{el.textContent=c}},16);io.unobserve(el)}})},{threshold:.5});
+document.querySelectorAll('.num[data-target]').forEach(el=>io.observe(el));
+const pills=document.querySelectorAll('.nav-pill[href]'),sections=[];
+pills.forEach(p=>{const id=p.getAttribute('href')?.slice(1);if(id){const s=document.getElementById(id);if(s)sections.push({el:s,pill:p})}});
+const spy=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){pills.forEach(p=>p.classList.remove('active'));const m=sections.find(s=>s.el===e.target);if(m)m.pill.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px',threshold:0});
+sections.forEach(s=>spy.observe(s.el));
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('progressBar').style.width=(window.scrollY/h*100)+'%'});
+const btn=document.getElementById('backTop');
+window.addEventListener('scroll',()=>{btn.classList.toggle('show',window.scrollY>400)});
+btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>

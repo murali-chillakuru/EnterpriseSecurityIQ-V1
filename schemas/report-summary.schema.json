@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EnterpriseSecurityIQ Report Summary",
+  "description": "Schema for the top-level summary object returned by the Python evaluation engine.",
+  "type": "object",
+  "required": ["TotalControls", "Compliant", "NonCompliant", "ComplianceScore", "Frameworks"],
+  "properties": {
+    "TotalControls": { "type": "integer", "minimum": 0 },
+    "Compliant": { "type": "integer", "minimum": 0 },
+    "NonCompliant": { "type": "integer", "minimum": 0 },
+    "NotAssessed": { "type": "integer", "minimum": 0 },
+    "Partial": { "type": "integer", "minimum": 0 },
+    "MissingEvidence": { "type": "integer", "minimum": 0 },
+    "ComplianceScore": { "type": "number", "minimum": 0, "maximum": 100 },
+    "TotalFindings": { "type": "integer", "minimum": 0 },
+    "TotalEvidence": { "type": "integer", "minimum": 0 },
+    "CriticalFindings": { "type": "integer", "minimum": 0 },
+    "HighFindings": { "type": "integer", "minimum": 0 },
+    "MediumFindings": { "type": "integer", "minimum": 0 },
+    "Frameworks": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "FrameworkSummaries": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "TotalControls": { "type": "integer" },
+          "Compliant": { "type": "integer" },
+          "NonCompliant": { "type": "integer" },
+          "NotAssessed": { "type": "integer" },
+          "Partial": { "type": "integer" },
+          "MissingEvidence": { "type": "integer" },
+          "ComplianceScore": { "type": "number" }
+        }
+      }
+    },
+    "DomainScores": {
+      "type": "object",
+      "description": "Per-domain compliance scores",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "Total": { "type": "integer" },
+          "Compliant": { "type": "integer" },
+          "Score": { "type": "number" }
+        }
+      }
+    }
+  }
+}

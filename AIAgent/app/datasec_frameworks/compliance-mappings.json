@@ -1,0 +1,3774 @@
+{
+  "blob_public_access": {
+    "CIS": [
+      "3.7"
+    ],
+    "PCI-DSS": [
+      "1.3.1",
+      "7.1"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "AC-3",
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.8.3"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "DP-9"
+    ],
+    "CSA-CCM": [
+      "DSP-10",
+      "IVS-03"
+    ],
+    "FedRAMP": [
+      "AC-3",
+      "SC-7"
+    ],
+    "GDPR": [
+      "Art.25(1)",
+      "Art.32(1)"
+    ]
+  },
+  "storage_https": {
+    "CIS": [
+      "3.1"
+    ],
+    "PCI-DSS": [
+      "4.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-8"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "CC6.7"
+    ],
+    "NIST-CSF": [
+      "PR.DS-2"
+    ],
+    "MCSB": [
+      "DP-3"
+    ],
+    "CSA-CCM": [
+      "CEK-03",
+      "DSP-17"
+    ],
+    "FedRAMP": [
+      "SC-8",
+      "SC-8(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1f)"
+    ]
+  },
+  "storage_network_rules": {
+    "CIS": [
+      "3.8"
+    ],
+    "PCI-DSS": [
+      "1.2.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.8.20"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(2)"
+    ]
+  },
+  "soft_delete_disabled": {
+    "CIS": [
+      "3.11"
+    ],
+    "PCI-DSS": [
+      "10.7"
+    ],
+    "HIPAA": [
+      "164.312(c)(1)"
+    ],
+    "NIST-800-53": [
+      "CP-9"
+    ],
+    "ISO-27001": [
+      "A.5.29"
+    ],
+    "SOC2": [
+      "A1.1"
+    ],
+    "NIST-CSF": [
+      "PR.IP-4"
+    ],
+    "MCSB": [
+      "BR-1"
+    ],
+    "CSA-CCM": [
+      "BCR-03",
+      "DSP-16"
+    ],
+    "FedRAMP": [
+      "CP-9",
+      "CP-6"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1d)"
+    ]
+  },
+  "min_tls_weak": {
+    "CIS": [
+      "3.2"
+    ],
+    "PCI-DSS": [
+      "4.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-8"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "CC6.7"
+    ],
+    "NIST-CSF": [
+      "PR.DS-2"
+    ],
+    "MCSB": [
+      "DP-3"
+    ],
+    "CSA-CCM": [
+      "CEK-03",
+      "DSP-17"
+    ],
+    "FedRAMP": [
+      "SC-8",
+      "SC-8(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1f)"
+    ]
+  },
+  "shared_key_enabled": {
+    "CIS": [
+      "3.3"
+    ],
+    "PCI-DSS": [
+      "8.2.1"
+    ],
+    "HIPAA": [
+      "164.312(d)"
+    ],
+    "NIST-800-53": [
+      "IA-5"
+    ],
+    "ISO-27001": [
+      "A.5.17"
+    ],
+    "SOC2": [
+      "CC6.5"
+    ],
+    "NIST-CSF": [
+      "PR.AC-1"
+    ],
+    "MCSB": [
+      "IM-1"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "CEK-01"
+    ],
+    "FedRAMP": [
+      "IA-5",
+      "IA-2(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "no_blob_logging": {
+    "CIS": [
+      "5.1.2"
+    ],
+    "PCI-DSS": [
+      "10.2"
+    ],
+    "HIPAA": [
+      "164.312(b)"
+    ],
+    "NIST-800-53": [
+      "AU-2"
+    ],
+    "ISO-27001": [
+      "A.8.15"
+    ],
+    "SOC2": [
+      "CC8.2"
+    ],
+    "NIST-CSF": [
+      "DE.AE-1"
+    ],
+    "MCSB": [
+      "LT-3"
+    ],
+    "CSA-CCM": [
+      "LOG-01",
+      "LOG-03"
+    ],
+    "FedRAMP": [
+      "AU-2",
+      "AU-3"
+    ],
+    "GDPR": [
+      "Art.30(1)",
+      "Art.5(2)"
+    ]
+  },
+  "blob_versioning_disabled": {
+    "CIS": [
+      "3.11"
+    ],
+    "PCI-DSS": [
+      "10.7"
+    ],
+    "HIPAA": [
+      "164.312(c)(1)"
+    ],
+    "NIST-800-53": [
+      "CP-9"
+    ],
+    "ISO-27001": [
+      "A.5.29"
+    ],
+    "SOC2": [
+      "A1.1"
+    ],
+    "NIST-CSF": [
+      "PR.IP-4"
+    ],
+    "MCSB": [
+      "BR-1"
+    ],
+    "CSA-CCM": [
+      "BCR-03",
+      "DSP-16"
+    ],
+    "FedRAMP": [
+      "CP-9",
+      "CP-6"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1d)"
+    ]
+  },
+  "sql_tde_disabled": {
+    "CIS": [
+      "4.1.1"
+    ],
+    "PCI-DSS": [
+      "3.4"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "SC-28"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "CC8.3"
+    ],
+    "NIST-CSF": [
+      "PR.DS-1"
+    ],
+    "MCSB": [
+      "DP-4"
+    ],
+    "CSA-CCM": [
+      "CEK-03",
+      "DSP-17"
+    ],
+    "FedRAMP": [
+      "SC-28",
+      "SC-28(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "sql_auditing_disabled": {
+    "CIS": [
+      "4.1.3"
+    ],
+    "PCI-DSS": [
+      "10.2"
+    ],
+    "HIPAA": [
+      "164.312(b)"
+    ],
+    "NIST-800-53": [
+      "AU-2"
+    ],
+    "ISO-27001": [
+      "A.8.15"
+    ],
+    "SOC2": [
+      "CC8.2"
+    ],
+    "NIST-CSF": [
+      "DE.AE-1"
+    ],
+    "MCSB": [
+      "LT-3"
+    ],
+    "CSA-CCM": [
+      "LOG-01",
+      "LOG-05"
+    ],
+    "FedRAMP": [
+      "AU-2",
+      "AU-12"
+    ],
+    "GDPR": [
+      "Art.30(1)",
+      "Art.5(2)"
+    ]
+  },
+  "sql_atp_disabled": {
+    "CIS": [
+      "4.2.1"
+    ],
+    "PCI-DSS": [
+      "11.4"
+    ],
+    "HIPAA": [
+      "164.308(a)(6)(ii)"
+    ],
+    "NIST-800-53": [
+      "SI-4"
+    ],
+    "ISO-27001": [
+      "A.8.16"
+    ],
+    "SOC2": [
+      "CC9.1"
+    ],
+    "NIST-CSF": [
+      "DE.AE-2"
+    ],
+    "MCSB": [
+      "LT-1"
+    ],
+    "CSA-CCM": [
+      "TVM-01",
+      "LOG-09"
+    ],
+    "FedRAMP": [
+      "SI-4",
+      "SI-4(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.33(1)"
+    ]
+  },
+  "sql_no_ddm": {
+    "CIS": [
+      "4.2.2"
+    ],
+    "PCI-DSS": [
+      "3.3"
+    ],
+    "HIPAA": [
+      "164.514(a)"
+    ],
+    "NIST-800-53": [
+      "SC-28"
+    ],
+    "ISO-27001": [
+      "A.8.11"
+    ],
+    "SOC2": [
+      "C1.1"
+    ],
+    "NIST-CSF": [
+      "PR.DS-1"
+    ],
+    "MCSB": [
+      "DP-4"
+    ],
+    "CSA-CCM": [
+      "DSP-05",
+      "DSP-17"
+    ],
+    "FedRAMP": [
+      "SC-28",
+      "AC-3"
+    ],
+    "GDPR": [
+      "Art.25(2)",
+      "Art.5(1c)"
+    ]
+  },
+  "sql_no_rls": {
+    "CIS": [
+      "4.2.3"
+    ],
+    "PCI-DSS": [
+      "7.1"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "AC-3"
+    ],
+    "ISO-27001": [
+      "A.5.15"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "PA-7"
+    ],
+    "CSA-CCM": [
+      "IAM-10",
+      "DSP-05"
+    ],
+    "FedRAMP": [
+      "AC-3",
+      "AC-6"
+    ],
+    "GDPR": [
+      "Art.25(2)",
+      "Art.5(1f)"
+    ]
+  },
+  "cosmosdb_public_access": {
+    "CIS": [
+      "4.5.1"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.8.20"
+    ],
+    "SOC2": [
+      "CC6.12"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "eventual_consistency": {
+    "CIS": [
+      "4.5.3"
+    ],
+    "PCI-DSS": [
+      "3.6"
+    ],
+    "HIPAA": [
+      "164.312(c)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-28"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "PI1.1"
+    ],
+    "NIST-CSF": [
+      "PR.DS-1"
+    ],
+    "MCSB": [
+      "DP-4"
+    ],
+    "CSA-CCM": [
+      "DSP-16",
+      "BCR-01"
+    ],
+    "FedRAMP": [
+      "SC-28",
+      "CP-9"
+    ],
+    "GDPR": [
+      "Art.5(1d)",
+      "Art.32(1)"
+    ]
+  },
+  "access_policy_model": {
+    "CIS": [
+      "8.1"
+    ],
+    "PCI-DSS": [
+      "3.5.2"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "AC-3"
+    ],
+    "ISO-27001": [
+      "A.5.15"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-1"
+    ],
+    "MCSB": [
+      "PA-7"
+    ],
+    "CSA-CCM": [
+      "IAM-10",
+      "CEK-01"
+    ],
+    "FedRAMP": [
+      "AC-3",
+      "AC-6"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "purge_protection_off": {
+    "CIS": [
+      "8.2"
+    ],
+    "PCI-DSS": [
+      "3.5.3"
+    ],
+    "HIPAA": [
+      "164.312(c)(1)"
+    ],
+    "NIST-800-53": [
+      "CP-9"
+    ],
+    "ISO-27001": [
+      "A.5.29"
+    ],
+    "SOC2": [
+      "A1.1"
+    ],
+    "NIST-CSF": [
+      "PR.IP-4"
+    ],
+    "MCSB": [
+      "BR-1"
+    ],
+    "CSA-CCM": [
+      "BCR-03",
+      "CEK-05"
+    ],
+    "FedRAMP": [
+      "CP-9",
+      "CP-6"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1d)"
+    ]
+  },
+  "no_expiry_set": {
+    "CIS": [
+      "8.4"
+    ],
+    "PCI-DSS": [
+      "3.6.4"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "IA-5"
+    ],
+    "ISO-27001": [
+      "A.5.17"
+    ],
+    "SOC2": [
+      "CC6.5"
+    ],
+    "NIST-CSF": [
+      "PR.AC-1"
+    ],
+    "MCSB": [
+      "IM-3"
+    ],
+    "CSA-CCM": [
+      "CEK-04",
+      "IAM-09"
+    ],
+    "FedRAMP": [
+      "IA-5",
+      "IA-5(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1f)"
+    ]
+  },
+  "cert_no_auto_renewal": {
+    "CIS": [
+      "8.5"
+    ],
+    "PCI-DSS": [
+      "3.6.4"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "IA-5"
+    ],
+    "ISO-27001": [
+      "A.5.17"
+    ],
+    "SOC2": [
+      "CC6.5"
+    ],
+    "NIST-CSF": [
+      "PR.AC-1"
+    ],
+    "MCSB": [
+      "IM-3"
+    ],
+    "CSA-CCM": [
+      "CEK-04",
+      "IAM-09"
+    ],
+    "FedRAMP": [
+      "IA-5",
+      "SC-17"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1f)"
+    ]
+  },
+  "keys_not_hsm_backed": {
+    "CIS": [
+      "8.6"
+    ],
+    "PCI-DSS": [
+      "3.5.2"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "SC-28"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "CC8.3"
+    ],
+    "NIST-CSF": [
+      "PR.DS-1"
+    ],
+    "MCSB": [
+      "DP-4"
+    ],
+    "CSA-CCM": [
+      "CEK-02",
+      "CEK-05"
+    ],
+    "FedRAMP": [
+      "SC-12",
+      "SC-12(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "disk_encryption_missing": {
+    "CIS": [
+      "7.1"
+    ],
+    "PCI-DSS": [
+      "3.4"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "SC-28"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "CC8.3"
+    ],
+    "NIST-CSF": [
+      "PR.DS-1"
+    ],
+    "MCSB": [
+      "DP-4"
+    ],
+    "CSA-CCM": [
+      "CEK-03",
+      "DSP-17"
+    ],
+    "FedRAMP": [
+      "SC-28",
+      "SC-28(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.34(3a)"
+    ]
+  },
+  "overprivileged_access": {
+    "CIS": [
+      "1.22"
+    ],
+    "PCI-DSS": [
+      "7.1"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "AC-6"
+    ],
+    "ISO-27001": [
+      "A.5.18"
+    ],
+    "SOC2": [
+      "CC6.3"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "PA-7"
+    ],
+    "CSA-CCM": [
+      "IAM-05",
+      "IAM-10"
+    ],
+    "FedRAMP": [
+      "AC-6",
+      "AC-6(1)"
+    ],
+    "GDPR": [
+      "Art.25(2)",
+      "Art.5(1f)"
+    ]
+  },
+  "defender_coverage_gaps": {
+    "CIS": [
+      "2.1.1"
+    ],
+    "PCI-DSS": [
+      "11.4"
+    ],
+    "HIPAA": [
+      "164.308(a)(6)(ii)"
+    ],
+    "NIST-800-53": [
+      "SI-4"
+    ],
+    "ISO-27001": [
+      "A.8.16"
+    ],
+    "SOC2": [
+      "CC9.1"
+    ],
+    "NIST-CSF": [
+      "DE.AE-2"
+    ],
+    "MCSB": [
+      "LT-1"
+    ],
+    "CSA-CCM": [
+      "TVM-01",
+      "TVM-02"
+    ],
+    "FedRAMP": [
+      "SI-4",
+      "RA-5"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.33(1)"
+    ]
+  },
+  "audit_log_short_retention": {
+    "CIS": [
+      "5.1.4"
+    ],
+    "PCI-DSS": [
+      "10.7"
+    ],
+    "HIPAA": [
+      "164.312(b)"
+    ],
+    "NIST-800-53": [
+      "AU-6"
+    ],
+    "ISO-27001": [
+      "A.8.15"
+    ],
+    "SOC2": [
+      "CC8.2"
+    ],
+    "NIST-CSF": [
+      "DE.AE-1"
+    ],
+    "MCSB": [
+      "LT-5b"
+    ],
+    "CSA-CCM": [
+      "LOG-05",
+      "LOG-11"
+    ],
+    "FedRAMP": [
+      "AU-11",
+      "AU-6"
+    ],
+    "GDPR": [
+      "Art.30(1)",
+      "Art.5(2)"
+    ]
+  },
+  "nsg_data_ports_open": {
+    "CIS": [
+      "6.1"
+    ],
+    "PCI-DSS": [
+      "1.2.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.8.20"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-3"
+    ],
+    "MCSB": [
+      "NS-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "IVS-06"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "no_dlp_policies": {
+    "PCI-DSS": [
+      "3.1"
+    ],
+    "HIPAA": [
+      "164.312(c)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-28"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "C1.1"
+    ],
+    "NIST-CSF": [
+      "PR.DS-1"
+    ],
+    "MCSB": [
+      "DP-4"
+    ],
+    "CSA-CCM": [
+      "DSP-01",
+      "DSP-05"
+    ],
+    "FedRAMP": [
+      "SC-28",
+      "MP-4"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1f)"
+    ]
+  },
+  "dlp_no_sensitive_info_types": {
+    "PCI-DSS": [
+      "3.4"
+    ],
+    "HIPAA": [
+      "164.514(a)"
+    ],
+    "NIST-800-53": [
+      "SC-28"
+    ],
+    "ISO-27001": [
+      "A.8.11"
+    ],
+    "SOC2": [
+      "C1.1"
+    ],
+    "NIST-CSF": [
+      "PR.DS-1"
+    ],
+    "MCSB": [
+      "DP-4"
+    ],
+    "CSA-CCM": [
+      "DSP-01",
+      "DSP-05"
+    ],
+    "FedRAMP": [
+      "SC-28",
+      "MP-4"
+    ],
+    "GDPR": [
+      "Art.25(2)",
+      "Art.5(1c)"
+    ]
+  },
+  "sql_local_auth_enabled": {
+    "CIS": [
+      "4.1.5"
+    ],
+    "PCI-DSS": [
+      "8.2.1"
+    ],
+    "HIPAA": [
+      "164.312(d)"
+    ],
+    "NIST-800-53": [
+      "IA-2"
+    ],
+    "ISO-27001": [
+      "A.5.17"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-1"
+    ],
+    "MCSB": [
+      "IM-1"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "IAM-04"
+    ],
+    "FedRAMP": [
+      "IA-2",
+      "IA-2(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "pg_mysql_no_aad_auth": {
+    "CIS": [
+      "4.3.7"
+    ],
+    "PCI-DSS": [
+      "8.2.1"
+    ],
+    "HIPAA": [
+      "164.312(d)"
+    ],
+    "NIST-800-53": [
+      "IA-2"
+    ],
+    "ISO-27001": [
+      "A.5.17"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-1"
+    ],
+    "MCSB": [
+      "IM-1"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "IAM-04"
+    ],
+    "FedRAMP": [
+      "IA-2",
+      "IA-2(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "no_managed_identity": {
+    "CIS": [
+      "1.17"
+    ],
+    "PCI-DSS": [
+      "8.2.1"
+    ],
+    "HIPAA": [
+      "164.312(d)"
+    ],
+    "NIST-800-53": [
+      "IA-5"
+    ],
+    "ISO-27001": [
+      "A.5.16"
+    ],
+    "SOC2": [
+      "CC6.5"
+    ],
+    "NIST-CSF": [
+      "PR.AC-1"
+    ],
+    "MCSB": [
+      "IM-3"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "IAM-09"
+    ],
+    "FedRAMP": [
+      "IA-5",
+      "IA-2"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "no_resource_lock": {
+    "CIS": [
+      "8.3"
+    ],
+    "PCI-DSS": [
+      "10.7"
+    ],
+    "HIPAA": [
+      "164.312(c)(1)"
+    ],
+    "NIST-800-53": [
+      "CM-5"
+    ],
+    "ISO-27001": [
+      "A.8.32"
+    ],
+    "SOC2": [
+      "CC8.4"
+    ],
+    "NIST-CSF": [
+      "PR.IP-3"
+    ],
+    "MCSB": [
+      "PV-9"
+    ],
+    "CSA-CCM": [
+      "BCR-03",
+      "DSP-16"
+    ],
+    "FedRAMP": [
+      "CM-5",
+      "CM-3"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1d)"
+    ]
+  },
+  "adf_no_managed_vnet": {
+    "CIS": [
+      "6.5"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.8.22"
+    ],
+    "SOC2": [
+      "CC6.8"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "IVS-06"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "synapse_no_exfiltration_protection": {
+    "CIS": [
+      "6.5"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.8.22"
+    ],
+    "SOC2": [
+      "CC6.8"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "AC-4"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1f)"
+    ]
+  },
+  "ai_services_public_access": {
+    "CIS": [
+      "6.2"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.5.23"
+    ],
+    "SOC2": [
+      "CC6.7"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "log_analytics_no_cmk": {
+    "CIS": [
+      "7.3"
+    ],
+    "PCI-DSS": [
+      "3.4"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "SC-28"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "CC8.3"
+    ],
+    "NIST-CSF": [
+      "PR.DS-1"
+    ],
+    "MCSB": [
+      "DP-4"
+    ],
+    "CSA-CCM": [
+      "CEK-03",
+      "CEK-01"
+    ],
+    "FedRAMP": [
+      "SC-28",
+      "SC-12"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "no_immutable_audit_logs": {
+    "CIS": [
+      "5.1.5"
+    ],
+    "PCI-DSS": [
+      "10.3"
+    ],
+    "HIPAA": [
+      "164.312(b)"
+    ],
+    "NIST-800-53": [
+      "AU-2"
+    ],
+    "ISO-27001": [
+      "A.8.15"
+    ],
+    "SOC2": [
+      "CC8.2"
+    ],
+    "NIST-CSF": [
+      "DE.AE-1"
+    ],
+    "MCSB": [
+      "LT-3"
+    ],
+    "CSA-CCM": [
+      "LOG-03",
+      "LOG-11"
+    ],
+    "FedRAMP": [
+      "AU-9",
+      "AU-9(4)"
+    ],
+    "GDPR": [
+      "Art.30(1)",
+      "Art.5(2)"
+    ]
+  },
+  "redis_non_ssl_port": {
+    "CIS": [
+      "4.6.1"
+    ],
+    "PCI-DSS": [
+      "4.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-8"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "CC6.7"
+    ],
+    "NIST-CSF": [
+      "PR.DS-2"
+    ],
+    "MCSB": [
+      "DP-3"
+    ],
+    "CSA-CCM": [
+      "CEK-03",
+      "DSP-17"
+    ],
+    "FedRAMP": [
+      "SC-8",
+      "SC-8(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1f)"
+    ]
+  },
+  "redis_weak_tls": {
+    "CIS": [
+      "4.6.2"
+    ],
+    "PCI-DSS": [
+      "4.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-8"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "CC6.7"
+    ],
+    "NIST-CSF": [
+      "PR.DS-2"
+    ],
+    "MCSB": [
+      "DP-3"
+    ],
+    "CSA-CCM": [
+      "CEK-03",
+      "DSP-17"
+    ],
+    "FedRAMP": [
+      "SC-8",
+      "SC-8(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1f)"
+    ]
+  },
+  "redis_no_firewall": {
+    "CIS": [
+      "4.6.3"
+    ],
+    "PCI-DSS": [
+      "1.2.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.8.20"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-3"
+    ],
+    "MCSB": [
+      "NS-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "IVS-06"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "eventhub_public_access": {
+    "CIS": [
+      "6.3"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.8.20"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "servicebus_public_access": {
+    "CIS": [
+      "6.3"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.8.20"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "messaging_weak_tls": {
+    "CIS": [
+      "6.4"
+    ],
+    "PCI-DSS": [
+      "4.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-8"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "CC6.7"
+    ],
+    "NIST-CSF": [
+      "PR.DS-2"
+    ],
+    "MCSB": [
+      "DP-3"
+    ],
+    "CSA-CCM": [
+      "CEK-03",
+      "DSP-17"
+    ],
+    "FedRAMP": [
+      "SC-8",
+      "SC-8(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1f)"
+    ]
+  },
+  "purge_protection_disabled": {
+    "CIS": [
+      "8.2"
+    ],
+    "PCI-DSS": [
+      "3.5.3"
+    ],
+    "HIPAA": [
+      "164.312(c)(1)"
+    ],
+    "NIST-800-53": [
+      "CP-9"
+    ],
+    "ISO-27001": [
+      "A.5.29"
+    ],
+    "SOC2": [
+      "A1.1"
+    ],
+    "NIST-CSF": [
+      "PR.IP-4"
+    ],
+    "MCSB": [
+      "BR-1"
+    ],
+    "CSA-CCM": [
+      "BCR-03",
+      "CEK-05"
+    ],
+    "FedRAMP": [
+      "CP-9",
+      "CP-6"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1d)"
+    ]
+  },
+  "legacy_access_policy_model": {
+    "CIS": [
+      "8.1"
+    ],
+    "PCI-DSS": [
+      "3.5.2"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "AC-3"
+    ],
+    "ISO-27001": [
+      "A.5.15"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-1"
+    ],
+    "MCSB": [
+      "PA-7"
+    ],
+    "CSA-CCM": [
+      "IAM-10",
+      "CEK-01"
+    ],
+    "FedRAMP": [
+      "AC-3",
+      "AC-6"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "no_network_restrictions": {
+    "CIS": [
+      "8.7"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.8.20"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "purview_public_access": {
+    "CIS": [
+      "6.2"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.5.23"
+    ],
+    "SOC2": [
+      "CC6.7"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "purview_no_private_endpoint": {
+    "CIS": [
+      "6.2"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.5.23"
+    ],
+    "SOC2": [
+      "CC6.7"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "purview_scan_coverage_gap": {
+    "CIS": [
+      "2.1.1"
+    ],
+    "PCI-DSS": [
+      "11.4"
+    ],
+    "HIPAA": [
+      "164.308(a)(6)(ii)"
+    ],
+    "NIST-800-53": [
+      "PM-5"
+    ],
+    "ISO-27001": [
+      "A.5.9"
+    ],
+    "SOC2": [
+      "CC3.2"
+    ],
+    "NIST-CSF": [
+      "ID.AM-1"
+    ],
+    "MCSB": [
+      "AM-2"
+    ],
+    "CSA-CCM": [
+      "TVM-02",
+      "DSP-01"
+    ],
+    "FedRAMP": [
+      "RA-5",
+      "PM-5"
+    ],
+    "GDPR": [
+      "Art.35(1)",
+      "Art.30(1)"
+    ]
+  },
+  "purview_scan_issues": {
+    "CIS": [
+      "2.1.1"
+    ],
+    "PCI-DSS": [
+      "11.4"
+    ],
+    "HIPAA": [
+      "164.308(a)(6)(ii)"
+    ],
+    "NIST-800-53": [
+      "CA-7"
+    ],
+    "ISO-27001": [
+      "A.8.8"
+    ],
+    "SOC2": [
+      "CC7.1"
+    ],
+    "NIST-CSF": [
+      "DE.CM-8"
+    ],
+    "MCSB": [
+      "PV-5"
+    ],
+    "CSA-CCM": [
+      "TVM-02",
+      "DSP-01"
+    ],
+    "FedRAMP": [
+      "RA-5",
+      "CA-7"
+    ],
+    "GDPR": [
+      "Art.35(1)",
+      "Art.30(1)"
+    ]
+  },
+  "managed_disk_no_cmk": {
+    "CIS": [
+      "7.1"
+    ],
+    "PCI-DSS": [
+      "3.4"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "SC-28"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "CC8.3"
+    ],
+    "NIST-CSF": [
+      "PR.DS-1"
+    ],
+    "MCSB": [
+      "DP-4"
+    ],
+    "CSA-CCM": [
+      "CEK-03",
+      "CEK-01"
+    ],
+    "FedRAMP": [
+      "SC-28",
+      "SC-12"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "no_diagnostic_settings": {
+    "CIS": [
+      "5.1.2"
+    ],
+    "PCI-DSS": [
+      "10.2"
+    ],
+    "HIPAA": [
+      "164.312(b)"
+    ],
+    "NIST-800-53": [
+      "AU-2"
+    ],
+    "ISO-27001": [
+      "A.8.15"
+    ],
+    "SOC2": [
+      "CC8.2"
+    ],
+    "NIST-CSF": [
+      "DE.AE-1"
+    ],
+    "MCSB": [
+      "LT-3"
+    ],
+    "CSA-CCM": [
+      "LOG-01",
+      "LOG-03"
+    ],
+    "FedRAMP": [
+      "AU-2",
+      "AU-3"
+    ],
+    "GDPR": [
+      "Art.30(1)",
+      "Art.5(2)"
+    ]
+  },
+  "no_private_endpoint": {
+    "CIS": [
+      "6.2"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.5.23"
+    ],
+    "SOC2": [
+      "CC6.7"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "no_ddos_protection": {
+    "CIS": [
+      "6.6"
+    ],
+    "PCI-DSS": [
+      "1.2.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-5"
+    ],
+    "ISO-27001": [
+      "A.8.20"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-5"
+    ],
+    "CSA-CCM": [
+      "IVS-09",
+      "IVS-06"
+    ],
+    "FedRAMP": [
+      "SC-5",
+      "SC-7"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1f)"
+    ]
+  },
+  "no_sas_expiration_policy": {
+    "CIS": [
+      "3.9"
+    ],
+    "PCI-DSS": [
+      "3.6.4"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "IA-5"
+    ],
+    "ISO-27001": [
+      "A.5.17"
+    ],
+    "SOC2": [
+      "CC6.5"
+    ],
+    "NIST-CSF": [
+      "PR.AC-1"
+    ],
+    "MCSB": [
+      "IM-3"
+    ],
+    "CSA-CCM": [
+      "IAM-09",
+      "CEK-04"
+    ],
+    "FedRAMP": [
+      "IA-5",
+      "IA-5(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1f)"
+    ]
+  },
+  "no_immutability_policy": {
+    "CIS": [
+      "5.1.5"
+    ],
+    "PCI-DSS": [
+      "10.3"
+    ],
+    "HIPAA": [
+      "164.312(b)"
+    ],
+    "NIST-800-53": [
+      "AU-2"
+    ],
+    "ISO-27001": [
+      "A.8.15"
+    ],
+    "SOC2": [
+      "CC8.2"
+    ],
+    "NIST-CSF": [
+      "DE.AE-1"
+    ],
+    "MCSB": [
+      "LT-3"
+    ],
+    "CSA-CCM": [
+      "LOG-11",
+      "DSP-16"
+    ],
+    "FedRAMP": [
+      "AU-9",
+      "AU-9(4)"
+    ],
+    "GDPR": [
+      "Art.30(1)",
+      "Art.5(2)"
+    ]
+  },
+  "change_feed_disabled": {
+    "CIS": [
+      "3.12"
+    ],
+    "PCI-DSS": [
+      "10.2"
+    ],
+    "HIPAA": [
+      "164.312(b)"
+    ],
+    "NIST-800-53": [
+      "AU-2"
+    ],
+    "ISO-27001": [
+      "A.8.15"
+    ],
+    "SOC2": [
+      "CC8.2"
+    ],
+    "NIST-CSF": [
+      "DE.AE-1"
+    ],
+    "MCSB": [
+      "LT-3"
+    ],
+    "CSA-CCM": [
+      "LOG-01",
+      "LOG-03"
+    ],
+    "FedRAMP": [
+      "AU-2",
+      "AU-3"
+    ],
+    "GDPR": [
+      "Art.30(1)",
+      "Art.5(2)"
+    ]
+  },
+  "unencrypted_disks": {
+    "CIS": [
+      "7.1"
+    ],
+    "PCI-DSS": [
+      "3.4"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "SC-28"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "CC8.3"
+    ],
+    "NIST-CSF": [
+      "PR.DS-1"
+    ],
+    "MCSB": [
+      "DP-4"
+    ],
+    "CSA-CCM": [
+      "CEK-03",
+      "DSP-17"
+    ],
+    "FedRAMP": [
+      "SC-28",
+      "SC-28(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.34(3a)"
+    ]
+  },
+  "no_encryption_at_host": {
+    "CIS": [
+      "7.2"
+    ],
+    "PCI-DSS": [
+      "3.4"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "SC-28"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "CC8.3"
+    ],
+    "NIST-CSF": [
+      "PR.DS-1"
+    ],
+    "MCSB": [
+      "DP-4"
+    ],
+    "CSA-CCM": [
+      "CEK-03",
+      "DSP-17"
+    ],
+    "FedRAMP": [
+      "SC-28",
+      "SC-28(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.34(3a)"
+    ]
+  },
+  "no_security_action_groups": {
+    "CIS": [
+      "2.1.1"
+    ],
+    "PCI-DSS": [
+      "11.4"
+    ],
+    "HIPAA": [
+      "164.308(a)(6)(ii)"
+    ],
+    "NIST-800-53": [
+      "IR-6"
+    ],
+    "ISO-27001": [
+      "A.5.25"
+    ],
+    "SOC2": [
+      "CC9.1"
+    ],
+    "NIST-CSF": [
+      "RS.CO-2"
+    ],
+    "MCSB": [
+      "LT-1"
+    ],
+    "CSA-CCM": [
+      "TVM-01",
+      "LOG-09"
+    ],
+    "FedRAMP": [
+      "IR-6",
+      "SI-4"
+    ],
+    "GDPR": [
+      "Art.33(1)",
+      "Art.34(1)"
+    ]
+  },
+  "ai_key_auth_enabled": {
+    "CIS": [
+      "9.1"
+    ],
+    "PCI-DSS": [
+      "8.3.1"
+    ],
+    "HIPAA": [
+      "164.312(d)"
+    ],
+    "NIST-800-53": [
+      "IA-2"
+    ],
+    "ISO-27001": [
+      "A.8.5"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-1"
+    ],
+    "MCSB": [
+      "IM-1"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "IAM-04"
+    ],
+    "FedRAMP": [
+      "IA-2",
+      "IA-2(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "ai_no_managed_identity": {
+    "CIS": [
+      "9.2"
+    ],
+    "PCI-DSS": [
+      "8.6"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "IA-5"
+    ],
+    "ISO-27001": [
+      "A.5.17"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-7"
+    ],
+    "MCSB": [
+      "IM-3"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "IAM-09"
+    ],
+    "FedRAMP": [
+      "IA-5",
+      "IA-2"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "ai_no_cmk": {
+    "CIS": [
+      "9.3"
+    ],
+    "PCI-DSS": [
+      "3.5.2"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "SC-12"
+    ],
+    "ISO-27001": [
+      "A.8.24"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.DS-1"
+    ],
+    "MCSB": [
+      "DP-5"
+    ],
+    "CSA-CCM": [
+      "CEK-03",
+      "CEK-01"
+    ],
+    "FedRAMP": [
+      "SC-12",
+      "SC-28"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "adf_public_access": {
+    "CIS": [
+      "6.1"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.8.20"
+    ],
+    "SOC2": [
+      "CC6.6"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-2"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "adf_no_managed_identity": {
+    "CIS": [
+      "6.2"
+    ],
+    "PCI-DSS": [
+      "8.6"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "IA-5"
+    ],
+    "ISO-27001": [
+      "A.5.17"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-7"
+    ],
+    "MCSB": [
+      "IM-3"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "IAM-09"
+    ],
+    "FedRAMP": [
+      "IA-5",
+      "IA-2"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "adf_no_git_integration": {
+    "CIS": [
+      "6.3"
+    ],
+    "PCI-DSS": [
+      "6.5.4"
+    ],
+    "HIPAA": [
+      "164.312(b)"
+    ],
+    "NIST-800-53": [
+      "CM-3"
+    ],
+    "ISO-27001": [
+      "A.8.32"
+    ],
+    "SOC2": [
+      "CC8.1"
+    ],
+    "NIST-CSF": [
+      "PR.IP-3"
+    ],
+    "MCSB": [
+      "PV-6"
+    ],
+    "CSA-CCM": [
+      "GRC-01",
+      "DSP-16"
+    ],
+    "FedRAMP": [
+      "CM-3",
+      "CM-5"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(2)"
+    ]
+  },
+  "synapse_public_access": {
+    "CIS": [
+      "6.4"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.8.20"
+    ],
+    "SOC2": [
+      "CC6.6"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-2"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "synapse_sql_auth_enabled": {
+    "CIS": [
+      "6.5"
+    ],
+    "PCI-DSS": [
+      "8.3.1"
+    ],
+    "HIPAA": [
+      "164.312(d)"
+    ],
+    "NIST-800-53": [
+      "IA-2"
+    ],
+    "ISO-27001": [
+      "A.8.5"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-1"
+    ],
+    "MCSB": [
+      "IM-1"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "IAM-04"
+    ],
+    "FedRAMP": [
+      "IA-2",
+      "IA-2(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "eventhub_local_auth": {
+    "CIS": [
+      "7.1"
+    ],
+    "PCI-DSS": [
+      "8.3.1"
+    ],
+    "HIPAA": [
+      "164.312(d)"
+    ],
+    "NIST-800-53": [
+      "IA-2"
+    ],
+    "ISO-27001": [
+      "A.8.5"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-1"
+    ],
+    "MCSB": [
+      "IM-1"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "IAM-04"
+    ],
+    "FedRAMP": [
+      "IA-2",
+      "IA-2(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "servicebus_local_auth": {
+    "CIS": [
+      "7.2"
+    ],
+    "PCI-DSS": [
+      "8.3.1"
+    ],
+    "HIPAA": [
+      "164.312(d)"
+    ],
+    "NIST-800-53": [
+      "IA-2"
+    ],
+    "ISO-27001": [
+      "A.8.5"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-1"
+    ],
+    "MCSB": [
+      "IM-1"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "IAM-04"
+    ],
+    "FedRAMP": [
+      "IA-2",
+      "IA-2(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "eventhub_no_capture": {
+    "CIS": [
+      "7.3"
+    ],
+    "PCI-DSS": [
+      "10.2"
+    ],
+    "HIPAA": [
+      "164.312(b)"
+    ],
+    "NIST-800-53": [
+      "AU-2"
+    ],
+    "ISO-27001": [
+      "A.8.15"
+    ],
+    "SOC2": [
+      "CC7.2"
+    ],
+    "NIST-CSF": [
+      "DE.AE-3"
+    ],
+    "MCSB": [
+      "LT-3"
+    ],
+    "CSA-CCM": [
+      "LOG-01",
+      "LOG-05"
+    ],
+    "FedRAMP": [
+      "AU-2",
+      "AU-11"
+    ],
+    "GDPR": [
+      "Art.30(1)",
+      "Art.5(2)"
+    ]
+  },
+  "redis_no_patch_schedule": {
+    "CIS": [
+      "7.4"
+    ],
+    "PCI-DSS": [
+      "6.3.3"
+    ],
+    "HIPAA": [
+      "164.308(a)(5)(ii)(B)"
+    ],
+    "NIST-800-53": [
+      "SI-2"
+    ],
+    "ISO-27001": [
+      "A.8.8"
+    ],
+    "SOC2": [
+      "CC7.1"
+    ],
+    "NIST-CSF": [
+      "PR.IP-12"
+    ],
+    "MCSB": [
+      "PV-7"
+    ],
+    "CSA-CCM": [
+      "TVM-04",
+      "IVS-05"
+    ],
+    "FedRAMP": [
+      "SI-2",
+      "SI-2(2)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.32(1d)"
+    ]
+  },
+  "redis_public_access": {
+    "CIS": [
+      "7.5"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "ISO-27001": [
+      "A.8.20"
+    ],
+    "SOC2": [
+      "CC6.6"
+    ],
+    "NIST-CSF": [
+      "PR.AC-5"
+    ],
+    "MCSB": [
+      "NS-2"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "data_services_no_managed_identity": {
+    "CIS": [
+      "9.4"
+    ],
+    "PCI-DSS": [
+      "8.6"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "IA-5"
+    ],
+    "ISO-27001": [
+      "A.5.17"
+    ],
+    "SOC2": [
+      "CC6.1"
+    ],
+    "NIST-CSF": [
+      "PR.AC-7"
+    ],
+    "MCSB": [
+      "IM-3"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "IAM-09"
+    ],
+    "FedRAMP": [
+      "IA-5",
+      "IA-2"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "sqlmi_no_atp": {
+    "CIS": [
+      "4.3.1"
+    ],
+    "PCI-DSS": [
+      "6.5.1"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "SI-4"
+    ],
+    "MCSB": [
+      "DP-2"
+    ],
+    "CSA-CCM": [
+      "TVM-01",
+      "LOG-09"
+    ],
+    "FedRAMP": [
+      "SI-4",
+      "SI-4(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.33(1)"
+    ]
+  },
+  "sqlmi_public_endpoint": {
+    "CIS": [
+      "4.3.2"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "MCSB": [
+      "NI-2"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "sqlmi_no_aad_only": {
+    "CIS": [
+      "4.3.3"
+    ],
+    "PCI-DSS": [
+      "8.3"
+    ],
+    "HIPAA": [
+      "164.312(d)"
+    ],
+    "NIST-800-53": [
+      "IA-2"
+    ],
+    "MCSB": [
+      "IM-1"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "IAM-04"
+    ],
+    "FedRAMP": [
+      "IA-2",
+      "IA-2(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "appconfig_public_access": {
+    "CIS": [
+      "9.1"
+    ],
+    "PCI-DSS": [
+      "1.3"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "MCSB": [
+      "NI-2"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "appconfig_no_private_endpoint": {
+    "CIS": [
+      "9.2"
+    ],
+    "PCI-DSS": [
+      "1.3.4"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "MCSB": [
+      "NI-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "appconfig_no_soft_delete": {
+    "CIS": [
+      "9.3"
+    ],
+    "PCI-DSS": [
+      "10.7"
+    ],
+    "HIPAA": [
+      "164.312(b)"
+    ],
+    "NIST-800-53": [
+      "CP-9"
+    ],
+    "MCSB": [
+      "BR-1"
+    ],
+    "CSA-CCM": [
+      "BCR-03",
+      "DSP-16"
+    ],
+    "FedRAMP": [
+      "CP-9",
+      "CP-6"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1d)"
+    ]
+  },
+  "cert_expiring_soon": {
+    "CIS": [
+      "5.1.5"
+    ],
+    "PCI-DSS": [
+      "4.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(2)"
+    ],
+    "NIST-800-53": [
+      "SC-17"
+    ],
+    "MCSB": [
+      "DP-3"
+    ],
+    "CSA-CCM": [
+      "CEK-04",
+      "IAM-09"
+    ],
+    "FedRAMP": [
+      "SC-17",
+      "IA-5"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1f)"
+    ]
+  },
+  "cert_no_auto_renew": {
+    "CIS": [
+      "5.1.6"
+    ],
+    "PCI-DSS": [
+      "4.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-17"
+    ],
+    "MCSB": [
+      "DP-3"
+    ],
+    "CSA-CCM": [
+      "CEK-04",
+      "IAM-09"
+    ],
+    "FedRAMP": [
+      "SC-17",
+      "IA-5"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1f)"
+    ]
+  },
+  "cert_weak_key": {
+    "CIS": [
+      "5.1.7"
+    ],
+    "PCI-DSS": [
+      "3.6.1"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "SC-12"
+    ],
+    "MCSB": [
+      "DP-4"
+    ],
+    "CSA-CCM": [
+      "CEK-02",
+      "CEK-05"
+    ],
+    "FedRAMP": [
+      "SC-12",
+      "SC-12(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "databricks_no_vnet": {
+    "CIS": [
+      "8.1"
+    ],
+    "PCI-DSS": [
+      "1.3.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "MCSB": [
+      "NI-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "IVS-06"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "databricks_no_cmk": {
+    "CIS": [
+      "8.2"
+    ],
+    "PCI-DSS": [
+      "3.5.2"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "SC-12"
+    ],
+    "MCSB": [
+      "DP-5"
+    ],
+    "CSA-CCM": [
+      "CEK-03",
+      "CEK-01"
+    ],
+    "FedRAMP": [
+      "SC-12",
+      "SC-28"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "databricks_public_access": {
+    "CIS": [
+      "8.3"
+    ],
+    "PCI-DSS": [
+      "1.3"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "MCSB": [
+      "NI-2"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "apim_no_vnet": {
+    "CIS": [
+      "10.1"
+    ],
+    "PCI-DSS": [
+      "1.3"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "MCSB": [
+      "NI-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "IVS-06"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "apim_no_managed_identity": {
+    "CIS": [
+      "10.2"
+    ],
+    "PCI-DSS": [
+      "8.3"
+    ],
+    "HIPAA": [
+      "164.312(d)"
+    ],
+    "NIST-800-53": [
+      "IA-5"
+    ],
+    "MCSB": [
+      "IM-3"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "IAM-09"
+    ],
+    "FedRAMP": [
+      "IA-5",
+      "IA-2"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "frontdoor_no_waf": {
+    "CIS": [
+      "11.1"
+    ],
+    "PCI-DSS": [
+      "6.6"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "MCSB": [
+      "NI-6"
+    ],
+    "CSA-CCM": [
+      "IVS-06",
+      "TVM-01"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SI-4"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "frontdoor_old_tls": {
+    "CIS": [
+      "11.2"
+    ],
+    "PCI-DSS": [
+      "4.1"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-8"
+    ],
+    "MCSB": [
+      "DP-3"
+    ],
+    "CSA-CCM": [
+      "CEK-03",
+      "DSP-17"
+    ],
+    "FedRAMP": [
+      "SC-8",
+      "SC-8(1)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.5(1f)"
+    ]
+  },
+  "secret_in_app_settings": {
+    "CIS": [
+      "9.11"
+    ],
+    "PCI-DSS": [
+      "2.1",
+      "6.3.2"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "SC-28",
+      "IA-5"
+    ],
+    "MCSB": [
+      "DP-6"
+    ],
+    "CSA-CCM": [
+      "CEK-01",
+      "DSP-17"
+    ],
+    "FedRAMP": [
+      "SC-28",
+      "IA-5(7)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "no_keyvault_references": {
+    "CIS": [
+      "9.12"
+    ],
+    "PCI-DSS": [
+      "3.4"
+    ],
+    "HIPAA": [
+      "164.312(a)(2)(iv)"
+    ],
+    "NIST-800-53": [
+      "SC-28"
+    ],
+    "MCSB": [
+      "DP-6"
+    ],
+    "CSA-CCM": [
+      "CEK-01",
+      "DSP-17"
+    ],
+    "FedRAMP": [
+      "SC-28",
+      "IA-5(7)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "firewall_no_threat_intel": {
+    "CIS": [
+      "12.1"
+    ],
+    "PCI-DSS": [
+      "5.1"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "SI-4"
+    ],
+    "MCSB": [
+      "LT-1"
+    ],
+    "CSA-CCM": [
+      "TVM-01",
+      "IVS-06"
+    ],
+    "FedRAMP": [
+      "SI-4",
+      "SI-4(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.33(1)"
+    ]
+  },
+  "firewall_no_idps": {
+    "CIS": [
+      "12.2"
+    ],
+    "PCI-DSS": [
+      "11.4"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "SI-4"
+    ],
+    "MCSB": [
+      "LT-1"
+    ],
+    "CSA-CCM": [
+      "TVM-01",
+      "IVS-06"
+    ],
+    "FedRAMP": [
+      "SI-4",
+      "SI-4(4)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.33(1)"
+    ]
+  },
+  "appgw_no_waf": {
+    "CIS": [
+      "12.3"
+    ],
+    "PCI-DSS": [
+      "6.6"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "MCSB": [
+      "NI-6"
+    ],
+    "CSA-CCM": [
+      "IVS-06",
+      "TVM-01"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SI-4"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "no_bastion_open_rdp": {
+    "CIS": [
+      "13.1"
+    ],
+    "PCI-DSS": [
+      "1.3.1",
+      "2.2.2"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "AC-17"
+    ],
+    "MCSB": [
+      "NI-3"
+    ],
+    "CSA-CCM": [
+      "IAM-14",
+      "IVS-03"
+    ],
+    "FedRAMP": [
+      "AC-17",
+      "AC-17(2)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "bastion_shareable_links": {
+    "CIS": [
+      "13.2"
+    ],
+    "PCI-DSS": [
+      "7.1"
+    ],
+    "HIPAA": [
+      "164.312(d)"
+    ],
+    "NIST-800-53": [
+      "AC-3"
+    ],
+    "MCSB": [
+      "PA-7"
+    ],
+    "CSA-CCM": [
+      "IAM-14",
+      "IAM-10"
+    ],
+    "FedRAMP": [
+      "AC-3",
+      "AC-17"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(2)"
+    ]
+  },
+  "data_policy_noncompliant": {
+    "CIS": [
+      "14.1"
+    ],
+    "PCI-DSS": [
+      "12.1"
+    ],
+    "HIPAA": [
+      "164.308(a)(8)"
+    ],
+    "NIST-800-53": [
+      "CA-7"
+    ],
+    "MCSB": [
+      "GS-3"
+    ],
+    "CSA-CCM": [
+      "GRC-01",
+      "GRC-03"
+    ],
+    "FedRAMP": [
+      "CA-7",
+      "CA-2"
+    ],
+    "GDPR": [
+      "Art.5(2)",
+      "Art.24(1)"
+    ]
+  },
+  "defender_data_recs_unhealthy": {
+    "CIS": [
+      "14.2"
+    ],
+    "PCI-DSS": [
+      "6.1"
+    ],
+    "HIPAA": [
+      "164.308(a)(1)"
+    ],
+    "NIST-800-53": [
+      "RA-5"
+    ],
+    "MCSB": [
+      "PV-5"
+    ],
+    "CSA-CCM": [
+      "TVM-02",
+      "TVM-04"
+    ],
+    "FedRAMP": [
+      "RA-5",
+      "SI-2"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.32(1d)"
+    ]
+  },
+  "stale_data_role_assignment": {
+    "CIS": [
+      "1.23"
+    ],
+    "PCI-DSS": [
+      "8.1.4"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "AC-2"
+    ],
+    "MCSB": [
+      "PA-4"
+    ],
+    "CSA-CCM": [
+      "IAM-05",
+      "IAM-10"
+    ],
+    "FedRAMP": [
+      "AC-2",
+      "AC-2(3)"
+    ],
+    "GDPR": [
+      "Art.25(2)",
+      "Art.5(1f)"
+    ]
+  },
+  "storage_unusual_bypass": {
+    "CIS": [
+      "3.8"
+    ],
+    "PCI-DSS": [
+      "1.3.4"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "MCSB": [
+      "NI-2"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "DSP-10"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "AC-4"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "cross_sub_private_endpoint": {
+    "CIS": [
+      "3.9"
+    ],
+    "PCI-DSS": [
+      "7.1"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "AC-3"
+    ],
+    "MCSB": [
+      "NI-4"
+    ],
+    "CSA-CCM": [
+      "IAM-10",
+      "IVS-03"
+    ],
+    "FedRAMP": [
+      "AC-3",
+      "SC-7"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(2)"
+    ]
+  },
+  "nsg_unrestricted_outbound": {
+    "CIS": [
+      "6.4"
+    ],
+    "PCI-DSS": [
+      "1.3.4"
+    ],
+    "HIPAA": [
+      "164.312(e)(1)"
+    ],
+    "NIST-800-53": [
+      "SC-7"
+    ],
+    "MCSB": [
+      "NI-1"
+    ],
+    "CSA-CCM": [
+      "IVS-03",
+      "IVS-06"
+    ],
+    "FedRAMP": [
+      "SC-7",
+      "SC-7(5)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "no_mfa_ca_policy": {
+    "CIS": [
+      "1.1.1"
+    ],
+    "PCI-DSS": [
+      "8.3.1"
+    ],
+    "HIPAA": [
+      "164.312(d)"
+    ],
+    "NIST-800-53": [
+      "IA-2(1)"
+    ],
+    "MCSB": [
+      "IM-4"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "IAM-04"
+    ],
+    "FedRAMP": [
+      "IA-2(1)",
+      "IA-2(2)"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(1)"
+    ]
+  },
+  "pim_permanent_assignments": {
+    "CIS": [
+      "1.24"
+    ],
+    "PCI-DSS": [
+      "7.1.2"
+    ],
+    "HIPAA": [
+      "164.312(a)(1)"
+    ],
+    "NIST-800-53": [
+      "AC-2(5)"
+    ],
+    "MCSB": [
+      "PA-2"
+    ],
+    "CSA-CCM": [
+      "IAM-05",
+      "IAM-10"
+    ],
+    "FedRAMP": [
+      "AC-2",
+      "AC-2(5)"
+    ],
+    "GDPR": [
+      "Art.25(2)",
+      "Art.5(1f)"
+    ]
+  },
+  "drift_detected": {
+    "NIST-800-53": [
+      "CM-3",
+      "CM-6"
+    ],
+    "PCI-DSS": [
+      "10.5.5",
+      "11.5"
+    ],
+    "MCSB": [
+      "PV-6"
+    ],
+    "CIS": [
+      "5.1"
+    ],
+    "CSA-CCM": [
+      "GRC-01",
+      "DSP-16"
+    ],
+    "FedRAMP": [
+      "CM-3",
+      "CM-6"
+    ],
+    "GDPR": [
+      "Art.32(1d)",
+      "Art.5(2)"
+    ]
+  },
+  "aks_no_acr_integration": {
+    "NIST-800-53": [
+      "SA-12",
+      "CM-7"
+    ],
+    "MCSB": [
+      "DS-6"
+    ],
+    "CIS": [
+      "6.1"
+    ],
+    "CSA-CCM": [
+      "DSP-16",
+      "TVM-04"
+    ],
+    "FedRAMP": [
+      "SA-12",
+      "CM-7"
+    ],
+    "GDPR": [
+      "Art.28(1)",
+      "Art.32(1)"
+    ]
+  },
+  "acr_admin_enabled": {
+    "NIST-800-53": [
+      "AC-6",
+      "SA-12"
+    ],
+    "PCI-DSS": [
+      "7.1"
+    ],
+    "MCSB": [
+      "PA-7"
+    ],
+    "CIS": [
+      "6.2"
+    ],
+    "CSA-CCM": [
+      "IAM-02",
+      "IAM-05"
+    ],
+    "FedRAMP": [
+      "AC-6",
+      "IA-2"
+    ],
+    "GDPR": [
+      "Art.32(1)",
+      "Art.25(2)"
+    ]
+  },
+  "func_external_package": {
+    "NIST-800-53": [
+      "SA-12",
+      "SI-7"
+    ],
+    "MCSB": [
+      "DS-6"
+    ],
+    "CSA-CCM": [
+      "TVM-04",
+      "DSP-16"
+    ],
+    "FedRAMP": [
+      "SA-12",
+      "SI-7"
+    ],
+    "GDPR": [
+      "Art.28(1)",
+      "Art.32(1)"
+    ]
+  }
+}

@@ -1,0 +1,357 @@
+{
+  "unable_to_assess": [
+    "CC3.2"
+  ],
+  "broad_site_membership": [
+    "CC6.1",
+    "CC6.3"
+  ],
+  "everyone_permissions": [
+    "CC6.1"
+  ],
+  "anonymous_link_exposure": [
+    "CC6.1",
+    "CC6.7"
+  ],
+  "external_sharing_posture": [
+    "CC6.1",
+    "CC6.7"
+  ],
+  "no_sharepoint_advanced_management": [
+    "CC6.1",
+    "CC4.1"
+  ],
+  "no_sam_restricted_access_control": [
+    "CC6.1",
+    "CC6.3"
+  ],
+  "no_sam_site_lifecycle_policy": [
+    "CC6.5",
+    "A1.1"
+  ],
+  "no_sam_dag_reports": [
+    "CC4.1",
+    "CC6.1"
+  ],
+  "high_permission_blast_radius": [
+    "CC6.1",
+    "CC6.3"
+  ],
+  "external_sharing_risk_score": [
+    "CC6.1",
+    "CC6.7"
+  ],
+  "label_api_inaccessible": [
+    "CC3.2"
+  ],
+  "no_labels_defined": [
+    "C1.1",
+    "CC6.1"
+  ],
+  "insufficient_labels": [
+    "C1.1"
+  ],
+  "no_mandatory_labeling": [
+    "C1.1",
+    "CC5.2"
+  ],
+  "no_auto_labeling": [
+    "C1.1",
+    "CC7.1"
+  ],
+  "low_site_label_coverage": [
+    "C1.1"
+  ],
+  "no_default_label": [
+    "C1.1",
+    "CC5.2"
+  ],
+  "mandatory_labeling_incomplete_scope": [
+    "C1.1"
+  ],
+  "labels_without_encryption": [
+    "C1.1",
+    "CC6.1"
+  ],
+  "labels_without_site_group_settings": [
+    "CC6.1"
+  ],
+  "no_dlp_policies": [
+    "C1.1",
+    "CC6.7"
+  ],
+  "no_label_based_dlp": [
+    "C1.1",
+    "CC6.7"
+  ],
+  "incomplete_workload_coverage": [
+    "C1.1"
+  ],
+  "no_endpoint_dlp": [
+    "C1.1",
+    "CC6.7"
+  ],
+  "rss_not_configured": [
+    "CC6.1"
+  ],
+  "rcd_not_configured": [
+    "CC6.1"
+  ],
+  "ca_unable_to_assess": [
+    "CC3.2"
+  ],
+  "no_copilot_ca_policy": [
+    "CC6.1",
+    "CC6.2"
+  ],
+  "copilot_deployment_scope_denied": [
+    "CC3.2"
+  ],
+  "copilot_deployment_unknown": [
+    "CC3.2"
+  ],
+  "no_copilot_license": [
+    "CC3.1"
+  ],
+  "copilot_licenses_unassigned": [
+    "CC3.1"
+  ],
+  "low_copilot_license_utilization": [
+    "CC3.1"
+  ],
+  "no_access_reviews": [
+    "CC6.2",
+    "CC6.3"
+  ],
+  "no_information_barriers": [
+    "CC6.1",
+    "CC6.4"
+  ],
+  "no_mfa_enforcement": [
+    "CC6.1",
+    "CC6.6"
+  ],
+  "no_pim_configured": [
+    "CC6.1",
+    "CC6.3"
+  ],
+  "no_named_locations": [
+    "CC6.1",
+    "CC6.6"
+  ],
+  "no_signin_risk_policy": [
+    "CC6.1",
+    "CC7.2"
+  ],
+  "no_device_compliance": [
+    "CC6.1",
+    "CC6.8"
+  ],
+  "stale_accounts_detected": [
+    "CC6.2",
+    "CC6.3"
+  ],
+  "excessive_global_admins": [
+    "CC6.1",
+    "CC6.3"
+  ],
+  "shared_accounts_detected": [
+    "CC6.1",
+    "CC6.2"
+  ],
+  "no_group_based_licensing": [
+    "CC6.3"
+  ],
+  "no_session_signin_frequency": [
+    "CC6.1"
+  ],
+  "no_persistent_browser_control": [
+    "CC6.1"
+  ],
+  "mailbox_delegation_fullaccess": [
+    "CC6.1",
+    "CC6.3"
+  ],
+  "shared_mailbox_over_delegated": [
+    "CC6.1",
+    "CC6.3"
+  ],
+  "ib_segments_not_assigned": [
+    "CC6.4"
+  ],
+  "disabled_users_with_copilot_license": [
+    "CC6.2"
+  ],
+  "no_app_protection_policies": [
+    "CC6.7",
+    "CC6.8"
+  ],
+  "app_protection_platform_gaps": [
+    "CC6.7"
+  ],
+  "hybrid_accounts_stale_sync": [
+    "CC6.2"
+  ],
+  "no_copilot_license_segmentation": [
+    "CC6.3",
+    "CC8.1"
+  ],
+  "no_legal_hold_configured": [
+    "C1.2",
+    "A1.1"
+  ],
+  "stale_content_exposure": [
+    "CC6.5"
+  ],
+  "retention_assessment_needed": [
+    "C1.2"
+  ],
+  "no_m365_backup": [
+    "A1.1",
+    "A1.2"
+  ],
+  "audit_logging_unknown": [
+    "CC7.2",
+    "CC7.3"
+  ],
+  "copilot_interaction_audit": [
+    "CC7.2"
+  ],
+  "no_alert_policies": [
+    "CC7.2",
+    "CC7.3"
+  ],
+  "no_defender_cloud_apps": [
+    "CC7.1",
+    "CC7.2"
+  ],
+  "no_copilot_usage_analytics": [
+    "CC4.1",
+    "CC7.2"
+  ],
+  "copilot_audit_events_not_analyzed": [
+    "CC7.2",
+    "CC7.3"
+  ],
+  "no_prompt_pattern_monitoring": [
+    "CC7.2"
+  ],
+  "copilot_security_incidents_detected": [
+    "CC7.3",
+    "CC7.4"
+  ],
+  "copilot_plugins_unrestricted": [
+    "CC6.8",
+    "CC8.1"
+  ],
+  "data_residency_unverified": [
+    "CC2.3",
+    "P6.1"
+  ],
+  "no_ediscovery_configured": [
+    "C1.2"
+  ],
+  "no_insider_risk_policies": [
+    "CC7.2",
+    "CC9.2"
+  ],
+  "no_communication_compliance": [
+    "CC7.2"
+  ],
+  "no_dspm_for_ai": [
+    "CC3.2",
+    "CC9.1"
+  ],
+  "dspm_oversharing_not_reviewed": [
+    "CC3.2",
+    "CC6.1"
+  ],
+  "unmanaged_copilot_agents": [
+    "CC6.8",
+    "CC8.1"
+  ],
+  "agent_over_permissioned": [
+    "CC6.1",
+    "CC6.3"
+  ],
+  "no_regulatory_framework_mapping": [
+    "CC1.4",
+    "CC3.2"
+  ],
+  "multi_geo_copilot_residency": [
+    "P6.1"
+  ],
+  "no_rai_policy": [
+    "CC1.4",
+    "CC9.1"
+  ],
+  "cross_tenant_access_not_assessed": [
+    "CC9.2"
+  ],
+  "cross_tenant_access_permissive": [
+    "CC6.1",
+    "CC9.2"
+  ],
+  "no_agent_approval_workflow": [
+    "CC8.1"
+  ],
+  "ungoverned_external_connectors": [
+    "CC9.2",
+    "CC6.8"
+  ],
+  "external_connector_review_needed": [
+    "CC9.2",
+    "CC6.3"
+  ],
+  "no_prompt_guardrails": [
+    "CC7.2",
+    "CC8.1"
+  ],
+  "no_continuous_access_evaluation": [
+    "CC6.1",
+    "CC7.2"
+  ],
+  "no_token_protection": [
+    "CC6.1",
+    "CC6.7"
+  ],
+  "no_phishing_resistant_mfa": [
+    "CC6.1",
+    "CC6.6"
+  ],
+  "no_authentication_context": [
+    "CC6.1"
+  ],
+  "workload_identity_unprotected": [
+    "CC6.1",
+    "CC7.2"
+  ],
+  "no_compliant_network_check": [
+    "CC6.1",
+    "CC6.6"
+  ],
+  "unauthorized_ai_apps_detected": [
+    "CC6.8",
+    "CC9.2"
+  ],
+  "ai_consent_grants_detected": [
+    "CC6.1",
+    "CC6.3"
+  ],
+  "shadow_copilot_agents_detected": [
+    "CC6.8",
+    "CC8.1"
+  ],
+  "no_ai_app_governance": [
+    "CC7.1",
+    "CC9.2"
+  ],
+  "ai_apps_overpermissioned": [
+    "CC6.1",
+    "CC6.3"
+  ],
+  "no_ai_dlp_web_restrictions": [
+    "C1.1",
+    "CC6.7"
+  ]
+}

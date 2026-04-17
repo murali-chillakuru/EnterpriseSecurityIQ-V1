@@ -1,0 +1,700 @@
+{
+  "framework": "MCSB",
+  "frameworkName": "Microsoft Cloud Security Benchmark",
+  "version": "1.0",
+  "description": "Mappings from PostureIQ evidence types to MCSB controls",
+  "controls": [
+    {
+      "control_id": "MCSB-NS-1",
+      "title": "Establish network segmentation boundaries",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-app-service-network",
+        "azure-api-management",
+        "azure-resource"
+      ],
+      "evaluation_logic": "check_network_segmentation",
+      "rationale": "Network segmentation limits the blast radius of attacks by restricting lateral movement.",
+      "recommendation": "Implement network security groups and virtual network segmentation for all workloads.",
+      "compensating_evidence": [
+        "azure-waf-policy",
+        "azure-firewall"
+      ]
+    },
+    {
+      "control_id": "MCSB-IM-1",
+      "title": "Use centralized identity and authentication system",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-tenant-info",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_centralized_identity",
+      "rationale": "Centralized identity management reduces the risk of credential sprawl and enables consistent policy enforcement.",
+      "recommendation": "Ensure all applications use Microsoft Entra ID for authentication."
+    },
+    {
+      "control_id": "MCSB-IM-2",
+      "title": "Protect identity and authentication systems",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-conditional-access-policy",
+        "entra-role-assignment"
+      ],
+      "evaluation_logic": "check_identity_protection",
+      "rationale": "Identity systems are high-value targets and must be protected with strong controls.",
+      "recommendation": "Enable Conditional Access policies requiring MFA for all users, especially administrators."
+    },
+    {
+      "control_id": "MCSB-IM-3",
+      "title": "Manage application identities securely",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-application"
+      ],
+      "evaluation_logic": "check_app_identity_security",
+      "rationale": "Application credentials that expire or are misconfigured create security risks.",
+      "recommendation": "Use managed identities where possible. Rotate app credentials regularly and avoid long-lived secrets."
+    },
+    {
+      "control_id": "MCSB-PA-1",
+      "title": "Separate and limit highly privileged/administrative users",
+      "domain": "access",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-role-assignment",
+        "entra-role-assignment"
+      ],
+      "evaluation_logic": "check_privileged_access_separation",
+      "rationale": "Limiting privileged access reduces the attack surface and impact of compromised accounts.",
+      "recommendation": "Minimize the number of users with Owner/Contributor/Global Administrator roles."
+    },
+    {
+      "control_id": "MCSB-PA-7",
+      "title": "Follow just enough administration principle",
+      "domain": "access",
+      "severity": "high",
+      "evidence_types": [
+        "azure-role-assignment",
+        "entra-role-assignment"
+      ],
+      "evaluation_logic": "check_least_privilege",
+      "rationale": "Granting only required permissions limits the impact of credential compromise.",
+      "recommendation": "Review and reduce overly broad role assignments. Use custom roles where appropriate."
+    },
+    {
+      "control_id": "MCSB-GS-1",
+      "title": "Align organization roles, responsibilities, and accountabilities",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource",
+        "azure-role-assignment"
+      ],
+      "evaluation_logic": "check_governance_alignment",
+      "rationale": "Clear accountability ensures security responsibilities are met.",
+      "recommendation": "Ensure resource groups have appropriate tagging and ownership metadata."
+    },
+    {
+      "control_id": "MCSB-LT-1",
+      "title": "Enable threat detection capabilities",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-diagnostic-setting",
+        "azure-sql-advanced-threat",
+        "azure-sql-vulnerability",
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_threat_detection",
+      "rationale": "Diagnostic settings enable detection and investigation of security incidents.",
+      "recommendation": "Enable diagnostic settings for all critical resources and send logs to a central workspace."
+    },
+    {
+      "control_id": "MCSB-LT-3",
+      "title": "Enable logging for security investigation",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-diagnostic-setting"
+      ],
+      "evaluation_logic": "check_logging_enabled",
+      "rationale": "Logging is essential for detecting, investigating, and responding to security incidents.",
+      "recommendation": "Enable diagnostic settings on all resources that support them."
+    },
+    {
+      "control_id": "MCSB-AM-2",
+      "title": "Use only approved services",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_approved_services_policy",
+      "rationale": "Restricting allowed services reduces the attack surface and simplifies compliance.",
+      "recommendation": "Implement Azure Policy to restrict resource types to approved services."
+    },
+    {
+      "control_id": "MCSB-DP-3",
+      "title": "Encrypt sensitive data in transit",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource",
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_data_in_transit_encryption",
+      "rationale": "Data in transit must be encrypted to prevent interception.",
+      "recommendation": "Enforce HTTPS/TLS for all services and use Azure Policy to audit encryption in transit."
+    },
+    {
+      "control_id": "MCSB-DP-4",
+      "title": "Enable data at rest encryption by default",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource",
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_data_at_rest_encryption",
+      "rationale": "Data at rest encryption protects against unauthorized access to stored data.",
+      "recommendation": "Verify all storage services use encryption at rest. Use Azure Policy to enforce."
+    },
+    {
+      "control_id": "MCSB-IM-6",
+      "title": "Use strong authentication controls - MFA Registration",
+      "domain": "identity",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-mfa-registration",
+        "entra-conditional-access-policy"
+      ],
+      "evaluation_logic": "check_mfa_registration_coverage",
+      "rationale": "All users must be registered for MFA.",
+      "recommendation": "Enforce MFA registration. Target 90%+ rate."
+    },
+    {
+      "control_id": "MCSB-IM-7",
+      "title": "Restrict resource access based on conditions - Risky Users",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-risky-user",
+        "entra-risk-detection"
+      ],
+      "evaluation_logic": "check_risky_users",
+      "rationale": "Risky users must be detected and remediated.",
+      "recommendation": "Enable Identity Protection. Remediate high-risk users."
+    },
+    {
+      "control_id": "MCSB-IM-8",
+      "title": "Restrict the exposure of credential and secrets - Cross-Tenant",
+      "domain": "identity",
+      "severity": "high",
+      "evidence_types": [
+        "entra-cross-tenant-policy"
+      ],
+      "evaluation_logic": "check_cross_tenant_access",
+      "rationale": "Cross-tenant access must be controlled.",
+      "recommendation": "Configure cross-tenant MFA trust. Restrict B2B collaboration."
+    },
+    {
+      "control_id": "MCSB-GS-3",
+      "title": "Define and implement security posture management strategy - Policy Compliance",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-compliance",
+        "azure-policy-definition"
+      ],
+      "evaluation_logic": "check_policy_compliance_state",
+      "rationale": "Policy compliance must be continuously monitored.",
+      "recommendation": "Remediate non-compliant resources. Target 80%+ compliance."
+    },
+    {
+      "control_id": "MCSB-LT-4",
+      "title": "Enable network logging for security investigation - Defender Plans",
+      "domain": "governance",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-auto-provisioning",
+        "azure-sql-advanced-threat",
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_defender_plans",
+      "rationale": "Defender for Cloud plans must be enabled for workload protection.",
+      "recommendation": "Enable all Defender plans. Configure auto-provisioning and contacts."
+    },
+    {
+      "control_id": "MCSB-PA-7b",
+      "title": "Follow just enough administration principle - PIM",
+      "domain": "governance",
+      "severity": "critical",
+      "evidence_types": [
+        "entra-pim-eligible-assignment"
+      ],
+      "evaluation_logic": "check_pim_configuration",
+      "rationale": "Privileged access must be time-bound with MFA.",
+      "recommendation": "Require MFA and justification. Limit activation to 8 hours."
+    },
+    {
+      "control_id": "MCSB-PA-8",
+      "title": "Determine access process for cloud provider support - Access Reviews",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "entra-access-review",
+        "entra-role-assignment"
+      ],
+      "evaluation_logic": "check_access_reviews",
+      "rationale": "Access must be reviewed periodically.",
+      "recommendation": "Configure recurring access reviews for privileged roles."
+    },
+    {
+      "control_id": "MCSB-DP-5",
+      "title": "Use customer-managed key option in data at rest encryption - VM Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-registry",
+        "azure-aks-cluster",
+        "azure-vm-config"
+      ],
+      "evaluation_logic": "check_vm_security",
+      "rationale": "VMs must be hardened with encryption and security agents.",
+      "recommendation": "Enable disk encryption, managed identity, and MDE."
+    },
+    {
+      "control_id": "MCSB-DP-6",
+      "title": "Use a secure key management process - Web App Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-webapp-auth",
+        "azure-webapp-tls",
+        "azure-webapp-diagnostic",
+        "azure-webapp-config"
+      ],
+      "evaluation_logic": "check_webapp_security",
+      "rationale": "Web apps must enforce secure configuration.",
+      "recommendation": "Enable HTTPS, TLS 1.2+, disable FTP and remote debugging."
+    },
+    {
+      "control_id": "MCSB-DP-7",
+      "title": "Use a secure certificate management process - SQL Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-sql-server",
+        "azure-sql-tde",
+        "azure-sql-database",
+        "azure-sql-firewall",
+        "azure-sql-auditing",
+        "azure-sql-vulnerability",
+        "azure-sql-advanced-threat"
+      ],
+      "evaluation_logic": "check_sql_security",
+      "rationale": "Databases must use strong auth, encryption, and auditing.",
+      "recommendation": "Configure AD admin, auditing, TDE, restrict public access.",
+      "compensating_evidence": [
+        "azure-sql-advanced-threat"
+      ]
+    },
+    {
+      "control_id": "MCSB-DP-8",
+      "title": "Ensure security of key and certificate repository - AKS Security",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-acr-repository",
+        "azure-aks-cluster"
+      ],
+      "evaluation_logic": "check_aks_security",
+      "rationale": "Container platforms must enforce security controls.",
+      "recommendation": "Enable RBAC, AAD, network policy, Defender for Containers."
+    },
+    {
+      "control_id": "MCSB-NS-4",
+      "title": "Deploy intrusion detection/intrusion prevention - Firewall",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-firewall"
+      ],
+      "evaluation_logic": "check_firewall_protection",
+      "rationale": "Firewalls must have threat intelligence and rule collections.",
+      "recommendation": "Enable threat intelligence. Configure rule collections."
+    },
+    {
+      "control_id": "MCSB-NS-5",
+      "title": "Deploy DDOS protection - Route and Flow Log Security",
+      "domain": "network",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-route-table",
+        "azure-nsg-flow-log"
+      ],
+      "evaluation_logic": "check_route_table_security",
+      "rationale": "Network routes and flow logs must be properly configured.",
+      "recommendation": "Configure controlled routing. Enable NSG flow logs."
+    },
+    {
+      "control_id": "MCSB-LT-5",
+      "title": "Centralize security log management and analysis - Monitoring",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-log-analytics",
+        "azure-alert-rule",
+        "azure-action-group"
+      ],
+      "evaluation_logic": "check_monitoring_coverage",
+      "rationale": "Centralized monitoring must cover all critical resources.",
+      "recommendation": "Configure Log Analytics, alert rules, and action groups."
+    },
+    {
+      "control_id": "MCSB-DP-5b",
+      "title": "AI Services Data Protection",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-cognitive-account"
+      ],
+      "evaluation_logic": "check_ai_services_security",
+      "rationale": "AI accounts must enforce network isolation, disable local auth, and use CMK.",
+      "recommendation": "Disable public access, disable local auth, enable CMK on AI accounts."
+    },
+    {
+      "control_id": "MCSB-AM-5",
+      "title": "Resource Group Asset Management",
+      "domain": "governance",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource-group"
+      ],
+      "evaluation_logic": "check_resource_group_governance",
+      "rationale": "Resource groups must be tagged for asset management.",
+      "recommendation": "Apply mandatory tags to all resource groups."
+    },
+    {
+      "control_id": "MCSB-GS-8",
+      "title": "AI Deployment Governance",
+      "domain": "governance",
+      "severity": "high",
+      "evidence_types": [
+        "azure-ai-deployment"
+      ],
+      "evaluation_logic": "check_ai_governance",
+      "rationale": "AI deployments must have responsible AI guardrails.",
+      "recommendation": "Configure content filter policies and rate limits on AI deployments."
+    },
+    {
+      "control_id": "MCSB-NS-5b",
+      "title": "ML Workspace Network Security",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-ml-workspace"
+      ],
+      "evaluation_logic": "check_ml_network_security",
+      "rationale": "ML workspaces must use private endpoints and disable public access.",
+      "recommendation": "Disable public network access. Configure private endpoints."
+    },
+    {
+      "control_id": "MCSB-DP-6b",
+      "title": "Storage Account Data Protection",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-account"
+      ],
+      "evaluation_logic": "check_storage_account_security",
+      "rationale": "Storage accounts must enforce encryption, soft delete, and network isolation.",
+      "recommendation": "Enable HTTPS-only, soft delete, TLS 1.2, and configure firewall."
+    },
+    {
+      "control_id": "MCSB-PV-5",
+      "title": "Container Registry Posture",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-registry"
+      ],
+      "evaluation_logic": "check_container_registry_security",
+      "rationale": "Container registries must disable admin access and enable content trust.",
+      "recommendation": "Disable admin user. Enable content trust. Use private endpoints."
+    },
+    {
+      "control_id": "MCSB-NS-6",
+      "title": "Container App Network Security",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-container-app"
+      ],
+      "evaluation_logic": "check_container_app_network",
+      "rationale": "Container Apps must enforce HTTPS ingress and managed identity.",
+      "recommendation": "Disable insecure connections. Enable managed identity."
+    },
+    {
+      "control_id": "MCSB-DP-7b",
+      "title": "Cosmos DB Data Protection",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-cosmosdb-account"
+      ],
+      "evaluation_logic": "check_cosmosdb_security",
+      "rationale": "Cosmos DB must disable local auth and use CMK encryption.",
+      "recommendation": "Disable local auth. Enable CMK. Use private endpoints."
+    },
+    {
+      "control_id": "MCSB-DP-8b",
+      "title": "Database Server Protection",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-database-server"
+      ],
+      "evaluation_logic": "check_database_server_security",
+      "rationale": "Database servers must disable public access and enable HA.",
+      "recommendation": "Disable public access. Enable HA. Enable geo-redundant backup."
+    },
+    {
+      "control_id": "MCSB-NS-7",
+      "title": "Application Gateway WAF",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-app-gateway",
+        "azure-waf-policy"
+      ],
+      "evaluation_logic": "check_app_gateway_security",
+      "rationale": "Application Gateways must enable WAF in Prevention mode.",
+      "recommendation": "Enable WAF. Set Prevention mode. Configure TLS 1.2."
+    },
+    {
+      "control_id": "MCSB-NS-8",
+      "title": "API Management Network Security",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-apim-instance"
+      ],
+      "evaluation_logic": "check_apim_network_security",
+      "rationale": "APIM must disable legacy TLS and use VNet integration.",
+      "recommendation": "Disable TLS 1.0/1.1. Configure VNet. Enable managed identity."
+    },
+    {
+      "control_id": "MCSB-DP-9",
+      "title": "Storage Container Public Access Control",
+      "domain": "data_protection",
+      "severity": "critical",
+      "evidence_types": [
+        "azure-storage-container"
+      ],
+      "evaluation_logic": "check_storage_container_security",
+      "rationale": "Storage containers must not allow anonymous public access.",
+      "recommendation": "Set all containers to Private. Configure lifecycle and immutability policies."
+    },
+    {
+      "control_id": "MCSB-LT-3b",
+      "title": "SQL Server Threat Detection and Auditing",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-sql-detailed"
+      ],
+      "evaluation_logic": "check_sql_detailed_security",
+      "rationale": "SQL Servers must enable ATP and per-database auditing.",
+      "recommendation": "Enable ATP. Configure vulnerability assessment. Verify per-database auditing."
+    },
+    {
+      "control_id": "MCSB-PV-6",
+      "title": "Web Application Security Posture",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-webapp-detailed"
+      ],
+      "evaluation_logic": "check_webapp_detailed_security",
+      "rationale": "Web Apps must enable authentication and restrict access.",
+      "recommendation": "Enable App Service Auth. Restrict CORS. Configure IP restrictions."
+    },
+    {
+      "control_id": "MCSB-LT-4b",
+      "title": "Database Server Logging Configuration",
+      "domain": "data_protection",
+      "severity": "high",
+      "evidence_types": [
+        "azure-database-config"
+      ],
+      "evaluation_logic": "check_database_config_security",
+      "rationale": "Database servers must enforce secure transport and audit logging.",
+      "recommendation": "Enable require_secure_transport. Enable log_checkpoints and audit logging."
+    },
+    {
+      "control_id": "MCSB-PV-7",
+      "title": "Container Registry Image Posture",
+      "domain": "network",
+      "severity": "high",
+      "evidence_types": [
+        "azure-acr-repository"
+      ],
+      "evaluation_logic": "check_acr_repository_security",
+      "rationale": "ACR repositories must enforce tag immutability.",
+      "recommendation": "Enable tag immutability. Clean up stale repositories."
+    },
+    {
+      "control_id": "MCSB-IR-1",
+      "title": "Preparation - Incident Detection",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-defender-pricing",
+        "azure-alert-rule",
+        "entra-risk-summary"
+      ],
+      "evaluation_logic": "check_incident_detection",
+      "rationale": "Microsoft Cloud Security Benchmark requires incident detection capabilities.",
+      "recommendation": "Enable Defender for Cloud and configure alert rules."
+    },
+    {
+      "control_id": "MCSB-IR-2",
+      "title": "Preparation - Security Contact",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_security_contact_config",
+      "rationale": "Security contacts must be configured for incident escalation.",
+      "recommendation": "Configure security contacts with alert notifications."
+    },
+    {
+      "control_id": "MCSB-IR-3",
+      "title": "Detection and Analysis - Alert Infrastructure",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-action-group",
+        "azure-alert-rule",
+        "azure-security-contact"
+      ],
+      "evaluation_logic": "check_incident_alerting",
+      "rationale": "Alert infrastructure must support incident investigation.",
+      "recommendation": "Configure action groups with diverse receivers."
+    },
+    {
+      "control_id": "MCSB-IR-4",
+      "title": "Post-Incident - Investigation Readiness",
+      "domain": "incident_response",
+      "severity": "high",
+      "evidence_types": [
+        "azure-log-analytics",
+        "azure-diagnostic-setting",
+        "azure-activity-log"
+      ],
+      "evaluation_logic": "check_incident_investigation_readiness",
+      "rationale": "Log infrastructure must support forensic investigation.",
+      "recommendation": "Deploy Log Analytics and configure comprehensive diagnostic settings."
+    },
+    {
+      "control_id": "MCSB-PV-8",
+      "title": "Change Control Policies",
+      "domain": "change_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-policy-assignment",
+        "azure-policy-definition"
+      ],
+      "evaluation_logic": "check_change_control_policies",
+      "rationale": "Azure policies must enforce change governance.",
+      "recommendation": "Assign policies with deny/audit effects for change control."
+    },
+    {
+      "control_id": "MCSB-PV-9",
+      "title": "Resource Lock Protection",
+      "domain": "change_management",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-resource-lock",
+        "azure-resource-group"
+      ],
+      "evaluation_logic": "check_resource_lock_governance",
+      "rationale": "Critical resources must be protected with locks.",
+      "recommendation": "Apply CanNotDelete locks on production resource groups."
+    },
+    {
+      "control_id": "MCSB-BR-1",
+      "title": "Ensure Regular Automated Backups",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-recovery-vault",
+        "azure-vm-config",
+        "azure-sql-server"
+      ],
+      "evaluation_logic": "check_backup_configuration",
+      "rationale": "Automated backups must protect critical workloads.",
+      "recommendation": "Deploy Recovery Services vaults with soft delete."
+    },
+    {
+      "control_id": "MCSB-BR-2",
+      "title": "Geo-Redundant Data Protection",
+      "domain": "business_continuity",
+      "severity": "high",
+      "evidence_types": [
+        "azure-storage-account",
+        "azure-cosmosdb-account"
+      ],
+      "evaluation_logic": "check_geo_redundancy",
+      "rationale": "Data must be geo-redundant for disaster recovery.",
+      "recommendation": "Use GRS/RA-GRS replication for storage accounts."
+    },
+    {
+      "control_id": "MCSB-AM-1",
+      "title": "Asset Inventory and Tracking",
+      "domain": "asset_management",
+      "severity": "high",
+      "evidence_types": [
+        "azure-resource",
+        "azure-resource-group",
+        "azure-managed-identity"
+      ],
+      "evaluation_logic": "check_asset_inventory",
+      "rationale": "All cloud assets must be inventoried and tracked.",
+      "recommendation": "Maintain comprehensive resource inventory."
+    },
+    {
+      "control_id": "MCSB-AM-2b",
+      "title": "Software Inventory Control",
+      "domain": "asset_management",
+      "severity": "medium",
+      "evidence_types": [
+        "azure-policy-assignment"
+      ],
+      "evaluation_logic": "check_authorized_software_policy",
+      "rationale": "Only authorized software and resource types should be deployed.",
+      "recommendation": "Use allowed resource type policies to control deployments."
+    },
+    {
+      "control_id": "MCSB-LT-5b",
+      "title": "Log Retention and Archival",
+      "domain": "logging",
+      "severity": "high",
+      "evidence_types": [
+        "azure-log-analytics",
+        "azure-nsg-flow-log"
+      ],
+      "evaluation_logic": "check_log_retention_analysis",
+      "rationale": "Logs must be retained for sufficient investigation period.",
+      "recommendation": "Set Log Analytics retention to at least 90 days."
+    }
+  ]
+}

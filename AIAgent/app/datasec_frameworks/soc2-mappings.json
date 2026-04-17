@@ -1,0 +1,221 @@
+{
+  "blob_public_access": [
+    "CC6.1"
+  ],
+  "storage_https": [
+    "CC6.7"
+  ],
+  "storage_network_rules": [
+    "CC6.1"
+  ],
+  "soft_delete_disabled": [
+    "A1.1"
+  ],
+  "min_tls_weak": [
+    "CC6.7"
+  ],
+  "shared_key_enabled": [
+    "CC6.5"
+  ],
+  "no_blob_logging": [
+    "CC8.2"
+  ],
+  "blob_versioning_disabled": [
+    "A1.1"
+  ],
+  "sql_tde_disabled": [
+    "CC8.3"
+  ],
+  "sql_auditing_disabled": [
+    "CC8.2"
+  ],
+  "sql_atp_disabled": [
+    "CC9.1"
+  ],
+  "sql_no_ddm": [
+    "C1.1"
+  ],
+  "sql_no_rls": [
+    "CC6.1"
+  ],
+  "cosmosdb_public_access": [
+    "CC6.12"
+  ],
+  "eventual_consistency": [
+    "PI1.1"
+  ],
+  "access_policy_model": [
+    "CC6.1"
+  ],
+  "purge_protection_off": [
+    "A1.1"
+  ],
+  "no_expiry_set": [
+    "CC6.5"
+  ],
+  "cert_no_auto_renewal": [
+    "CC6.5"
+  ],
+  "keys_not_hsm_backed": [
+    "CC8.3"
+  ],
+  "disk_encryption_missing": [
+    "CC8.3"
+  ],
+  "overprivileged_access": [
+    "CC6.3"
+  ],
+  "defender_coverage_gaps": [
+    "CC9.1"
+  ],
+  "audit_log_short_retention": [
+    "CC8.2"
+  ],
+  "nsg_data_ports_open": [
+    "CC6.1"
+  ],
+  "no_dlp_policies": [
+    "C1.1"
+  ],
+  "dlp_no_sensitive_info_types": [
+    "C1.1"
+  ],
+  "sql_local_auth_enabled": [
+    "CC6.1"
+  ],
+  "pg_mysql_no_aad_auth": [
+    "CC6.1"
+  ],
+  "no_managed_identity": [
+    "CC6.5"
+  ],
+  "no_resource_lock": [
+    "CC8.4"
+  ],
+  "adf_no_managed_vnet": [
+    "CC6.8"
+  ],
+  "synapse_no_exfiltration_protection": [
+    "CC6.8"
+  ],
+  "ai_services_public_access": [
+    "CC6.7"
+  ],
+  "log_analytics_no_cmk": [
+    "CC8.3"
+  ],
+  "no_immutable_audit_logs": [
+    "CC8.2"
+  ],
+  "redis_non_ssl_port": [
+    "CC6.7"
+  ],
+  "redis_weak_tls": [
+    "CC6.7"
+  ],
+  "redis_no_firewall": [
+    "CC6.1"
+  ],
+  "eventhub_public_access": [
+    "CC6.1"
+  ],
+  "servicebus_public_access": [
+    "CC6.1"
+  ],
+  "messaging_weak_tls": [
+    "CC6.7"
+  ],
+  "purge_protection_disabled": [
+    "A1.1"
+  ],
+  "legacy_access_policy_model": [
+    "CC6.1"
+  ],
+  "no_network_restrictions": [
+    "CC6.1"
+  ],
+  "purview_public_access": [
+    "CC6.7"
+  ],
+  "purview_no_private_endpoint": [
+    "CC6.7"
+  ],
+  "purview_scan_coverage_gap": [
+    "CC3.2"
+  ],
+  "purview_scan_issues": [
+    "CC7.1"
+  ],
+  "managed_disk_no_cmk": [
+    "CC8.3"
+  ],
+  "no_diagnostic_settings": [
+    "CC8.2"
+  ],
+  "no_private_endpoint": [
+    "CC6.7"
+  ],
+  "no_ddos_protection": [
+    "CC6.1"
+  ],
+  "no_sas_expiration_policy": [
+    "CC6.5"
+  ],
+  "no_immutability_policy": [
+    "CC8.2"
+  ],
+  "change_feed_disabled": [
+    "CC8.2"
+  ],
+  "unencrypted_disks": [
+    "CC8.3"
+  ],
+  "no_encryption_at_host": [
+    "CC8.3"
+  ],
+  "no_security_action_groups": [
+    "CC9.1"
+  ],
+  "ai_key_auth_enabled": [
+    "CC6.1"
+  ],
+  "ai_no_managed_identity": [
+    "CC6.1"
+  ],
+  "ai_no_cmk": [
+    "CC6.1"
+  ],
+  "adf_public_access": [
+    "CC6.6"
+  ],
+  "adf_no_managed_identity": [
+    "CC6.1"
+  ],
+  "adf_no_git_integration": [
+    "CC8.1"
+  ],
+  "synapse_public_access": [
+    "CC6.6"
+  ],
+  "synapse_sql_auth_enabled": [
+    "CC6.1"
+  ],
+  "eventhub_local_auth": [
+    "CC6.1"
+  ],
+  "servicebus_local_auth": [
+    "CC6.1"
+  ],
+  "eventhub_no_capture": [
+    "CC7.2"
+  ],
+  "redis_no_patch_schedule": [
+    "CC7.1"
+  ],
+  "redis_public_access": [
+    "CC6.6"
+  ],
+  "data_services_no_managed_identity": [
+    "CC6.1"
+  ]
+}
